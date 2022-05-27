@@ -9,8 +9,6 @@ function renderRallyItem(itemData) {
 }
 
 function RalliesList({ rallies }) {
-    console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-    printObject('RalliesList(rallies)', rallies);
     return (
         <FlatList
             data={rallies.rallies}
