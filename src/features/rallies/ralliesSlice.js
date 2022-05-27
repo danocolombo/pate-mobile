@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     value: 0,
-    rallies: [],
+    publicRallies: [],
 };
 
 export const ralliesSlice = createSlice({
@@ -10,7 +10,7 @@ export const ralliesSlice = createSlice({
     initialState,
     reducers: {
         loadRallies: (state, action) => {
-            state.rallies = action.payload;
+            state.publicRallies = action.payload;
         },
         increment: (state) => {
             // Redux Toolkit allows us to write "mutating" logic in reducers. It
