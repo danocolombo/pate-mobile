@@ -8,6 +8,10 @@ import {
     DrawerItemList,
     DrawerItem,
 } from '@react-navigation/drawer';
+// - - - - - redux toolkit - -  - - - - -
+import { store } from './src/app/store';
+import { Provider } from 'react-redux';
+
 import MainScreen from './src/screens/MainScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 
@@ -38,11 +42,15 @@ function TheDrawer() {
 const queryClient = new QueryClient();
 function App() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <NavigationContainer>
-                <TheDrawer />
-            </NavigationContainer>
-        </QueryClientProvider>
+        <>
+            <Provider store={store}>
+                <QueryClientProvider client={queryClient}>
+                    <NavigationContainer>
+                        <TheDrawer />
+                    </NavigationContainer>
+                </QueryClientProvider>
+            </Provider>
+        </>
     );
 }
 export default App;
