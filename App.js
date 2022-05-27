@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import IconButton from './src/components/ui/IconButton';
 
 import MainScreen from './src/screens/MainScreen';
+import ServeScreen from './src/screens/ServeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import PateSignOut from './src/screens/PateSignOut';
 import RallyDetailScreen from './src/screens/RallyDetailsScreen';
@@ -32,20 +33,7 @@ function CustomDrawerContent(props) {
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
-// function TheDrawer() {
-//     const [token, setToken] = useState(true);
-//     return (
-//         <Drawer.Navigator
-//             useLegacyImplementation
-//             drawerContent={(props) => <CustomDrawerContent {...props} />}
-//         >
-//             <Drawer.Screen name='Main' component={MainScreen} />
-//             {token ? (
-//                 <Drawer.Screen name='Profile' component={ProfileScreen} />
-//             ) : null}
-//         </Drawer.Navigator>
-//     );
-// }
+
 function AuthenticatedDrawer() {
     return (
         <Drawer.Navigator
@@ -64,7 +52,23 @@ function AuthenticatedDrawer() {
                 name='Main'
                 component={MainScreen}
                 options={({ navigation }) => ({
-                    title: 'P8 Rally',
+                    title: 'Rallies',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+
+                    headerTintColor: 'white',
+                    tabBarStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    tabBarActiveTintColor: 'white',
+                })}
+            />
+            <Drawer.Screen
+                name='Serve'
+                component={ServeScreen}
+                options={({ navigation }) => ({
+                    title: 'Serve',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
