@@ -1,20 +1,48 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { View, Text, Button } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import {
+    createDrawerNavigator,
+    DrawerContentScrollView,
+    DrawerItemList,
+    DrawerItem,
+} from '@react-navigation/drawer';
+import MainScreen from './src/screens/MainScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+function CustomDrawerContent(props) {
+    return (
+        <DrawerContentScrollView {...props}>
+            <DrawerItemList {...props} />
+        </DrawerContentScrollView>
+    );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const Drawer = createDrawerNavigator();
+
+function TheDrawer() {
+    const [token, setToken] = useState(true);
+    return (
+        <Drawer.Navigator
+            useLegacyImplementation
+            drawerContent={(props) => <CustomDrawerContent {...props} />}
+        >
+            <Drawer.Screen name='Main' component={MainScreen} />
+            {token ? (
+                <Drawer.Screen name='Profile' component={ProfileScreen} />
+            ) : null}
+        </Drawer.Navigator>
+    );
+}
+const queryClient = new QueryClient();
+function App() {
+    return (
+        <QueryClientProvider client={queryClient}>
+            <NavigationContainer>
+                <TheDrawer />
+            </NavigationContainer>
+        </QueryClientProvider>
+    );
+}
+export default App;
