@@ -6,6 +6,10 @@ import CardDate from '../ui/RallyCardDate';
 import LoadingOverly from '../../components/ui/LoadingOverlay';
 import { Colors } from '../../constants/colors';
 import { printObject } from '../../utils/helpers';
+import {
+    dateNumsToLongDayLongMondayDay,
+    numTimeToDisplayTime,
+} from '../../utils/date';
 
 const RallyDetails = ({ rallyId }) => {
     const dispatch = useDispatch();
@@ -13,7 +17,7 @@ const RallyDetails = ({ rallyId }) => {
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
     let rally = ral[0];
-
+    printObject('rally', rally);
     if (!rally) {
         return <LoadingOverly />;
     } else {
@@ -21,10 +25,25 @@ const RallyDetails = ({ rallyId }) => {
             <>
                 <View style={styles.cardContainer}>
                     <Card style={styles.rallyCard}>
-                        <Card.Title style={styles.location}>
-                            {rally.name}
-                        </Card.Title>
+                        <View style={styles.nameContainer}>
+                            <Card.Title style={styles.nameText}>
+                                {rally.name}
+                            </Card.Title>
+                        </View>
                         <Card.Divider />
+                        <View style={styles.dateContainer}>
+                            <Text style={styles.dateValues}>
+                                {dateNumsToLongDayLongMondayDay(
+                                    rally.eventDate
+                                )}
+                            </Text>
+                        </View>
+                        <View style={styles.timeContainer}>
+                            <Text style={styles.timeValues}>
+                                {numTimeToDisplayTime(rally.startTime)} -{' '}
+                                {numTimeToDisplayTime(rally.endTime)}
+                            </Text>
+                        </View>
                         <View style={styles.addressWrapper}>
                             <View style={styles.addressContainer}>
                                 <Text style={styles.addressText}>
@@ -36,18 +55,20 @@ const RallyDetails = ({ rallyId }) => {
                                 </Text>
                             </View>
                         </View>
-                        {/* <Card.Image source={require('../images/pic2.jpg')} /> */}
-
-                        {/* <Image
-                        source={{
-                            uri: 'https://pate20213723ed06531948b6a5a0b14d1c3fb499175248-dev.s3.amazonaws.com/public/events/9262496f849827c155ca8865b7a39b65CORDELE.jpg',
-                        }}
-                        style={{ width: 400, height: 200 }}
-                        PlaceholderContent={<CardDate />}
-                    /> */}
-                        <Text style={{ marginBottom: 10 }}>
-                            Come check it out
-                        </Text>
+                        <View style={styles.graphicWrapper}>
+                            <Image
+                                style={styles.image}
+                                resizeMode='cover'
+                                source={{
+                                    uri: 'https://pate20213723ed06531948b6a5a0b14d1c3fb499175248-dev.s3.amazonaws.com/public/events/9262496f849827c155ca8865b7a39b65CORDELE.jpg',
+                                }}
+                            />
+                        </View>
+                        <View style={styles.notesContainer}>
+                            <Text style={styles.notesText}>
+                                Come check it out
+                            </Text>
+                        </View>
                         <Button
                             // icon={<Icon name='code' color='#ffffff' />}
                             buttonStyle={{
@@ -89,25 +110,24 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.4,
     },
+    nameContainer: {},
+    nameText: { fontSize: 28, fontWeight: 'bold' },
+    dateContainer: { alignItems: 'center' },
+    dateValues: { fontSize: 30, fontWeight: 'bold' },
+    timeContainer: { alignItems: 'center', marginVertical: 10 },
+    timeValues: { fontSize: 28, fontWeight: 'bold' },
     addressWrapper: {
         alignItems: 'center',
     },
     addressContainer: {
-        marginTop: 5,
+        marginTop: 15,
     },
     addressText: {
-        fontSize: 20,
+        fontSize: 24,
     },
+    notesContainer: { margin: 15, alignItems: 'center' },
+    notesText: {},
     location: {
         color: Colors.primary,
-    },
-    rallyDate: {
-        color: 'white',
-        fontSize: 20,
-    },
-    location: {
-        fontSize: 16,
-        marginBottom: 4,
-        fontWeight: 'bold',
     },
 });
