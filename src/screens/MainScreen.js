@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { loadRallies } from '../features/rallies/ralliesSlice';
+import LoadingOverlay from '../components/ui/LoadingOverlay';
 import RalliesOutput from '../components/rallies/RalliesOutput';
 export default function MainScreen() {
     const dispatch = useDispatch();
@@ -24,10 +25,14 @@ export default function MainScreen() {
     const { data, status } = useQuery('characters', fetchCharacters);
 
     if (status === 'loading') {
-        return <div>LOADING</div>;
+        return <LoadingOverlay />;
     }
     if (status === 'error') {
-        return <div>ERROR received....</div>;
+        return (
+            <View>
+                <Text>ERROR received....</Text>
+            </View>
+        );
     } else {
         dispatch(loadRallies(data.body));
         return (

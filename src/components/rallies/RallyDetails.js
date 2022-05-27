@@ -29,7 +29,8 @@ const RallyDetails = ({ rallyId }) => {
                             <View style={styles.addressContainer}>
                                 <Text style={styles.addressText}>
                                     {rally.street}
-                                    <br />
+                                </Text>
+                                <Text style={styles.addressText}>
                                     {rally.city}, {rally.stateProv}{' '}
                                     {rally.postalCode}
                                 </Text>
