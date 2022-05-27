@@ -12,6 +12,12 @@ export const ralliesSlice = createSlice({
         loadRallies: (state, action) => {
             state.publicRallies = action.payload;
         },
+        getRally: (state, action) => {
+            let found = state.publicRallies.filter(
+                (r) => r.uid === action.payload
+            );
+            return found;
+        },
         increment: (state) => {
             // Redux Toolkit allows us to write "mutating" logic in reducers. It
             // doesn't actually mutate the state because it uses the Immer library,
@@ -29,7 +35,12 @@ export const ralliesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { loadRallies, increment, decrement, incrementByAmount } =
-    ralliesSlice.actions;
+export const {
+    loadRallies,
+    getRally,
+    increment,
+    decrement,
+    incrementByAmount,
+} = ralliesSlice.actions;
 
 export default ralliesSlice.reducer;
