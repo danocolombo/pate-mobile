@@ -45,11 +45,11 @@ function AuthenticatedDrawer() {
         <Drawer.Navigator
             screenOptions={({ navigation }) => ({
                 headerStyle: {
-                    backgroundColor: Colors.primary800,
+                    backgroundColor: Colors.primary,
                 },
                 headerTintColor: 'white',
                 tabBarStyle: {
-                    backgroundColor: Colors.primary800,
+                    backgroundColor: Colors.primary,
                 },
                 tabBarActiveTintColor: 'white',
             })}
@@ -158,7 +158,7 @@ function PateStack() {
                 component={RallyDetailScreen}
                 options={({ navigation }) => ({
                     headerStyle: {
-                        backgroundColor: Colors.primary800,
+                        backgroundColor: Colors.primary,
                     },
                     headerTintColor: 'white',
                 })}
@@ -168,7 +168,7 @@ function PateStack() {
                 component={RegisterScreen}
                 options={({ navigation }) => ({
                     headerStyle: {
-                        backgroundColor: Colors.primary800,
+                        backgroundColor: Colors.primary,
                     },
                     headerTintColor: 'white',
                 })}

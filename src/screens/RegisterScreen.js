@@ -3,7 +3,6 @@ import React from 'react';
 import RallyRegister from '../components/rallies/RallyRegister';
 import { printObject } from '../utils/helpers';
 const RegisterScreen = (props) => {
-    printObject('props', props);
     let rallyId = props.route.params.rallyId;
     return (
         <>
