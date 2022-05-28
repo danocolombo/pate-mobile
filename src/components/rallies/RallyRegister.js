@@ -1,17 +1,17 @@
-import { StyleSheet, Text, View, ViewBase, _View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 
-const ServeEventsMyScreen = () => {
+const RallyRegister = () => {
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
-                <Text style={styles.screenHeaderText}>My Events</Text>
+                <Text style={styles.screenHeaderText}>Rally Registration</Text>
             </View>
         </View>
     );
 };
 
-export default ServeEventsMyScreen;
+export default RallyRegister;
 
 const styles = StyleSheet.create({
     rootContainer: {
