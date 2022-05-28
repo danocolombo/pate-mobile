@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Surface, Stack } from '@react-native-material/core';
 import { Colors } from '../../constants/colors';
@@ -7,11 +7,16 @@ import {
     dateNumsToLongDayLongMondayDay,
     numTimeToDisplayTime,
 } from '../../utils/date';
+import NumberInput from '../ui/NumberInput/NumberInput';
 const RallyRegister = ({ rallyId }) => {
+    const [registrarCount, setRegistrar] = useState(0);
     let ral = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
     let rally = ral[0];
+    const handleRegistarCountChange = (e) => {
+        setRegistrar(parseInt(e));
+    };
     return (
         <View style={styles.rootContainer}>
             {/* <View style={styles.screenHeader}>
@@ -49,6 +54,24 @@ const RallyRegister = ({ rallyId }) => {
                                 </Text>
                             </View>
                         </View>
+                        <View style={styles.registrationCountContainer}>
+                            <Text style={styles.regisrationCountText}>
+                                How many will be attending with you?
+                            </Text>
+                            <View
+                                style={styles.registrationCountNumberContainer}
+                            >
+                                <NumberInput
+                                    value={registrarCount}
+                                    onAction={handleRegistarCountChange}
+                                />
+                            </View>
+                        </View>
+                        {rally.meal.deadline ? (
+                            <View>
+                                <Text>We have lunch</Text>
+                            </View>
+                        ) : null}
                     </View>
                 </Surface>
             </View>
@@ -98,4 +121,18 @@ const styles = StyleSheet.create({
     dateValues: { fontSize: 26, fontWeight: 'bold' },
     timeContainer: { alignItems: 'center', marginVertical: 0 },
     timeValues: { fontSize: 24, fontWeight: 'bold' },
+    registrationCountContainer: {
+        borderWidth: 2,
+        borderRadius: 8,
+        borderColor: Colors.primary,
+        marginVertical: 10,
+        backgroundColor: Colors.gray10,
+    },
+    regisrationCountText: {
+        fontSize: 16,
+        padding: 10,
+    },
+    registrationCountNumberContainer: {
+        marginBottom: 10,
+    },
 });
