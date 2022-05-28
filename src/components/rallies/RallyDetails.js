@@ -22,7 +22,7 @@ const RallyDetails = ({ rallyId }) => {
     printObject('rally', rally);
     const handleRegisterRequest = () => {
         navigation.navigate('RallyRegister', {
-            meetingId: rally.uid,
+            rallyId: rally.uid,
         });
     };
     if (!rally) {

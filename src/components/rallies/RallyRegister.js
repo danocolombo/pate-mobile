@@ -1,11 +1,18 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-
-const RallyRegister = () => {
+import { useSelector } from 'react-redux';
+const RallyRegister = ({ rallyId }) => {
+    let ral = useSelector((state) =>
+        state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+    );
+    let rally = ral[0];
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
                 <Text style={styles.screenHeaderText}>Rally Registration</Text>
+            </View>
+            <View>
+                <Text>{rally.name}</Text>
             </View>
         </View>
     );
