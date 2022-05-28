@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-function ProfileScreen() {
+function ServeScreen() {
     return (
         <>
             <View>
-                <Text>Profile Screen</Text>
+                <Text>Serve Screen</Text>
             </View>
         </>
     );
 }
-export default ProfileScreen;
+export default ServeScreen;

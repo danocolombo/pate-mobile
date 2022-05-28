@@ -17,10 +17,15 @@ import { Ionicons } from '@expo/vector-icons';
 import IconButton from './src/components/ui/IconButton';
 
 import MainScreen from './src/screens/MainScreen';
+import ServeScreen from './src/screens/Serve/ServeScreen';
+import ServeEventsMyScreen from './src/screens/Serve/ServeEventsMyScreen';
+import ServeEventsStateScreen from './src/screens/Serve/ServeEventsStateScreen';
+import ServeEventsHistoryScreen from './src/screens/Serve/ServeEventsHistoryScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import PateSignOut from './src/screens/PateSignOut';
 import RallyDetailScreen from './src/screens/RallyDetailsScreen';
 import { Colors } from './src/constants/colors';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 function CustomDrawerContent(props) {
     return (
@@ -32,20 +37,8 @@ function CustomDrawerContent(props) {
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
-// function TheDrawer() {
-//     const [token, setToken] = useState(true);
-//     return (
-//         <Drawer.Navigator
-//             useLegacyImplementation
-//             drawerContent={(props) => <CustomDrawerContent {...props} />}
-//         >
-//             <Drawer.Screen name='Main' component={MainScreen} />
-//             {token ? (
-//                 <Drawer.Screen name='Profile' component={ProfileScreen} />
-//             ) : null}
-//         </Drawer.Navigator>
-//     );
-// }
+const BottomTab = createBottomTabNavigator();
+
 function AuthenticatedDrawer() {
     return (
         <Drawer.Navigator
@@ -64,7 +57,23 @@ function AuthenticatedDrawer() {
                 name='Main'
                 component={MainScreen}
                 options={({ navigation }) => ({
-                    title: 'P8 Rally',
+                    title: 'Rallies',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+
+                    headerTintColor: 'white',
+                    tabBarStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    tabBarActiveTintColor: 'white',
+                })}
+            />
+            <Drawer.Screen
+                name='Serve'
+                component={ServeConfig}
+                options={({ navigation }) => ({
+                    title: 'Serve',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
@@ -79,6 +88,60 @@ function AuthenticatedDrawer() {
             <Stack.Screen name='Profile' component={ProfileScreen} />
             <Stack.Screen name='Logout' component={PateSignOut} />
         </Drawer.Navigator>
+    );
+}
+function ServeConfig() {
+    return (
+        <BottomTab.Navigator
+            initialRouteName='ServeMy'
+            screenOptions={{ headerShown: false }}
+        >
+            <BottomTab.Screen
+                name='ServeMy'
+                component={ServeEventsMyScreen}
+                options={{
+                    title: 'Serve: Personal Events',
+                    tabBarLabel: 'Mine',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons
+                            name='md-caret-back-circle-sharp'
+                            size={size}
+                            color={color}
+                        />
+                    ),
+                }}
+            />
+            <BottomTab.Screen
+                name='ServeState'
+                component={ServeEventsStateScreen}
+                options={{
+                    title: 'Serve: State Events',
+                    tabBarLabel: 'State',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons
+                            name='md-caret-forward-circle-sharp'
+                            size={size}
+                            color={color}
+                        />
+                    ),
+                }}
+            />
+            <BottomTab.Screen
+                name='ServeHistory'
+                component={ServeEventsHistoryScreen}
+                options={{
+                    title: 'Serve: History',
+                    tabBarLabel: 'History',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons
+                            name='md-caret-forward-circle-sharp'
+                            size={size}
+                            color={color}
+                        />
+                    ),
+                }}
+            />
+        </BottomTab.Navigator>
     );
 }
 function PateStack() {
