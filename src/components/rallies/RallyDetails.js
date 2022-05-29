@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Card, ListItem, Button, Icon } from 'react-native-elements';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import CardDate from '../ui/RallyCardDate';
 import LoadingOverly from '../../components/ui/LoadingOverlay';
 import { Colors } from '../../constants/colors';
@@ -12,12 +13,18 @@ import {
 } from '../../utils/date';
 
 const RallyDetails = ({ rallyId }) => {
+    const navigation = useNavigation();
     const dispatch = useDispatch();
     let ral = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
     let rally = ral[0];
     printObject('rally', rally);
+    const handleRegisterRequest = () => {
+        navigation.navigate('RallyRegister', {
+            rallyId: rally.uid,
+        });
+    };
     if (!rally) {
         return <LoadingOverly />;
     } else {
@@ -78,6 +85,7 @@ const RallyDetails = ({ rallyId }) => {
                                 marginBottom: 0,
                             }}
                             title='REGISTER NOW'
+                            onPress={handleRegisterRequest}
                         />
                     </Card>
                 </View>

@@ -16,7 +16,6 @@ export default ServeEventsMyScreen;
 const styles = StyleSheet.create({
     rootContainer: {
         flex: 1,
-        // alignItems: 'center',
     },
     screenHeader: {
         alignItems: 'center',

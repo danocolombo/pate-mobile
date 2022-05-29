@@ -24,6 +24,7 @@ import ServeEventsHistoryScreen from './src/screens/Serve/ServeEventsHistoryScre
 import ProfileScreen from './src/screens/ProfileScreen';
 import PateSignOut from './src/screens/PateSignOut';
 import RallyDetailScreen from './src/screens/RallyDetailsScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
 import { Colors } from './src/constants/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -44,11 +45,11 @@ function AuthenticatedDrawer() {
         <Drawer.Navigator
             screenOptions={({ navigation }) => ({
                 headerStyle: {
-                    backgroundColor: Colors.primary800,
+                    backgroundColor: Colors.primary,
                 },
                 headerTintColor: 'white',
                 tabBarStyle: {
-                    backgroundColor: Colors.primary800,
+                    backgroundColor: Colors.primary,
                 },
                 tabBarActiveTintColor: 'white',
             })}
@@ -157,7 +158,17 @@ function PateStack() {
                 component={RallyDetailScreen}
                 options={({ navigation }) => ({
                     headerStyle: {
-                        backgroundColor: Colors.primary800,
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
+            <Stack.Screen
+                name='RallyRegister'
+                component={RegisterScreen}
+                options={({ navigation }) => ({
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
                     },
                     headerTintColor: 'white',
                 })}
