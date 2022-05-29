@@ -1,14 +1,9 @@
 import { StyleSheet, Text, View, ViewBase, _View } from 'react-native';
 import React from 'react';
+import ServeMyRallies from '../../components/serve/ServeMyRallies';
 
 const ServeEventsMyScreen = () => {
-    return (
-        <View style={styles.rootContainer}>
-            <View style={styles.screenHeader}>
-                <Text style={styles.screenHeaderText}>My Events</Text>
-            </View>
-        </View>
-    );
+    return <ServeMyRallies />;
 };
 
 export default ServeEventsMyScreen;
