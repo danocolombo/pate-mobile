@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import React from 'react';
-
+import { useNavigation } from '@react-navigation/native';
 const ServeMyRallies = () => {
+    const navigation = useNavigation();
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
@@ -9,16 +10,11 @@ const ServeMyRallies = () => {
                 <View>
                     <Button
                         title='NEW'
-                        onPress={() => Alert.alert('Simple Button pressed')}
+                        onPress={() => navigation.navigate('ServeRallyForm')}
                     />
                 </View>
                 <View>
                     <Text>This is where your events will be listed.</Text>
-                </View>
-                <View>
-                    <Text>...</Text>
-                    <Text>...</Text>
-                    <Text>...</Text>
                 </View>
             </View>
         </View>

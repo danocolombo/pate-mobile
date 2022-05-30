@@ -21,6 +21,7 @@ import ServeScreen from './src/screens/Serve/ServeScreen';
 import ServeEventsMyScreen from './src/screens/Serve/ServeEventsMyScreen';
 import ServeEventsStateScreen from './src/screens/Serve/ServeEventsStateScreen';
 import ServeEventsHistoryScreen from './src/screens/Serve/ServeEventsHistoryScreen';
+import ServeRallyFormScreen from './src/screens/Serve/ServeRallyFormScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import PateSignOut from './src/screens/PateSignOut';
 import RallyDetailScreen from './src/screens/RallyDetailsScreen';
@@ -173,6 +174,17 @@ function PateStack() {
                     headerTintColor: 'white',
                 })}
             />
+            <Stack.Screen
+                name='ServeRallyForm'
+                component={ServeRallyFormScreen}
+                options={({ navigation }) => ({
+                    title: 'Rally Form',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
         </Stack.Navigator>
     );
 }
@@ -195,17 +207,5 @@ function App() {
         </>
     );
 }
-// function App() {
-//     return (
-//         <>
-//             <Provider store={store}>
-//                 <QueryClientProvider client={queryClient}>
-//                     <NavigationContainer>
-//                         <TheDrawer />
-//                     </NavigationContainer>
-//                 </QueryClientProvider>
-//             </Provider>
-//         </>
-//     );
-// }
+
 export default App;
