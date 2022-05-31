@@ -70,25 +70,31 @@ export default function ReviewForm({}) {
                                     mealDeadline: '',
                                 }}
                                 validationSchema={newRallySchema}
-                                onSubmit={(values, actions) => {
+                                onSubmit={async (values, actions) => {
                                     actions.resetForm();
-                                    let dbUpdateResults = async () => {
-                                        //update dynamo
-                                        putRally(values);
-                                    };
-                                    dbUpdateResults()
-                                        .then((results) => {
-                                            dispatch(addNewRally, actions);
-                                        })
-                                        .then(() => {
-                                            console.log(
-                                                'these values were saved: \n',
-                                                values
-                                            );
-                                        })
-                                        .catch((err) => {
-                                            console.log('We got error\n:', err);
-                                        });
+                                    await putRally(values);
+                                    dispatch(addNewRally, actions);
+                                    console.log(
+                                        'these values were saved: \n',
+                                        values
+                                    );
+                                    //  dbUpdateResults = async () => {
+                                    //     //update dynamo
+                                    //     putRally(values);
+                                    // };
+                                    // dbUpdateResults()
+                                    //     .then((results) => {
+                                    //         dispatch(addNewRally, actions);
+                                    //     })
+                                    //     .then(() => {
+                                    //         console.log(
+                                    //             'these values were saved: \n',
+                                    //             values
+                                    //         );
+                                    //     })
+                                    //     .catch((err) => {
+                                    //         console.log('We got error\n:', err);
+                                    //     });
                                 }}
                             >
                                 {(formikProps) => (
