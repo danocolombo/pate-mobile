@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { Button } from '@react-native-material/core';
 import { useDispatch } from 'react-redux';
-import CollapsibleView from '@eliav2/react-native-collapsible-view';
 import { Colors } from '../../constants/colors.js';
 import { putRally } from '../../providers/rallies';
 import { addNewRally } from '../../features/rallies/ralliesSlice.js';
@@ -33,6 +32,13 @@ const newRallySchema = yup.object({
                 return parseInt(val) > 9999 && parseInt(val) < 100000;
             }
         ),
+    contactName: yup.string(),
+    contactPhone: yup.string(),
+    contactEmail: yup.string(),
+    eventDate: yup.string(),
+    startTime: yup.string(),
+    endTime: yup.string(),
+    eventMessage: yup.string(),
 });
 
 export default function ReviewForm({}) {
@@ -42,454 +48,413 @@ export default function ReviewForm({}) {
             <ScrollView>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>
-                        <View>
-                            <ScrollView
-                                contentContainerStyle={{ height: '100%' }}
+                        <ScrollView>
+                            <Formik
+                                initialValues={{
+                                    locationName: '',
+                                    street: '',
+                                    city: '',
+                                    stateProv: 'GA',
+                                    postalCode: '',
+                                    contactName: '',
+                                    contactPhone: '',
+                                    contactEmail: '',
+                                    eventDate: '',
+                                    startTime: '',
+                                    endTime: '',
+                                    eventMessage: '',
+                                    mealOffered: '',
+                                    mealStart: '',
+                                    mealCost: '',
+                                    mealMessage: '',
+                                    mealDeadline: '',
+                                }}
+                                validationSchema={newRallySchema}
+                                onSubmit={(values, actions) => {
+                                    actions.resetForm();
+                                    let dbUpdateResults = async () => {
+                                        //update dynamo
+                                        putRally(values);
+                                    };
+                                    dbUpdateResults()
+                                        .then((results) => {
+                                            dispatch(addNewRally, actions);
+                                        })
+                                        .then(() => {
+                                            console.log(
+                                                'these values were saved: \n',
+                                                values
+                                            );
+                                        })
+                                        .catch((err) => {
+                                            console.log('We got error\n:', err);
+                                        });
+                                }}
                             >
-                                <View style={styles.container}>
-                                    <CollapsibleView
-                                        title={
-                                            <Text
-                                                style={styles.collapsibleTitle}
+                                {(formikProps) => (
+                                    <>
+                                        <View>
+                                            <Text style={styles.sectionHeader}>
+                                                LOCATION
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Location Name'
+                                                onChangeText={formikProps.handleChange(
+                                                    'locationName'
+                                                )}
+                                                value={
+                                                    formikProps.values
+                                                        .locationName
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'locationName'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .locationName &&
+                                                    formikProps.errors
+                                                        .locationName}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Street'
+                                                onChangeText={formikProps.handleChange(
+                                                    'street'
+                                                )}
+                                                value={
+                                                    formikProps.values.street
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'street'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched.street &&
+                                                    formikProps.errors.street}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='City'
+                                                onChangeText={formikProps.handleChange(
+                                                    'city'
+                                                )}
+                                                value={formikProps.values.city}
+                                                onBlur={formikProps.handleBlur(
+                                                    'city'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched.city &&
+                                                    formikProps.errors.city}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='STATE'
+                                                onChangeText={formikProps.handleChange(
+                                                    'stateProv'
+                                                )}
+                                                value={
+                                                    formikProps.values.stateProv
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'state'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .stateProv &&
+                                                    formikProps.errors
+                                                        .stateProv}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Postal Code'
+                                                onChangeText={formikProps.handleChange(
+                                                    'postalCode'
+                                                )}
+                                                keyboardType='numeric'
+                                                value={
+                                                    formikProps.values
+                                                        .postalCode
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'postalCode'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .postalCode &&
+                                                    formikProps.errors
+                                                        .postalCode}
+                                            </Text>
+                                            <Text style={styles.sectionHeader}>
+                                                CONTACT
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Contact Name'
+                                                onChangeText={formikProps.handleChange(
+                                                    'contactName'
+                                                )}
+                                                value={
+                                                    formikProps.values
+                                                        .contactName
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'contactName'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .contactName &&
+                                                    formikProps.errors
+                                                        .contactName}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Contact Phone'
+                                                onChangeText={formikProps.handleChange(
+                                                    'contactPhone'
+                                                )}
+                                                value={
+                                                    formikProps.values
+                                                        .contactPhone
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'contactPhone'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .contactPhone &&
+                                                    formikProps.errors
+                                                        .contactPhone}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Contact Email'
+                                                onChangeText={formikProps.handleChange(
+                                                    'contactEmail'
+                                                )}
+                                                value={
+                                                    formikProps.values
+                                                        .contactEmail
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'contactEmail'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .contactEmail &&
+                                                    formikProps.errors
+                                                        .contactEmail}
+                                            </Text>
+                                            <Text style={styles.sectionHeader}>
+                                                LOGISTICS
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Event Date'
+                                                onChangeText={formikProps.handleChange(
+                                                    'eventDate'
+                                                )}
+                                                value={
+                                                    formikProps.values.eventDate
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'eventDate'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .eventDate &&
+                                                    formikProps.errors
+                                                        .eventDate}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Start Time'
+                                                onChangeText={formikProps.handleChange(
+                                                    'startTime'
+                                                )}
+                                                value={
+                                                    formikProps.values.startTime
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'startTime'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .startTime &&
+                                                    formikProps.errors
+                                                        .startTime}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='End Time'
+                                                onChangeText={formikProps.handleChange(
+                                                    'endTime'
+                                                )}
+                                                value={
+                                                    formikProps.values.endTime
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'endTime'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched.endTime &&
+                                                    formikProps.errors.endTime}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Event Message'
+                                                onChangeText={formikProps.handleChange(
+                                                    'eventMessage'
+                                                )}
+                                                value={
+                                                    formikProps.values
+                                                        .eventMessage
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'eventMessage'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .eventMessage &&
+                                                    formikProps.errors
+                                                        .eventMessage}
+                                            </Text>
+                                            <Text style={styles.sectionHeader}>
+                                                MEAL DETAILS
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Meal Offered'
+                                                onChangeText={formikProps.handleChange(
+                                                    'mealOffered'
+                                                )}
+                                                value={
+                                                    formikProps.values
+                                                        .mealOffered
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'mealOffered'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .mealOffered &&
+                                                    formikProps.errors
+                                                        .mealOffered}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Meal Start Time'
+                                                onChangeText={formikProps.handleChange(
+                                                    'mealStart'
+                                                )}
+                                                value={
+                                                    formikProps.values.mealStart
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'mealStart'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .mealStart &&
+                                                    formikProps.errors
+                                                        .mealStart}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Meal Cost'
+                                                onChangeText={formikProps.handleChange(
+                                                    'mealCost'
+                                                )}
+                                                value={
+                                                    formikProps.values.mealCost
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'mealCost'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched.mealCost &&
+                                                    formikProps.errors.mealCost}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Meal Deadline'
+                                                onChangeText={formikProps.handleChange(
+                                                    'mealDeadline'
+                                                )}
+                                                value={
+                                                    formikProps.values
+                                                        .mealDeadline
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'mealDeadline'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .mealDeadline &&
+                                                    formikProps.errors
+                                                        .mealDeadline}
+                                            </Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder='Meal Message'
+                                                onChangeText={formikProps.handleChange(
+                                                    'mealMessage'
+                                                )}
+                                                value={
+                                                    formikProps.values
+                                                        .mealMessage
+                                                }
+                                                onBlur={formikProps.handleBlur(
+                                                    'mealMessage'
+                                                )}
+                                            />
+                                            <Text style={styles.errorText}>
+                                                {formikProps.touched
+                                                    .mealMessage &&
+                                                    formikProps.errors
+                                                        .mealMessage}
+                                            </Text>
+                                            <View
+                                                style={styles.buttonContainer}
                                             >
-                                                Location{' '}
-                                            </Text>
-                                        }
-                                        style={styles.collapsibleView}
-                                        arrowStyling={styles.collapsibleArrow}
-                                    >
-                                        <View
-                                            style={
-                                                styles.collapsibleInstructions
-                                            }
-                                        >
-                                            <Text>
-                                                Please provide information about
-                                                the location.
-                                            </Text>
+                                                <Button
+                                                    variant='contained'
+                                                    title='SUBMIT'
+                                                    color={
+                                                        Colors.mediumBackground
+                                                    }
+                                                    tintColor='white'
+                                                    style={styles.submitButton}
+                                                    // style={styles.submitButton}
+                                                    onPress={
+                                                        formikProps.handleSubmit
+                                                    }
+                                                />
+                                            </View>
+                                            <View>
+                                                <Text>Would this happen?</Text>
+                                            </View>
                                         </View>
-                                        <Formik
-                                            initialValues={{
-                                                locationName: '',
-                                                street: '',
-                                                city: '',
-                                                stateProv: 'GA',
-                                                postalCode: '',
-                                            }}
-                                            validationSchema={newRallySchema}
-                                            onSubmit={(values, actions) => {
-                                                actions.resetForm();
-                                                let dbUpdateResults =
-                                                    async () => {
-                                                        //update dynamo
-                                                        putRally(values);
-                                                    };
-                                                dbUpdateResults()
-                                                    .then((results) => {
-                                                        dispatch(
-                                                            addNewRally,
-                                                            actions
-                                                        );
-                                                    })
-                                                    .then(() => {
-                                                        console.log(
-                                                            'these values were saved: \n',
-                                                            values
-                                                        );
-                                                    })
-                                                    .catch((err) => {
-                                                        console.log(
-                                                            'We got error\n:',
-                                                            err
-                                                        );
-                                                    });
-                                            }}
-                                        >
-                                            {(formikProps) => (
-                                                <>
-                                                    <View>
-                                                        <TextInput
-                                                            style={styles.input}
-                                                            placeholder='Location Name'
-                                                            onChangeText={formikProps.handleChange(
-                                                                'locationName'
-                                                            )}
-                                                            value={
-                                                                formikProps
-                                                                    .values
-                                                                    .locationName
-                                                            }
-                                                            onBlur={formikProps.handleBlur(
-                                                                'locationName'
-                                                            )}
-                                                        />
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .locationName &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .locationName}
-                                                        </Text>
-                                                        <TextInput
-                                                            style={styles.input}
-                                                            placeholder='Street'
-                                                            onChangeText={formikProps.handleChange(
-                                                                'street'
-                                                            )}
-                                                            value={
-                                                                formikProps
-                                                                    .values
-                                                                    .street
-                                                            }
-                                                            onBlur={formikProps.handleBlur(
-                                                                'street'
-                                                            )}
-                                                        />
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .street &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .street}
-                                                        </Text>
-                                                        <TextInput
-                                                            style={styles.input}
-                                                            placeholder='City'
-                                                            onChangeText={formikProps.handleChange(
-                                                                'city'
-                                                            )}
-                                                            value={
-                                                                formikProps
-                                                                    .values.city
-                                                            }
-                                                            onBlur={formikProps.handleBlur(
-                                                                'city'
-                                                            )}
-                                                        />
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .city &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .city}
-                                                        </Text>
-                                                        <TextInput
-                                                            style={styles.input}
-                                                            placeholder='STATE'
-                                                            onChangeText={formikProps.handleChange(
-                                                                'stateProv'
-                                                            )}
-                                                            value={
-                                                                formikProps
-                                                                    .values
-                                                                    .stateProv
-                                                            }
-                                                            onBlur={formikProps.handleBlur(
-                                                                'state'
-                                                            )}
-                                                        />
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .stateProv &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .stateProv}
-                                                        </Text>
-                                                        <TextInput
-                                                            style={styles.input}
-                                                            placeholder='Postal Code'
-                                                            onChangeText={formikProps.handleChange(
-                                                                'postalCode'
-                                                            )}
-                                                            keyboardType='numeric'
-                                                            value={
-                                                                formikProps
-                                                                    .values
-                                                                    .postalCode
-                                                            }
-                                                            onBlur={formikProps.handleBlur(
-                                                                'postalCode'
-                                                            )}
-                                                        />
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .postalCode &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .postalCode}
-                                                        </Text>
-                                                        {/* <View
-                                                            style={
-                                                                styles.buttonContainer
-                                                            }
-                                                        >
-                                                            <Button
-                                                                variant='contained'
-                                                                title='SUBMIT'
-                                                                color={
-                                                                    Colors.mediumBackground
-                                                                }
-                                                                tintColor='white'
-                                                                style={
-                                                                    styles.submitButton
-                                                                }
-                                                                // style={styles.submitButton}
-                                                                onPress={
-                                                                    formikProps.handleSubmit
-                                                                }
-                                                            />
-                                                        </View> */}
-                                                    </View>
-                                                </>
-                                            )}
-                                            {/* this ends the formik execution */}
-                                        </Formik>
-                                    </CollapsibleView>
-                                </View>
-                                <View style={styles.container}>
-                                    <CollapsibleView
-                                        title={
-                                            <Text
-                                                style={styles.collapsibleTitle}
-                                            >
-                                                Contact
-                                            </Text>
-                                        }
-                                        style={{
-                                            borderWidth: 0,
-                                            // backgroundColor: '#6495ED',
-                                        }}
-                                        arrowStyling={styles.collapsibleArrow}
-                                    >
-                                        <Text
-                                            style={{
-                                                // color: 'white',
-                                                fontSize: 24,
-                                                fontWeight: 'bold',
-                                            }}
-                                        >
-                                            whipeeeeeeeeeeeeeeeeeeeeeeeeee
-                                        </Text>
-                                        <Formik
-                                            initialValues={{
-                                                locationName: '',
-                                                street: '',
-                                                city: '',
-                                                stateProv: 'GA',
-                                                postalCode: '',
-                                            }}
-                                            validationSchema={newRallySchema}
-                                            onSubmit={(values, actions) => {
-                                                actions.resetForm();
-                                                let dbUpdateResults =
-                                                    async () => {
-                                                        //update dynamo
-                                                        putRally(values);
-                                                    };
-                                                dbUpdateResults()
-                                                    .then((results) => {
-                                                        dispatch(
-                                                            addNewRally,
-                                                            actions
-                                                        );
-                                                    })
-                                                    .then(() => {
-                                                        console.log(
-                                                            'these values were saved: \n',
-                                                            values
-                                                        );
-                                                    })
-                                                    .catch((err) => {
-                                                        console.log(
-                                                            'We got error\n:',
-                                                            err
-                                                        );
-                                                    });
-                                            }}
-                                        >
-                                            {(formikProps) => (
-                                                <>
-                                                    <View>
-                                                        <TextInput
-                                                            style={styles.input}
-                                                            placeholder='Location Name'
-                                                            onChangeText={formikProps.handleChange(
-                                                                'locationName'
-                                                            )}
-                                                            value={
-                                                                formikProps
-                                                                    .values
-                                                                    .locationName
-                                                            }
-                                                            onBlur={formikProps.handleBlur(
-                                                                'locationName'
-                                                            )}
-                                                        />
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .locationName &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .locationName}
-                                                        </Text>
-                                                        <TextInput
-                                                            style={styles.input}
-                                                            placeholder='Street'
-                                                            onChangeText={formikProps.handleChange(
-                                                                'street'
-                                                            )}
-                                                            value={
-                                                                formikProps
-                                                                    .values
-                                                                    .street
-                                                            }
-                                                            onBlur={formikProps.handleBlur(
-                                                                'street'
-                                                            )}
-                                                        />
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .street &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .street}
-                                                        </Text>
-                                                        <TextInput
-                                                            style={styles.input}
-                                                            placeholder='City'
-                                                            onChangeText={formikProps.handleChange(
-                                                                'city'
-                                                            )}
-                                                            value={
-                                                                formikProps
-                                                                    .values.city
-                                                            }
-                                                            onBlur={formikProps.handleBlur(
-                                                                'city'
-                                                            )}
-                                                        />
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .city &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .city}
-                                                        </Text>
-                                                        <TextInput
-                                                            style={styles.input}
-                                                            placeholder='STATE'
-                                                            onChangeText={formikProps.handleChange(
-                                                                'stateProv'
-                                                            )}
-                                                            value={
-                                                                formikProps
-                                                                    .values
-                                                                    .stateProv
-                                                            }
-                                                            onBlur={formikProps.handleBlur(
-                                                                'state'
-                                                            )}
-                                                        />
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .stateProv &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .stateProv}
-                                                        </Text>
-                                                        <TextInput
-                                                            style={styles.input}
-                                                            placeholder='Postal Code'
-                                                            onChangeText={formikProps.handleChange(
-                                                                'postalCode'
-                                                            )}
-                                                            keyboardType='numeric'
-                                                            value={
-                                                                formikProps
-                                                                    .values
-                                                                    .postalCode
-                                                            }
-                                                            onBlur={formikProps.handleBlur(
-                                                                'postalCode'
-                                                            )}
-                                                        />
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .postalCode &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .postalCode}
-                                                        </Text>
-                                                        <View
-                                                            style={
-                                                                styles.buttonContainer
-                                                            }
-                                                        >
-                                                            <Button
-                                                                variant='contained'
-                                                                title='SUBMIT'
-                                                                color={
-                                                                    Colors.mediumBackground
-                                                                }
-                                                                tintColor='white'
-                                                                style={
-                                                                    styles.submitButton
-                                                                }
-                                                                // style={styles.submitButton}
-                                                                onPress={
-                                                                    formikProps.handleSubmit
-                                                                }
-                                                            />
-                                                        </View>
-                                                    </View>
-                                                </>
-                                            )}
-                                            {/* this ends the formik execution */}
-                                        </Formik>
-                                    </CollapsibleView>
-                                </View>
-                            </ScrollView>
-                        </View>
+                                    </>
+                                )}
+                                {/* this ends the formik execution */}
+                            </Formik>
+                        </ScrollView>
                     </View>
                 </TouchableWithoutFeedback>
             </ScrollView>
@@ -497,25 +462,9 @@ export default function ReviewForm({}) {
     );
 }
 const styles = StyleSheet.create({
-    collapsibleView: {
-        borderWidth: 0,
-        // backgroundColor: '#6495ED',
-    },
-    collapsibleInstructions: {
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    collapsibleTitle: {
-        color: Colors.mediumBackground,
-        fontSize: 24,
-        fontStyle: 'italic',
-        paddingLeft: 10,
-    },
-    collapsibleArrow: {
-        size: 14,
-        rounded: true,
-        thickness: 2,
-        color: 'purple',
+    sectionHeader: {
+        fontSize: 18,
+        fontWeight: 'bold',
     },
     input: {
         borderWidth: 1,
@@ -534,7 +483,8 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         alignItems: 'center',
-        marginVertical: 10,
+        marginTop: 10,
+        marginBottom: 20,
     },
     submitButton: {
         width: '70%',
