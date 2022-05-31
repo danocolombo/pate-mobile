@@ -42,7 +42,6 @@ export default function ReviewForm({}) {
             <ScrollView>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>
-                        <Text>Location Section</Text>
                         <View>
                             <ScrollView
                                 contentContainerStyle={{ height: '100%' }}
@@ -51,35 +50,24 @@ export default function ReviewForm({}) {
                                     <CollapsibleView
                                         title={
                                             <Text
-                                                style={{
-                                                    color: 'red',
-                                                    fontSize: 24,
-                                                    fontStyle: 'italic',
-                                                }}
+                                                style={styles.collapsibleTitle}
                                             >
-                                                Custom Styling
+                                                Location{' '}
                                             </Text>
                                         }
-                                        style={{
-                                            borderWidth: 0,
-                                            // backgroundColor: '#6495ED',
-                                        }}
-                                        arrowStyling={{
-                                            size: 24,
-                                            rounded: true,
-                                            thickness: 2,
-                                            color: 'purple',
-                                        }}
+                                        style={styles.collapsibleView}
+                                        arrowStyling={styles.collapsibleArrow}
                                     >
-                                        <Text
-                                            style={{
-                                                // color: 'white',
-                                                fontSize: 24,
-                                                fontWeight: 'bold',
-                                            }}
+                                        <View
+                                            style={
+                                                styles.collapsibleInstructions
+                                            }
                                         >
-                                            whipeeeeeeeeeeeeeeeeeeeeeeeeee
-                                        </Text>
+                                            <Text>
+                                                Please provide information about
+                                                the location.
+                                            </Text>
+                                        </View>
                                         <Formik
                                             initialValues={{
                                                 locationName: '',
@@ -250,7 +238,7 @@ export default function ReviewForm({}) {
                                                                     .errors
                                                                     .postalCode}
                                                         </Text>
-                                                        <View
+                                                        {/* <View
                                                             style={
                                                                 styles.buttonContainer
                                                             }
@@ -270,7 +258,7 @@ export default function ReviewForm({}) {
                                                                     formikProps.handleSubmit
                                                                 }
                                                             />
-                                                        </View>
+                                                        </View> */}
                                                     </View>
                                                 </>
                                             )}
@@ -282,25 +270,16 @@ export default function ReviewForm({}) {
                                     <CollapsibleView
                                         title={
                                             <Text
-                                                style={{
-                                                    color: 'red',
-                                                    fontSize: 24,
-                                                    fontStyle: 'italic',
-                                                }}
+                                                style={styles.collapsibleTitle}
                                             >
-                                                Custom Styling
+                                                Contact
                                             </Text>
                                         }
                                         style={{
                                             borderWidth: 0,
                                             // backgroundColor: '#6495ED',
                                         }}
-                                        arrowStyling={{
-                                            size: 24,
-                                            rounded: true,
-                                            thickness: 2,
-                                            color: 'purple',
-                                        }}
+                                        arrowStyling={styles.collapsibleArrow}
                                     >
                                         <Text
                                             style={{
@@ -518,6 +497,26 @@ export default function ReviewForm({}) {
     );
 }
 const styles = StyleSheet.create({
+    collapsibleView: {
+        borderWidth: 0,
+        // backgroundColor: '#6495ED',
+    },
+    collapsibleInstructions: {
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    collapsibleTitle: {
+        color: Colors.mediumBackground,
+        fontSize: 24,
+        fontStyle: 'italic',
+        paddingLeft: 10,
+    },
+    collapsibleArrow: {
+        size: 14,
+        rounded: true,
+        thickness: 2,
+        color: 'purple',
+    },
     input: {
         borderWidth: 1,
         borderColor: Colors.gray35,
