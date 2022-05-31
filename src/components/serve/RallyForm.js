@@ -13,6 +13,25 @@ import { Colors } from '../../constants/colors.js';
 import { putRally } from '../../providers/rallies';
 import { addNewRally } from '../../features/rallies/ralliesSlice.js';
 import { Formik } from 'formik';
+import * as yup from 'yup';
+
+// create validation schema for yup to pass to formik
+const newRallySchema = yup.object({
+    locationName: yup.string().required().min(5),
+    street: yup.string(),
+    city: yup.string().required().min(2),
+    stateProv: yup.string().required().min(2).max(2),
+    postalCode: yup
+        .string()
+        .required()
+        .test(
+            'is-postalCode-numeric',
+            'Postal code has to be between 10000 - 99999',
+            (val) => {
+                return parseInt(val) > 9999 && parseInt(val) < 100000;
+            }
+        ),
+});
 
 export default function ReviewForm({}) {
     const dispatch = useDispatch();
@@ -29,6 +48,7 @@ export default function ReviewForm({}) {
                             stateProv: 'GA',
                             postalCode: '',
                         }}
+                        validationSchema={newRallySchema}
                         onSubmit={(values, actions) => {
                             actions.resetForm();
                             let dbUpdateResults = async () => {
@@ -60,8 +80,14 @@ export default function ReviewForm({}) {
                                             'locationName'
                                         )}
                                         value={formikProps.values.locationName}
+                                        onBlur={formikProps.handleBlur(
+                                            'locationName'
+                                        )}
                                     />
-
+                                    <Text style={styles.errorText}>
+                                        {formikProps.touched.locationName &&
+                                            formikProps.errors.locationName}
+                                    </Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder='Street'
@@ -69,7 +95,14 @@ export default function ReviewForm({}) {
                                             'street'
                                         )}
                                         value={formikProps.values.street}
+                                        onBlur={formikProps.handleBlur(
+                                            'street'
+                                        )}
                                     />
+                                    <Text style={styles.errorText}>
+                                        {formikProps.touched.street &&
+                                            formikProps.errors.street}
+                                    </Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder='City'
@@ -77,7 +110,12 @@ export default function ReviewForm({}) {
                                             'city'
                                         )}
                                         value={formikProps.values.city}
+                                        onBlur={formikProps.handleBlur('city')}
                                     />
+                                    <Text style={styles.errorText}>
+                                        {formikProps.touched.city &&
+                                            formikProps.errors.city}
+                                    </Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder='STATE'
@@ -85,17 +123,28 @@ export default function ReviewForm({}) {
                                             'stateProv'
                                         )}
                                         value={formikProps.values.stateProv}
+                                        onBlur={formikProps.handleBlur('state')}
                                     />
+                                    <Text style={styles.errorText}>
+                                        {formikProps.touched.stateProv &&
+                                            formikProps.errors.stateProv}
+                                    </Text>
                                     <TextInput
                                         style={styles.input}
-                                        placeholder='Zipcode'
+                                        placeholder='Postal Code'
                                         onChangeText={formikProps.handleChange(
                                             'postalCode'
                                         )}
                                         keyboardType='numeric'
                                         value={formikProps.values.postalCode}
+                                        onBlur={formikProps.handleBlur(
+                                            'postalCode'
+                                        )}
                                     />
-
+                                    <Text style={styles.errorText}>
+                                        {formikProps.touched.postalCode &&
+                                            formikProps.errors.postalCode}
+                                    </Text>
                                     <View style={styles.buttonContainer}>
                                         <Button
                                             variant='contained'
@@ -125,6 +174,13 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         fontSize: 18,
         borderRadius: 6,
+    },
+    errorText: {
+        color: 'crimson',
+        fontWeight: 'bold',
+        marginBottom: 10,
+        marginTop: 5,
+        textAlign: 'center',
     },
     buttonContainer: {
         alignItems: 'center',
