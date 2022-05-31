@@ -18,6 +18,10 @@ export const ralliesSlice = createSlice({
             );
             return found;
         },
+        addNewRally: (state, action) => {
+            console.log('saving to redux slice');
+            return state;
+        },
         increment: (state) => {
             // Redux Toolkit allows us to write "mutating" logic in reducers. It
             // doesn't actually mutate the state because it uses the Immer library,
@@ -38,6 +42,7 @@ export const ralliesSlice = createSlice({
 export const {
     loadRallies,
     getRally,
+    addNewRally,
     increment,
     decrement,
     incrementByAmount,

@@ -1,11 +1,14 @@
 import React from 'react';
 import { StyleSheet, TextInput, View, Text } from 'react-native';
 import { Button } from '@react-native-material/core';
+import { useDispatch } from 'react-redux';
 import { Colors } from '../../constants/colors.js';
-import { globalStyles } from './FormikStyles.js';
+import { putRally } from '../../providers/rallies';
+import { addNewRally } from '../../features/rallies/ralliesSlice.js';
 import { Formik } from 'formik';
 
 export default function ReviewForm({}) {
+    const dispatch = useDispatch();
     return (
         <View>
             <Text>Location Section</Text>
@@ -19,7 +22,20 @@ export default function ReviewForm({}) {
                 }}
                 onSubmit={(values, actions) => {
                     actions.resetForm();
-                    console.log('values:\n', values);
+                    let dbUpdateResults = async () => {
+                        //update dynamo
+                        putRally(values);
+                    };
+                    dbUpdateResults()
+                        .then((results) => {
+                            dispatch(addNewRally, actions);
+                        })
+                        .then(() => {
+                            console.log('these values were saved: \n', values);
+                        })
+                        .catch((err) => {
+                            console.log('We got error\n:', err);
+                        });
                 }}
             >
                 {(formikProps) => (
