@@ -12,7 +12,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // - - - - - redux toolkit - -  - - - - -
 import { store } from './src/app/store';
 import { Provider } from 'react-redux';
-
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import IconButton from './src/components/ui/IconButton';
 
@@ -196,12 +196,23 @@ function Navigation() {
     );
 }
 const queryClient = new QueryClient();
+const theme = {
+    ...DefaultTheme,
+    colors: {
+        ...DefaultTheme.colors,
+        primary: 'tomato',
+        accent: 'yellow',
+    },
+};
+
 function App() {
     return (
         <>
             <Provider store={store}>
                 <QueryClientProvider client={queryClient}>
-                    <Navigation />
+                    <PaperProvider theme={theme}>
+                        <Navigation />
+                    </PaperProvider>
                 </QueryClientProvider>
             </Provider>
         </>
