@@ -12,7 +12,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // - - - - - redux toolkit - -  - - - - -
 import { store } from './src/app/store';
 import { Provider } from 'react-redux';
-
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import IconButton from './src/components/ui/IconButton';
 
@@ -21,6 +21,7 @@ import ServeScreen from './src/screens/Serve/ServeScreen';
 import ServeEventsMyScreen from './src/screens/Serve/ServeEventsMyScreen';
 import ServeEventsStateScreen from './src/screens/Serve/ServeEventsStateScreen';
 import ServeEventsHistoryScreen from './src/screens/Serve/ServeEventsHistoryScreen';
+import ServeRallyFormScreen from './src/screens/Serve/ServeRallyFormScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import PateSignOut from './src/screens/PateSignOut';
 import RallyDetailScreen from './src/screens/RallyDetailsScreen';
@@ -173,6 +174,17 @@ function PateStack() {
                     headerTintColor: 'white',
                 })}
             />
+            <Stack.Screen
+                name='ServeRallyForm'
+                component={ServeRallyFormScreen}
+                options={({ navigation }) => ({
+                    title: 'Rally Form',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
         </Stack.Navigator>
     );
 }
@@ -184,28 +196,27 @@ function Navigation() {
     );
 }
 const queryClient = new QueryClient();
+const theme = {
+    ...DefaultTheme,
+    colors: {
+        ...DefaultTheme.colors,
+        primary: 'tomato',
+        accent: 'yellow',
+    },
+};
+
 function App() {
     return (
         <>
             <Provider store={store}>
                 <QueryClientProvider client={queryClient}>
-                    <Navigation />
+                    <PaperProvider theme={theme}>
+                        <Navigation />
+                    </PaperProvider>
                 </QueryClientProvider>
             </Provider>
         </>
     );
 }
-// function App() {
-//     return (
-//         <>
-//             <Provider store={store}>
-//                 <QueryClientProvider client={queryClient}>
-//                     <NavigationContainer>
-//                         <TheDrawer />
-//                     </NavigationContainer>
-//                 </QueryClientProvider>
-//             </Provider>
-//         </>
-//     );
-// }
+
 export default App;

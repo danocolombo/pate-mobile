@@ -28,7 +28,9 @@ export async function fetchActiveApprovedRallies() {
             return plans;
         });
 }
-
+export async function putRally(rally) {
+    console.log('WILL SAVE TO DB');
+}
 export async function getAllActiveMeetingsForClient(client, startDate) {
     const config = {
         headers: {
