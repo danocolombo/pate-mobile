@@ -15,7 +15,6 @@ import { Provider } from 'react-redux';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import IconButton from './src/components/ui/IconButton';
-
 import MainScreen from './src/screens/MainScreen';
 import ServeScreen from './src/screens/Serve/ServeScreen';
 import ServeEventsMyScreen from './src/screens/Serve/ServeEventsMyScreen';

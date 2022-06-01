@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View, Button, ScrollView } from 'react-native';
 import React from 'react';
-import { Badge, List, Surface } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import CardDate from '../ui/RallyCardDate';
 import EventListCard from '../ui/EventListCard';
 const ServeMyRallies = () => {
+    let rallies = useSelector((state) => state.rallies.publicRallies);
     const navigation = useNavigation();
     return (
         <View style={styles.rootContainer}>
@@ -21,53 +21,18 @@ const ServeMyRallies = () => {
                 <View style={styles.infoArea}>
                     <Text>This is where your events will be listed.</Text>
                 </View>
-                <View style={{ alignItems: 'center' }}>
-                    <Surface style={styles.eventListSurface}>
-                        <ScrollView>
-                            <View>
-                                <List.Item
-                                    title='First Item'
-                                    description='Item description'
-                                    left={(props) => (
-                                        <List.Icon {...props} icon='folder' />
-                                    )}
-                                />
-                            </View>
-                            <List.Item
-                                title='First Item'
-                                description='Item description'
-                                left={(props) => (
-                                    <List.Icon {...props} icon='folder' />
-                                )}
-                            />
-                            <List.Item
-                                title='First Item'
-                                description='Item description'
-                                left={(props) => (
-                                    <List.Icon {...props} icon='folder' />
-                                )}
-                            />
-                            <List.Item
-                                title='First Item'
-                                description='Item description'
-                                left={(props) => (
-                                    <List.Icon {...props} icon='folder' />
-                                )}
-                            />
-                        </ScrollView>
-                    </Surface>
-                </View>
             </View>
+
             <View>
-                <CardDate date='20220601' />
-            </View>
-            <View>
-                <EventListCard
-                    date='20220201'
-                    locationName='Church'
-                    city='Marron'
-                    stateProv='TT'
-                />
+                {rallies.map((ral) => (
+                    <EventListCard
+                        key={ral.uid}
+                        date={ral.eventDate}
+                        locationName={ral.name}
+                        city={ral.city}
+                        stateProv={ral.stateProv}
+                    />
+                ))}
             </View>
         </View>
     );

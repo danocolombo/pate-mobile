@@ -66,9 +66,9 @@ const Styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         paddingVertical: 5,
-        paddingHorizontal: 5,
+        paddingHorizontal: 0,
         borderRadius: 8,
-        minWidth: 80,
+        minWidth: 100,
         textAlign: 'center',
     },
     moDa: {
