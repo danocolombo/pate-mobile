@@ -1,8 +1,10 @@
-import { StyleSheet, Text, View, Button, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import EventListCard from '../ui/EventListCard';
+import P8Button from '../ui/P8Button';
+import CustomButton from '../ui/CustomButton';
 import { Pressable } from 'react-native';
 import { printObject } from '../../utils/helpers';
 const ServeMyRallies = () => {
@@ -15,16 +17,10 @@ const ServeMyRallies = () => {
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
                 <Text style={styles.screenHeaderText}>Your Events</Text>
-                <View>
-                    <Button
-                        title='NEW'
-                        onPress={() => navigation.navigate('ServeRallyForm')}
-                    />
-                </View>
             </View>
             <View>
                 <View style={styles.infoArea}>
-                    <Text>This is where your events will be listed.</Text>
+                    <Text>Tap any event to see details.</Text>
                 </View>
             </View>
 
@@ -48,6 +44,16 @@ const ServeMyRallies = () => {
                         </Pressable>
                     </View>
                 ))}
+            </View>
+            <View style={styles.buttonContainer}>
+                <CustomButton
+                    title='Create New Event'
+                    cbStyles={{ backgroundColor: 'green', color: 'white' }}
+                    txtColor='white'
+                    onPress={() =>
+                        navigation.navigate('ServeRallyForm', { rally: null })
+                    }
+                />
             </View>
         </View>
     );
@@ -76,5 +82,8 @@ const styles = StyleSheet.create({
         height: 200,
         justifyContent: 'center',
         elevation: 5,
+    },
+    buttonContainer: {
+        alignItems: 'center',
     },
 });
