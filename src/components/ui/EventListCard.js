@@ -1,6 +1,6 @@
 import { Text, TextInput, View, StyleSheet } from 'react-native';
 import { Colors } from '../../constants/colors';
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { Card } from 'react-native-paper';
 import CardDate from './RallyCardDateStack';
 
 function EventListCard({ date, locationName, city, stateProv }) {
@@ -14,15 +14,6 @@ function EventListCard({ date, locationName, city, stateProv }) {
                     subtitle={LocationText}
                     left={LeftContent}
                 />
-                {/* <Card.Content>
-                    <Title>Card title</Title>
-                    <Paragraph>Card content</Paragraph>
-                </Card.Content>
-
-                <Card.Actions>
-                    <Button>Cancel</Button>
-                    <Button>Ok</Button>
-                </Card.Actions> */}
             </Card>
         </>
     );

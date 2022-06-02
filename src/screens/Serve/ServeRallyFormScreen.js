@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import ServeRallyForm from '../../components/serve/ServeRallyForm';
-const ServeRallyFormScreen = () => {
+import { printObject } from '../../utils/helpers';
+const ServeRallyFormScreen = ({ route, navigation }) => {
+    const rally = route.params.rally;
     return (
         <View>
-            <ServeRallyForm />
+            <ServeRallyForm rally={rally} navigation />
         </View>
     );
 };

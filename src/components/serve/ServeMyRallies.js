@@ -3,9 +3,14 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import EventListCard from '../ui/EventListCard';
+import { Pressable } from 'react-native';
+import { printObject } from '../../utils/helpers';
 const ServeMyRallies = () => {
     let rallies = useSelector((state) => state.rallies.publicRallies);
     const navigation = useNavigation();
+    const handleEventPress = (e) => {
+        printObject('event', e);
+    };
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
@@ -25,13 +30,23 @@ const ServeMyRallies = () => {
 
             <View>
                 {rallies.map((ral) => (
-                    <EventListCard
-                        key={ral.uid}
-                        date={ral.eventDate}
-                        locationName={ral.name}
-                        city={ral.city}
-                        stateProv={ral.stateProv}
-                    />
+                    <View key={ral.uid} style={{ margin: 10 }}>
+                        <Pressable
+                            onPress={() =>
+                                navigation.navigate('ServeRallyForm', {
+                                    rally: ral,
+                                })
+                            }
+                        >
+                            <EventListCard
+                                key={ral.eventDate}
+                                date={ral.eventDate}
+                                locationName={ral.name}
+                                city={ral.city}
+                                stateProv={ral.stateProv}
+                            />
+                        </Pressable>
+                    </View>
                 ))}
             </View>
         </View>

@@ -1,14 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import RallyForm from './RallyForm';
-const ServeRallyForm = () => {
+import { printObject } from '../../utils/helpers';
+const ServeRallyForm = (props) => {
     return (
         <>
             <View>
                 <Text>Rally Form</Text>
             </View>
             <View>
-                <RallyForm />
+                <RallyForm rally={props.rally} />
             </View>
         </>
     );
