@@ -15,6 +15,7 @@ import { putRally } from '../../providers/rallies';
 import { addNewRally } from '../../features/rallies/ralliesSlice.js';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { printObject } from '../../utils/helpers.js';
 
 // create validation schema for yup to pass to formik
 const newRallySchema = yup.object({
@@ -41,7 +42,7 @@ const newRallySchema = yup.object({
     eventMessage: yup.string(),
 });
 
-export default function ReviewForm({}) {
+export default function ReviewForm({ rally }) {
     const dispatch = useDispatch();
     return (
         <View>
@@ -51,23 +52,51 @@ export default function ReviewForm({}) {
                         <ScrollView>
                             <Formik
                                 initialValues={{
-                                    locationName: '',
-                                    street: '',
-                                    city: '',
-                                    stateProv: 'GA',
-                                    postalCode: '',
-                                    contactName: '',
-                                    contactPhone: '',
-                                    contactEmail: '',
-                                    eventDate: '',
-                                    startTime: '',
-                                    endTime: '',
-                                    eventMessage: '',
-                                    mealOffered: '',
-                                    mealStart: '',
-                                    mealCost: '',
-                                    mealMessage: '',
-                                    mealDeadline: '',
+                                    locationName: rally?.name ? rally.name : '',
+                                    street: rally?.street ? rally.street : '',
+                                    city: rally?.city ? rally.city : '',
+                                    stateProv: rally?.stateProv
+                                        ? rally.stateProv
+                                        : '',
+                                    postalCode: rally?.postalCode
+                                        ? rally.postalCode
+                                        : '',
+                                    contactName: rally?.contact?.name
+                                        ? rally.contact.name
+                                        : '',
+                                    contactPhone: rally?.contact?.phone
+                                        ? rally.contact?.phone
+                                        : '',
+                                    contactEmail: rally?.contact?.email
+                                        ? rally.contact.email
+                                        : '',
+                                    eventDate: rally?.eventDate
+                                        ? rally.eventDate
+                                        : '',
+                                    startTime: rally?.startTime
+                                        ? rally.startTime
+                                        : '',
+                                    endTime: rally?.endTime
+                                        ? rally.endTime
+                                        : '',
+                                    eventMessage: rally?.message
+                                        ? rally.message
+                                        : '',
+                                    mealOffered: rally?.meal?.startTime
+                                        ? 'true'
+                                        : 'false',
+                                    mealStart: rally?.meal?.startTime
+                                        ? rally.meal.startTime
+                                        : '',
+                                    mealCost: rally?.meal?.cost
+                                        ? rally.meal.cost
+                                        : '',
+                                    mealMessage: rally?.meal?.message
+                                        ? rally.meal.message
+                                        : '',
+                                    mealDeadline: rally?.meal?.deadline
+                                        ? rally.meal?.deadline
+                                        : '',
                                 }}
                                 validationSchema={newRallySchema}
                                 onSubmit={async (values, actions) => {
@@ -78,23 +107,6 @@ export default function ReviewForm({}) {
                                         'these values were saved: \n',
                                         values
                                     );
-                                    //  dbUpdateResults = async () => {
-                                    //     //update dynamo
-                                    //     putRally(values);
-                                    // };
-                                    // dbUpdateResults()
-                                    //     .then((results) => {
-                                    //         dispatch(addNewRally, actions);
-                                    //     })
-                                    //     .then(() => {
-                                    //         console.log(
-                                    //             'these values were saved: \n',
-                                    //             values
-                                    //         );
-                                    //     })
-                                    //     .catch((err) => {
-                                    //         console.log('We got error\n:', err);
-                                    //     });
                                 }}
                             >
                                 {(formikProps) => (

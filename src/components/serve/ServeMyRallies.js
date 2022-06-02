@@ -1,11 +1,16 @@
 import { StyleSheet, Text, View, Button, ScrollView } from 'react-native';
 import React from 'react';
-import { Badge, List, Surface } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import CardDate from '../ui/RallyCardDate';
 import EventListCard from '../ui/EventListCard';
+import { Pressable } from 'react-native';
+import { printObject } from '../../utils/helpers';
 const ServeMyRallies = () => {
+    let rallies = useSelector((state) => state.rallies.publicRallies);
     const navigation = useNavigation();
+    const handleEventPress = (e) => {
+        printObject('event', e);
+    };
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
@@ -21,53 +26,28 @@ const ServeMyRallies = () => {
                 <View style={styles.infoArea}>
                     <Text>This is where your events will be listed.</Text>
                 </View>
-                <View style={{ alignItems: 'center' }}>
-                    <Surface style={styles.eventListSurface}>
-                        <ScrollView>
-                            <View>
-                                <List.Item
-                                    title='First Item'
-                                    description='Item description'
-                                    left={(props) => (
-                                        <List.Icon {...props} icon='folder' />
-                                    )}
-                                />
-                            </View>
-                            <List.Item
-                                title='First Item'
-                                description='Item description'
-                                left={(props) => (
-                                    <List.Icon {...props} icon='folder' />
-                                )}
-                            />
-                            <List.Item
-                                title='First Item'
-                                description='Item description'
-                                left={(props) => (
-                                    <List.Icon {...props} icon='folder' />
-                                )}
-                            />
-                            <List.Item
-                                title='First Item'
-                                description='Item description'
-                                left={(props) => (
-                                    <List.Icon {...props} icon='folder' />
-                                )}
-                            />
-                        </ScrollView>
-                    </Surface>
-                </View>
             </View>
+
             <View>
-                <CardDate date='20220601' />
-            </View>
-            <View>
-                <EventListCard
-                    date='20220201'
-                    locationName='Church'
-                    city='Marron'
-                    stateProv='TT'
-                />
+                {rallies.map((ral) => (
+                    <View key={ral.uid} style={{ margin: 10 }}>
+                        <Pressable
+                            onPress={() =>
+                                navigation.navigate('ServeRallyForm', {
+                                    rally: ral,
+                                })
+                            }
+                        >
+                            <EventListCard
+                                key={ral.eventDate}
+                                date={ral.eventDate}
+                                locationName={ral.name}
+                                city={ral.city}
+                                stateProv={ral.stateProv}
+                            />
+                        </Pressable>
+                    </View>
+                ))}
             </View>
         </View>
     );
