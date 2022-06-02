@@ -1,26 +1,39 @@
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Button, ScrollView } from 'react-native';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import EventListCard from '../ui/EventListCard';
-import P8Button from '../ui/P8Button';
-import CustomButton from '../ui/CustomButton';
 import { Pressable } from 'react-native';
 import { printObject } from '../../utils/helpers';
-const ServeMyRallies = () => {
-    let rallies = useSelector((state) => state.rallies.publicRallies);
+import { StateProvs } from '../../constants/geo';
+const ServeStateRallies = () => {
     const navigation = useNavigation();
+    const stateProvs = StateProvs;
+    let currentUser = useSelector((state) => state.users.currentUser);
+
+    let rallies = useSelector((state) =>
+        state.rallies.publicRallies.filter(
+            (ral) => ral.stateProv === currentUser.stateRep
+        )
+    );
+
+    const foundStateProv = StateProvs.filter((sp) => {
+        return sp.symbol === currentUser.stateRep;
+    });
+    const stateProv = foundStateProv[0];
     const handleEventPress = (e) => {
         printObject('event', e);
     };
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
-                <Text style={styles.screenHeaderText}>Your Events</Text>
+                <Text style={styles.screenHeaderText}>
+                    {stateProv.name} Events
+                </Text>
             </View>
             <View>
                 <View style={styles.infoArea}>
-                    <Text>Tap any event to see details.</Text>
+                    <Text>This is where your events will be listed.</Text>
                 </View>
             </View>
 
@@ -45,21 +58,11 @@ const ServeMyRallies = () => {
                     </View>
                 ))}
             </View>
-            <View style={styles.buttonContainer}>
-                <CustomButton
-                    title='Create New Event'
-                    cbStyles={{ backgroundColor: 'green', color: 'white' }}
-                    txtColor='white'
-                    onPress={() =>
-                        navigation.navigate('ServeRallyForm', { rally: null })
-                    }
-                />
-            </View>
         </View>
     );
 };
 
-export default ServeMyRallies;
+export default ServeStateRallies;
 
 const styles = StyleSheet.create({
     rootContainer: {
@@ -82,8 +85,5 @@ const styles = StyleSheet.create({
         height: 200,
         justifyContent: 'center',
         elevation: 5,
-    },
-    buttonContainer: {
-        alignItems: 'center',
     },
 });
