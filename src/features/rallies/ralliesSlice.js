@@ -3,12 +3,19 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     value: 0,
     publicRallies: [],
+    tmpRally: {},
 };
 
 export const ralliesSlice = createSlice({
     name: 'rallies',
     initialState,
     reducers: {
+        createTmp: (state, action) => {
+            state.tmpRally = action.payload;
+        },
+        updateTmp: (state, action) => {
+            state.tmpRally = [...state.tmpRally, action.payload];
+        },
         loadRallies: (state, action) => {
             state.publicRallies = action.payload;
         },
@@ -43,6 +50,8 @@ export const {
     loadRallies,
     getRally,
     addNewRally,
+    createTmp,
+    updateTmp,
     increment,
     decrement,
     incrementByAmount,

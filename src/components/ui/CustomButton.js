@@ -37,7 +37,7 @@ const CustomButton = (props) => {
 export default CustomButton;
 const styles = StyleSheet.create({
     appButtonContainer: {
-        elevation: 8,
+        // elevation: 8,
         width: '80%',
         borderRadius: 10,
         paddingVertical: 10,
@@ -51,6 +51,6 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
     },
     buttonFont: {
-        marginLeft: 10,
+        // marginLeft: 10,
     },
 });
