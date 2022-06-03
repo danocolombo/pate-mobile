@@ -29,6 +29,27 @@ export async function fetchActiveApprovedRallies() {
             return plans;
         });
 }
+export async function getAllEventsForCoordinator(uid) {
+    await fetch(
+        'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events',
+        {
+            method: 'POST',
+            body: JSON.stringify({
+                operation: 'getEventsForRep',
+                payload: {
+                    uid: uid,
+                },
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        }
+    )
+        .then((response) => response.json())
+        .then((data) => {
+            return data;
+        });
+}
 export async function putRally(rally, user) {
     // this function
     // 1. if no eventCompKey, create one

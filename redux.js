@@ -52,3 +52,12 @@ export const testRep = {
 #1ffc518ad17bae83d9b201ff65330820      UID
 #bb3aa10a-0956-41ba-bcba-51e9ffd80985  Coordinator
 */
+
+/*
+   the users (as reps, leads or directors) will have a "region" defined
+"region": "us#east#south#ga"
+
+us - country
+#east - horizontal definition within country
+#south- vertical definition within country and horizontal area
+#ga - actual state location
