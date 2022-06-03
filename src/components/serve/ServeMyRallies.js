@@ -8,7 +8,11 @@ import CustomButton from '../ui/CustomButton';
 import { Pressable } from 'react-native';
 import { printObject } from '../../utils/helpers';
 const ServeMyRallies = () => {
+    let me = useSelector((state) => state.users.currentUser);
     let rallies = useSelector((state) => state.rallies.publicRallies);
+    const myRallies = useSelector((state) =>
+        state.rallies.publicRallies.filter((r) => r.coordinator.id === me.uid)
+    );
     const navigation = useNavigation();
     const handleEventPress = (e) => {
         printObject('event', e);
@@ -25,7 +29,7 @@ const ServeMyRallies = () => {
             </View>
 
             <View>
-                {rallies.map((ral) => (
+                {myRallies.map((ral) => (
                     <View key={ral.uid} style={{ margin: 10 }}>
                         <Pressable
                             onPress={() =>

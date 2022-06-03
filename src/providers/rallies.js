@@ -1,3 +1,4 @@
+import { even } from '@react-native-material/core';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -28,8 +29,109 @@ export async function fetchActiveApprovedRallies() {
             return plans;
         });
 }
-export async function putRally(rally) {
-    console.log('WILL SAVE TO DB');
+export async function getAllEventsForCoordinator(uid) {
+    await fetch(
+        'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events',
+        {
+            method: 'POST',
+            body: JSON.stringify({
+                operation: 'getEventsForRep',
+                payload: {
+                    uid: uid,
+                },
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        }
+    )
+        .then((response) => response.json())
+        .then((data) => {
+            return data;
+        });
+}
+export async function putRally(rally, user) {
+    // this function
+    // 1. if no eventCompKey, create one
+    // 2.
+    // 3. update remote database with event object
+    // 4. return submitted event object
+    //
+    //   NOTE: unique id is done by API and returned to us
+    //--------------------------------------------------------------
+    //default rally with user info
+
+    const readyEvent = {
+        meal: {
+            startTime: rally?.mealStart ? rally.mealStart : '',
+            mealCount: rally?.mealCount ? rally.mealCount : 0,
+            cost: rally?.mealCost ? rally.mealCost : '',
+            message: rally?.mealMessage ? rally.mealMessage : '',
+            mealsServed: rally?.mealsServed ? rally.mealsServed : 0,
+            deadline: rally?.mealDeadline ? rally.mealDeadline : '30000101',
+        },
+        eventDate: rally?.eventDate ? rally.eventDate : '30000101',
+        contact: {
+            name: rally?.contactName ? rally.contactName : '',
+            phone: rally?.contactPhone ? rally.contactPhone : '',
+            email: rally?.contactEmail ? rally.contactEmail : '',
+        },
+        status: rally?.status ? rally.status : 'draft',
+        message: rally?.eventMessage ? rally.eventMessage : '',
+        stateProv: rally?.stateProv ? rally.stateProv : '',
+        coordinator: {
+            name: user.firstName + ' ' + user.lastName,
+            id: user.uid,
+            phone: user.phone,
+            email: user.email,
+        },
+        uid: rally?.uid ? rally.uid : '',
+        name: rally?.name ? rally.name : '',
+        registrations: rally?.registrations ? rally.registrations : 0,
+        startTime: rally?.startTime ? rally.startTime : '00:00',
+        city: rally?.city ? rally.city : '',
+        graphic: rally?.graphic ? rally.graphic : '',
+        approved: rally?.approved ? rally.approved : false,
+        attendees: rally?.attendees ? rally.attendees : 0,
+        endTime: rally?.endTime ? rally.endTime : '00:00',
+        id: rally?.id ? rally.id : '',
+        postalCode: rally?.postalCode ? rally.postalCode : '',
+        street: rally?.street ? rally.street : '',
+    };
+    //always update the eventCompKey
+    // Year#Month#State#Day#UID#Coordinator.id
+    const yr = readyEvent.eventDate.substr(0, 4);
+    const mo = readyEvent.eventDate.substr(4, 2);
+    const da = readyEvent.eventDate.substr(6, 2);
+    let eventCompKey =
+        yr +
+        '#' +
+        mo +
+        '#' +
+        readyEvent.stateProv +
+        '#' +
+        da +
+        '#' +
+        readyEvent.uid +
+        '#' +
+        readyEvent.coordinator.id;
+    readyEvent.eventCompKey = eventCompKey;
+    //printObject('readyEvent to DB', readyEvent);
+    let obj = {
+        operation: 'createEvent',
+        payload: {
+            Item: readyEvent,
+        },
+    };
+
+    let body = JSON.stringify(obj);
+    let api2use =
+        'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events';
+
+    let res = await axios.post(api2use, body, config);
+
+    var returnValue = res.data.body;
+    return returnValue;
 }
 export async function getAllActiveMeetingsForClient(client, startDate) {
     const config = {

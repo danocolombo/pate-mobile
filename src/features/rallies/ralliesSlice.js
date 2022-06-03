@@ -1,8 +1,42 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+export const loadUserRallies = createAsyncThunk(
+    'rallies/loadUserRallies',
+    async (rallies, thunkAPI) => {
+        try {
+            // console.log('inside getActiveMeetings');
+            const config = {
+                headers: {
+                    'Access-Control-Allow-Headers':
+                        'Content-Type, x-auth-token, Access-Control-Allow-Headers',
+                    'Content-Type': 'application/json',
+                },
+            };
 
+            let obj = {
+                operation: 'getEventsForRep',
+                payload: {
+                    uid: user.uid,
+                },
+            };
+            let body = JSON.stringify(obj);
+            // printObject('body', body);
+            let api2use =
+                'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events';
+
+            const resp = await axios.post(api2use, body, config);
+
+            //const resp = await axios(url);
+            // printObject('meetings(1)', resp);
+            return resp.data.body.Items;
+        } catch (error) {
+            return thunkAPI.rejectWithValue('something went wrong');
+        }
+    }
+);
 const initialState = {
     value: 0,
     publicRallies: [],
+    userRallies: [],
     tmpRally: {},
 };
 
@@ -16,6 +50,9 @@ export const ralliesSlice = createSlice({
         updateTmp: (state, action) => {
             state.tmpRally = [...state.tmpRally, action.payload];
         },
+        // loadUserRallies: (state, action) => {
+        //     state.userRallies = action.payload;
+        // },
         loadRallies: (state, action) => {
             state.publicRallies = action.payload;
         },
@@ -26,7 +63,18 @@ export const ralliesSlice = createSlice({
             return found;
         },
         addNewRally: (state, action) => {
-            console.log('saving to redux slice');
+            const bigger = [...state.publicRallies, action.payload];
+
+            // ascending sort
+            function asc_sort(a, b) {
+                return (
+                    new Date(a.eventDate).getTime() -
+                    new Date(b.eventDate).getTime()
+                );
+            }
+            let newBigger = bigger.sort(asc_sort);
+            state.activeMeetings = newBigger;
+            // return
             return state;
         },
         increment: (state) => {
@@ -41,6 +89,20 @@ export const ralliesSlice = createSlice({
         },
         incrementByAmount: (state, action) => {
             state.value += action.payload;
+        },
+    },
+    extraReducers: {
+        [loadUserRallies.pending]: (state) => {
+            state.isLoading = true;
+        },
+        [loadUserRallies.fulfilled]: (state, action) => {
+            state.isLoading = false;
+            state.userRallies = action.payload;
+        },
+        [loadUserRallies.rejected]: (state, action) => {
+            printObject('action', action);
+            console.log('yep, we got rejected...');
+            state.isLoading = false;
         },
     },
 });
