@@ -14,7 +14,7 @@ import { store } from './src/app/store';
 import { Provider } from 'react-redux';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-import IconButton from './src/components/ui/IconButton';
+
 import MainScreen from './src/screens/MainScreen';
 import ServeScreen from './src/screens/Serve/ServeScreen';
 import ServeEventsMyScreen from './src/screens/Serve/ServeEventsMyScreen';
@@ -23,7 +23,9 @@ import ServeEventsHistoryScreen from './src/screens/Serve/ServeEventsHistoryScre
 import ServeRallyFormScreen from './src/screens/Serve/ServeRallyFormScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import PateSignOut from './src/screens/PateSignOut';
+import RallyInfoScreen from './src/screens/RallyInfoScreen';
 import RallyDetailScreen from './src/screens/RallyDetailsScreen';
+import RallyEditFlowScreen from './src/screens/RallyEditFlowScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import { Colors } from './src/constants/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -164,6 +166,16 @@ function PateStack() {
                 })}
             />
             <Stack.Screen
+                name='RallyInfo'
+                component={RallyInfoScreen}
+                options={({ navigation }) => ({
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
+            <Stack.Screen
                 name='RallyRegister'
                 component={RegisterScreen}
                 options={({ navigation }) => ({
@@ -176,6 +188,17 @@ function PateStack() {
             <Stack.Screen
                 name='ServeRallyForm'
                 component={ServeRallyFormScreen}
+                options={({ navigation }) => ({
+                    title: 'Rally Form',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
+            <Stack.Screen
+                name='RallyEditFlow'
+                component={RallyEditFlowScreen}
                 options={({ navigation }) => ({
                     title: 'Rally Form',
                     headerStyle: {

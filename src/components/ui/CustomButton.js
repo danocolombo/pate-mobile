@@ -1,14 +1,36 @@
 import { View, Button, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { printObject } from '../../utils/helpers';
+import { FontAwesome5 } from '@expo/vector-icons';
 const CustomButton = (props) => {
-    const { onPress, title, cbStyles, txtColor } = props;
+    const { onPress, graphic, title, cbStyles, txtColor } = props;
+    //const { iconName, iconColor, iconSize } = props.icon;
     printObject('props', props);
+    console.log('graphic.name:', graphic?.name);
+    const spaces = '    ';
+    let theGraphics;
+    graphic?.name
+        ? (theGraphics = (
+              <FontAwesome5
+                  style={styles.buttonFont}
+                  name={graphic.name}
+                  size={graphic.size}
+                  color={graphic.color}
+              />
+          ))
+        : null;
+
     return (
         <TouchableOpacity
             onPress={onPress}
             style={[styles.appButtonContainer, cbStyles]}
         >
-            <Text style={[styles.appButtonText, cbStyles]}>{title}</Text>
+            <View style={{ alignItems: 'center' }}>
+                <Text style={[styles.appButtonText, cbStyles]}>
+                    {title}
+                    {spaces}
+                    {theGraphics}
+                </Text>
+            </View>
         </TouchableOpacity>
     );
 };
@@ -27,5 +49,8 @@ const styles = StyleSheet.create({
         // color: 'white',
         fontWeight: 'bold',
         textTransform: 'uppercase',
+    },
+    buttonFont: {
+        marginLeft: 10,
     },
 });

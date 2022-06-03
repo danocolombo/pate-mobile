@@ -29,8 +29,8 @@ const ServeMyRallies = () => {
                     <View key={ral.uid} style={{ margin: 10 }}>
                         <Pressable
                             onPress={() =>
-                                navigation.navigate('ServeRallyForm', {
-                                    rally: ral,
+                                navigation.navigate('RallyInfo', {
+                                    rallyId: ral.uid,
                                 })
                             }
                         >
@@ -48,6 +48,7 @@ const ServeMyRallies = () => {
             <View style={styles.buttonContainer}>
                 <CustomButton
                     title='Create New Event'
+                    graphic={null}
                     cbStyles={{ backgroundColor: 'green', color: 'white' }}
                     txtColor='white'
                     onPress={() =>
