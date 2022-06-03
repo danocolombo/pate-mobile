@@ -26,7 +26,18 @@ export const ralliesSlice = createSlice({
             return found;
         },
         addNewRally: (state, action) => {
-            console.log('saving to redux slice');
+            const bigger = [...state.publicRallies, action.payload];
+
+            // ascending sort
+            function asc_sort(a, b) {
+                return (
+                    new Date(a.eventDate).getTime() -
+                    new Date(b.eventDate).getTime()
+                );
+            }
+            let newBigger = bigger.sort(asc_sort);
+            state.activeMeetings = newBigger;
+            // return
             return state;
         },
         increment: (state) => {

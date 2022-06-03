@@ -9,7 +9,7 @@ import {
     ScrollView,
 } from 'react-native';
 import { Button } from '@react-native-material/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../constants/colors.js';
 import { putRally } from '../../providers/rallies';
 import { addNewRally } from '../../features/rallies/ralliesSlice.js';
@@ -19,7 +19,7 @@ import { printObject } from '../../utils/helpers.js';
 
 // create validation schema for yup to pass to formik
 const newRallySchema = yup.object({
-    locationName: yup.string().required().min(5),
+    name: yup.string().required().min(5),
     street: yup.string(),
     city: yup.string().required().min(2),
     stateProv: yup.string().required().min(2).max(2),
@@ -43,6 +43,7 @@ const newRallySchema = yup.object({
 });
 
 export default function ReviewForm({ rally }) {
+    const user = useSelector((state) => state.users.currentUser);
     const dispatch = useDispatch();
     return (
         <View>
@@ -52,7 +53,7 @@ export default function ReviewForm({ rally }) {
                         <ScrollView>
                             <Formik
                                 initialValues={{
-                                    locationName: rally?.name ? rally.name : '',
+                                    name: rally?.name ? rally.name : '',
                                     street: rally?.street ? rally.street : '',
                                     city: rally?.city ? rally.city : '',
                                     stateProv: rally?.stateProv
@@ -101,12 +102,13 @@ export default function ReviewForm({ rally }) {
                                 validationSchema={newRallySchema}
                                 onSubmit={async (values, actions) => {
                                     actions.resetForm();
-                                    await putRally(values);
-                                    dispatch(addNewRally, actions);
-                                    console.log(
-                                        'these values were saved: \n',
-                                        values
-                                    );
+                                    putRally(values, user).then((response) => {
+                                        console.log(
+                                            'these values were saved: \n',
+                                            response
+                                        );
+                                        dispatch(addNewRally(response));
+                                    });
                                 }}
                             >
                                 {(formikProps) => (
@@ -119,21 +121,17 @@ export default function ReviewForm({ rally }) {
                                                 style={styles.input}
                                                 placeholder='Location Name'
                                                 onChangeText={formikProps.handleChange(
-                                                    'locationName'
+                                                    'name'
                                                 )}
-                                                value={
-                                                    formikProps.values
-                                                        .locationName
-                                                }
+                                                value={formikProps.values.name}
                                                 onBlur={formikProps.handleBlur(
-                                                    'locationName'
+                                                    'name'
                                                 )}
                                             />
                                             <Text style={styles.errorText}>
                                                 {formikProps.touched
                                                     .locationName &&
-                                                    formikProps.errors
-                                                        .locationName}
+                                                    formikProps.errors.name}
                                             </Text>
                                             <TextInput
                                                 style={styles.input}

@@ -39,3 +39,16 @@ export const testRep = {
         stateRep: 'TT',
     },
 };
+
+// created event using data from Formik submit ... c12120df3895053b6e9dc727e8c12601
+
+// need to create eventCompKey
+/*
+2022#06#GA#18#1ffc518ad17bae83d9b201ff65330820#bb3aa10a-0956-41ba-bcba-51e9ffd80985
+2022                                   Year
+#06                                    Month
+#GA                                    State
+#18                                    Day
+#1ffc518ad17bae83d9b201ff65330820      UID
+#bb3aa10a-0956-41ba-bcba-51e9ffd80985  Coordinator
+*/
