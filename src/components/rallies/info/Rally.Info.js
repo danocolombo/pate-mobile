@@ -24,7 +24,7 @@ const RallyDetails = ({ rallyId }) => {
                     cbStyles={{ backgroundColor: 'green', color: 'white' }}
                     onPress={() =>
                         navigation.navigate('RallyEditFlow', {
-                            rally: null,
+                            rallyId: rallyId,
                             stage: 1,
                         })
                     }

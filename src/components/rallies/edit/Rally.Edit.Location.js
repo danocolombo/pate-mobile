@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Headline } from 'react-native-paper';
 import { Button } from '@react-native-material/core';
-// import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
 // import { putRally } from '../../providers/rallies';
 // import { addNewRally } from '../../features/rallies/ralliesSlice.js';
@@ -32,7 +32,12 @@ const rallyLocationSchema = yup.object({
         }),
 });
 
-export default function RallyLocationForm({ rally }) {
+export default function RallyLocationForm({ rallyId }) {
+    console.log('EDIT:rallyId', rallyId);
+    const rallyEntry = useSelector((state) =>
+        state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+    );
+    const rally = rallyEntry[0];
     // const dispatch = useDispatch();
     return (
         <View>
