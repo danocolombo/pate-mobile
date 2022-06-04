@@ -5,27 +5,31 @@ export const loadUserRallies = createAsyncThunk(
     'rallies/loadUserRallies',
     async (userId, thunkAPI) => {
         try {
+            let response;
             console.log('userId', userId);
-            const response = await fetch(
-                'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events',
-                {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        operation: 'getEventsForRep',
-                        payload: {
-                            uid: userId,
+            const fetchRepEvents = async (userId) => {
+                response = await fetch(
+                    'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events',
+                    {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            operation: 'getEventsForRep',
+                            payload: {
+                                uid: userId,
+                            },
+                        }),
+                        headers: {
+                            'Content-type': 'application/json; charset=UTF-8',
                         },
-                    }),
-                    headers: {
-                        'Content-type': 'application/json; charset=UTF-8',
-                    },
-                }
-            );
+                    }
+                );
+            };
+            await fetchRepEvents(userId);
             printObject('fetchResponse', response);
             //const resp = await axios(url);
             // printObject('meetings(1)', resp);
             console.log('before return');
-            return {};
+            return response;
         } catch (error) {
             return thunkAPI.rejectWithValue('something went wrong');
         }
@@ -99,7 +103,8 @@ export const ralliesSlice = createSlice({
         [loadUserRallies.fulfilled]: (state, action) => {
             state.isLoading = false;
             printObject('Extra action:', action);
-            state.userRallies = action.payload;
+            // printObject('Extra state', state);
+            // state.userRallies = action.payload;
         },
         [loadUserRallies.rejected]: (state, action) => {
             console.log('yep, we got rejected...');

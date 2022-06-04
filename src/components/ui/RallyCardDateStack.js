@@ -53,10 +53,14 @@ function CardDate({ date }) {
     }
     return (
         <View style={Styles.container}>
-            <Text style={Styles.moDa}>
-                {month} {day}
-            </Text>
-            <Text style={Styles.moDa}>{yr}</Text>
+            <View>
+                <Text style={Styles.moDa}>
+                    {month} {day}
+                </Text>
+            </View>
+            <View style={{ alignItems: 'center' }}>
+                <Text style={Styles.moDa}>{yr}</Text>
+            </View>
         </View>
     );
 }
@@ -66,9 +70,9 @@ const Styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         paddingVertical: 5,
-        paddingHorizontal: 0,
+        paddingHorizontal: 10,
         borderRadius: 8,
-        minWidth: 100,
+        // minWidth: 100,
         textAlign: 'center',
     },
     moDa: {

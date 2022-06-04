@@ -53,9 +53,11 @@ function CardDate({ date }) {
     }
     return (
         <View style={Styles.container}>
-            <Text style={Styles.text}>
-                {month} {day}
-            </Text>
+            <View style={{ alignItems: 'center' }}>
+                <Text style={Styles.text}>
+                    {month} {day}
+                </Text>
+            </View>
         </View>
     );
 }
