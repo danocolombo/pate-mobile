@@ -1,49 +1,46 @@
-import { StyleSheet, Text, View, Button, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import EventListCard from '../ui/EventListCard';
+import P8Button from '../ui/P8Button';
+import CustomButton from '../ui/CustomButton';
+import { StateProvs } from '../../constants/geo';
 import { Pressable } from 'react-native';
 import { printObject } from '../../utils/helpers';
-import { StateProvs } from '../../constants/geo';
-const ServeStateRallies = () => {
-    const navigation = useNavigation();
-    const stateProvs = StateProvs;
-    let currentUser = useSelector((state) => state.users.currentUser);
-
-    let rallies = useSelector((state) =>
-        state.rallies.publicRallies.filter(
-            (ral) => ral.stateProv === currentUser.stateRep
-        )
-    );
-
-    const foundStateProv = StateProvs.filter((sp) => {
-        return sp.symbol === currentUser.stateRep;
+const ServeMyRallies = () => {
+    let me = useSelector((state) => state.users.currentUser);
+    const stateName = StateProvs.map((s) => {
+        if (s.symbol === me.stateRep) {
+            return s.name;
+        }
     });
-    const stateProv = foundStateProv[0];
+    let rallies = useSelector((state) => state.rallies.publicRallies);
+    const stateRallies = useSelector((state) =>
+        state.rallies.publicRallies.filter((r) => r.stateProv === me.stateRep)
+    );
+    const navigation = useNavigation();
     const handleEventPress = (e) => {
         printObject('event', e);
     };
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
-                <Text style={styles.screenHeaderText}>
-                    {stateProv.name} Events
-                </Text>
+                <Text style={styles.screenHeaderText}>{stateName} Events</Text>
             </View>
             <View>
                 <View style={styles.infoArea}>
-                    <Text>This is where your events will be listed.</Text>
+                    <Text>All {stateName} Events</Text>
                 </View>
             </View>
 
             <View>
-                {rallies.map((ral) => (
+                {stateRallies.map((ral) => (
                     <View key={ral.uid} style={{ margin: 10 }}>
                         <Pressable
                             onPress={() =>
-                                navigation.navigate('ServeRallyForm', {
-                                    rally: ral,
+                                navigation.navigate('RallyInfo', {
+                                    rallyId: ral.uid,
                                 })
                             }
                         >
@@ -62,7 +59,7 @@ const ServeStateRallies = () => {
     );
 };
 
-export default ServeStateRallies;
+export default ServeMyRallies;
 
 const styles = StyleSheet.create({
     rootContainer: {
@@ -85,5 +82,8 @@ const styles = StyleSheet.create({
         height: 200,
         justifyContent: 'center',
         elevation: 5,
+    },
+    buttonContainer: {
+        alignItems: 'center',
     },
 });
