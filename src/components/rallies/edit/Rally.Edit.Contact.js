@@ -8,8 +8,8 @@ import {
     Keyboard,
     ScrollView,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Headline } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
@@ -20,14 +20,15 @@ import * as yup from 'yup';
 import CustomNavButton from '../../ui/CustomNavButton';
 
 // create validation schema for yup to pass to formik
-const rallyLogisticsSchema = yup.object({
-    eventDate: yup.string().required().min(8),
-    startTime: yup.string(),
-    endTime: yup.string(),
+const rallyLocationSchema = yup.object({
+    contactName: yup.string(),
+    contactPhone: yup.string(),
+    contactEmail: yup.string().email(),
 });
 
-export default function RallyLogisticsForm({ rallyId }) {
+export default function RallyContactForm({ rallyId }) {
     const navigation = useNavigation();
+
     const rallyEntry = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
@@ -39,6 +40,7 @@ export default function RallyLogisticsForm({ rallyId }) {
             stage: 3,
         });
     };
+    // const dispatch = useDispatch();
     return (
         <View>
             <ScrollView>
@@ -47,86 +49,96 @@ export default function RallyLogisticsForm({ rallyId }) {
                         <ScrollView>
                             <Formik
                                 initialValues={{
-                                    eventDate: rally?.eventDate
-                                        ? rally.eventDate
+                                    contactName: rally?.contact?.name
+                                        ? rally.contact.name
                                         : '',
-                                    startTime: rally?.startTime
-                                        ? rally.startTime
+                                    contactPhone: rally?.contact?.phone
+                                        ? rally.contact.phone
                                         : '',
-                                    endTime: rally?.endTime
-                                        ? rally.endTime
+                                    contactEmail: rally?.contact?.email
+                                        ? rally.contact.email
                                         : '',
                                 }}
-                                validationSchema={rallyLogisticsSchema}
+                                validationSchema={rallyLocationSchema}
+                                onSubmit={async (values, actions) => {
+                                    //     actions.resetForm();
+                                    //     await putRally(values);
+                                    //     dispatch(addNewRally, actions);
+                                    //     console.log(
+                                    //         'these values were saved: \n',
+                                    //         values
+                                    //     );
+                                    console.log('onSubmit triggered');
+                                }}
                             >
                                 {(formikProps) => (
                                     <>
                                         <View style={styles.formHeader}>
                                             <Headline>
-                                                Rally Logistics Information
+                                                Rally Contact Information
                                             </Headline>
                                         </View>
                                         <View style={styles.inputContainer}>
                                             <View>
                                                 <TextInput
                                                     style={styles.input}
-                                                    placeholder='Event Date'
+                                                    placeholder='Contact Name'
                                                     onChangeText={formikProps.handleChange(
-                                                        'eventDate'
+                                                        'contactName'
                                                     )}
                                                     value={
                                                         formikProps.values
-                                                            .eventDate
+                                                            .contactName
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'eventDate'
+                                                        'contactName'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
                                                     {formikProps.touched
-                                                        .eventDate &&
+                                                        .contactName &&
                                                         formikProps.errors
-                                                            .eventDate}
+                                                            .contactName}
                                                 </Text>
                                                 <TextInput
                                                     style={styles.input}
-                                                    placeholder='Start Time'
+                                                    placeholder='Contact Phone'
                                                     onChangeText={formikProps.handleChange(
-                                                        'startTime'
+                                                        'contactPhone'
                                                     )}
                                                     value={
                                                         formikProps.values
-                                                            .startTime
+                                                            .contactPhone
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'startTime'
+                                                        'contactPhone'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
                                                     {formikProps.touched
-                                                        .startTime &&
+                                                        .contactPhone &&
                                                         formikProps.errors
-                                                            .startTime}
+                                                            .contactPhone}
                                                 </Text>
                                                 <TextInput
                                                     style={styles.input}
-                                                    placeholder='End Time'
+                                                    placeholder='Contact Email'
                                                     onChangeText={formikProps.handleChange(
-                                                        'endTime'
+                                                        'contactEmail'
                                                     )}
                                                     value={
                                                         formikProps.values
-                                                            .endTime
+                                                            .contactEmail
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'endTime'
+                                                        'contactEmail'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
                                                     {formikProps.touched
-                                                        .endTime &&
+                                                        .contactEmail &&
                                                         formikProps.errors
-                                                            .endTime}
+                                                            .contactEmail}
                                                 </Text>
                                             </View>
                                         </View>
