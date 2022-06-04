@@ -1,12 +1,20 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 import RallyLocationForm from './Rally.Edit.Location';
+import RallyLogisticsForm from './Rally.Edit.Logistics';
 const RallyEdit = ({ rallyId, stage }) => {
     console.log('stage', stage);
     console.log('rallyId', rallyId);
+    stage = 2;
     if (stage === 1) {
         return (
             <>
                 <RallyLocationForm rallyId={rallyId} />
+            </>
+        );
+    } else if (stage === 2) {
+        return (
+            <>
+                <RallyLogisticsForm rallyId={rallyId} />
             </>
         );
     } else {

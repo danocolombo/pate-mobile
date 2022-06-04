@@ -16,7 +16,7 @@ import { Colors } from '../../../constants/colors';
 // import { addNewRally } from '../../features/rallies/ralliesSlice.js';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import CustomButton from '../../ui/CustomButton';
+import CustomNavButton from '../../ui/CustomNavButton';
 
 // create validation schema for yup to pass to formik
 const rallyLocationSchema = yup.object({
@@ -249,12 +249,12 @@ export default function RallyLocationForm({ rallyId }) {
                                                         styles.buttonContainer
                                                     }
                                                 >
-                                                    <CustomButton
+                                                    <CustomNavButton
                                                         title='Next'
                                                         graphic={{
                                                             name: 'forward',
                                                             color: 'white',
-                                                            size: 15,
+                                                            size: 10,
                                                         }}
                                                         cbStyles={{
                                                             backgroundColor:
