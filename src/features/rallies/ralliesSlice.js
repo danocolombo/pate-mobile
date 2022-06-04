@@ -1,33 +1,31 @@
 import { createAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { printObject } from '../../utils/helpers';
 export const loadUserRallies = createAsyncThunk(
     'rallies/loadUserRallies',
-    async (rallies, thunkAPI) => {
+    async (userId, thunkAPI) => {
         try {
-            // console.log('inside getActiveMeetings');
-            const config = {
-                headers: {
-                    'Access-Control-Allow-Headers':
-                        'Content-Type, x-auth-token, Access-Control-Allow-Headers',
-                    'Content-Type': 'application/json',
-                },
-            };
-
-            let obj = {
-                operation: 'getEventsForRep',
-                payload: {
-                    uid: user.uid,
-                },
-            };
-            let body = JSON.stringify(obj);
-            // printObject('body', body);
-            let api2use =
-                'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events';
-
-            const resp = await axios.post(api2use, body, config);
-
+            console.log('userId', userId);
+            const response = await fetch(
+                'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events',
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        operation: 'getEventsForRep',
+                        payload: {
+                            uid: userId,
+                        },
+                    }),
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                }
+            );
+            printObject('fetchResponse', response);
             //const resp = await axios(url);
             // printObject('meetings(1)', resp);
-            return resp.data.body.Items;
+            console.log('before return');
+            return {};
         } catch (error) {
             return thunkAPI.rejectWithValue('something went wrong');
         }
@@ -77,6 +75,9 @@ export const ralliesSlice = createSlice({
             // return
             return state;
         },
+        // loadUserRallies: (state, action) => {
+        //     state.userRallies = action.payload;
+        // },
         increment: (state) => {
             // Redux Toolkit allows us to write "mutating" logic in reducers. It
             // doesn't actually mutate the state because it uses the Immer library,
@@ -97,10 +98,10 @@ export const ralliesSlice = createSlice({
         },
         [loadUserRallies.fulfilled]: (state, action) => {
             state.isLoading = false;
+            printObject('Extra action:', action);
             state.userRallies = action.payload;
         },
         [loadUserRallies.rejected]: (state, action) => {
-            printObject('action', action);
             console.log('yep, we got rejected...');
             state.isLoading = false;
         },
@@ -112,6 +113,7 @@ export const {
     loadRallies,
     getRally,
     addNewRally,
+    // loadUserRallies,
     createTmp,
     updateTmp,
     increment,
