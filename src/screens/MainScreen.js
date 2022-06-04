@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -12,13 +12,8 @@ import { UserInterfaceIdiom } from 'expo-constants';
 import { printObject } from '../utils/helpers';
 export default function MainScreen() {
     const dispatch = useDispatch();
-    //todo - remove when auth is implemented
-    const user = useSelector((state) => state.users.currentUser);
-    useEffect(() => {
-        dispatch(loadUserRallies);
-    }, []);
 
-    const fetchCharacters = async () => {
+    const fetchApprovedPublicEvents = async () => {
         const response = await fetch(
             'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events',
             {
@@ -33,27 +28,11 @@ export default function MainScreen() {
         );
         return response.json();
     };
-    const fetchUserEvents = async () => {
-        const response = await fetch(
-            'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events',
-            {
-                method: 'POST',
-                body: JSON.stringify({
-                    operation: 'getEventsForRep',
-                    payload: {
-                        uid: user.uid,
-                    },
-                }),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
-            }
-        );
-        printObject('data', data);
-        dispatch(loadUserRallies(data.body));
-    };
     // characters is just a unique key for the query.
-    const { data, status } = useQuery('characters', fetchCharacters);
+    const { data, status } = useQuery(
+        'publicEvents',
+        fetchApprovedPublicEvents
+    );
 
     if (status === 'loading') {
         return <LoadingOverlay />;
@@ -66,10 +45,6 @@ export default function MainScreen() {
         );
     } else {
         dispatch(loadRallies(data.body));
-        //todo - these will be done during login when auth added
-        if (user?.stateRep) {
-            // dispatch(loadRepRallies(user.uid));
-        }
 
         return (
             <>
