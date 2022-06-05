@@ -62,7 +62,9 @@ export default function MainScreen() {
         printObject('goal (data)', data);
         const theRallies = data.body;
 
-        const approvals = theRallies.filter((r) => r.approved === true);
+        const approvals = theRallies.filter(
+            (r) => r.approved === true && r.eventDate >= '20220605'
+        );
 
         return (
             <>
