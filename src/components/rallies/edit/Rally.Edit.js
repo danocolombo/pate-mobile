@@ -31,6 +31,12 @@ const RallyEdit = ({ rallyId, stage }) => {
                 <RallyMealForm rallyId={rallyId} />
             </>
         );
+    } else if (stage === 5) {
+        return (
+            <>
+                <RallyNewConfirmation rallyId={rallyId} />
+            </>
+        );
     } else {
         return (
             <View>
