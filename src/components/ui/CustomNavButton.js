@@ -5,8 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 const CustomButton = (props) => {
     const { onPress, graphic, title, cbStyles, txtColor } = props;
     //const { iconName, iconColor, iconSize } = props.icon;
-    printObject('props', props);
-    console.log('graphic.name:', graphic?.name);
+
     const spaces = '    ';
     let theGraphics;
     graphic?.name

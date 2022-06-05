@@ -47,10 +47,13 @@ export const ralliesSlice = createSlice({
     initialState,
     reducers: {
         createTmp: (state, action) => {
+            state.tmpRally = {};
             state.tmpRally = action.payload;
         },
         updateTmp: (state, action) => {
-            state.tmpRally = [...state.tmpRally, action.payload];
+            const newTmp = Object.assign(state.tmpRally, action.payload);
+            state.tmpRally = newTmp;
+            return state;
         },
         // loadUserRallies: (state, action) => {
         //     state.userRallies = action.payload;

@@ -4,8 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 const CustomButton = (props) => {
     const { onPress, graphic, title, cbStyles, txtColor } = props;
     //const { iconName, iconColor, iconSize } = props.icon;
-    printObject('props', props);
-    console.log('graphic.name:', graphic?.name);
+
     const spaces = '    ';
     let theGraphics;
     graphic?.name

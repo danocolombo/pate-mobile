@@ -14,10 +14,11 @@ import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
 // import { putRally } from '../../providers/rallies';
-// import { addNewRally } from '../../features/rallies/ralliesSlice.js';
+import { createTmp } from '../../../features/rallies/ralliesSlice';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import CustomNavButton from '../../ui/CustomNavButton';
+import { printObject } from '../../../utils/helpers';
 
 // create validation schema for yup to pass to formik
 const rallyLocationSchema = yup.object({
@@ -35,13 +36,15 @@ const rallyLocationSchema = yup.object({
 
 export default function RallyLocationForm({ rallyId }) {
     const navigation = useNavigation();
-    console.log('EDIT:rallyId', rallyId);
+    const dispatch = useDispatch();
     const rallyEntry = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
-    const handleNext = () => {
-        console.log('handleNext triggered');
+    const handleNext = (values) => {
+        // gather data
+        console.log('in handleNext');
+        dispatch(createTmp(values));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
             stage: 2,
@@ -68,14 +71,15 @@ export default function RallyLocationForm({ rallyId }) {
                                 }}
                                 validationSchema={rallyLocationSchema}
                                 onSubmit={async (values, actions) => {
-                                    //     actions.resetForm();
-                                    //     await putRally(values);
-                                    //     dispatch(addNewRally, actions);
+                                    handleNext(values);
+                                    // actions.resetForm();
+                                    // putRally(values, user).then((response) => {
                                     //     console.log(
                                     //         'these values were saved: \n',
-                                    //         values
+                                    //         response
                                     //     );
-                                    console.log('onSubmit triggered');
+                                    //     dispatch(createTmp(response));
+                                    // });
                                 }}
                             >
                                 {(formikProps) => (
@@ -256,26 +260,28 @@ export default function RallyLocationForm({ rallyId }) {
                                                 </View>
                                             </View>
                                         </View>
+                                        <View style={styles.buttonContainer}>
+                                            <CustomNavButton
+                                                title='Next'
+                                                graphic={{
+                                                    name: 'forward',
+                                                    color: 'white',
+                                                    size: 10,
+                                                }}
+                                                cbStyles={{
+                                                    backgroundColor: 'green',
+                                                    color: 'white',
+                                                    width: '50%',
+                                                }}
+                                                onPress={
+                                                    formikProps.handleSubmit
+                                                }
+                                            />
+                                        </View>
                                     </>
                                 )}
                                 {/* this ends the formik execution */}
                             </Formik>
-                            <View style={styles.buttonContainer}>
-                                <CustomNavButton
-                                    title='Next'
-                                    graphic={{
-                                        name: 'forward',
-                                        color: 'white',
-                                        size: 10,
-                                    }}
-                                    cbStyles={{
-                                        backgroundColor: 'green',
-                                        color: 'white',
-                                        width: '50%',
-                                    }}
-                                    onPress={handleNext}
-                                />
-                            </View>
                         </ScrollView>
                     </View>
                 </TouchableWithoutFeedback>

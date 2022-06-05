@@ -17,6 +17,7 @@ import { Colors } from '../../../constants/colors';
 // import { addNewRally } from '../../features/rallies/ralliesSlice.js';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { printObject } from '../../../utils/helpers';
 import CustomNavButton from '../../ui/CustomNavButton';
 
 // create validation schema for yup to pass to formik
@@ -28,7 +29,7 @@ const rallyLocationSchema = yup.object({
 
 export default function RallyContactForm({ rallyId }) {
     const navigation = useNavigation();
-
+    const tmp = useSelector((state) => state.rallies.tmpRally);
     const rallyEntry = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
@@ -40,7 +41,7 @@ export default function RallyContactForm({ rallyId }) {
             stage: 4,
         });
     };
-    // const dispatch = useDispatch();
+    printObject('2. tmpRally:', tmp);
     return (
         <View>
             <ScrollView>

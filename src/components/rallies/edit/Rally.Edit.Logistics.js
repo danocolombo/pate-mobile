@@ -14,10 +14,11 @@ import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
 // import { putRally } from '../../providers/rallies';
-// import { addNewRally } from '../../features/rallies/ralliesSlice.js';
+import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import CustomNavButton from '../../ui/CustomNavButton';
+import { printObject } from '../../../utils/helpers';
 
 // create validation schema for yup to pass to formik
 const rallyLogisticsSchema = yup.object({
@@ -28,17 +29,21 @@ const rallyLogisticsSchema = yup.object({
 
 export default function RallyLogisticsForm({ rallyId }) {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const tmp = useSelector((state) => state.rallies.tmpRally);
     const rallyEntry = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
-    const handleNext = () => {
-        console.log('handleNext triggered');
+    const handleNext = (values) => {
+        //printObject('handleNext::values', values);
+        dispatch(updateTmp(values));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
             stage: 3,
         });
     };
+    printObject('1. tmpRally:', tmp);
     return (
         <View>
             <ScrollView>
@@ -58,6 +63,10 @@ export default function RallyLogisticsForm({ rallyId }) {
                                         : '',
                                 }}
                                 validationSchema={rallyLogisticsSchema}
+                                onSubmit={async (values, actions) => {
+                                    // printObject('onSubmit::values', values);
+                                    handleNext(values);
+                                }}
                             >
                                 {(formikProps) => (
                                     <>
@@ -130,26 +139,28 @@ export default function RallyLogisticsForm({ rallyId }) {
                                                 </Text>
                                             </View>
                                         </View>
+                                        <View style={styles.buttonContainer}>
+                                            <CustomNavButton
+                                                title='Next'
+                                                graphic={{
+                                                    name: 'forward',
+                                                    color: 'white',
+                                                    size: 10,
+                                                }}
+                                                cbStyles={{
+                                                    backgroundColor: 'green',
+                                                    color: 'white',
+                                                    width: '50%',
+                                                }}
+                                                onPress={
+                                                    formikProps.handleSubmit
+                                                }
+                                            />
+                                        </View>
                                     </>
                                 )}
                                 {/* this ends the formik execution */}
                             </Formik>
-                            <View style={styles.buttonContainer}>
-                                <CustomNavButton
-                                    title='Next'
-                                    graphic={{
-                                        name: 'forward',
-                                        color: 'white',
-                                        size: 10,
-                                    }}
-                                    cbStyles={{
-                                        backgroundColor: 'green',
-                                        color: 'white',
-                                        width: '50%',
-                                    }}
-                                    onPress={handleNext}
-                                />
-                            </View>
                         </ScrollView>
                     </View>
                 </TouchableWithoutFeedback>
