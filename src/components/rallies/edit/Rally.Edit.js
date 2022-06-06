@@ -3,6 +3,7 @@ import RallyLocationForm from './Rally.Edit.Location';
 import RallyLogisticsForm from './Rally.Edit.Logistics';
 import RallyContactForm from './Rally.Edit.Contact';
 import RallyMealForm from './Rally.Edit.Meal';
+import RallyNewConfirmation from './Rally.Edit.Confirm';
 const RallyEdit = ({ rallyId, stage }) => {
     console.log('stage', stage);
     console.log('rallyId', rallyId);
@@ -34,7 +35,7 @@ const RallyEdit = ({ rallyId, stage }) => {
     } else if (stage === 5) {
         return (
             <>
-                <RallyNewConfirmation rallyId={rallyId} />
+                <RallyNewConfirmation rallyId={'tmpRally'} />
             </>
         );
     } else {

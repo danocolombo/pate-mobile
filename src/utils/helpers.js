@@ -79,3 +79,15 @@ export function createGrpCompKey(client, meetingId) {
     let grpCompKey = client + '#' + meetingId;
     return grpCompKey;
 }
+export async function asc_sort(a, b) {
+    return new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime();
+}
+export async function desc_sort(a, b) {
+    return new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime();
+}
+export async function desc_sort_raw(a, b) {
+    return b.eventDate - a.eventDate;
+}
+export async function asc_sort_raw(a, b) {
+    return a.eventDate - b.eventDate;
+}

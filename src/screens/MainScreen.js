@@ -59,7 +59,6 @@ export default function MainScreen() {
     } else {
         dispatch(loadRallies(data.body));
         // now get the approved rallies to display
-        printObject('goal (data)', data);
         const theRallies = data.body;
 
         const approvals = theRallies.filter(

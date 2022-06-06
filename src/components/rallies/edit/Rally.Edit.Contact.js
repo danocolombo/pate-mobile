@@ -36,7 +36,11 @@ export default function RallyContactForm({ rallyId }) {
     );
     const rally = rallyEntry[0];
     const handleNext = (values) => {
-        dispatch(updateTmp(values));
+        // build a contact object
+        let contact = {
+            contact: values,
+        };
+        dispatch(updateTmp(contact));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
             stage: 4,
@@ -51,13 +55,13 @@ export default function RallyContactForm({ rallyId }) {
                         <ScrollView>
                             <Formik
                                 initialValues={{
-                                    contactName: rally?.contact?.name
+                                    name: rally?.contact?.name
                                         ? rally.contact.name
                                         : '',
-                                    contactPhone: rally?.contact?.phone
+                                    phone: rally?.contact?.phone
                                         ? rally.contact.phone
                                         : '',
-                                    contactEmail: rally?.contact?.email
+                                    email: rally?.contact?.email
                                         ? rally.contact.email
                                         : '',
                                 }}
@@ -80,61 +84,56 @@ export default function RallyContactForm({ rallyId }) {
                                                     style={styles.input}
                                                     placeholder='Contact Name'
                                                     onChangeText={formikProps.handleChange(
-                                                        'contactName'
+                                                        'name'
                                                     )}
                                                     value={
-                                                        formikProps.values
-                                                            .contactName
+                                                        formikProps.values.name
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'contactName'
+                                                        'name'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
-                                                    {formikProps.touched
-                                                        .contactName &&
-                                                        formikProps.errors
-                                                            .contactName}
+                                                    {formikProps.touched.name &&
+                                                        formikProps.errors.name}
                                                 </Text>
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Contact Phone'
                                                     onChangeText={formikProps.handleChange(
-                                                        'contactPhone'
+                                                        'phone'
                                                     )}
                                                     value={
-                                                        formikProps.values
-                                                            .contactPhone
+                                                        formikProps.values.phone
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'contactPhone'
+                                                        'phone'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
                                                     {formikProps.touched
-                                                        .contactPhone &&
+                                                        .phone &&
                                                         formikProps.errors
-                                                            .contactPhone}
+                                                            .phone}
                                                 </Text>
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Contact Email'
                                                     onChangeText={formikProps.handleChange(
-                                                        'contactEmail'
+                                                        'email'
                                                     )}
                                                     value={
-                                                        formikProps.values
-                                                            .contactEmail
+                                                        formikProps.values.email
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'contactEmail'
+                                                        'email'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
                                                     {formikProps.touched
-                                                        .contactEmail &&
+                                                        .email &&
                                                         formikProps.errors
-                                                            .contactEmail}
+                                                            .email}
                                                 </Text>
                                             </View>
                                         </View>

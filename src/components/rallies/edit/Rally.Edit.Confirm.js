@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import { useSelector } from 'react-redux';
 import RallyLocationInfo from '../info/Rally.Location.Info';
 import RallyLogisticsInfo from '../info/Rally.Logistics.Info';
 import RallyContactInfo from '../info/Rally.Contact.Info';
@@ -9,17 +9,21 @@ import CustomButton from '../../ui/CustomButton';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 
-const RallyNewConfirmation = ({ rallyId }) => {
+const RallyNewConfirmation = () => {
     const navigation = useNavigation();
+    const tmp = useSelector((state) => state.rallies.tmpRally);
+    const rally = useSelector((state) => state.rallies.tmpRally);
+    printObject('CONFIRMING rally', rally);
     const handleConfirmation = () => {
         console.log('saving Tmp to Actual');
     };
+    printObject('CONFIRMING tmpRally:', tmp);
     return (
         <>
-            <RallyLocationInfo rallyId={rallyId} />
-            <RallyLogisticsInfo rallyId={rallyId} />
-            <RallyContactInfo rallyId={rallyId} />
-            <RallyMealInfo rallyId={rallyId} />
+            <RallyLocationInfo rallyId={'tmpRally'} />
+            <RallyLogisticsInfo rallyId={'tmpRally'} />
+            <RallyContactInfo rallyId={'tmpRally'} />
+            <RallyMealInfo rallyId={'tmpRally'} />
             <View style={styles.buttonContainer}>
                 <CustomButton
                     title='Edit Event'

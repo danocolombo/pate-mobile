@@ -6,13 +6,26 @@ import EventListCard from '../ui/EventListCard';
 import P8Button from '../ui/P8Button';
 import CustomButton from '../ui/CustomButton';
 import { Pressable } from 'react-native';
-import { printObject } from '../../utils/helpers';
+import { printObject, asc_sort, desc_sort } from '../../utils/helpers';
 const ServeMyRallies = () => {
     let me = useSelector((state) => state.users.currentUser);
     let rallies = useSelector((state) => state.rallies.publicRallies);
     const myRallies = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.coordinator.id === me.uid)
     );
+    let displayData;
+    async function sortRallies() {
+        displayData = myRallies.sort(asc_sort);
+        // return displayData;
+    }
+    sortRallies()
+        .then((results) => {
+            //printObject('diplayData-sorted', displayData);
+        })
+        .catch((err) => {
+            console.log('error sorting', err);
+        });
+
     const navigation = useNavigation();
     const handleEventPress = (e) => {
         printObject('event', e);
@@ -29,7 +42,7 @@ const ServeMyRallies = () => {
             </View>
 
             <View>
-                {myRallies.map((ral) => (
+                {displayData.map((ral) => (
                     <View key={ral.uid} style={{ margin: 10 }}>
                         <Pressable
                             onPress={() =>

@@ -11,11 +11,18 @@ import {
 } from 'react-native-paper';
 import { printObject } from '../../../utils/helpers';
 const RallyLocationInfo = ({ rallyId }) => {
-    const rallyEntry = useSelector((state) =>
-        state.rallies.publicRallies.filter((r) => r.uid === rallyId)
-    );
-    const rally = rallyEntry[0];
-    // printObject('rallyInfo', rally);
+    let rallyEntry;
+    let rally;
+    if (rallyId === 'tmpRally') {
+        rally = useSelector((state) => state.rallies.tmpRally);
+    } else {
+        rallyEntry = useSelector((state) =>
+            state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+        );
+        rally = rallyEntry[0];
+    }
+    printObject('LOCATION_INFO rally', rally);
+
     return (
         <>
             <View style={styles.rootContainer}>

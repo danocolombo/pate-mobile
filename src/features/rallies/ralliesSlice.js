@@ -82,6 +82,11 @@ export const ralliesSlice = createSlice({
             // return
             return state;
         },
+        getStateRallies: (state, action) => {
+            // this takes the payload to get the stateProv
+            // then sorts desc (latest first, then oldest last)
+            return state.publicRallies;
+        },
         // loadUserRallies: (state, action) => {
         //     state.userRallies = action.payload;
         // },
@@ -124,6 +129,7 @@ export const {
     // loadUserRallies,
     createTmp,
     updateTmp,
+    getStateRallies,
     increment,
     decrement,
     incrementByAmount,

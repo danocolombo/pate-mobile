@@ -22,7 +22,7 @@ import { printObject } from '../../../utils/helpers';
 
 // create validation schema for yup to pass to formik
 const rallyLocationSchema = yup.object({
-    locationName: yup.string().required().min(5),
+    name: yup.string().required().min(5),
     street: yup.string(),
     city: yup.string().required().min(2),
     stateProv: yup.string().required().min(2).max(2),
@@ -59,7 +59,7 @@ export default function RallyLocationForm({ rallyId }) {
                         <ScrollView>
                             <Formik
                                 initialValues={{
-                                    locationName: rally?.name ? rally.name : '',
+                                    name: rally?.name ? rally.name : '',
                                     street: rally?.street ? rally.street : '',
                                     city: rally?.city ? rally.city : '',
                                     stateProv: rally?.stateProv
@@ -72,14 +72,6 @@ export default function RallyLocationForm({ rallyId }) {
                                 validationSchema={rallyLocationSchema}
                                 onSubmit={async (values, actions) => {
                                     handleNext(values);
-                                    // actions.resetForm();
-                                    // putRally(values, user).then((response) => {
-                                    //     console.log(
-                                    //         'these values were saved: \n',
-                                    //         response
-                                    //     );
-                                    //     dispatch(createTmp(response));
-                                    // });
                                 }}
                             >
                                 {(formikProps) => (
@@ -95,21 +87,18 @@ export default function RallyLocationForm({ rallyId }) {
                                                     style={styles.input}
                                                     placeholder='Location Name'
                                                     onChangeText={formikProps.handleChange(
-                                                        'locationName'
+                                                        'name'
                                                     )}
                                                     value={
-                                                        formikProps.values
-                                                            .locationName
+                                                        formikProps.values.name
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'locationName'
+                                                        'name'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
-                                                    {formikProps.touched
-                                                        .locationName &&
-                                                        formikProps.errors
-                                                            .locationName}
+                                                    {formikProps.touched.name &&
+                                                        formikProps.errors.name}
                                                 </Text>
                                                 <TextInput
                                                     style={styles.input}
