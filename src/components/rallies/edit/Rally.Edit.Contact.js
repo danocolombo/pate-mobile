@@ -119,6 +119,8 @@ export default function RallyContactForm({ rallyId }) {
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Contact Email'
+                                                    autocomplete='off'
+                                                    autoCapitalize='none'
                                                     onChangeText={formikProps.handleChange(
                                                         'email'
                                                     )}

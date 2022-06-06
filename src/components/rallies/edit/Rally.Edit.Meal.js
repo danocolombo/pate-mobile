@@ -20,13 +20,14 @@ import * as yup from 'yup';
 import CustomNavButton from '../../ui/CustomNavButton';
 
 // create validation schema for yup to pass to formik
-const rallyLocationSchema = yup.object({
-    contactName: yup.string(),
-    contactPhone: yup.string(),
-    contactEmail: yup.string().email(),
+const rallyMealSchema = yup.object({
+    startTime: yup.string(),
+    cost: yup.string(),
+    deadline: yup.string(),
+    message: yup.string(),
 });
 
-export default function RallyContactForm({ rallyId }) {
+export default function RallyMealForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const rallyEntry = useSelector((state) =>
@@ -53,20 +54,20 @@ export default function RallyContactForm({ rallyId }) {
                         <ScrollView>
                             <Formik
                                 initialValues={{
-                                    mealStart: rally?.meal?.startTime
+                                    startTime: rally?.meal?.startTime
                                         ? rally.meal.startTime
                                         : '',
-                                    mealCost: rally?.meal?.cost
+                                    cost: rally?.meal?.cost
                                         ? rally.meal.cost
                                         : '',
-                                    mealDeadline: rally?.meal?.deadline
+                                    deadline: rally?.meal?.deadline
                                         ? rally.meal.deadline
                                         : '',
-                                    mealMessage: rally?.meal?.message
+                                    message: rally?.meal?.message
                                         ? rally.meal.message
                                         : '',
                                 }}
-                                // validationSchema={rallyLocationSchema}
+                                validationSchema={rallyMealSchema}
                                 onSubmit={async (values, actions) => {
                                     // printObject('onSubmit::values', values);
                                     handleNext(values);
@@ -85,81 +86,78 @@ export default function RallyContactForm({ rallyId }) {
                                                     style={styles.input}
                                                     placeholder='Meal Time'
                                                     onChangeText={formikProps.handleChange(
-                                                        'mealStart'
+                                                        'startTime'
                                                     )}
                                                     value={
                                                         formikProps.values
-                                                            .mealStart
+                                                            .startTime
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'mealStart'
+                                                        'startTime'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
                                                     {formikProps.touched
-                                                        .mealStart &&
+                                                        .startTime &&
                                                         formikProps.errors
-                                                            .mealStart}
+                                                            .startTime}
                                                 </Text>
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Meal Cost'
                                                     onChangeText={formikProps.handleChange(
-                                                        'mealCost'
+                                                        'cost'
                                                     )}
                                                     value={
-                                                        formikProps.values
-                                                            .mealCost
+                                                        formikProps.values.cost
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'mealCost'
+                                                        'cost'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
-                                                    {formikProps.touched
-                                                        .mealCost &&
-                                                        formikProps.errors
-                                                            .mealCost}
+                                                    {formikProps.touched.cost &&
+                                                        formikProps.errors.cost}
                                                 </Text>
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Meal Deadline'
                                                     onChangeText={formikProps.handleChange(
-                                                        'mealDeadline'
+                                                        'deadline'
                                                     )}
                                                     value={
                                                         formikProps.values
-                                                            .mealDeadline
+                                                            .deadline
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'mealDeadline'
+                                                        'deadline'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
                                                     {formikProps.touched
-                                                        .mealDeadline &&
+                                                        .deadline &&
                                                         formikProps.errors
-                                                            .mealDeadline}
+                                                            .deadline}
                                                 </Text>
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Meal Message'
                                                     onChangeText={formikProps.handleChange(
-                                                        'mealMessage'
+                                                        'message'
                                                     )}
                                                     value={
                                                         formikProps.values
-                                                            .mealMessage
+                                                            .message
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'mealMessage'
+                                                        'message'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
                                                     {formikProps.touched
-                                                        .mealMessage &&
+                                                        .message &&
                                                         formikProps.errors
-                                                            .mealMessage}
+                                                            .message}
                                                 </Text>
                                             </View>
                                         </View>

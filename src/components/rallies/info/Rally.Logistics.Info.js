@@ -13,14 +13,17 @@ import { printObject } from '../../../utils/helpers';
 const RallyLogisticsInfo = ({ rallyId }) => {
     let rallyEntry;
     let rally;
-    if (rallyId === 'tmpRally') {
-        rally = useSelector((state) => state.rallies.tmpRally);
+    if (rallyId.id === '') {
+        //rally = useSelector((state) => state.rallies.tmpRally);
+        rally = rallyId;
     } else {
         rallyEntry = useSelector((state) =>
             state.rallies.publicRallies.filter((r) => r.uid === rallyId)
         );
         rally = rallyEntry[0];
     }
+    // console.log('rallyId:', rallyId);
+    // printObject('in Logistics----', rally);
     return (
         <>
             <View style={styles.rootContainer}>

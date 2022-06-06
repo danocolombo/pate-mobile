@@ -86,6 +86,7 @@ export default function RallyLocationForm({ rallyId }) {
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Location Name'
+                                                    autocomplete='off'
                                                     onChangeText={formikProps.handleChange(
                                                         'name'
                                                     )}

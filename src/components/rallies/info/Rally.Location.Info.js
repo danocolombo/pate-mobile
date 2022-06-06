@@ -13,15 +13,15 @@ import { printObject } from '../../../utils/helpers';
 const RallyLocationInfo = ({ rallyId }) => {
     let rallyEntry;
     let rally;
-    if (rallyId === 'tmpRally') {
-        rally = useSelector((state) => state.rallies.tmpRally);
+    if (rallyId.id === '') {
+        rally = rallyId;
     } else {
         rallyEntry = useSelector((state) =>
             state.rallies.publicRallies.filter((r) => r.uid === rallyId)
         );
         rally = rallyEntry[0];
     }
-    printObject('LOCATION_INFO rally', rally);
+    // printObject('LOCATION_INFO rally', rally);
 
     return (
         <>

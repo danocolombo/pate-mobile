@@ -103,6 +103,8 @@ export async function putRally(rally, user) {
     const yr = readyEvent.eventDate.substr(0, 4);
     const mo = readyEvent.eventDate.substr(4, 2);
     const da = readyEvent.eventDate.substr(6, 2);
+    //==========================================
+    // NOTE: if new rally, uid will blank
     let eventCompKey =
         yr +
         '#' +
