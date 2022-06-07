@@ -65,7 +65,7 @@ const RallyNewConfirmation = () => {
                 response
             );
             // console.log('submitted rally', newRally);
-            dispatch(addNewRally(response));
+            dispatch(addNewRally(response.Item));
             navigation.navigate('Serve', null);
         });
     }

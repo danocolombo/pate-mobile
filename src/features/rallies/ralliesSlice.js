@@ -68,6 +68,7 @@ export const ralliesSlice = createSlice({
             return found;
         },
         addNewRally: (state, action) => {
+            printObject('SLICEaction', action);
             const bigger = [...state.publicRallies, action.payload];
 
             // ascending sort

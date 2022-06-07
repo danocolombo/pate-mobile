@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
-import { ALL_EVENTS } from '../../data/allEvents';
+import { ALL_EVENTS } from '../../data/getRegionalEvents';
 import {
     loadRallies,
     loadUserRallies,

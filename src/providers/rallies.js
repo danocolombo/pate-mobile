@@ -126,15 +126,15 @@ export async function putRally(rally, user) {
             ? readyEvent.uid
             : 'TBD' + '#' + readyEvent.coordinator.id;
     readyEvent.eventCompKey = eventCompKey;
-    printObject('readyEvent to DBDBDBDBDBDBDBDBDBDBDB', readyEvent);
-    console.log('\n###########################\n');
+
     let obj = {
         operation: 'insertNewEvent',
         payload: {
             Item: readyEvent,
         },
     };
-
+    printObject('obj to DBDBDBDBDBDBDBDBDBDBDB', obj);
+    console.log('\n###########################\n');
     let body = JSON.stringify(obj);
     printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
     console.log('\n###########################\n');
