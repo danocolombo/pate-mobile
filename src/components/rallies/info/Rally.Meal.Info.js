@@ -22,7 +22,7 @@ const RallyMealInfo = ({ rallyId }) => {
         );
         rally = rallyEntry[0];
     }
-    printObject('MEAL rally', rally);
+    //printObject('MEAL rally', rally);
     return (
         <>
             <View style={styles.rootContainer}>

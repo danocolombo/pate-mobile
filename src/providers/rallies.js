@@ -60,30 +60,38 @@ export async function putRally(rally, user) {
     //   NOTE: unique id is done by API and returned to us
     //--------------------------------------------------------------
     //default rally with user info
-
+    printObject('rally=======in putRally', rally);
     const readyEvent = {
         meal: {
-            startTime: rally?.mealStart ? rally.mealStart : '',
-            mealCount: rally?.mealCount ? rally.mealCount : 0,
-            cost: rally?.mealCost ? rally.mealCost : '',
-            message: rally?.mealMessage ? rally.mealMessage : '',
-            mealsServed: rally?.mealsServed ? rally.mealsServed : 0,
-            deadline: rally?.mealDeadline ? rally.mealDeadline : '30000101',
+            startTime: rally?.meal?.startTime ? rally.meal.startTime : '',
+            mealCount: rally?.meal?.count ? rally.meal.count : 0,
+            cost: rally?.meal?.cost ? rally.meal.cost : '',
+            message: rally?.meal?.message ? rally.meal.message : '',
+            mealsServed: rally?.meal?.served ? rally.meal.served : 0,
+            deadline: rally?.meal?.deadline ? rally.meal.deadline : '30000101',
         },
         eventDate: rally?.eventDate ? rally.eventDate : '30000101',
         contact: {
-            name: rally?.contactName ? rally.contactName : '',
-            phone: rally?.contactPhone ? rally.contactPhone : '',
-            email: rally?.contactEmail ? rally.contactEmail : '',
+            name: rally?.contact?.name ? rally.contact.name : '',
+            phone: rally?.contact?.phone ? rally.contact.phone : '',
+            email: rally?.contact?.email ? rally.contact.email : '',
         },
         status: rally?.status ? rally.status : 'draft',
+        eventRegion: rally?.eventRegion ? rally.eventRegion : 'test',
+        region: rally?.region ? rally.region : 'us#east',
         message: rally?.eventMessage ? rally.eventMessage : '',
         stateProv: rally?.stateProv ? rally.stateProv : '',
         coordinator: {
-            name: user.firstName + ' ' + user.lastName,
-            id: user.uid,
-            phone: user.phone,
-            email: user.email,
+            name: rally?.coordinator?.name
+                ? rally.coordinator.name
+                : user.firstName + ' ' + user.lastName,
+            id: rally?.coordinator?.id ? rally.coordinator.id : user.uid,
+            phone: rally?.coordinator?.phone
+                ? rally.coordinator.phone
+                : user.phone,
+            email: rally?.coordinator?.email
+                ? rally.coordinator.email
+                : user.email,
         },
         uid: rally?.uid ? rally.uid : '',
         name: rally?.name ? rally.name : '',
@@ -114,11 +122,12 @@ export async function putRally(rally, user) {
         '#' +
         da +
         '#' +
-        readyEvent.uid +
-        '#' +
-        readyEvent.coordinator.id;
+        readyEvent?.uid
+            ? readyEvent.uid
+            : 'TBD' + '#' + readyEvent.coordinator.id;
     readyEvent.eventCompKey = eventCompKey;
-    //printObject('readyEvent to DB', readyEvent);
+    printObject('readyEvent to DBDBDBDBDBDBDBDBDBDBDB', readyEvent);
+    console.log('\n###########################\n');
     let obj = {
         operation: 'createEvent',
         payload: {
@@ -127,12 +136,14 @@ export async function putRally(rally, user) {
     };
 
     let body = JSON.stringify(obj);
+    printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
+    console.log('\n###########################\n');
     let api2use =
         'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events';
 
     let res = await axios.post(api2use, body, config);
-
-    var returnValue = res.data.body;
+    console.log('WANT TO RETURN.....', res);
+    var returnValue = res.data;
     return returnValue;
 }
 export async function getAllActiveMeetingsForClient(client, startDate) {

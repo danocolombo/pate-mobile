@@ -55,13 +55,16 @@ const RallyNewConfirmation = () => {
     rallyBasic.eventCompKey = eventCompKey;
 
     let newRally = { ...rally, ...rallyBasic };
-    printObject('CONFIRMING tmpRally:', rally);
+    // printObject('CONFIRMING tmpRally:', rally);
     printObject('newRally', newRally);
     function handleConfirmation(newRally) {
-        //printObject('SAVING', newRally);
+        // printObject('SAVING', newRally);
         putRally(newRally, user).then((response) => {
-            console.log('response: \n', response);
-            console.log('submitted rally', newRally);
+            console.log(
+                'promise response: PRPRPRPRPRPRPRPRPRPRPRPRPR\n',
+                response
+            );
+            // console.log('submitted rally', newRally);
             dispatch(addNewRally(response));
             navigation.navigate('Serve', null);
         });
