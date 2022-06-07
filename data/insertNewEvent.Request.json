@@ -1,0 +1,45 @@
+{
+    "operation": "insertNewEvent",
+    "payload": {
+        "Item": {
+            "meal": {
+                "startTime": "1200",
+                "mealCount": 0,
+                "cost": "5.00",
+                "message": "Birthday bash",
+                "mealsServed": 0,
+                "deadline": "20220908"
+            },
+            "eventDate": "20220910",
+            "contact": {
+                "name": "Bruno",
+                "phone": "2329329999",
+                "email": "Bruno@work.com"
+            },
+            "status": "draft",
+            "eventRegion": "test",
+            "region": "us#east",
+            "message": "",
+            "stateProv": "TT",
+            "coordinator": {
+                "name": "TTRep Account",
+                "id": "bb3aa10a-0956-41ba-bcba-51e9ffd80985",
+                "phone": "7066042494",
+                "email": "danocolombo@gmail.com"
+            },
+            "uid": "",
+            "name": "Boys Club",
+            "registrations": 0,
+            "startTime": "1300",
+            "city": "Brumlee",
+            "graphic": "",
+            "approved": false,
+            "attendees": 0,
+            "endTime": "1600",
+            "id": "",
+            "postalCode": "12345",
+            "street": "2333 Main",
+            "eventCompKey": ""
+        }
+    }
+}

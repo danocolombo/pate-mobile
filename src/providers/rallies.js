@@ -129,7 +129,7 @@ export async function putRally(rally, user) {
     printObject('readyEvent to DBDBDBDBDBDBDBDBDBDBDB', readyEvent);
     console.log('\n###########################\n');
     let obj = {
-        operation: 'createEvent',
+        operation: 'insertNewEvent',
         payload: {
             Item: readyEvent,
         },
