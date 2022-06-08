@@ -69,8 +69,10 @@ export const ralliesSlice = createSlice({
         },
         addNewRally: (state, action) => {
             printObject('SLICEaction', action);
-            const bigger = [...state.publicRallies, action.payload];
-
+            let statePublicRallies = state.publicRallies;
+            printObject('SLICEstatePublicRallies', statePublicRallies);
+            statePublicRallies.push(action.payload);
+            printObject('SLICEstatePublicRalliesPUSHED', statePublicRallies);
             // ascending sort
             function asc_sort(a, b) {
                 return (
@@ -78,7 +80,7 @@ export const ralliesSlice = createSlice({
                     new Date(b.eventDate).getTime()
                 );
             }
-            let newBigger = bigger.sort(asc_sort);
+            let newBigger = statePublicRallies.sort(asc_sort);
             state.activeMeetings = newBigger;
             // return
             return state;
