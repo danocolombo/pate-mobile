@@ -42,28 +42,21 @@ function EventListCard({ rally }) {
                             {rally.city}, {rally.stateProv}
                         </Text>
                     </View>
-                    <View style={styles.indicatorContainer}>
-                        <Text style={styles.indicators}>
-                            {rally.approved ? (
-                                <Ionicons
-                                    name='checkmark-circle-outline'
-                                    size={32}
-                                    // color='blue'
-                                />
-                            ) : (
-                                <Ionicons name='ellipse-outline' size={32} />
-                            )}
-                        </Text>
-                        {rally.approved === false ? (
-                            <Text style={styles.indicators}>
+                </View>
+                <View style={styles.cardStatusRow}>
+                    {rally.approved === true ? (
+                        <Ionicons
+                            name='checkmark-circle-outline'
+                            size={32}
+                            color='gold'
+                        />
+                    ) : (
+                        <>
+                            <Text style={styles.rallyStatus}>
                                 {rally.status}
                             </Text>
-                        ) : (
-                            <Text style={styles.indicators}>
-                                {rally.status}
-                            </Text>
-                        )}
-                    </View>
+                        </>
+                    )}
                 </View>
             </View>
         </>
@@ -87,6 +80,13 @@ const styles = StyleSheet.create({
     cardRow: {
         flexDirection: 'row',
     },
+    cardStatusRow: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        marginTop: 10,
+        marginLeft: 10,
+    },
     locationName: {
         fontWeight: 'bold',
         fontSize: 20,
@@ -105,5 +105,9 @@ const styles = StyleSheet.create({
     },
     indicators: {
         color: 'white',
+    },
+    rallyStatus: {
+        color: 'white',
+        fontWeight: 'bold',
     },
 });
