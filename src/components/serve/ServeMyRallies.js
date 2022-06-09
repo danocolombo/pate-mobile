@@ -40,31 +40,32 @@ const ServeMyRallies = () => {
                     <Text>Tap any event to see details.</Text>
                 </View>
             </View>
+            <ScrollView>
+                <View>
+                    {displayData.map((ral) => (
+                        <View key={ral.uid} style={{ margin: 10 }}>
+                            <Pressable
+                                onPress={() =>
+                                    navigation.navigate('RallyInfo', {
+                                        rallyId: ral.uid,
+                                    })
+                                }
+                            >
+                                <EventListCard
+                                    key={ral.uid}
+                                    // rallyId={ral.uid}
+                                    rally={ral}
+                                    // date={ral.eventDate}
+                                    // locationName={ral.name}
+                                    // city={ral.city}
+                                    // stateProv={ral.stateProv}
+                                />
+                            </Pressable>
+                        </View>
+                    ))}
+                </View>
 
-            <View>
-                {displayData.map((ral) => (
-                    <View key={ral.uid} style={{ margin: 10 }}>
-                        <Pressable
-                            onPress={() =>
-                                navigation.navigate('RallyInfo', {
-                                    rallyId: ral.uid,
-                                })
-                            }
-                        >
-                            <EventListCard
-                                key={ral.uid}
-                                // rallyId={ral.uid}
-                                rally={ral}
-                                // date={ral.eventDate}
-                                // locationName={ral.name}
-                                // city={ral.city}
-                                // stateProv={ral.stateProv}
-                            />
-                        </Pressable>
-                    </View>
-                ))}
-            </View>
-            {/* <View style={styles.buttonContainer}>
+                {/* <View style={styles.buttonContainer}>
                 <CustomButton
                     title='Create New Event'
                     graphic={null}
@@ -75,20 +76,21 @@ const ServeMyRallies = () => {
                     }
                 />
             </View> */}
-            <View style={styles.buttonContainer}>
-                <CustomButton
-                    title='New Event Flow'
-                    graphic={null}
-                    cbStyles={{ backgroundColor: 'green', color: 'white' }}
-                    txtColor='white'
-                    onPress={() =>
-                        navigation.navigate('RallyEditFlow', {
-                            rallyId: 0,
-                            stage: 1,
-                        })
-                    }
-                />
-            </View>
+                <View style={styles.buttonContainer}>
+                    <CustomButton
+                        title='New Event Flow'
+                        graphic={null}
+                        cbStyles={{ backgroundColor: 'green', color: 'white' }}
+                        txtColor='white'
+                        onPress={() =>
+                            navigation.navigate('RallyEditFlow', {
+                                rallyId: 0,
+                                stage: 1,
+                            })
+                        }
+                    />
+                </View>
+            </ScrollView>
         </View>
     );
 };

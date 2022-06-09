@@ -28,7 +28,23 @@ const RallyDetails = ({ rallyId }) => {
             <View style={styles.buttonContainer}></View>
             {user.uid === rally.coordinator.id ? (
                 <View>
-                    <Text>MINE</Text>
+                    <View style={styles.buttonContainer}>
+                        <CustomButton
+                            title='Edit This Event'
+                            graphic={null}
+                            cbStyles={{
+                                backgroundColor: 'green',
+                                color: 'white',
+                            }}
+                            txtColor='white'
+                            onPress={() =>
+                                navigation.navigate('RallyEditFlow', {
+                                    rallyId: rally.uid,
+                                    stage: 1,
+                                })
+                            }
+                        />
+                    </View>
                 </View>
             ) : null}
         </>

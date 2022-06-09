@@ -50,29 +50,30 @@ const ServeMyRallies = () => {
                     <Text>All {stateName} Events</Text>
                 </View>
             </View>
-
-            <View>
-                {displayData.map((ral) => (
-                    <View key={ral.uid} style={{ margin: 10 }}>
-                        <Pressable
-                            onPress={() =>
-                                navigation.navigate('RallyInfo', {
-                                    rallyId: ral.uid,
-                                })
-                            }
-                        >
-                            <EventListCard
-                                key={ral.uid}
-                                rally={ral}
-                                // date={ral.eventDate}
-                                // locationName={ral.name}
-                                // city={ral.city}
-                                // stateProv={ral.stateProv}
-                            />
-                        </Pressable>
-                    </View>
-                ))}
-            </View>
+            <ScrollView>
+                <View>
+                    {displayData.map((ral) => (
+                        <View key={ral.uid} style={{ margin: 10 }}>
+                            <Pressable
+                                onPress={() =>
+                                    navigation.navigate('RallyInfo', {
+                                        rallyId: ral.uid,
+                                    })
+                                }
+                            >
+                                <EventListCard
+                                    key={ral.uid}
+                                    rally={ral}
+                                    // date={ral.eventDate}
+                                    // locationName={ral.name}
+                                    // city={ral.city}
+                                    // stateProv={ral.stateProv}
+                                />
+                            </Pressable>
+                        </View>
+                    ))}
+                </View>
+            </ScrollView>
         </View>
     );
 };
