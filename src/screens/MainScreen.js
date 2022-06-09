@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { ALL_EVENTS } from '../../data/getRegionalEvents';
@@ -11,12 +12,11 @@ import LoadingOverlay from '../components/ui/LoadingOverlay';
 import RalliesOutput from '../components/rallies/RalliesOutput';
 import { UserInterfaceIdiom } from 'expo-constants';
 import { printObject } from '../utils/helpers';
+import { ScrollView } from 'react-native';
 export default function MainScreen() {
-    //   -!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    const DEBUG = true;
     const dispatch = useDispatch();
     const fetchApprovedPublicEvents = async () => {
-        if (DEBUG) {
+        if (process.env.ENV === 'DEBUG') {
             console.log('DEBUG SET !!');
 
             const rallies = ALL_EVENTS.body.Items;
@@ -26,18 +26,15 @@ export default function MainScreen() {
 
             return response;
         } else {
-            const response = await fetch(
-                'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events',
-                {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        operation: 'getAllActiveApprovedEvents',
-                    }),
-                    headers: {
-                        'Content-type': 'application/json; charset=UTF-8',
-                    },
-                }
-            );
+            const response = await fetch(process.env.API_ENDPOINT, {
+                method: 'POST',
+                body: JSON.stringify({
+                    operation: 'getAllActiveApprovedEvents',
+                }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            });
             return response.json();
         }
     };

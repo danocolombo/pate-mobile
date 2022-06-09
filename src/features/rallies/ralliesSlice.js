@@ -8,21 +8,18 @@ export const loadUserRallies = createAsyncThunk(
             let response;
             console.log('userId', userId);
             const fetchRepEvents = async (userId) => {
-                response = await fetch(
-                    'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events',
-                    {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            operation: 'getEventsForRep',
-                            payload: {
-                                uid: userId,
-                            },
-                        }),
-                        headers: {
-                            'Content-type': 'application/json; charset=UTF-8',
+                response = await fetch(process.env.API_ENDPOINT, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        operation: 'getEventsForRep',
+                        payload: {
+                            uid: userId,
                         },
-                    }
-                );
+                    }),
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                });
             };
             await fetchRepEvents(userId);
             printObject('fetchResponse', response);

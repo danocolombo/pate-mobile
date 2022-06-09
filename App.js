@@ -30,6 +30,8 @@ import RegisterScreen from './src/screens/RegisterScreen';
 import { Colors } from './src/constants/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+// require('dotenv').config();
+// console.log(process.env); // remove this after you've confirmed it working
 function CustomDrawerContent(props) {
     return (
         <DrawerContentScrollView {...props}>
