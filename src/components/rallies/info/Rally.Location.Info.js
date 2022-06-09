@@ -10,17 +10,17 @@ import {
     useTheme,
 } from 'react-native-paper';
 import { printObject } from '../../../utils/helpers';
-const RallyLocationInfo = ({ rallyId }) => {
+const RallyLocationInfo = ({ rally }) => {
     let rallyEntry;
-    let rally;
-    if (rallyId.id === '') {
-        rally = rallyId;
-    } else {
-        rallyEntry = useSelector((state) =>
-            state.rallies.publicRallies.filter((r) => r.uid === rallyId)
-        );
-        rally = rallyEntry[0];
-    }
+    // let rally;
+    // if (rallyId.id === '') {
+    //     rally = rallyId;
+    // } else {
+    //     rallyEntry = useSelector((state) =>
+    //         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+    //     );
+    //     rally = rallyEntry[0];
+    // }
     // printObject('LOCATION_INFO rally', rally);
 
     return (
