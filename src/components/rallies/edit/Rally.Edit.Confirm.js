@@ -59,13 +59,13 @@ const RallyNewConfirmation = () => {
     printObject('newRally', newRally);
     function handleConfirmation(newRally) {
         // printObject('SAVING', newRally);
-        if ((DEBUG = true)) {
-            newRally.uid = '86e55ed48c7c6bd0b2f373790dabc123';
-            dispatch(addNewRally(newRally));
-            navigation.navigate('Serve', null);
-        }
+        // if ((DEBUG = true)) {
+        //     newRally.uid = '86e55ed48c7c6bd0b2f373790dabc123';
+        //     dispatch(addNewRally(newRally));
+        //     navigation.navigate('Serve', null);
+        // }
         putRally(newRally, user).then((response) => {
-            // console.log('submitted rally', newRally);
+            console.log('submitted rally', newRally);
             dispatch(addNewRally(response.Item));
             navigation.navigate('Serve', null);
         });

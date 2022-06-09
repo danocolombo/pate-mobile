@@ -68,11 +68,8 @@ export const ralliesSlice = createSlice({
             return found;
         },
         addNewRally: (state, action) => {
-            printObject('SLICEaction', action);
             let statePublicRallies = state.publicRallies;
-            printObject('SLICEstatePublicRallies', statePublicRallies);
             statePublicRallies.push(action.payload);
-            printObject('SLICEstatePublicRalliesPUSHED', statePublicRallies);
             // ascending sort
             function asc_sort(a, b) {
                 return (
