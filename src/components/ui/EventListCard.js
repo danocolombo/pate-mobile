@@ -9,11 +9,29 @@ import { printObject } from '../../utils/helpers';
 // function EventListCard({ date, locationName, city, stateProv }) {
 function EventListCard({ rally }) {
     const user = useSelector((state) => state.users.currentUser);
-
+    let bgStyle;
+    if (user.uid === rally.coordinator.id) {
+        bgStyle = 'styles.cardBackGroundMine';
+    } else {
+        bgStyle = 'styles.cardBackGroundNotMine';
+    }
+    let mine;
+    if (rally.coordinator.id === user.uid) {
+        mine = true;
+    } else {
+        mine = false;
+    }
     printObject('rally', rally);
     return (
         <>
-            <View style={styles.cardBackground}>
+            <View
+                style={[
+                    styles.cardBackground,
+                    mine
+                        ? styles.cardBackGroundMine
+                        : styles.cardBackGroundNotMine,
+                ]}
+            >
                 <View style={styles.cardRow}>
                     <View>
                         <CardDate date={rally.eventDate} />
@@ -59,7 +77,12 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingVertical: 10,
         paddingHorizontal: 12,
+    },
+    cardBackGroundMine: {
         backgroundColor: Colors.secondary,
+    },
+    cardBackGroundNotMine: {
+        backgroundColor: Colors.gray35,
     },
     cardRow: {
         flexDirection: 'row',

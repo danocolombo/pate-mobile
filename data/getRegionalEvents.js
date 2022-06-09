@@ -17,7 +17,7 @@ export const ALL_EVENTS = {
                     phone: '2329329999',
                     email: 'Bruno@work.com',
                 },
-                status: 'draft',
+                status: 'public',
                 eventRegion: 'test',
                 message: '',
                 stateProv: 'TT',
