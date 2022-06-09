@@ -17,7 +17,7 @@ const RallyNewConfirmation = () => {
     const user = useSelector((state) => state.users.currentUser);
     // const tmp = useSelector((state) => state.rallies.tmpRally);
     let rally = useSelector((state) => state.rallies.tmpRally);
-    printObject('CONFIRMING rally ++++++++++++++++++++++++', rally);
+    // printObject('CONFIRMING rally ++++++++++++++++++++++++', rally);
     let rallyBasic = {};
     //--- need to add the basics for an add ----
     rallyBasic.status = 'draft';
@@ -56,7 +56,7 @@ const RallyNewConfirmation = () => {
 
     let newRally = { ...rally, ...rallyBasic };
     // printObject('CONFIRMING tmpRally:', rally);
-    printObject('newRally', newRally);
+    // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
         // printObject('SAVING', newRally);
         // if ((DEBUG = true)) {

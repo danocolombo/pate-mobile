@@ -46,7 +46,7 @@ export default function RallyContactForm({ rallyId }) {
             stage: 4,
         });
     };
-    printObject('2. tmpRally:', tmp);
+    // printObject('2. tmpRally:', tmp);
     return (
         <View>
             <ScrollView>

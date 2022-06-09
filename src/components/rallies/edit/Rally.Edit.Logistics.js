@@ -43,7 +43,7 @@ export default function RallyLogisticsForm({ rallyId }) {
             stage: 3,
         });
     };
-    printObject('1. tmpRally:', tmp);
+    // printObject('1. tmpRally:', tmp);
     return (
         <View>
             <ScrollView>
