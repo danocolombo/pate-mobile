@@ -8,32 +8,29 @@ import RallyMealInfo from './Rally.Meal.Info';
 import CustomButton from '../../ui/CustomButton';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
+import { faCropSimple } from '@fortawesome/free-solid-svg-icons';
 
 const RallyDetails = ({ rallyId }) => {
     const navigation = useNavigation();
+    const user = useSelector((state) => state.users.currentUser);
     const rallyEntry = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
+    printObject('User------', user);
+    printObject('rally---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', rally);
     return (
         <>
             <RallyLocationInfo rally={rally} />
-            <RallyLogisticsInfo rallyId={rallyId} />
-            <RallyContactInfo rallyId={rallyId} />
-            <RallyMealInfo rallyId={rallyId} />
-            <View style={styles.buttonContainer}>
-                {/* <CustomButton
-                    title='Edit Event'
-                    graphic={null}
-                    cbStyles={{ backgroundColor: 'green', color: 'white' }}
-                    onPress={() =>
-                        navigation.navigate('RallyEditFlow', {
-                            rallyId: rallyId,
-                            stage: 1,
-                        })
-                    }
-                /> */}
-            </View>
+            <RallyLogisticsInfo rally={rally} />
+            <RallyContactInfo rally={rally} />
+            <RallyMealInfo rally={rally} />
+            <View style={styles.buttonContainer}></View>
+            {user.uid === rally.coordinator.id ? (
+                <View>
+                    <Text>MINE</Text>
+                </View>
+            ) : null}
         </>
     );
 };

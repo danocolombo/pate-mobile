@@ -1,28 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import {
-    Text,
-    Surface,
-    Headline,
-    Title,
-    Subheading,
-    useTheme,
-} from 'react-native-paper';
-import { printObject } from '../../../utils/helpers';
-const RallyMealInfo = ({ rallyId }) => {
-    let rallyEntry;
-    let rally;
-    if (rallyId.id === '') {
-        //rally = useSelector((state) => state.rallies.tmpRally);
-        rally = rallyId;
-    } else {
-        rallyEntry = useSelector((state) =>
-            state.rallies.publicRallies.filter((r) => r.uid === rallyId)
-        );
-        rally = rallyEntry[0];
-    }
-    //printObject('MEAL rally', rally);
+import { Surface, Headline, Subheading } from 'react-native-paper';
+const RallyMealInfo = ({ rally }) => {
     return (
         <>
             <View style={styles.rootContainer}>
