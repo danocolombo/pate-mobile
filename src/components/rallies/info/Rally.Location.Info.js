@@ -1,28 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import {
-    Text,
-    Surface,
-    Headline,
-    Title,
-    Subheading,
-    useTheme,
-} from 'react-native-paper';
-import { printObject } from '../../../utils/helpers';
+import { Surface, Headline, Subheading } from 'react-native-paper';
 const RallyLocationInfo = ({ rally }) => {
-    let rallyEntry;
-    // let rally;
-    // if (rallyId.id === '') {
-    //     rally = rallyId;
-    // } else {
-    //     rallyEntry = useSelector((state) =>
-    //         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
-    //     );
-    //     rally = rallyEntry[0];
-    // }
-    // printObject('LOCATION_INFO rally', rally);
-
     return (
         <>
             <View style={styles.rootContainer}>
