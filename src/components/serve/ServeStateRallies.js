@@ -9,7 +9,7 @@ import { getStateRallies } from '../../features/rallies/ralliesSlice';
 import { StateProvs } from '../../constants/geo';
 import { Pressable } from 'react-native';
 import { printObject, asc_sort_raw, desc_sort_raw } from '../../utils/helpers';
-import { sl } from 'date-fns/locale';
+// import { sl } from 'date-fns/locale';
 const ServeMyRallies = () => {
     const dispatch = useDispatch();
     let me = useSelector((state) => state.users.currentUser);
@@ -62,11 +62,12 @@ const ServeMyRallies = () => {
                             }
                         >
                             <EventListCard
-                                key={ral.eventDate}
-                                date={ral.eventDate}
-                                locationName={ral.name}
-                                city={ral.city}
-                                stateProv={ral.stateProv}
+                                key={ral.uid}
+                                rally={ral}
+                                // date={ral.eventDate}
+                                // locationName={ral.name}
+                                // city={ral.city}
+                                // stateProv={ral.stateProv}
                             />
                         </Pressable>
                     </View>

@@ -43,7 +43,7 @@ export default function RallyLocationForm({ rallyId }) {
     const rally = rallyEntry[0];
     const handleNext = (values) => {
         // gather data
-        console.log('in handleNext');
+        // console.log('in handleNext');
         dispatch(createTmp(values));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,

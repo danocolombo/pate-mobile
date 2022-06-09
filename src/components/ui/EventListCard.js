@@ -1,21 +1,50 @@
 import { Text, TextInput, View, StyleSheet } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { Card } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import CardDate from './RallyCardDateStack';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { printObject } from '../../utils/helpers';
 
-function EventListCard({ date, locationName, city, stateProv }) {
+// function EventListCard({ date, locationName, city, stateProv }) {
+function EventListCard({ rally }) {
+    const user = useSelector((state) => state.users.currentUser);
+
+    printObject('rally', rally);
     return (
         <>
             <View style={styles.cardBackground}>
                 <View style={styles.cardRow}>
                     <View>
-                        <CardDate date={date} />
+                        <CardDate date={rally.eventDate} />
                     </View>
                     <View style={styles.locationName}>
-                        <Text style={styles.locationName}>{locationName}</Text>
+                        <Text style={styles.locationName}>{rally.name}</Text>
                         <Text style={styles.geo}>
-                            {city}, {stateProv}
+                            {rally.city}, {rally.stateProv}
                         </Text>
+                    </View>
+                    <View style={styles.indicatorContainer}>
+                        <Text style={styles.indicators}>
+                            {rally.approved ? (
+                                <Ionicons
+                                    name='checkmark-circle-outline'
+                                    size={32}
+                                    // color='blue'
+                                />
+                            ) : (
+                                <Ionicons name='ellipse-outline' size={32} />
+                            )}
+                        </Text>
+                        {rally.approved === false ? (
+                            <Text style={styles.indicators}>
+                                {rally.status}
+                            </Text>
+                        ) : (
+                            <Text style={styles.indicators}>
+                                {rally.status}
+                            </Text>
+                        )}
                     </View>
                 </View>
             </View>
@@ -46,5 +75,12 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         color: 'white',
         fontSize: 16,
+    },
+    indicatorContainer: {
+        flex: 1,
+        alignItems: 'flex-end',
+    },
+    indicators: {
+        color: 'white',
     },
 });

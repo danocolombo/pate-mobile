@@ -52,17 +52,19 @@ const ServeMyRallies = () => {
                             }
                         >
                             <EventListCard
-                                key={ral.eventDate}
-                                date={ral.eventDate}
-                                locationName={ral.name}
-                                city={ral.city}
-                                stateProv={ral.stateProv}
+                                key={ral.uid}
+                                // rallyId={ral.uid}
+                                rally={ral}
+                                // date={ral.eventDate}
+                                // locationName={ral.name}
+                                // city={ral.city}
+                                // stateProv={ral.stateProv}
                             />
                         </Pressable>
                     </View>
                 ))}
             </View>
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
                 <CustomButton
                     title='Create New Event'
                     graphic={null}
@@ -72,7 +74,7 @@ const ServeMyRallies = () => {
                         navigation.navigate('ServeRallyForm', { rally: null })
                     }
                 />
-            </View>
+            </View> */}
             <View style={styles.buttonContainer}>
                 <CustomButton
                     title='New Event Flow'
