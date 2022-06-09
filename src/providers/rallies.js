@@ -10,18 +10,15 @@ const config = {
 };
 export async function fetchActiveApprovedRallies() {
     const [plans, setPlans] = useState();
-    await fetch(
-        'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events',
-        {
-            method: 'POST',
-            body: JSON.stringify({
-                operation: 'getAllActiveApprovedEvents',
-            }),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-        }
-    )
+    await fetch(process.env.API_ENDPOINT, {
+        method: 'POST',
+        body: JSON.stringify({
+            operation: 'getAllActiveApprovedEvents',
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        },
+    })
         .then((response) => response.json())
         .then((data) => {
             printObject('data.body', data.body);
@@ -30,21 +27,18 @@ export async function fetchActiveApprovedRallies() {
         });
 }
 export async function getAllEventsForCoordinator(uid) {
-    await fetch(
-        'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events',
-        {
-            method: 'POST',
-            body: JSON.stringify({
-                operation: 'getEventsForRep',
-                payload: {
-                    uid: uid,
-                },
-            }),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
+    await fetch(process.env.API_ENDPOINT, {
+        method: 'POST',
+        body: JSON.stringify({
+            operation: 'getEventsForRep',
+            payload: {
+                uid: uid,
             },
-        }
-    )
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        },
+    })
         .then((response) => response.json())
         .then((data) => {
             return data;
@@ -138,8 +132,7 @@ export async function putRally(rally, user) {
     let body = JSON.stringify(obj);
     printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
     console.log('\n###########################\n');
-    let api2use =
-        'https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA/events';
+    let api2use = process.env.API_ENDPOINT;
 
     let res = await axios.post(api2use, body, config);
     console.log('WANT TO RETURN.....', res);
