@@ -1,14 +1,17 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import EventListCard from '../ui/EventListCard';
 import P8Button from '../ui/P8Button';
 import CustomButton from '../ui/CustomButton';
+import { getStateRallies } from '../../features/rallies/ralliesSlice';
 import { StateProvs } from '../../constants/geo';
 import { Pressable } from 'react-native';
-import { printObject } from '../../utils/helpers';
+import { printObject, asc_sort_raw, desc_sort_raw } from '../../utils/helpers';
+import { sl } from 'date-fns/locale';
 const ServeMyRallies = () => {
+    const dispatch = useDispatch();
     let me = useSelector((state) => state.users.currentUser);
     const stateName = StateProvs.map((s) => {
         if (s.symbol === me.stateRep) {
@@ -19,10 +22,24 @@ const ServeMyRallies = () => {
     const stateRallies = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.stateProv === me.stateRep)
     );
+    let displayData;
+    async function sortRallies() {
+        displayData = stateRallies.sort(asc_sort_raw);
+        // return displayData;
+    }
+    sortRallies()
+        .then((results) => {
+            //printObject('diplayData-sorted', displayData);
+        })
+        .catch((err) => {
+            console.log('error sorting', err);
+        });
     const navigation = useNavigation();
     const handleEventPress = (e) => {
         printObject('event', e);
     };
+    let sliceRallies = getStateRallies();
+    printObject('sliceRallies', sliceRallies);
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
@@ -35,7 +52,7 @@ const ServeMyRallies = () => {
             </View>
 
             <View>
-                {stateRallies.map((ral) => (
+                {displayData.map((ral) => (
                     <View key={ral.uid} style={{ margin: 10 }}>
                         <Pressable
                             onPress={() =>

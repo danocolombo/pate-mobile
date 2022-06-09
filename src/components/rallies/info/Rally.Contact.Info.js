@@ -11,11 +11,18 @@ import {
 } from 'react-native-paper';
 import { printObject } from '../../../utils/helpers';
 const RallyContactInfo = ({ rallyId }) => {
-    const rallyEntry = useSelector((state) =>
-        state.rallies.publicRallies.filter((r) => r.uid === rallyId)
-    );
-    const rally = rallyEntry[0];
-    // printObject('rallyInfo', rally);
+    let rallyEntry;
+    let rally;
+    if (rallyId.id === '') {
+        //rally = useSelector((state) => state.rallies.tmpRally);
+        rally = rallyId;
+    } else {
+        rallyEntry = useSelector((state) =>
+            state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+        );
+        rally = rallyEntry[0];
+    }
+    // printObject('CONTACT rally:', rally);
     return (
         <>
             <View style={styles.rootContainer}>
@@ -24,9 +31,9 @@ const RallyContactInfo = ({ rallyId }) => {
                         <Headline>Contact Information</Headline>
                     </View>
                     <View style={styles.textWrapper}>
-                        <Subheading>{rally.contact.name}</Subheading>
-                        <Subheading>{rally.contact.phone}</Subheading>
-                        <Subheading>{rally.contact.email}</Subheading>
+                        <Subheading>{rally?.contact?.name}</Subheading>
+                        <Subheading>{rally?.contact?.phone}</Subheading>
+                        <Subheading>{rally?.contact?.email}</Subheading>
                     </View>
                 </Surface>
             </View>

@@ -18,7 +18,7 @@ const RallyDetails = ({ rallyId }) => {
             <RallyContactInfo rallyId={rallyId} />
             <RallyMealInfo rallyId={rallyId} />
             <View style={styles.buttonContainer}>
-                <CustomButton
+                {/* <CustomButton
                     title='Edit Event'
                     graphic={null}
                     cbStyles={{ backgroundColor: 'green', color: 'white' }}
@@ -28,7 +28,7 @@ const RallyDetails = ({ rallyId }) => {
                             stage: 1,
                         })
                     }
-                />
+                /> */}
             </View>
         </>
     );

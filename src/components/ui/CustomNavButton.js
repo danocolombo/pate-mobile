@@ -1,6 +1,7 @@
 import { View, Button, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { printObject } from '../../utils/helpers';
 import { FontAwesome5 } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 const CustomButton = (props) => {
     const { onPress, graphic, title, cbStyles, txtColor } = props;
     //const { iconName, iconColor, iconSize } = props.icon;
@@ -9,12 +10,7 @@ const CustomButton = (props) => {
     let theGraphics;
     graphic?.name
         ? (theGraphics = (
-              <FontAwesome5
-                  style={styles.buttonFont}
-                  name={graphic.name}
-                  size={graphic.size}
-                  color={graphic.color}
-              />
+              <Ionicons name='md-checkmark-circle' size={32} color='green' />
           ))
         : null;
 
@@ -23,12 +19,17 @@ const CustomButton = (props) => {
             onPress={onPress}
             style={[styles.appButtonContainer, cbStyles]}
         >
-            <View style={{ alignItems: 'center' }}>
-                <Text style={[styles.appButtonText, cbStyles]}>
-                    {title}
-                    {spaces}
-                    {theGraphics}
-                </Text>
+            <View style={styles.content}>
+                <View style={styles.text}>
+                    <Text style={styles.appButtonText}>{title}</Text>
+                </View>
+                <View style={styles.icon}>
+                    <Ionicons
+                        name='arrow-forward-circle'
+                        size={24}
+                        color='white'
+                    />
+                </View>
             </View>
         </TouchableOpacity>
     );
@@ -39,14 +40,22 @@ const styles = StyleSheet.create({
         // elevation: 8,
         width: '80%',
         borderRadius: 10,
-        paddingVertical: 10,
+        paddingVertical: 0,
         paddingHorizontal: 12,
         alignItems: 'center',
+        justifyContent: 'center',
     },
+    content: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
     appButtonText: {
         fontSize: 18,
-        // color: 'white',
+        color: 'white',
+        paddingVertical: 10,
         fontWeight: 'bold',
+        marginRight: 10,
         textTransform: 'uppercase',
     },
     buttonFont: {

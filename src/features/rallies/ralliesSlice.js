@@ -47,10 +47,13 @@ export const ralliesSlice = createSlice({
     initialState,
     reducers: {
         createTmp: (state, action) => {
+            state.tmpRally = {};
             state.tmpRally = action.payload;
         },
         updateTmp: (state, action) => {
-            state.tmpRally = [...state.tmpRally, action.payload];
+            const newTmp = Object.assign(state.tmpRally, action.payload);
+            state.tmpRally = newTmp;
+            return state;
         },
         // loadUserRallies: (state, action) => {
         //     state.userRallies = action.payload;
@@ -65,8 +68,8 @@ export const ralliesSlice = createSlice({
             return found;
         },
         addNewRally: (state, action) => {
-            const bigger = [...state.publicRallies, action.payload];
-
+            let statePublicRallies = state.publicRallies;
+            statePublicRallies.push(action.payload);
             // ascending sort
             function asc_sort(a, b) {
                 return (
@@ -74,10 +77,15 @@ export const ralliesSlice = createSlice({
                     new Date(b.eventDate).getTime()
                 );
             }
-            let newBigger = bigger.sort(asc_sort);
+            let newBigger = statePublicRallies.sort(asc_sort);
             state.activeMeetings = newBigger;
             // return
             return state;
+        },
+        getStateRallies: (state, action) => {
+            // this takes the payload to get the stateProv
+            // then sorts desc (latest first, then oldest last)
+            return state.publicRallies;
         },
         // loadUserRallies: (state, action) => {
         //     state.userRallies = action.payload;
@@ -121,6 +129,7 @@ export const {
     // loadUserRallies,
     createTmp,
     updateTmp,
+    getStateRallies,
     increment,
     decrement,
     incrementByAmount,

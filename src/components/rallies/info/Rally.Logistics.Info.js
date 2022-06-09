@@ -11,11 +11,19 @@ import {
 } from 'react-native-paper';
 import { printObject } from '../../../utils/helpers';
 const RallyLogisticsInfo = ({ rallyId }) => {
-    const rallyEntry = useSelector((state) =>
-        state.rallies.publicRallies.filter((r) => r.uid === rallyId)
-    );
-    const rally = rallyEntry[0];
-    // printObject('rallyInfo', rally);
+    let rallyEntry;
+    let rally;
+    if (rallyId.id === '') {
+        //rally = useSelector((state) => state.rallies.tmpRally);
+        rally = rallyId;
+    } else {
+        rallyEntry = useSelector((state) =>
+            state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+        );
+        rally = rallyEntry[0];
+    }
+    // console.log('rallyId:', rallyId);
+    // printObject('in Logistics----', rally);
     return (
         <>
             <View style={styles.rootContainer}>
@@ -24,9 +32,9 @@ const RallyLogisticsInfo = ({ rallyId }) => {
                         <Headline>Logistics Information</Headline>
                     </View>
                     <View style={styles.textWrapper}>
-                        <Subheading>{rally.eventDate}</Subheading>
-                        <Subheading>{rally.startTime}</Subheading>
-                        <Subheading>{rally.endTime}</Subheading>
+                        <Subheading>{rally?.eventDate}</Subheading>
+                        <Subheading>{rally?.startTime}</Subheading>
+                        <Subheading>{rally?.endTime}</Subheading>
                     </View>
                 </Surface>
             </View>

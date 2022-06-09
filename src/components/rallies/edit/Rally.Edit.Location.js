@@ -9,18 +9,20 @@ import {
     ScrollView,
 } from 'react-native';
 import { Headline } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
 // import { putRally } from '../../providers/rallies';
-// import { addNewRally } from '../../features/rallies/ralliesSlice.js';
+import { createTmp } from '../../../features/rallies/ralliesSlice';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import CustomButton from '../../ui/CustomButton';
+import CustomNavButton from '../../ui/CustomNavButton';
+import { printObject } from '../../../utils/helpers';
 
 // create validation schema for yup to pass to formik
 const rallyLocationSchema = yup.object({
-    locationName: yup.string().required().min(5),
+    name: yup.string().required().min(5),
     street: yup.string(),
     city: yup.string().required().min(2),
     stateProv: yup.string().required().min(2).max(2),
@@ -33,11 +35,21 @@ const rallyLocationSchema = yup.object({
 });
 
 export default function RallyLocationForm({ rallyId }) {
-    console.log('EDIT:rallyId', rallyId);
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
     const rallyEntry = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
+    const handleNext = (values) => {
+        // gather data
+        console.log('in handleNext');
+        dispatch(createTmp(values));
+        navigation.navigate('RallyEditFlow', {
+            rallyId: rallyId,
+            stage: 2,
+        });
+    };
     // const dispatch = useDispatch();
     return (
         <View>
@@ -47,7 +59,7 @@ export default function RallyLocationForm({ rallyId }) {
                         <ScrollView>
                             <Formik
                                 initialValues={{
-                                    locationName: rally?.name ? rally.name : '',
+                                    name: rally?.name ? rally.name : '',
                                     street: rally?.street ? rally.street : '',
                                     city: rally?.city ? rally.city : '',
                                     stateProv: rally?.stateProv
@@ -58,15 +70,9 @@ export default function RallyLocationForm({ rallyId }) {
                                         : '',
                                 }}
                                 validationSchema={rallyLocationSchema}
-                                // onSubmit={async (values, actions) => {
-                                //     actions.resetForm();
-                                //     await putRally(values);
-                                //     dispatch(addNewRally, actions);
-                                //     console.log(
-                                //         'these values were saved: \n',
-                                //         values
-                                //     );
-                                // }}
+                                onSubmit={async (values, actions) => {
+                                    handleNext(values);
+                                }}
                             >
                                 {(formikProps) => (
                                     <>
@@ -80,22 +86,20 @@ export default function RallyLocationForm({ rallyId }) {
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Location Name'
+                                                    autocomplete='off'
                                                     onChangeText={formikProps.handleChange(
-                                                        'locationName'
+                                                        'name'
                                                     )}
                                                     value={
-                                                        formikProps.values
-                                                            .locationName
+                                                        formikProps.values.name
                                                     }
                                                     onBlur={formikProps.handleBlur(
-                                                        'locationName'
+                                                        'name'
                                                     )}
                                                 />
                                                 <Text style={styles.errorText}>
-                                                    {formikProps.touched
-                                                        .locationName &&
-                                                        formikProps.errors
-                                                            .locationName}
+                                                    {formikProps.touched.name &&
+                                                        formikProps.errors.name}
                                                 </Text>
                                                 <TextInput
                                                     style={styles.input}
@@ -244,27 +248,25 @@ export default function RallyLocationForm({ rallyId }) {
                                                         </View>
                                                     </View>
                                                 </View>
-                                                <View
-                                                    style={
-                                                        styles.buttonContainer
-                                                    }
-                                                >
-                                                    <CustomButton
-                                                        title='Next'
-                                                        graphic={{
-                                                            name: 'forward',
-                                                            color: 'white',
-                                                            size: 15,
-                                                        }}
-                                                        cbStyles={{
-                                                            backgroundColor:
-                                                                'green',
-                                                            color: 'white',
-                                                            width: '50%',
-                                                        }}
-                                                    />
-                                                </View>
                                             </View>
+                                        </View>
+                                        <View style={styles.buttonContainer}>
+                                            <CustomNavButton
+                                                title='Next'
+                                                graphic={{
+                                                    name: 'forward',
+                                                    color: 'white',
+                                                    size: 10,
+                                                }}
+                                                cbStyles={{
+                                                    backgroundColor: 'green',
+                                                    color: 'white',
+                                                    width: '50%',
+                                                }}
+                                                onPress={
+                                                    formikProps.handleSubmit
+                                                }
+                                            />
                                         </View>
                                     </>
                                 )}
