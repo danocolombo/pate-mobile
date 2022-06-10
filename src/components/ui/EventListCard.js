@@ -1,6 +1,7 @@
 import { Text, TextInput, View, StyleSheet } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
+import { Chip } from '@react-native-material/core';
 import { Card } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import CardDate from './RallyCardDateStack';
@@ -61,7 +62,24 @@ function EventListCard({ rally, deletePress }) {
                     ) : (
                         <>
                             <Text style={styles.rallyStatus}>
-                                {rally.status}
+                                <Chip
+                                    variant={
+                                        rally.status === 'pending'
+                                            ? 'filled'
+                                            : 'outlined'
+                                    }
+                                    backgroundColor={
+                                        rally.status === 'pending'
+                                            ? 'yellow'
+                                            : Colors.gray50
+                                    }
+                                    color={
+                                        rally.status === 'pending'
+                                            ? 'black'
+                                            : 'white'
+                                    }
+                                    label={rally.status}
+                                />
                             </Text>
                         </>
                     )}
