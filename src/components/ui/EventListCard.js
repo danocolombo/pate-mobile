@@ -47,7 +47,7 @@ function EventListCard({ rally, deletePress }) {
                             name='trash'
                             color='black'
                             size={24}
-                            onPress={deletePress}
+                            onPress={() => deletePress(rally)}
                         />
                     </View>
                 </View>

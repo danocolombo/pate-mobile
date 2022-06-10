@@ -1,15 +1,20 @@
 import { StyleSheet, Text, View, ScrollView, Modal } from 'react-native';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import { Subheading, Surface } from 'react-native-paper';
 import EventListCard from '../ui/EventListCard';
-import P8Button from '../ui/P8Button';
+import RallyLocationInfo from '../rallies/info/Rally.Location.Info';
+import { deleteRally } from '../../features/rallies/ralliesSlice';
 import CustomButton from '../ui/CustomButton';
 import { Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { printObject, asc_sort, desc_sort } from '../../utils/helpers';
+import { Colors } from '../../constants/colors';
 const ServeMyRallies = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [rally, setRally] = useState();
+    const dispatch = useDispatch();
     let me = useSelector((state) => state.users.currentUser);
     let rallies = useSelector((state) => state.rallies.publicRallies);
     const myRallies = useSelector((state) =>
@@ -29,8 +34,19 @@ const ServeMyRallies = () => {
         });
 
     const navigation = useNavigation();
-    const handleDeleteRequest = () => {
+    const handleDeleteConfirm = (rally) => {
+        if (process.env.ENV === 'DEBUG') {
+            console.log('DEBUG DELETE REQUEST');
+            dispatch(deleteRally(rally));
+        } else {
+            console.log('Delete Rquest - not implemented yet. [20220610.40]');
+            //Need to do dispatch above AFTER database update
+        }
+        setShowDeleteConfirm(false);
+    };
+    const handleDeleteRequest = (rally) => {
         setShowDeleteConfirm(true);
+        setRally(rally);
     };
     const handleEventPress = (e) => {
         printObject('event', e);
@@ -38,14 +54,46 @@ const ServeMyRallies = () => {
     return (
         <View style={styles.rootContainer}>
             <Modal visible={showDeleteConfirm} animationStyle='slide'>
-                <View style={styles.modalContainer}>
-                    <Ionicons
-                        name='close'
-                        size={32}
-                        color='black'
-                        onPress={() => setShowDeleteConfirm(false)}
-                    />
-                </View>
+                <Surface style={styles.modalSurface}>
+                    <View>
+                        <Text style={styles.modalTitle}>
+                            Confirm You Want To Delete
+                        </Text>
+                        <RallyLocationInfo rally={rally} />
+                    </View>
+                    <View style={styles.modalButtonContainer}>
+                        <View style={styles.modalButtonWrapper}>
+                            <View style={styles.modalConfirmButton}>
+                                <CustomButton
+                                    title='CANCEL'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: Colors.gray35,
+                                        color: 'black',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() => setShowDeleteConfirm(false)}
+                                />
+                            </View>
+                        </View>
+                        <View style={styles.modalButtonWrapper}>
+                            <View style={styles.modalCancelButton}>
+                                <CustomButton
+                                    title='DELETE'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: 'red',
+                                        color: 'white',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() => {
+                                        handleDeleteConfirm(rally);
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Surface>
             </Modal>
             <View style={styles.screenHeader}>
                 <Text style={styles.screenHeaderText}>Your Events</Text>
@@ -85,7 +133,12 @@ const ServeMyRallies = () => {
                 <CustomButton
                     title='ADD NEW EVENT'
                     graphic={null}
-                    cbStyles={{ backgroundColor: 'green', color: 'white' }}
+                    cbStyles={{
+                        backgroundColor: 'green',
+                        color: 'white',
+                        width: 200,
+                        textAlign: 'center',
+                    }}
                     txtColor='white'
                     onPress={() =>
                         navigation.navigate('RallyEditFlow', {
@@ -123,11 +176,31 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         elevation: 5,
     },
+
     buttonContainer: {
         alignItems: 'center',
     },
+
     modalContainer: {
         marginTop: 50,
-        alignSelf: 'flex-end',
+        // alignSelf: 'flex-end',
+    },
+    modalSurface: {
+        marginTop: 80,
+        marginHorizontal: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+    },
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+    modalButtonContainer: {
+        marginVertical: 20,
+        flexDirection: 'row',
+    },
+    modalButtonWrapper: {
+        marginHorizontal: 10,
     },
 });

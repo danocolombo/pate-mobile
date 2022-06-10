@@ -98,8 +98,15 @@ export const ralliesSlice = createSlice({
                 );
             }
             let newBigger = statePublicRallies.sort(asc_sort);
-            state.activeMeetings = newBigger;
+            state.publicRallies = newBigger;
             // return
+            return state;
+        },
+        deleteRally: (state, action) => {
+            const smaller = state.publicRallies.filter(
+                (ral) => ral.uid !== action.payload.uid
+            );
+            state.publicRallies = smaller;
             return state;
         },
         getStateRallies: (state, action) => {
@@ -147,6 +154,7 @@ export const {
     getRally,
     addNewRally,
     updateRally,
+    deleteRally,
     // loadUserRallies,
     createTmp,
     updateTmp,

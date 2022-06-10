@@ -1,6 +1,7 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
+import { printObject } from '../../../utils/helpers';
 const RallyLocationInfo = ({ rally }) => {
     return (
         <>
@@ -10,11 +11,11 @@ const RallyLocationInfo = ({ rally }) => {
                         <Headline>Rally Location Information</Headline>
                     </View>
                     <View style={styles.textWrapper}>
-                        <Subheading>{rally.name}</Subheading>
-                        <Subheading>{rally.street}</Subheading>
-                        <Subheading>{rally.city}</Subheading>
+                        <Subheading>{rally?.name}</Subheading>
+                        <Subheading>{rally?.street}</Subheading>
+                        <Subheading>{rally?.city}</Subheading>
                         <Subheading>
-                            {rally.stateProv}, {rally.postalCode}
+                            {rally?.stateProv}, {rally?.postalCode}
                         </Subheading>
                     </View>
                 </Surface>
