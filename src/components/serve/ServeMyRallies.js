@@ -40,7 +40,7 @@ const ServeMyRallies = () => {
             dispatch(deleteRally(rally));
         } else {
             console.log('Delete Rquest - not implemented yet. [20220610.40]');
-            //Need to do dispatch above AFTER database update
+            //todo ---- Need to do dispatch above AFTER database update
         }
         setShowDeleteConfirm(false);
     };

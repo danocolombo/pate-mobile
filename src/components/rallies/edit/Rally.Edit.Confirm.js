@@ -79,6 +79,7 @@ const RallyNewConfirmation = () => {
                 navigation.navigate('Serve', null);
             }
         } else {
+            //todo ---- above features need to be confirmed going to DDB
             if (newRally?.uid) {
                 putRally(newRally).then((response) => {
                     console.log('submitted rally', newRally);
