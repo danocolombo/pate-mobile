@@ -17,8 +17,8 @@ const RallyDetails = ({ rallyId }) => {
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
-    printObject('User------', user);
-    printObject('rally---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', rally);
+    // printObject('User------', user);
+    // printObject('rally---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', rally);
     return (
         <>
             <RallyLocationInfo rally={rally} />

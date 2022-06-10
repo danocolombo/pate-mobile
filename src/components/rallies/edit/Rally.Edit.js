@@ -35,7 +35,7 @@ const RallyEdit = ({ rallyId, stage }) => {
     } else if (stage === 5) {
         return (
             <>
-                <RallyNewConfirmation rallyId={'tmpRally'} />
+                <RallyNewConfirmation rallyId={rallyId} />
             </>
         );
     } else {

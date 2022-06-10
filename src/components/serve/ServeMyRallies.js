@@ -76,21 +76,21 @@ const ServeMyRallies = () => {
                     }
                 />
             </View> */}
-                <View style={styles.buttonContainer}>
-                    <CustomButton
-                        title='New Event Flow'
-                        graphic={null}
-                        cbStyles={{ backgroundColor: 'green', color: 'white' }}
-                        txtColor='white'
-                        onPress={() =>
-                            navigation.navigate('RallyEditFlow', {
-                                rallyId: 0,
-                                stage: 1,
-                            })
-                        }
-                    />
-                </View>
             </ScrollView>
+            <View style={styles.buttonContainer}>
+                <CustomButton
+                    title='ADD NEW EVENT'
+                    graphic={null}
+                    cbStyles={{ backgroundColor: 'green', color: 'white' }}
+                    txtColor='white'
+                    onPress={() =>
+                        navigation.navigate('RallyEditFlow', {
+                            rallyId: 0,
+                            stage: 1,
+                        })
+                    }
+                />
+            </View>
         </View>
     );
 };

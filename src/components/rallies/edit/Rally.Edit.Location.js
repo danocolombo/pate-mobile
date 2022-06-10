@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -14,7 +14,7 @@ import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
 // import { putRally } from '../../providers/rallies';
-import { createTmp } from '../../../features/rallies/ralliesSlice';
+import { createTmp, updateTmp } from '../../../features/rallies/ralliesSlice';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import CustomNavButton from '../../ui/CustomNavButton';
@@ -37,14 +37,29 @@ const rallyLocationSchema = yup.object({
 export default function RallyLocationForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const rallyEntry = useSelector((state) =>
-        state.rallies.publicRallies.filter((r) => r.uid === rallyId)
-    );
+    let rallyEntry;
+    if (!rallyEntry) {
+        rallyEntry = useSelector((state) =>
+            state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+        );
+    }
     const rally = rallyEntry[0];
+    console.log('rally.uid:', rally?.uid);
+    useEffect(() => {
+        if (rally?.uid) {
+            //save existing values to tmpEntry
+            dispatch(createTmp(rally));
+        }
+    }, []);
+
     const handleNext = (values) => {
         // gather data
         // console.log('in handleNext');
-        dispatch(createTmp(values));
+        if (rally?.uid) {
+            dispatch(updateTmp(values));
+        } else {
+            dispatch(createTmp(values));
+        }
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
             stage: 2,
