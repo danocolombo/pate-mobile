@@ -23,12 +23,19 @@ const CustomButton = (props) => {
             onPress={onPress}
             style={[styles.appButtonContainer, cbStyles]}
         >
-            <View style={{ alignItems: 'center' }}>
-                <Text style={[styles.appButtonText, cbStyles]}>
-                    {title}
-                    {spaces}
-                    {theGraphics}
-                </Text>
+            <View style={styles.buttonContainer}>
+                {theGraphics && (
+                    <Text style={[styles.appButtonText, cbStyles]}>
+                        {title}
+                        {spaces}
+                        {theGraphics}
+                    </Text>
+                )}
+                {!theGraphics && (
+                    <Text style={[styles.appButtonText, cbStyles]}>
+                        {title}
+                    </Text>
+                )}
             </View>
         </TouchableOpacity>
     );
@@ -41,7 +48,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingVertical: 10,
         paddingHorizontal: 12,
+        width: 125,
         alignItems: 'center',
+        alignContent: 'center',
     },
     appButtonText: {
         fontSize: 18,
@@ -49,7 +58,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textTransform: 'uppercase',
     },
-    buttonFont: {
-        // marginLeft: 10,
+    buttonContainer: {
+        alignItems: 'center',
     },
 });

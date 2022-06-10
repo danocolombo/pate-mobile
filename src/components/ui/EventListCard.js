@@ -1,13 +1,13 @@
 import { Text, TextInput, View, StyleSheet } from 'react-native';
 import { Colors } from '../../constants/colors';
+import { Ionicons } from '@expo/vector-icons';
 import { Card } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import CardDate from './RallyCardDateStack';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { printObject } from '../../utils/helpers';
 
 // function EventListCard({ date, locationName, city, stateProv }) {
-function EventListCard({ rally }) {
+function EventListCard({ rally, deletePress }) {
     const user = useSelector((state) => state.users.currentUser);
     let bgStyle;
     if (user.uid === rally.coordinator.id) {
@@ -41,6 +41,14 @@ function EventListCard({ rally }) {
                         <Text style={styles.geo}>
                             {rally.city}, {rally.stateProv}
                         </Text>
+                    </View>
+                    <View style={styles.deleteIcon}>
+                        <Ionicons
+                            name='trash'
+                            color='black'
+                            size={24}
+                            onPress={() => deletePress(rally)}
+                        />
                     </View>
                 </View>
                 <View style={styles.cardStatusRow}>
@@ -109,5 +117,9 @@ const styles = StyleSheet.create({
     rallyStatus: {
         color: 'white',
         fontWeight: 'bold',
+    },
+    deleteIcon: {
+        flex: 1,
+        alignItems: 'flex-end',
     },
 });
