@@ -68,18 +68,30 @@ const RallyNewConfirmation = () => {
     // printObject('CONFIRMING tmpRally:', rally);
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
-        if (newRally?.uid) {
-            putRally(newRally).then((response) => {
-                console.log('submitted rally', newRally);
-                dispatch(updateRally(response.Item));
+        if (process.env.ENV === 'DEBUG') {
+            if (newRally?.uid) {
+                // DEBUG - UPDATE RALLY
+                dispatch(updateRally(newRally));
                 navigation.navigate('Serve', null);
-            });
-        } else {
-            putRally(newRally, user).then((response) => {
-                console.log('submitted rally', newRally);
+            } else {
+                // DEBUG - NEW RALLY
                 dispatch(addNewRally(response.Item));
                 navigation.navigate('Serve', null);
-            });
+            }
+        } else {
+            if (newRally?.uid) {
+                putRally(newRally).then((response) => {
+                    console.log('submitted rally', newRally);
+                    dispatch(updateRally(response.Item));
+                    navigation.navigate('Serve', null);
+                });
+            } else {
+                putRally(newRally, user).then((response) => {
+                    console.log('submitted rally', newRally);
+                    dispatch(addNewRally(response.Item));
+                    navigation.navigate('Serve', null);
+                });
+            }
         }
     }
     return (
