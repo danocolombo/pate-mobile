@@ -7,7 +7,10 @@ import RallyContactInfo from '../info/Rally.Contact.Info';
 import RallyMealInfo from '../info/Rally.Meal.Info';
 import CustomButton from '../../ui/CustomButton';
 import { putRally } from '../../../providers/rallies';
-import { addNewRally } from '../../../features/rallies/ralliesSlice';
+import {
+    addNewRally,
+    updateRally,
+} from '../../../features/rallies/ralliesSlice';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 
@@ -19,10 +22,13 @@ const RallyNewConfirmation = () => {
     let rally = useSelector((state) => state.rallies.tmpRally);
     // printObject('CONFIRMING rally ++++++++++++++++++++++++', rally);
     let rallyBasic = {};
-    //--- need to add the basics for an add ----
-    rallyBasic.status = 'draft';
-    rallyBasic.id = '';
-
+    // need to determine if this is new or edit
+    if (!rally.uid) {
+        // this is new entry
+        rallyBasic.status = 'draft';
+        rallyBasic.id = '';
+    }
+    // we will always update with latest rep info
     const me = {
         name: user.firstName + ' ' + user.lastName,
         id: user.uid,
@@ -30,16 +36,20 @@ const RallyNewConfirmation = () => {
         email: user.email,
     };
     rallyBasic.coordinator = me;
-    rallyBasic.region = 'us#east';
+
+    rallyBasic.region = process.env.REGION;
     if (rally.stateProv === 'TT') {
         rallyBasic.eventRegion = 'test';
     } else {
-        rallyBasic.eventRegion = 'east';
+        //EVENT_REGION
+        rallyBasic.eventRegion = process.env.EVENT_REGION;
     }
-
+    // create new eventCompKey in case date changed
     const yr = rally.eventDate.substr(0, 4);
     const mo = rally.eventDate.substr(4, 2);
     const da = rally.eventDate.substr(6, 2);
+    let keyToUse;
+    rally?.uid ? (keyToUse = rally.uid) : (keyToUse = 'TBD');
     let eventCompKey =
         yr +
         '#' +
@@ -49,7 +59,7 @@ const RallyNewConfirmation = () => {
         '#' +
         da +
         '#' +
-        'TBD' +
+        keyToUse +
         '#' +
         rallyBasic.coordinator.id;
     rallyBasic.eventCompKey = eventCompKey;
@@ -58,24 +68,26 @@ const RallyNewConfirmation = () => {
     // printObject('CONFIRMING tmpRally:', rally);
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
-        // printObject('SAVING', newRally);
-        // if ((DEBUG = true)) {
-        //     newRally.uid = '86e55ed48c7c6bd0b2f373790dabc123';
-        //     dispatch(addNewRally(newRally));
-        //     navigation.navigate('Serve', null);
-        // }
-        putRally(newRally, user).then((response) => {
-            console.log('submitted rally', newRally);
-            dispatch(addNewRally(response.Item));
-            navigation.navigate('Serve', null);
-        });
+        if (newRally?.uid) {
+            putRally(newRally).then((response) => {
+                console.log('submitted rally', newRally);
+                dispatch(updateRally(response.Item));
+                navigation.navigate('Serve', null);
+            });
+        } else {
+            putRally(newRally, user).then((response) => {
+                console.log('submitted rally', newRally);
+                dispatch(addNewRally(response.Item));
+                navigation.navigate('Serve', null);
+            });
+        }
     }
     return (
         <>
-            <RallyLocationInfo rallyId={newRally} />
-            <RallyLogisticsInfo rallyId={newRally} />
-            <RallyContactInfo rallyId={newRally} />
-            <RallyMealInfo rallyId={newRally} />
+            <RallyLocationInfo rally={newRally} />
+            <RallyLogisticsInfo rally={newRally} />
+            <RallyContactInfo rally={newRally} />
+            <RallyMealInfo rally={newRally} />
             <View style={styles.buttonContainer}>
                 <CustomButton
                     title='Confirm & Save'

@@ -21,7 +21,7 @@ function EventListCard({ rally }) {
     } else {
         mine = false;
     }
-    printObject('rally', rally);
+    // printObject('rally', rally);
     return (
         <>
             <View

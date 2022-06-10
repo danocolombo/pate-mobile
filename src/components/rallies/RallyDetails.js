@@ -19,7 +19,7 @@ const RallyDetails = ({ rallyId }) => {
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
     let rally = ral[0];
-    printObject('rally', rally);
+    // printObject('rally', rally);
     const handleRegisterRequest = () => {
         navigation.navigate('RallyRegister', {
             rallyId: rally.uid,

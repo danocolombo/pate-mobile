@@ -44,6 +44,22 @@ export async function getAllEventsForCoordinator(uid) {
             return data;
         });
 }
+export async function updateRally(rally, user) {
+    let obj = {
+        operation: 'insertNewEvent',
+        payload: {
+            Item: rally,
+        },
+    };
+    let body = JSON.stringify(obj);
+    printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
+    console.log('\n###########################\n');
+    let api2use = process.env.API_ENDPOINT;
+
+    let res = await axios.post(api2use, body, config);
+    var returnValue = res.data;
+    return returnValue;
+}
 export async function putRally(rally, user) {
     // this function
     // 1. if no eventCompKey, create one
@@ -53,6 +69,7 @@ export async function putRally(rally, user) {
     //
     //   NOTE: unique id is done by API and returned to us
     //--------------------------------------------------------------
+
     //default rally with user info
     printObject('rally=======in putRally', rally);
     const readyEvent = {

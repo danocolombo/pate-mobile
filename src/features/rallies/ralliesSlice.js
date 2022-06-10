@@ -46,9 +46,13 @@ export const ralliesSlice = createSlice({
         createTmp: (state, action) => {
             state.tmpRally = {};
             state.tmpRally = action.payload;
+            //printObject('state.tmpRally AFTER create', state.tmpRally);
+            return state;
         },
         updateTmp: (state, action) => {
             const newTmp = Object.assign(state.tmpRally, action.payload);
+            //const newTmp2 = { ...state.tmpRally, ...action.payload };
+            //printObject('state.tmpRally AFTER updateTmp', state.tmpRally);
             state.tmpRally = newTmp;
             return state;
         },
@@ -63,6 +67,25 @@ export const ralliesSlice = createSlice({
                 (r) => r.uid === action.payload
             );
             return found;
+        },
+        updateRally: (state, action) => {
+            const newEvents = state.publicRallies.map((ral) => {
+                if (ral.uid === action.payload.uid) {
+                    return action.payload;
+                } else {
+                    return ral;
+                }
+            });
+            // ascending sort
+            function asc_sort(a, b) {
+                return (
+                    new Date(a.eventDate).getTime() -
+                    new Date(b.eventDate).getTime()
+                );
+            }
+            let newBigger = newEvents.sort(asc_sort);
+            state.publicRallies = newBigger;
+            return state;
         },
         addNewRally: (state, action) => {
             let statePublicRallies = state.publicRallies;
@@ -123,6 +146,7 @@ export const {
     loadRallies,
     getRally,
     addNewRally,
+    updateRally,
     // loadUserRallies,
     createTmp,
     updateTmp,
