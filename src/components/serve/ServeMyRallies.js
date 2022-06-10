@@ -1,13 +1,15 @@
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, ScrollView, Modal } from 'react-native';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import EventListCard from '../ui/EventListCard';
 import P8Button from '../ui/P8Button';
 import CustomButton from '../ui/CustomButton';
 import { Pressable } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { printObject, asc_sort, desc_sort } from '../../utils/helpers';
 const ServeMyRallies = () => {
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     let me = useSelector((state) => state.users.currentUser);
     let rallies = useSelector((state) => state.rallies.publicRallies);
     const myRallies = useSelector((state) =>
@@ -27,11 +29,24 @@ const ServeMyRallies = () => {
         });
 
     const navigation = useNavigation();
+    const handleDeleteRequest = () => {
+        setShowDeleteConfirm(true);
+    };
     const handleEventPress = (e) => {
         printObject('event', e);
     };
     return (
         <View style={styles.rootContainer}>
+            <Modal visible={showDeleteConfirm} animationStyle='slide'>
+                <View style={styles.modalContainer}>
+                    <Ionicons
+                        name='close'
+                        size={32}
+                        color='black'
+                        onPress={() => setShowDeleteConfirm(false)}
+                    />
+                </View>
+            </Modal>
             <View style={styles.screenHeader}>
                 <Text style={styles.screenHeaderText}>Your Events</Text>
             </View>
@@ -55,6 +70,7 @@ const ServeMyRallies = () => {
                                     key={ral.uid}
                                     // rallyId={ral.uid}
                                     rally={ral}
+                                    deletePress={handleDeleteRequest}
                                     // date={ral.eventDate}
                                     // locationName={ral.name}
                                     // city={ral.city}
@@ -64,18 +80,6 @@ const ServeMyRallies = () => {
                         </View>
                     ))}
                 </View>
-
-                {/* <View style={styles.buttonContainer}>
-                <CustomButton
-                    title='Create New Event'
-                    graphic={null}
-                    cbStyles={{ backgroundColor: 'green', color: 'white' }}
-                    txtColor='white'
-                    onPress={() =>
-                        navigation.navigate('ServeRallyForm', { rally: null })
-                    }
-                />
-            </View> */}
             </ScrollView>
             <View style={styles.buttonContainer}>
                 <CustomButton
@@ -121,5 +125,9 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         alignItems: 'center',
+    },
+    modalContainer: {
+        marginTop: 50,
+        alignSelf: 'flex-end',
     },
 });
