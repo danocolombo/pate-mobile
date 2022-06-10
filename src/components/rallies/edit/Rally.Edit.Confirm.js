@@ -105,7 +105,12 @@ const RallyNewConfirmation = () => {
                 <CustomButton
                     title='Confirm & Save'
                     graphic={null}
-                    cbStyles={{ backgroundColor: 'yellow', color: 'black' }}
+                    cbStyles={{
+                        backgroundColor: 'yellow',
+                        color: 'black',
+                        width: 200,
+                        textAlign: 'center',
+                    }}
                     onPress={() => handleConfirmation(newRally)}
                 />
             </View>

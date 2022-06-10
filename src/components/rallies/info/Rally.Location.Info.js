@@ -11,12 +11,20 @@ const RallyLocationInfo = ({ rally }) => {
                         <Headline>Rally Location Information</Headline>
                     </View>
                     <View style={styles.textWrapper}>
-                        <Subheading>{rally?.name}</Subheading>
-                        <Subheading>{rally?.street}</Subheading>
-                        <Subheading>{rally?.city}</Subheading>
-                        <Subheading>
-                            {rally?.stateProv}, {rally?.postalCode}
-                        </Subheading>
+                        {rally?.name ? (
+                            <Subheading>{rally?.name}</Subheading>
+                        ) : null}
+                        {rally?.street ? (
+                            <Subheading>{rally?.street}</Subheading>
+                        ) : null}
+                        {rally?.city ? (
+                            <Subheading>{rally?.city}</Subheading>
+                        ) : null}
+                        {rally?.stateProv || rally?.postalCode ? (
+                            <Subheading>
+                                {rally?.stateProv}, {rally?.postalCode}
+                            </Subheading>
+                        ) : null}
                     </View>
                 </Surface>
             </View>

@@ -10,10 +10,18 @@ const RallyMealInfo = ({ rally }) => {
                         <Headline>Meal Information</Headline>
                     </View>
                     <View style={styles.textWrapper}>
-                        <Subheading>{rally?.meal?.startTime}</Subheading>
-                        <Subheading>{rally?.meal?.cost}</Subheading>
-                        <Subheading>{rally?.meal?.deadline}</Subheading>
-                        <Subheading>{rally?.meal?.message}</Subheading>
+                        {rally?.meal?.startTime ? (
+                            <Subheading>{rally?.meal?.startTime}</Subheading>
+                        ) : null}
+                        {rally?.meal?.cost ? (
+                            <Subheading>{rally?.meal?.cost}</Subheading>
+                        ) : null}
+                        {rally?.meal?.deadline ? (
+                            <Subheading>{rally?.meal?.deadline}</Subheading>
+                        ) : null}
+                        {rally?.meal?.message ? (
+                            <Subheading>{rally?.meal?.message}</Subheading>
+                        ) : null}
                     </View>
                 </Surface>
             </View>

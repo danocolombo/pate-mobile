@@ -10,9 +10,15 @@ const RallyLogisticsInfo = ({ rally }) => {
                         <Headline>Logistics Information</Headline>
                     </View>
                     <View style={styles.textWrapper}>
-                        <Subheading>{rally?.eventDate}</Subheading>
-                        <Subheading>{rally?.startTime}</Subheading>
-                        <Subheading>{rally?.endTime}</Subheading>
+                        {rally?.eventDate ? (
+                            <Subheading>{rally?.eventDate}</Subheading>
+                        ) : null}
+                        {rally?.startTime ? (
+                            <Subheading>{rally?.startTime}</Subheading>
+                        ) : null}
+                        {rally?.endTime ? (
+                            <Subheading>{rally?.endTime}</Subheading>
+                        ) : null}
                     </View>
                 </Surface>
             </View>

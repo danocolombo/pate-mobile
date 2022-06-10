@@ -10,9 +10,15 @@ const RallyContactInfo = ({ rally }) => {
                         <Headline>Contact Information</Headline>
                     </View>
                     <View style={styles.textWrapper}>
-                        <Subheading>{rally?.contact?.name}</Subheading>
-                        <Subheading>{rally?.contact?.phone}</Subheading>
-                        <Subheading>{rally?.contact?.email}</Subheading>
+                        {rally?.contact?.name ? (
+                            <Subheading>{rally?.contact?.name}</Subheading>
+                        ) : null}
+                        {rally?.contact?.phone ? (
+                            <Subheading>{rally?.contact?.phone}</Subheading>
+                        ) : null}
+                        {rally?.contact?.email ? (
+                            <Subheading>{rally?.contact?.email}</Subheading>
+                        ) : null}
                     </View>
                 </Surface>
             </View>
