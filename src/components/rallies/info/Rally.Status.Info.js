@@ -1,10 +1,11 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
+import { Badge } from 'react-native-paper';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
-const RallyStatusInfo = ({ rally }) => {
-    printObject('rally', rally);
+const RallyStatusInfo = ({ rally, onPress }) => {
+    // printObject('rally', rally);
     return (
         <>
             <View style={styles.rootContainer}>
@@ -20,7 +21,14 @@ const RallyStatusInfo = ({ rally }) => {
                             </View>
                             <View style={styles.statusRow}>
                                 <Text style={styles.textWrapper}>
-                                    Status: {rally?.status}
+                                    <TouchableOpacity
+                                        // style={styles.button}
+                                        onPress={onPress}
+                                    >
+                                        <Badge style={styles.statusBadge}>
+                                            {rally?.status}
+                                        </Badge>
+                                    </TouchableOpacity>
                                 </Text>
                                 <Text style={styles.textWrapper}>
                                     Approved:{' '}
@@ -75,6 +83,11 @@ const styles = StyleSheet.create({
     },
     statusTitle: {
         flex: 1,
+    },
+    statusBadge: {
+        backgroundColor: 'yellow',
+        color: 'black',
+        fontSize: 14,
     },
     statusTitleText: {
         textAlign: 'center',

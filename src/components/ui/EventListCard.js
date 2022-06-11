@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         marginTop: 10,
-        marginLeft: 10,
+        marginLeft: 0,
     },
     locationName: {
         fontWeight: 'bold',
