@@ -69,39 +69,17 @@ export const ralliesSlice = createSlice({
             return found;
         },
         updateRally: (state, action) => {
-            const newRallies = state.publicRallies.map((ral) => {
-                if (ral.uid === action.payload.uid) {
-                    return action.payload;
-                } else {
-                    return ral;
-                }
+            const newRallyList = state.publicRallies.map((ral) => {
+                return ral.uid === action.payload.uid ? action.payload : ral;
             });
-            // ascending sort
+           
             function asc_sort(a, b) {
                 return a.eventDate - b.eventDate;
             }
-            let newBigger = newRallies.sort(asc_sort);
+            let newBigger = newRallyList.sort(asc_sort);
             state.publicRallies = newBigger;
-            printObject('new publicRallies',state.publicRallies);
+            printObject('new publicRallies', state.publicRallies);
             return state;
-
-            // const newEvents = state.publicRallies.map((ral) => {
-            //     if (ral.uid === action.payload.uid) {
-            //         return action.payload;
-            //     } else {
-            //         return ral;
-            //     }
-            // });
-            // // ascending sort
-            // function asc_sort(a, b) {
-            //     return (
-            //         new Date(a.eventDate).getTime() -
-            //         new Date(b.eventDate).getTime()
-            //     );
-            // }
-            // let newBigger = newEvents.sort(asc_sort);
-            // state.publicRallies = newBigger;
-            // return state;
         },
         addNewRally: (state, action) => {
             let statePublicRallies = state.publicRallies;

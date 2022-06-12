@@ -35,8 +35,9 @@ const RallyDetails = ({ rallyId }) => {
     };
     const handleStatusChange = () => {
         // console.log('NEW STATUS WOULD BE ===>', newStatus);
-        let newRally = rally;
-        newRally.status = newStatus;
+        let approved = newStatus === 'approved' ? true : false;
+        let newRally = { ...rally, status: newStatus, approved: approved };
+
         dispatch(updateRally(newRally));
         setShowStatusModal(false);
     };
