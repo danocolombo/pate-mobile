@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
         width: '90%',
         alignItems: 'center',
         justifyContent: 'center',
+        paddingHorizontal: 5,
     },
     textWrapper: {
         alignItems: 'center',

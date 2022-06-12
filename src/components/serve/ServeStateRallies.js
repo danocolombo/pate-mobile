@@ -22,18 +22,19 @@ const ServeMyRallies = () => {
     const stateRallies = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.stateProv === me.stateRep)
     );
-    let displayData;
-    async function sortRallies() {
-        displayData = stateRallies.sort(asc_sort_raw);
-        // return displayData;
+   
+    function asc_sort(a, b) {
+        return a.eventDate - b.eventDate;
     }
-    sortRallies()
-        .then((results) => {
-            //printObject('diplayData-sorted', displayData);
-        })
-        .catch((err) => {
-            console.log('error sorting', err);
-        });
+    let displayData = stateRallies.sort(asc_sort);
+
+    // sortRallies()
+    //     .then((results) => {
+    //         //printObject('diplayData-sorted', displayData);
+    //     })
+    //     .catch((err) => {
+    //         console.log('error sorting', err);
+    //     });
     const navigation = useNavigation();
     const handleEventPress = (e) => {
         printObject('event', e);
