@@ -12,7 +12,7 @@ import {
     updateRally,
 } from '../../../features/rallies/ralliesSlice';
 import { Colors } from '../../../constants/colors';
-import { printObject } from '../../../utils/helpers';
+import { printObject, getUniqueId } from '../../../utils/helpers';
 
 const RallyNewConfirmation = () => {
     const navigation = useNavigation();
@@ -75,7 +75,10 @@ const RallyNewConfirmation = () => {
                 navigation.navigate('Serve', null);
             } else {
                 // DEBUG - NEW RALLY
-                dispatch(addNewRally(response.Item));
+                // for debug mode you need something in id;
+                let tmpId = getUniqueId();
+                let newRallyToSave = { ...newRally, id: tmpId };
+                dispatch(addNewRally(newRallyToSave));
                 navigation.navigate('Serve', null);
             }
         } else {
