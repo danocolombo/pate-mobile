@@ -71,7 +71,7 @@ export async function putRally(rally, user) {
     //--------------------------------------------------------------
 
     //default rally with user info
-    printObject('rally=======in putRally', rally);
+    // printObject('rally=======in putRally', rally);
     const readyEvent = {
         meal: {
             startTime: rally?.meal?.startTime ? rally.meal.startTime : '',
