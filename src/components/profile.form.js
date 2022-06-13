@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // import { createTmp, updateTmp } from '../../../features/rallies/ralliesSlice';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import CustomButton from '../components/ui/CustomButton';
+import CustomButton from './ui/CustomButton';
 import { updateCurrentUser } from '../features/users/usersSlice';
 import { printObject } from '../utils/helpers';
 
@@ -627,4 +627,3 @@ const styles = StyleSheet.create({
         width: '70%',
     },
 });
-
