@@ -49,16 +49,8 @@ export default function ProfileForm() {
     const handleSubmit = (values) => {
         // gather data
         dispatch(updateCurrentUser(values));
-        printObject('handleSubmit', values);
-        // if (rally?.uid) {
-        //     dispatch(updateTmp(values));
-        // } else {
-        //     dispatch(createTmp(values));
-        // }
-        // navigation.navigate('RallyEditFlow', {
-        //     rallyId: rallyId,
-        //     stage: 2,
-        // });
+        //todo: save the user info to DDB
+        navigation.navigate('Main', null);
     };
     // const dispatch = useDispatch();
     return (
