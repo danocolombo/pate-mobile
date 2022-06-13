@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Surface, Stack } from '@react-native-material/core';
+import { Button } from 'react-native-elements';
 import { Colors } from '../../constants/colors';
 import {
     dateNumsToLongDayLongMondayDay,
@@ -10,6 +11,7 @@ import {
 import NumberInput from '../ui/NumberInput/NumberInput';
 const RallyRegister = ({ rallyId }) => {
     const [registrarCount, setRegistrar] = useState(0);
+    const [mealCount, setMealCount] = useState(0);
     let ral = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.uid === rallyId)
     );
@@ -17,6 +19,10 @@ const RallyRegister = ({ rallyId }) => {
     const handleRegistarCountChange = (e) => {
         setRegistrar(parseInt(e));
     };
+    const handleMealCountChange = (e) => {
+        setMealCount(parseInt(e));
+    };
+    const handleRegistrationRequest = () => {};
     return (
         <View style={styles.rootContainer}>
             {/* <View style={styles.screenHeader}>
@@ -54,7 +60,8 @@ const RallyRegister = ({ rallyId }) => {
                                 </Text>
                             </View>
                         </View>
-                        <View style={styles.registrationCountContainer}>
+
+                        <Surface>
                             <Text style={styles.regisrationCountText}>
                                 How many will be attending with you?
                             </Text>
@@ -66,12 +73,51 @@ const RallyRegister = ({ rallyId }) => {
                                     onAction={handleRegistarCountChange}
                                 />
                             </View>
-                        </View>
-                        {rally.meal.deadline ? (
-                            <View>
-                                <Text>We have lunch</Text>
+                        </Surface>
+
+                        {rally?.meal?.startTime ? (
+                            <View style={styles.registrationCountContainer}>
+                                <Text style={styles.regisrationCountText}>
+                                    There is a meal offered at the event.
+                                </Text>
+                                {rally?.meal?.cost ? (
+                                    <View style={styles.mealTextWrapper}>
+                                        <Text style={styles.mealCostText}>
+                                            Cost: {rally.meal.cost}
+                                        </Text>
+                                        <Text style={styles.mealStartTime}>
+                                            Meal starts at{' '}
+                                            {rally.meal.startTime}
+                                        </Text>
+                                        <Text style={styles.mealCostText}>
+                                            Will any of your group like to
+                                            attend?
+                                        </Text>
+                                    </View>
+                                ) : null}
+                                <View
+                                    style={
+                                        styles.registrationCountNumberContainer
+                                    }
+                                >
+                                    <NumberInput
+                                        value={mealCount}
+                                        onAction={handleMealCountChange}
+                                    />
+                                </View>
                             </View>
                         ) : null}
+                        <Button
+                            // icon={<Icon name='code' color='#ffffff' />}
+                            buttonStyle={{
+                                borderRadius: 5,
+                                marginLeft: 40,
+                                marginRight: 40,
+                                marginBottom: 0,
+                            }}
+                            title='REGISTER'
+                            onPress={handleRegistrationRequest}
+                        />
                     </View>
                 </Surface>
             </View>
@@ -131,6 +177,16 @@ const styles = StyleSheet.create({
     regisrationCountText: {
         fontSize: 16,
         padding: 10,
+    },
+    mealTextWrapper: {
+        paddingBottom: 10,
+    },
+    mealCostText: {
+        textAlign: 'center',
+    },
+    mealStartTime: {
+        textAlign: 'center',
+        paddingVertical: 5,
     },
     registrationCountNumberContainer: {
         marginBottom: 10,
