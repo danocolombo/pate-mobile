@@ -38,12 +38,15 @@ export default function RallyLocationForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     let rallyEntry;
-    if (!rallyEntry) {
+    if (rallyId !== 0) {
         rallyEntry = useSelector((state) =>
             state.rallies.publicRallies.filter((r) => r.uid === rallyId)
         );
     }
-    const rally = rallyEntry[0];
+    let rally;
+    if (rallyEntry) {
+        rally = rallyEntry[0];
+    }
     console.log('rally.uid:', rally?.uid);
     useEffect(() => {
         if (rally?.uid) {

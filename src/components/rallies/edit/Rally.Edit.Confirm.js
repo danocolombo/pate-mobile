@@ -76,9 +76,11 @@ const RallyNewConfirmation = () => {
             } else {
                 // DEBUG - NEW RALLY
                 // for debug mode you need something in id;
-                let tmpId = getUniqueId();
-                let newRallyToSave = { ...newRally, id: tmpId };
-                dispatch(addNewRally(newRallyToSave));
+                getUniqueId().then((new_id) => {
+                    let tmpId = { id: new_id };
+                    let newRallyToSave = { ...newRally, ...tmpId };
+                    dispatch(addNewRally(newRallyToSave));
+                });
                 navigation.navigate('Serve', null);
             }
         } else {
