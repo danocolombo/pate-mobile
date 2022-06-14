@@ -23,7 +23,20 @@ const RallyRegistrars = ({ rally, onPress }) => {
                 <Surface style={[styles.surface, { elevation: 5 }]}>
                     <View style={styles.statusOutline}>
                         <View style={styles.statusDataWrapper}>
-                            <Text>REGISTARS HERE</Text>
+                            <View style={styles.row}>
+                                <Text style={styles.regName}>Registrar(s)</Text>
+                                <View style={styles.attendance}>
+                                    <View style={styles.textWrapper}>
+                                        <Text style={styles.attenandanceText}>
+                                            #
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View>
+                                    <Text style={styles.mealCount}>Meal</Text>
+                                </View>
+                            </View>
+
                             {regs ? (
                                 regs.map((ral) => {
                                     return <RegistrarListItem reg={ral} />;
@@ -51,6 +64,7 @@ const styles = StyleSheet.create({
     surface: {
         // margin: 24,
         // height: 80,
+
         width: '90%',
         alignItems: 'center',
         justifyContent: 'center',
@@ -81,5 +95,38 @@ const styles = StyleSheet.create({
     statusDataWrapper: {},
     textWrapper: {
         paddingHorizontal: 10,
+    },
+    row: {
+        flexDirection: 'row',
+        width: '100%',
+        borderBottomWidth: 2,
+        borderColor: 'black',
+        marginBottom: 10,
+    },
+    regName: {
+        flex: 1,
+        fontWeight: 'bold',
+        fontSize: 20,
+    },
+    attendance: {
+        paddingHorizontal: 10,
+
+        width: 50,
+    },
+    textWrapper: {
+        textAlign: 'center',
+    },
+    attenandanceText: {
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    mealCount: {
+        paddingHorizontal: 5,
+        marginRight: 5,
+        textAlign: 'center',
+        width: 50,
+        fontWeight: 'bold',
+        fontSize: 16,
     },
 });
