@@ -15,6 +15,7 @@ import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 //import { ScrollView } from 'react-native-gesture-handler';
 import { updateRally } from '../../../features/rallies/ralliesSlice';
+import RallyRegistrars from './RallyRegistrars';
 const RallyDetails = ({ rallyId }) => {
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [statusRally, setStatusRally] = useState();
@@ -126,6 +127,9 @@ const RallyDetails = ({ rallyId }) => {
                 <RallyLogisticsInfo rally={rally} />
                 <RallyContactInfo rally={rally} />
                 <RallyMealInfo rally={rally} />
+                {rally.status !== 'pending' && rally.status !== 'draft' ? (
+                    <RallyRegistrars rally={rally} />
+                ) : null}
                 <RallyStatusInfo rally={rally} onPress={handleStatusPress} />
                 <View style={styles.buttonContainer}></View>
                 {user.uid === rally.coordinator.id ? (

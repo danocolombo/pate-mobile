@@ -7,25 +7,26 @@ import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 const RallyStatusInfo = ({ rally, onPress }) => {
     // printObject('rally', rally);
-    let tColor = 'white';
-    let bColor = 'black';
-    console.log('rally.status', rally.status);
+    let tColor = 'gold';
+    let bColor = 'blue';
+    console.log('uid:', rally.uid);
     switch (rally.status) {
         case 'pending':
             tColor = 'black';
             bColor = 'yellow';
             break;
         case 'draft':
-            tColor: 'white';
-            bColor: 'grey';
+            tColor = 'white';
+            bColor = 'grey';
             break;
         case 'approved':
-            tColor: 'white';
-            bColor: 'green';
+        case 'public':
+            tColor = 'white';
+            bColor = 'green';
             break;
         case 'public':
-            tColor: 'white';
-            bColor: 'green';
+            tColor = 'white';
+            bColor = 'green';
             break;
         default:
             break;
