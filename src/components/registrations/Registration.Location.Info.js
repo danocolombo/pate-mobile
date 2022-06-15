@@ -3,7 +3,7 @@ import React from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { printObject } from '../../utils/helpers';
 const RegistrationLocation = ({ rally }) => {
-    printObject('RL-rally:', rally);
+    //printObject('RL-rally:', rally);
     return (
         <>
             <View style={styles.rootContainer}>

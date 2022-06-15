@@ -15,7 +15,8 @@ const RegistrationDetails = ({ reg }) => {
     const [attendance, setAttendance] = useState(parseInt(reg.attendeeCount));
     const [mealCount, setMealCount] = useState(parseInt(reg.mealCount));
     const [showEditModal, setShowEditModal] = useState(false);
-    printObject('reg:', reg);
+    const [showNotifyModal, setShowNotifyModal] = useState(false);
+    // printObject('reg:', reg);
     const rallyArray = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.uid === reg.eid)
     );
@@ -31,8 +32,17 @@ const RegistrationDetails = ({ reg }) => {
         setMealCount(parseInt(e));
     };
     const handleNumbersConfirm = () => {
+        let updatedRegistration = {
+            ...reg,
+            attendeeCount: attendance,
+            mealCount: mealCount,
+        };
+        printObject('updated registraiton....', updatedRegistration);
+        //todo:  need to update DDB, no redux for registrations.
         setShowEditModal(false);
+        setShowNotifyModal(true);
     };
+
     const handleDeleteRegPress = () => {
         Alert.alert('DELETE', 'DELETING REGISTRATIONS');
     };
@@ -84,6 +94,34 @@ const RegistrationDetails = ({ reg }) => {
                                     onPress={() => {
                                         handleNumbersConfirm();
                                     }}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Surface>
+            </Modal>
+            <Modal visible={showNotifyModal} animationStyle='slide'>
+                <Surface style={styles.modalSurface}>
+                    <View style={styles.modalInfoWrapper}>
+                        <Text style={styles.modalTitle}>Communicate Well</Text>
+                    </View>
+                    <View>
+                        <Text>
+                            Make sure to notify registrar of your changes.
+                        </Text>
+                    </View>
+                    <View style={styles.modalButtonContainer}>
+                        <View style={styles.modalButtonWrapper}>
+                            <View style={styles.modalCancelButton}>
+                                <CustomButton
+                                    title='OK'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: 'green',
+                                        color: 'white',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() => setShowNotifyModal(false)}
                                 />
                             </View>
                         </View>

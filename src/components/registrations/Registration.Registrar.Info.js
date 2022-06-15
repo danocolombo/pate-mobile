@@ -3,7 +3,7 @@ import React from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { printObject } from '../../utils/helpers';
 const RegistrarInfo = ({ reg }) => {
-    printObject('RI-reg:', reg);
+    //printObject('RI-reg:', reg);
     return (
         <>
             <View style={styles.rootContainer}>
