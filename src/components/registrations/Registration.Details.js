@@ -1,20 +1,25 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
-import RegistrationLocation from './Registration.Location';
+import RegistrationLocation from './Registration.Location.Info';
+import RegistrarInfo from './Registration.Registrar.Info';
+import RegistrarChurchInfo from './Registration.Registrar.Church.Info';
+import RegistrarAttendance from './Registration.Attendance.Info';
+
 import { printObject } from '../../utils/helpers';
 const RegistrationDetails = ({ reg }) => {
     printObject('reg:', reg);
-    const rallyEntry = useSelector((state) =>
+    const rallyArray = useSelector((state) =>
         state.rallies.publicRallies.filter((r) => r.uid === reg.eid)
     );
+    let rallyEntry = rallyArray[0];
     printObject('rallyEntry:', rallyEntry);
     return (
         <>
-            <View>
-                <Text>Registration.Details</Text>
-            </View>
             <RegistrationLocation rally={rallyEntry} />
+            <RegistrarInfo reg={reg} />
+            <RegistrarChurchInfo reg={reg} />
+            <RegistrarAttendance reg={reg} />
         </>
     );
 };

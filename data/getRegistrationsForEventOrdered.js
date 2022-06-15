@@ -28,6 +28,8 @@ export const REGISTRARS = {
                     residence: {
                         street: '406 Zion Hope Rd',
                         city: 'Tifton',
+                        stateProv: 'GA',
+                        postalCode: '12345',
                     },
                     phone: '2293260164',
                     email: 'MGilder@fbctifton.org',

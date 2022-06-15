@@ -3,27 +3,34 @@ import React from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { printObject } from '../../utils/helpers';
 const RegistrationLocation = ({ rally }) => {
+    printObject('RL-rally:', rally);
     return (
         <>
             <View style={styles.rootContainer}>
                 <Surface style={[styles.surface, { elevation: 5 }]}>
                     <View>
-                        <Headline>Rally Location Information</Headline>
+                        <Headline>Rally Location</Headline>
                     </View>
                     <View style={styles.textWrapper}>
                         {rally?.name ? (
-                            <Subheading>{rally?.name}</Subheading>
+                            <Text style={styles.locationText}>
+                                {rally?.name}
+                            </Text>
                         ) : null}
                         {rally?.street ? (
-                            <Subheading>{rally?.street}</Subheading>
+                            <Text style={styles.locationText}>
+                                {rally?.street}
+                            </Text>
                         ) : null}
                         {rally?.city ? (
-                            <Subheading>{rally?.city}</Subheading>
+                            <Text style={styles.locationText}>
+                                {rally?.city}
+                            </Text>
                         ) : null}
                         {rally?.stateProv || rally?.postalCode ? (
-                            <Subheading>
+                            <Text style={styles.locationText}>
                                 {rally?.stateProv}, {rally?.postalCode}
-                            </Subheading>
+                            </Text>
                         ) : null}
                     </View>
                 </Surface>
@@ -47,6 +54,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
     },
     textWrapper: {
-        alignItems: 'center',
+        // alignItems: 'center',
+        marginBottom: 5,
+    },
+    locationText: {
+        fontSize: 18,
     },
 });
