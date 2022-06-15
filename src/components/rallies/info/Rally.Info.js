@@ -132,6 +132,7 @@ const RallyDetails = ({ rallyId }) => {
                 <RallyMealInfo rally={rally} />
                 {rally.status !== 'pending' && rally.status !== 'draft' ? (
                     <RallyRegistrars
+                        key={rally.uid}
                         rally={rally}
                         onPress={(reg) => handleRegistrarRequest(reg)}
                     />

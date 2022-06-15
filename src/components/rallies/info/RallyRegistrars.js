@@ -49,7 +49,10 @@ const RallyRegistrars = ({ rally, onPress }) => {
                                                 handleRegistrationRequest(reg)
                                             }
                                         >
-                                            <RegistrarListItem reg={reg} />
+                                            <RegistrarListItem
+                                                key={reg.uid}
+                                                reg={reg}
+                                            />
                                         </TouchableOpacity>
                                     );
                                 })
