@@ -45,6 +45,7 @@ const RallyRegistrars = ({ rally, onPress }) => {
                                 regs.map((reg) => {
                                     return (
                                         <TouchableOpacity
+                                            key={reg.uid}
                                             onPress={() =>
                                                 handleRegistrationRequest(reg)
                                             }

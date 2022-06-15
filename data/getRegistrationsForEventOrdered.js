@@ -12,7 +12,7 @@ export const REGISTRARS = {
                     postalCode: '31015',
                 },
                 endTime: '16:00',
-                mealCount: 0,
+                mealCount: 2,
                 eventDate: '20220604',
                 attendeeCount: 6,
                 uid: '5deff36ca4beb8629449eda548db4109',

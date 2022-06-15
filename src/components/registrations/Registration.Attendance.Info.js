@@ -1,13 +1,11 @@
 import { StyleSheet, View, Text } from 'react-native';
 import React, { useState } from 'react';
 import { Surface, Headline, Subheading, TextInput } from 'react-native-paper';
+import CustomButton from '../ui/CustomButton';
 import { printObject } from '../../utils/helpers';
-import NumberInput from '../ui/NumberInput/NumberInput';
-const RegistrarAttendance = ({ reg }) => {
-    const [attendance, setAttendance] = useState(parseInt(reg.attendeeCount));
-
+const RegistrarAttendance = ({ attendance, mealCount, onEditPress }) => {
     const handleAttendeeCountChange = (e) => {
-        setAttendance(parseInt(e));
+        onEditPress();
     };
     return (
         <>
@@ -18,19 +16,35 @@ const RegistrarAttendance = ({ reg }) => {
                     </View>
                     <View style={styles.infoContainer}>
                         <View>
-                            {reg?.attendeeCount ? (
+                            {attendance ? (
                                 <>
-                                    <NumberInput
-                                        value={attendance}
-                                        onAction={handleAttendeeCountChange}
-                                    />
+                                    <Text style={styles.registrarText}>
+                                        {attendance} attendee(s)
+                                    </Text>
                                 </>
                             ) : null}
-                            {reg?.mealCount ? (
+                            {mealCount ? (
                                 <Text style={styles.registrarText}>
-                                    {reg?.mealCount} for meal
+                                    {mealCount} for meal
                                 </Text>
                             ) : null}
+                        </View>
+                    </View>
+
+                    <View>
+                        <View style={styles.buttonContainer}>
+                            <CustomButton
+                                title='Edit these values'
+                                graphic={null}
+                                cbStyles={{
+                                    backgroundColor: 'green',
+                                    color: 'white',
+                                    width: 200,
+                                    textAlign: 'center',
+                                }}
+                                txtColor='white'
+                                onPress={handleAttendeeCountChange}
+                            />
                         </View>
                     </View>
                 </Surface>
@@ -62,6 +76,7 @@ const styles = StyleSheet.create({
     },
     registrarText: {
         fontSize: 18,
+        textAlign: 'center',
     },
     registrarAddress: { marginTop: 10 },
     stateProvPostalCodeContainer: {
