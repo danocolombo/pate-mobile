@@ -27,6 +27,7 @@ import RallyInfoScreen from './src/screens/RallyInfoScreen';
 import RallyDetailScreen from './src/screens/RallyDetailsScreen';
 import RallyEditFlowScreen from './src/screens/RallyEditFlowScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
+import RegistrationScreen from './src/screens/RegistrationScreen';
 import { Colors } from './src/constants/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -180,6 +181,16 @@ function PateStack() {
             <Stack.Screen
                 name='RallyRegister'
                 component={RegisterScreen}
+                options={({ navigation }) => ({
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
+            <Stack.Screen
+                name='RegistrationDetails'
+                component={RegistrationScreen}
                 options={({ navigation }) => ({
                     headerStyle: {
                         backgroundColor: Colors.primary,

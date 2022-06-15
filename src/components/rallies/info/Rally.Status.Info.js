@@ -2,10 +2,35 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { Badge } from 'react-native-paper';
+import CustomSmallButton from '../../ui/CustomSmallButton';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 const RallyStatusInfo = ({ rally, onPress }) => {
     // printObject('rally', rally);
+    let tColor = 'gold';
+    let bColor = 'blue';
+    console.log('uid:', rally.uid);
+    switch (rally.status) {
+        case 'pending':
+            tColor = 'black';
+            bColor = 'yellow';
+            break;
+        case 'draft':
+            tColor = 'white';
+            bColor = 'grey';
+            break;
+        case 'approved':
+        case 'public':
+            tColor = 'white';
+            bColor = 'green';
+            break;
+        case 'public':
+            tColor = 'white';
+            bColor = 'green';
+            break;
+        default:
+            break;
+    }
     return (
         <>
             <View style={styles.rootContainer}>
@@ -20,16 +45,15 @@ const RallyStatusInfo = ({ rally, onPress }) => {
                                 </View>
                             </View>
                             <View style={styles.statusRow}>
-                                <Text style={styles.textWrapper}>
-                                    <TouchableOpacity
-                                        // style={styles.button}
-                                        onPress={onPress}
-                                    >
-                                        <Badge style={styles.statusBadge}>
-                                            {rally?.status}
-                                        </Badge>
-                                    </TouchableOpacity>
-                                </Text>
+                                <CustomSmallButton
+                                    title={rally?.status}
+                                    cbStyles={{
+                                        backgroundColor: bColor,
+                                        color: tColor,
+                                    }}
+                                    onPress={onPress}
+                                />
+
                                 <Text style={styles.textWrapper}>
                                     Approved:{' '}
                                     {rally?.approved === true ? 'Yes' : 'No'}
