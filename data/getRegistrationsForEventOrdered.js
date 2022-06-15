@@ -16,7 +16,7 @@ export const REGISTRARS = {
                 eventDate: '20220604',
                 attendeeCount: 6,
                 uid: '5deff36ca4beb8629449eda548db4109',
-                eid: 'abc35842273c094e512ae8c3b712abcd',
+                eid: 'fff35842273c094e512ae8c3b7123abc',
                 church: {
                     name: 'First Baptist Chruch',
                     city: 'Tifton',
@@ -47,7 +47,7 @@ export const REGISTRARS = {
                 eventDate: '20220604',
                 attendeeCount: 7,
                 uid: '63370951847eb037204dfbb9c3a61d59',
-                eid: 'abc35842273c094e512ae8c3b712abcd',
+                eid: 'fff35842273c094e512ae8c3b7123abc',
                 church: {
                     name: 'Cordele Celebrate Recovery',
                     city: 'Cordele',
@@ -78,7 +78,7 @@ export const REGISTRARS = {
                 eventDate: '20220604',
                 attendeeCount: 1,
                 uid: 'bb5fadb081b303eea933f91db56174cf',
-                eid: 'abc35842273c094e512ae8c3b712abcd',
+                eid: 'fff35842273c094e512ae8c3b7123abc',
                 church: {
                     name: 'SouthCrest Church',
                     city: 'NEWNAN',
@@ -109,7 +109,7 @@ export const REGISTRARS = {
                 eventDate: '20220604',
                 attendeeCount: 1,
                 uid: '57305e57d45164e786fffd0ca4b5a1b9',
-                eid: 'abc35842273c094e512ae8c3b712abcd',
+                eid: 'fff35842273c094e512ae8c3b7123abc',
                 church: {
                     name: 'First Baptist Church ',
                     stateProv: 'GA',
@@ -142,7 +142,7 @@ export const REGISTRARS = {
                 eventDate: '20220604',
                 attendeeCount: 1,
                 uid: 'db6f5099b85717f148103dd9fd48451e',
-                eid: 'abc35842273c094e512ae8c3b712abcd',
+                eid: 'fff35842273c094e512ae8c3b7123abc',
                 church: {
                     name: 'First Baptist Church ',
                     stateProv: 'GA',
@@ -175,7 +175,7 @@ export const REGISTRARS = {
                 eventDate: '20220604',
                 attendeeCount: 4,
                 uid: '6e73c533a070de89d70cb9cc5666eb1c',
-                eid: 'abc35842273c094e512ae8c3b712abcd',
+                eid: 'fff35842273c094e512ae8c3b7123abc',
                 church: {
                     name: 'Sacred Heart Catholic Church',
                     city: 'Warner Robins',

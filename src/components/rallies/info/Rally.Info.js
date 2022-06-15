@@ -42,6 +42,9 @@ const RallyDetails = ({ rallyId }) => {
         dispatch(updateRally(newRally));
         setShowStatusModal(false);
     };
+    const handleRegistrarRequest = (reg) => {
+        navigation.navigate('RegistrationDetails', { reg: reg });
+    };
     return (
         <>
             <Modal visible={showStatusModal} animationStyle='slide'>
@@ -128,7 +131,10 @@ const RallyDetails = ({ rallyId }) => {
                 <RallyContactInfo rally={rally} />
                 <RallyMealInfo rally={rally} />
                 {rally.status !== 'pending' && rally.status !== 'draft' ? (
-                    <RallyRegistrars rally={rally} />
+                    <RallyRegistrars
+                        rally={rally}
+                        onPress={(reg) => handleRegistrarRequest(reg)}
+                    />
                 ) : null}
                 <RallyStatusInfo rally={rally} onPress={handleStatusPress} />
                 <View style={styles.buttonContainer}></View>

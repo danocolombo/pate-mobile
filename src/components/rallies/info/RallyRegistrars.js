@@ -1,5 +1,6 @@
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { Badge } from 'react-native-paper';
 import CustomSmallButton from '../../ui/CustomSmallButton';
@@ -8,6 +9,7 @@ import { Colors } from '../../../constants/colors';
 import { REGISTRARS } from '../../../../data/getRegistrationsForEventOrdered';
 import { printObject } from '../../../utils/helpers';
 const RallyRegistrars = ({ rally, onPress }) => {
+    const navigation = useNavigation();
     const [regs, setRegs] = useState();
     useEffect(() => {
         if (process.env.ENV === 'DEBUG') {
@@ -16,7 +18,9 @@ const RallyRegistrars = ({ rally, onPress }) => {
             //todo: make call to getRegistrationsForEventOrdered with...
         }
     }, []);
-
+    const handleRegistrationRequest = (reg) => {
+        onPress(reg);
+    };
     return (
         <>
             <View style={styles.rootContainer}>
@@ -38,8 +42,16 @@ const RallyRegistrars = ({ rally, onPress }) => {
                             </View>
 
                             {regs ? (
-                                regs.map((ral) => {
-                                    return <RegistrarListItem reg={ral} />;
+                                regs.map((reg) => {
+                                    return (
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                handleRegistrationRequest(reg)
+                                            }
+                                        >
+                                            <RegistrarListItem reg={reg} />
+                                        </TouchableOpacity>
+                                    );
                                 })
                             ) : (
                                 <Text>
