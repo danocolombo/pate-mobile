@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { View, Text, StyleSheet, Image, Modal, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
@@ -12,6 +13,7 @@ import RallyStatusInfo from './Rally.Status.Info';
 import CustomButton from '../../ui/CustomButton';
 import SelectDropdown from 'react-native-select-dropdown';
 import { Colors } from '../../../constants/colors';
+import { CONFIG } from '../../../utils/helpers';
 import { printObject } from '../../../utils/helpers';
 //import { ScrollView } from 'react-native-gesture-handler';
 import { updateRally } from '../../../features/rallies/ralliesSlice';
@@ -38,8 +40,25 @@ const RallyDetails = ({ rallyId }) => {
         // console.log('NEW STATUS WOULD BE ===>', newStatus);
         let approved = newStatus === 'approved' ? true : false;
         let newRally = { ...rally, status: newStatus, approved: approved };
+        //   UPDATE EXISTING EVENT
+        let obj = {
+            operation: 'updateEvent',
+            payload: {
+                Item: newRally,
+            },
+        };
+        let body = JSON.stringify(obj);
 
-        dispatch(updateRally(newRally));
+        let api2use = process.env.AWS_API_ENDPOINT + '/events';
+        axios
+            .post(api2use, body, CONFIG)
+            .then((response) => {
+                dispatch(updateRally(response.data.Item));
+            })
+            .catch((err) => {
+                console.log('RI-57: error:', err);
+            });
+
         setShowStatusModal(false);
     };
     const handleRegistrarRequest = (reg) => {

@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
+import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import RallyLocationInfo from '../info/Rally.Location.Info';
@@ -11,6 +12,7 @@ import {
     addNewRally,
     updateRally,
 } from '../../../features/rallies/ralliesSlice';
+import { CONFIG } from '../../../utils/helpers';
 import { Colors } from '../../../constants/colors';
 import { printObject, getUniqueId } from '../../../utils/helpers';
 
@@ -68,13 +70,13 @@ const RallyNewConfirmation = () => {
     // printObject('CONFIRMING tmpRally:', rally);
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
-        if (process.env.ENV === 'DEBUG') {
+        if (process.env.ENV === 'DEV') {
             if (newRally?.uid) {
-                // DEBUG - UPDATE RALLY
+                // DEV - UPDATE RALLY
                 dispatch(updateRally(newRally));
                 navigation.navigate('Serve', null);
             } else {
-                // for debug mode you need something in id;
+                // for DEV mode you need something in id;
                 getUniqueId().then((new_id) => {
                     let tmpId = { uid: new_id };
                     let newRallyToSave = { ...newRally, ...tmpId };
@@ -85,18 +87,31 @@ const RallyNewConfirmation = () => {
         } else {
             //todo ---- above features need to be confirmed going to DDB
             if (newRally?.uid) {
-                putRally(newRally).then((response) => {
-                    console.log('submitted rally', newRally);
-                    dispatch(updateRally(response.Item));
-                    navigation.navigate('Serve', null);
-                });
+                //   UPDATE EXISTING EVENT
+                let obj = {
+                    operation: 'updateEvent',
+                    payload: {
+                        Item: newRally,
+                    },
+                };
+                let body = JSON.stringify(obj);
+
+                let api2use = process.env.AWS_API_ENDPOINT + '/events';
+                axios
+                    .post(api2use, body, CONFIG)
+                    .then((response) => {
+                        dispatch(updateRally(response.data.Item));
+                    })
+                    .catch((err) => {
+                        console.log('REC-106: error:', err);
+                    });
             } else {
                 putRally(newRally, user).then((response) => {
                     console.log('submitted rally', newRally);
                     dispatch(addNewRally(response.Item));
-                    navigation.navigate('Serve', null);
                 });
             }
+            navigation.navigate('Serve', null);
         }
     }
     return (

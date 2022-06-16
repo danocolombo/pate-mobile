@@ -23,8 +23,7 @@ export default function MainScreen() {
         setRallies(dbRallies);
     }
     useEffect(() => {
-        if (process.env.ENV === 'DEBUG') {
-            
+        if (process.env.ENV === 'DEV') {
             const fileRallies = ALL_EVENTS.body.Items;
             let response = {
                 body: fileRallies,
@@ -40,7 +39,6 @@ export default function MainScreen() {
             setApprovedRallies(publicRallies);
             setIsLoading(false);
         } else {
-            
             const config = {
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',

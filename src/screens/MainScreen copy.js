@@ -17,8 +17,8 @@ import { ScrollView } from 'react-native';
 export default function MainScreen() {
     const dispatch = useDispatch();
     const fetchApprovedPublicEvents = async () => {
-        if (process.env.ENV === 'DEBUG') {
-            console.log('DEBUG SET !!');
+        if (process.env.ENV === 'DEV') {
+            console.log('DEV SET !!');
 
             const rallies = ALL_EVENTS.body.Items;
             let response = {

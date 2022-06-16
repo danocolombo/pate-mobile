@@ -36,8 +36,8 @@ const ServeMyRallies = () => {
 
     const navigation = useNavigation();
     const handleDeleteConfirm = (rally) => {
-        if (process.env.ENV === 'DEBUG') {
-            console.log('DEBUG DELETE REQUEST');
+        if (process.env.ENV === 'DEV') {
+            console.log('DEV DELETE REQUEST');
             dispatch(deleteRally(rally));
         } else {
             //first delete from db, then remove from redux

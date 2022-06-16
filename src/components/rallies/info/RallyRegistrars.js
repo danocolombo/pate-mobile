@@ -14,7 +14,7 @@ const RallyRegistrars = ({ rally, onPress }) => {
     const navigation = useNavigation();
     const [regs, setRegs] = useState();
     useEffect(() => {
-        if (process.env.ENV === 'DEBUG') {
+        if (process.env.ENV === 'DEV') {
             setRegs(REGISTRARS.body.Items);
         } else {
             //get registrars from ddb
@@ -38,7 +38,7 @@ const RallyRegistrars = ({ rally, onPress }) => {
                 printObject('RR:22 response', response);
                 setRegs(response.data.body.Items);
             });
-            printObject("regs", regs);
+            printObject('regs', regs);
         }
     }, []);
     const handleRegistrationRequest = (reg) => {
