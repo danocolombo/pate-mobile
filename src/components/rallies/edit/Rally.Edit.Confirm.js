@@ -76,7 +76,7 @@ const RallyNewConfirmation = () => {
             } else {
                 // for debug mode you need something in id;
                 getUniqueId().then((new_id) => {
-                    let tmpId = { id: new_id };
+                    let tmpId = { uid: new_id };
                     let newRallyToSave = { ...newRally, ...tmpId };
                     dispatch(addNewRally(newRallyToSave));
                 });
