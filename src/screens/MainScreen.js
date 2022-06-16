@@ -24,18 +24,15 @@ export default function MainScreen() {
     }
     useEffect(() => {
         if (process.env.ENV === 'DEBUG') {
-            console.log('DEBUG SET !!');
-
+            
             const fileRallies = ALL_EVENTS.body.Items;
             let response = {
                 body: fileRallies,
             };
             dispatch(loadRallies(fileRallies));
-
             loadStateRallies(response).then(() => {
                 console.log('rallies loaded');
             });
-
             //todo   change to today's date, not hardcoded.
             const publicRallies = fileRallies.filter(
                 (r) => r.approved === true && r.eventDate >= '20220616'
@@ -43,7 +40,7 @@ export default function MainScreen() {
             setApprovedRallies(publicRallies);
             setIsLoading(false);
         } else {
-            console.log('ENV:', process.env.ENV);
+            
             const config = {
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
@@ -61,24 +58,25 @@ export default function MainScreen() {
             //let dbRallies = await axios.post(api2use, body, config);
             axios
                 .post(api2use, body, config)
-                .then((dbRallies) => {
-                    loadRallies(dbRallies.data).then(() => {
-                        console.log('SAVING NON-DEBUG RALLIES');
+                .then((response) => {
+                    dispatch(loadRallies(response.data.body.Items));
+                    loadStateRallies(response.data.body.Items).then(() => {
+                        console.log('rallies loaded');
                     });
-                    if (rallies) {
-                        //todo   change to today's date, not hardcoded.
-                        const publicRallies = rallies.filter(
-                            (r) =>
-                                r.approved === true && r.eventDate >= '20220616'
-                        );
-                        setApprovedRallies(publicRallies);
-                    }
+                    //todo   change to today's date, not hardcoded.
+                    let dbRallies = response.data.body.Items;
+                    const publicRallies = dbRallies.filter(
+                        (r) => r.approved === true && r.eventDate >= '20220616'
+                    );
+                    setApprovedRallies(publicRallies);
+                    setIsLoading(false);
                 })
                 .catch((err) => {
                     console.log('MS-60: error:', err);
                 });
         }
     }, []);
+    console.log('ENV:', process.env.ENV);
     const stateRallies = useSelector((state) => state.rallies.allRallies);
     return isLoading ? (
         <LoadingOverlay />

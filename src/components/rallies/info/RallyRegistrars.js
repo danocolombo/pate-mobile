@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { Badge } from 'react-native-paper';
 import CustomSmallButton from '../../ui/CustomSmallButton';
@@ -8,6 +9,7 @@ import RegistrarListItem from './Registrar.List.Item';
 import { Colors } from '../../../constants/colors';
 import { REGISTRARS } from '../../../../data/getRegistrationsForEventOrdered';
 import { printObject } from '../../../utils/helpers';
+import { getRegistrarsForEvent } from '../../../providers/registrations';
 const RallyRegistrars = ({ rally, onPress }) => {
     const navigation = useNavigation();
     const [regs, setRegs] = useState();
@@ -15,7 +17,28 @@ const RallyRegistrars = ({ rally, onPress }) => {
         if (process.env.ENV === 'DEBUG') {
             setRegs(REGISTRARS.body.Items);
         } else {
-            //todo: make call to getRegistrationsForEventOrdered with...
+            //get registrars from ddb
+            const config = {
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            };
+            let obj = {
+                operation: 'getRegistrationsForEvent',
+                payload: {
+                    eid: rally.uid,
+                },
+            };
+            let body = JSON.stringify(obj);
+            printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
+            console.log('\n###########################\n');
+            let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
+
+            axios.post(api2use, body, config).then((response) => {
+                printObject('RR:22 response', response);
+                setRegs(response.data.body.Items);
+            });
+            printObject("regs", regs);
         }
     }, []);
     const handleRegistrationRequest = (reg) => {
