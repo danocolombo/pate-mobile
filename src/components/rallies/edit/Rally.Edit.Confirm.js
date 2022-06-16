@@ -74,7 +74,6 @@ const RallyNewConfirmation = () => {
                 dispatch(updateRally(newRally));
                 navigation.navigate('Serve', null);
             } else {
-                // DEBUG - NEW RALLY
                 // for debug mode you need something in id;
                 getUniqueId().then((new_id) => {
                     let tmpId = { id: new_id };

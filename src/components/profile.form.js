@@ -19,6 +19,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import CustomButton from './ui/CustomButton';
 import { updateCurrentUser } from '../features/users/usersSlice';
+import { updateProfile } from '../providers/users';
 import { printObject } from '../utils/helpers';
 
 // create validation schema for yup to pass to formik
@@ -49,8 +50,40 @@ export default function ProfileForm() {
     const handleSubmit = (values) => {
         // gather data
         dispatch(updateCurrentUser(values));
-        //todo: save the user info to DDB
-        navigation.navigate('Main', null);
+        // need to create residence structure
+        let dbProfile = {
+            uid: user.uid,
+            firstName: values?.firstName ? values.firstName : '',
+            lastName: values?.lastName ? values.lastName : '',
+            email: values?.email ? values.email : '',
+            phone: values?.phone ? values.phone : '',
+            residence: {
+                street: values?.street ? values.street : '',
+                city: values?.city ? values.city : '',
+                stateProv: values?.stateProv ? values.stateProv : '',
+                postalCode: values?.postalCode ? values.postalCode : '',
+            },
+            church: {
+                name: values?.churchName ? values.churchName : '',
+                //street: values?.churchStreet ? values.churchStreet : '',
+                city: values?.churchCity ? values.churchCity : '',
+                stateProv: values?.churchStateProv
+                    ? values.churchStateProv
+                    : '',
+            },
+            isLoggedIn: true,
+        };
+        // now conditionally add the rep and lead info if applicable
+        if (user?.stateRep) {
+            dbProfile = { ...dbProfile, stateRep: user.stateRep };
+        }
+        if (user?.stateLead) {
+            dbProfile = { ...dbProfile, stateLead: user.stateLead };
+        }
+        dbProfile = { ...dbProfile, region: 'us#east#south#tt' };
+        updateProfile(dbProfile).then((response) => {
+            navigation.navigate('Main', null);
+        });
     };
     // const dispatch = useDispatch();
     return (
@@ -86,8 +119,8 @@ export default function ProfileForm() {
                                     churchCity: user?.churchCity
                                         ? user.churchCity
                                         : '',
-                                    churchState: user?.churchState
-                                        ? user.churchState
+                                    churchStateProv: user?.churchStateProv
+                                        ? user.churchStateProv
                                         : '',
                                 }}
                                 validationSchema={profileSchema}

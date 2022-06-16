@@ -10,7 +10,7 @@ const config = {
 };
 export async function fetchActiveApprovedRallies() {
     const [plans, setPlans] = useState();
-    await fetch(process.env.API_ENDPOINT, {
+    await fetch(process.env.AWS_API_ENDPOINT + '/events', {
         method: 'POST',
         body: JSON.stringify({
             operation: 'getAllActiveApprovedEvents',
@@ -27,7 +27,7 @@ export async function fetchActiveApprovedRallies() {
         });
 }
 export async function getAllEventsForCoordinator(uid) {
-    await fetch(process.env.API_ENDPOINT, {
+    await fetch(process.env.AWS_API_ENDPOINT + '/events', {
         method: 'POST',
         body: JSON.stringify({
             operation: 'getEventsForRep',
@@ -54,7 +54,7 @@ export async function updateRally(rally, user) {
     let body = JSON.stringify(obj);
     printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
     console.log('\n###########################\n');
-    let api2use = process.env.API_ENDPOINT;
+    let api2use = process.env.AWS_API_ENDPOINT + '/events';
 
     let res = await axios.post(api2use, body, config);
     var returnValue = res.data;
@@ -149,159 +149,10 @@ export async function putRally(rally, user) {
     let body = JSON.stringify(obj);
     printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
     console.log('\n###########################\n');
-    let api2use = process.env.API_ENDPOINT;
+    let api2use = process.env.AWS_API_ENDPOINT + '/events';
 
     let res = await axios.post(api2use, body, config);
     console.log('WANT TO RETURN.....', res);
     var returnValue = res.data;
     return returnValue;
 }
-export async function getAllActiveMeetingsForClient(client, startDate) {
-    const config = {
-        headers: {
-            'Access-Control-Allow-Headers':
-                'Content-Type, x-auth-token, Access-Control-Allow-Headers',
-            'Content-Type': 'application/json',
-        },
-    };
-    let obj = {
-        operation: 'getMeetingsOnAfterDate',
-        payload: {
-            clientId: client,
-            date: startDate,
-            direction: 'ASC',
-        },
-    };
-
-    let body = JSON.stringify(obj);
-    let api2use = MEETER_API + '/meetings';
-
-    let res = await axios.post(api2use, body, config);
-
-    var returnValue = res.data.body.Items;
-    if (res.status === 200) {
-        return returnValue;
-    } else {
-        console.log('we got no meetings');
-        return null;
-    }
-}
-
-export async function getMeetingsBetweenDates(
-    client,
-    startDate,
-    stopDate,
-    direction
-) {
-    const config = {
-        headers: {
-            'Access-Control-Allow-Headers':
-                'Content-Type, x-auth-token, Access-Control-Allow-Headers',
-            'Content-Type': 'application/json',
-        },
-    };
-    let obj = {
-        operation: 'getMeetingsBetweenDates',
-        payload: {
-            clientId: client,
-            startDate: startDate,
-            stopDate: stopDate,
-            direction: direction,
-        },
-    };
-
-    let body = JSON.stringify(obj);
-    let api2use = MEETER_API + '/meetings';
-    let res = await axios.post(api2use, body, config);
-    var returnValue = res.data.body.Items;
-    if (res.status === 200) {
-        return returnValue;
-    } else {
-        console.log('we got no meetings');
-        return null;
-    }
-}
-export const fetchActiveMeetings = async () => {
-    const today = getToday();
-    const config = {
-        headers: {
-            'Access-Control-Allow-Headers':
-                'Content-Type, x-auth-token, Access-Control-Allow-Headers',
-            'Content-Type': 'application/json',
-        },
-    };
-    let obj = {
-        operation: 'getMeetingsOnAfterDate',
-        payload: {
-            clientId: 'wbc',
-            date: today,
-            direction: 'ASC',
-        },
-    };
-
-    let body = JSON.stringify(obj);
-    let api2use = MEETER_API + '/meetings';
-
-    let res = await axios.post(api2use, body, config);
-    // console.log('meetings:\n', res.data);
-    return res.data;
-};
-export const fetchHistoricMeetings = async () => {
-    //------------------------------
-    // need to get two months back
-    //==============================
-    let twoMonthsAgo = subtractMonths(2).toJSON();
-
-    let startDate = twoMonthsAgo.slice(0, 10);
-    let target = getToday();
-    const historicMeetings = await getMeetingsBetweenDates(
-        'wbc',
-        startDate,
-        target,
-        'DESC'
-    );
-    return historicMeetings;
-};
-export const deleteMeeting = async (meetingId) => {
-    let obj = {
-        operation: 'deleteMeeting',
-        payload: {
-            Key: {
-                meetingId: meetingId,
-            },
-        },
-    };
-
-    let body = JSON.stringify(obj);
-    let api2use = MEETER_API + '/meetings';
-
-    let res = await axios.post(api2use, body, config);
-
-    var returnValue = res.data.body;
-    if (res.status === 200) {
-        return returnValue;
-    } else {
-        console.log('we got no meetings');
-        return null;
-    }
-};
-export const addMeeting = async (newMeeting) => {
-    let obj = {
-        operation: 'putMeeting',
-        payload: {
-            Item: newMeeting,
-        },
-    };
-
-    let body = JSON.stringify(obj);
-    let api2use = MEETER_API + '/meetings';
-
-    let res = await axios.post(api2use, body, config);
-    var returnValue = res.data.body;
-    if (res.status === 200) {
-        return returnValue;
-    } else {
-        console.log('we got no meetings');
-        return null;
-    }
-};

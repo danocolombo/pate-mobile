@@ -8,18 +8,21 @@ export const loadUserRallies = createAsyncThunk(
             let response;
             console.log('userId', userId);
             const fetchRepEvents = async (userId) => {
-                response = await fetch(process.env.API_ENDPOINT, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        operation: 'getEventsForRep',
-                        payload: {
-                            uid: userId,
+                response = await fetch(
+                    process.env.AWS_API_ENDPOINT + '/events',
+                    {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            operation: 'getEventsForRep',
+                            payload: {
+                                uid: userId,
+                            },
+                        }),
+                        headers: {
+                            'Content-type': 'application/json; charset=UTF-8',
                         },
-                    }),
-                    headers: {
-                        'Content-type': 'application/json; charset=UTF-8',
-                    },
-                });
+                    }
+                );
             };
             await fetchRepEvents(userId);
             printObject('fetchResponse', response);
@@ -35,6 +38,7 @@ export const loadUserRallies = createAsyncThunk(
 const initialState = {
     value: 0,
     publicRallies: [],
+    allRallies: [],
     userRallies: [],
     tmpRally: {},
 };
@@ -61,6 +65,8 @@ export const ralliesSlice = createSlice({
         // },
         loadRallies: (state, action) => {
             state.publicRallies = action.payload;
+            state.allRallies = action.payload;
+            return state;
         },
         getRally: (state, action) => {
             let found = state.publicRallies.filter(
@@ -72,7 +78,7 @@ export const ralliesSlice = createSlice({
             const newRallyList = state.publicRallies.map((ral) => {
                 return ral.uid === action.payload.uid ? action.payload : ral;
             });
-           
+
             function asc_sort(a, b) {
                 return a.eventDate - b.eventDate;
             }
