@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, ScrollView, Modal } from 'react-native';
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { Subheading, Surface } from 'react-native-paper';
@@ -10,6 +11,7 @@ import CustomButton from '../ui/CustomButton';
 import { Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { printObject, asc_sort, desc_sort } from '../../utils/helpers';
+import { CONFIG } from '../../utils/helpers';
 import { Colors } from '../../constants/colors';
 const ServeMyRallies = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -38,8 +40,28 @@ const ServeMyRallies = () => {
             console.log('DEBUG DELETE REQUEST');
             dispatch(deleteRally(rally));
         } else {
-            console.log('Delete Rquest - not implemented yet. [20220610.40]');
-            //todo ---- Need to do dispatch above AFTER database update
+            //first delete from db, then remove from redux
+
+            let obj = {
+                operation: 'deleteEvent',
+                payload: {
+                    Key: {
+                        uid: rally.uid,
+                    },
+                },
+            };
+            let body = JSON.stringify(obj);
+
+            let api2use = process.env.AWS_API_ENDPOINT + '/events';
+            //let dbRallies = await axios.post(api2use, body, config);
+            axios
+                .post(api2use, body, CONFIG)
+                .then((response) => {
+                    dispatch(deleteRally(rally));
+                })
+                .catch((err) => {
+                    console.log('SMR-62: error:', err);
+                });
         }
         setShowDeleteConfirm(false);
     };
