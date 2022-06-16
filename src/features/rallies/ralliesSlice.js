@@ -37,7 +37,7 @@ export const loadUserRallies = createAsyncThunk(
 );
 const initialState = {
     value: 0,
-    publicRallies: [],
+    // publicRallies: [],
     allRallies: [],
     userRallies: [],
     tmpRally: {},
@@ -64,18 +64,18 @@ export const ralliesSlice = createSlice({
         //     state.userRallies = action.payload;
         // },
         loadRallies: (state, action) => {
-            state.publicRallies = action.payload;
+            // state.publicRallies = action.payload;
             state.allRallies = action.payload;
             return state;
         },
         getRally: (state, action) => {
-            let found = state.publicRallies.filter(
+            let found = state.allRallies.filter(
                 (r) => r.uid === action.payload
             );
             return found;
         },
         updateRally: (state, action) => {
-            const newRallyList = state.publicRallies.map((ral) => {
+            const newRallyList = state.allRallies.map((ral) => {
                 return ral.uid === action.payload.uid ? action.payload : ral;
             });
 
@@ -83,13 +83,13 @@ export const ralliesSlice = createSlice({
                 return a.eventDate - b.eventDate;
             }
             let newBigger = newRallyList.sort(asc_sort);
-            state.publicRallies = newBigger;
-            printObject('new publicRallies', state.publicRallies);
+            state.allRallies = newBigger;
+            printObject('new allRallies', state.allRallies);
             return state;
         },
         addNewRally: (state, action) => {
-            let statePublicRallies = state.publicRallies;
-            statePublicRallies.push(action.payload);
+            let allRallies = state.allRallies;
+            allRallies.push(action.payload);
             // ascending sort
             function asc_sort(a, b) {
                 return (
@@ -97,22 +97,22 @@ export const ralliesSlice = createSlice({
                     new Date(b.eventDate).getTime()
                 );
             }
-            let newBigger = statePublicRallies.sort(asc_sort);
-            state.publicRallies = newBigger;
+            let newBigger = allRallies.sort(asc_sort);
+            state.allRallies = newBigger;
             // return
             return state;
         },
         deleteRally: (state, action) => {
-            const smaller = state.publicRallies.filter(
+            const smaller = state.allRallies.filter(
                 (ral) => ral.uid !== action.payload.uid
             );
-            state.publicRallies = smaller;
+            state.allRallies = smaller;
             return state;
         },
         getStateRallies: (state, action) => {
             // this takes the payload to get the stateProv
             // then sorts desc (latest first, then oldest last)
-            return state.publicRallies;
+            return state.allRallies;
         },
         // loadUserRallies: (state, action) => {
         //     state.userRallies = action.payload;
