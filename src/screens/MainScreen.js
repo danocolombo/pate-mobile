@@ -32,7 +32,7 @@ export default function MainScreen() {
             loadStateRallies(response).then(() => {
                 console.log('rallies loaded');
             });
-            //todo   change to today's date, not hardcoded.
+
             const publicRallies = fileRallies.filter(
                 (r) => r.approved === true && r.eventDate >= '20220616'
             );
@@ -61,7 +61,7 @@ export default function MainScreen() {
                     loadStateRallies(response.data.body.Items).then(() => {
                         console.log('rallies loaded');
                     });
-                    //todo   change to today's date, not hardcoded.
+
                     let dbRallies = response.data.body.Items;
                     const publicRallies = dbRallies.filter(
                         (r) => r.approved === true && r.eventDate >= '20220616'

@@ -85,7 +85,6 @@ const RallyNewConfirmation = () => {
                 navigation.navigate('Serve', null);
             }
         } else {
-            //todo ---- above features need to be confirmed going to DDB
             if (newRally?.uid) {
                 //   UPDATE EXISTING EVENT
                 let obj = {
