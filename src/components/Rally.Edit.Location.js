@@ -40,7 +40,7 @@ export default function RallyLocationForm({ rallyId }) {
     let rallyEntry;
     if (!rallyEntry) {
         rallyEntry = useSelector((state) =>
-            state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+            state.rallies.allRallies.filter((r) => r.uid === rallyId)
         );
     }
     const rally = rallyEntry[0];

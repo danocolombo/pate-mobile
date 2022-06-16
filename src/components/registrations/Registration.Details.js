@@ -18,7 +18,7 @@ const RegistrationDetails = ({ reg }) => {
     const [showNotifyModal, setShowNotifyModal] = useState(false);
     // printObject('reg:', reg);
     const rallyArray = useSelector((state) =>
-        state.rallies.publicRallies.filter((r) => r.uid === reg.eid)
+        state.rallies.allRallies.filter((r) => r.uid === reg.eid)
     );
     let rallyEntry = rallyArray[0];
     //printObject('rallyEntry:', rallyEntry);

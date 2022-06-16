@@ -18,11 +18,11 @@ const ServeMyRallies = () => {
             return s.name;
         }
     });
-    let rallies = useSelector((state) => state.rallies.publicRallies);
+    let rallies = useSelector((state) => state.rallies.allRallies);
     const stateRallies = useSelector((state) =>
-        state.rallies.publicRallies.filter((r) => r.stateProv === me.stateRep)
+        state.rallies.allRallies.filter((r) => r.stateProv === me.stateRep)
     );
-   
+
     function asc_sort(a, b) {
         return a.eventDate - b.eventDate;
     }

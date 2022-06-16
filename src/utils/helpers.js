@@ -64,6 +64,11 @@ export function printObject(label, target) {
             })
     );
 }
+export const CONFIG = {
+    headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+    },
+};
 export function createMtgCompKey(client, meetingDate) {
     let mtgCompKey =
         client +
