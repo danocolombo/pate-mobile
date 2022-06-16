@@ -1,8 +1,15 @@
-currentUser: {
+ttRep: {
         isLoggedIn: true,
         phone: '7066042494',
         firstName: 'TTRep',
         lastName: 'Account',
+        churchName: 'St. Vincent',
+        churchStateProv: 'TT',
+        churchCity: 'Petaluma',
+        stateProv: 'TT',
+        city: 'Petaluma',
+        street: '1800 Lakeville Hwy',
+        postalCode: '12345',
         uid: '6b5f1019-0776-42e2-8cce-d7a2fc8bb93e',
         uidRobin: 'bb3aa10a-0956-41ba-bcba-51e9ffd80985',
         login: 'ttrep',
@@ -38,3 +45,21 @@ currentUser: {
         stateLead: 'TT',
         region: 'test',
     },
+    CRGALeader: {
+        "lastName": "Colombo",
+        "stateProv": "GA",
+        "city": "Columbus",
+        "street": "2304 Leah Dr",
+        "postalCode": "31909",
+        "region": "us#east#south#ga",
+        "stateRep": "GA",
+        "email": "gacrleader@gmail.com",
+        "phone": "7066042494",
+        "stateLead": "GA",
+        "uid": "b3f192ff-7dbf-4dae-a46d-ef7b0662f70d",
+        "churchName": "Wynnbrook Baptist Church",
+        "churchStateProv": "GA",
+        "churchCity": "Columbus",
+        "firstName": "Dano",
+        "isLoggedIn": true
+    }
