@@ -17,8 +17,8 @@ import { ScrollView } from 'react-native';
 export default function MainScreen() {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
-    const [rallies, setRallies] = useState();
-    const [approvedRallies, setApprovedRallies] = useState();
+    const [rallies, setRallies] = useState([]);
+    const [approvedRallies, setApprovedRallies] = useState([]);
     async function loadStateRallies(dbRallies) {
         setRallies(dbRallies);
     }
@@ -30,7 +30,7 @@ export default function MainScreen() {
             let response = {
                 body: fileRallies,
             };
-            dispatch(loadRallies(response));
+            dispatch(loadRallies(fileRallies));
 
             loadStateRallies(response).then(() => {
                 console.log('rallies loaded');

@@ -32,7 +32,7 @@ export default function RallyLogisticsForm({ rallyId }) {
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
     const rallyEntry = useSelector((state) =>
-        state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+        state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
     const handleNext = (values) => {

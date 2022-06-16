@@ -16,10 +16,9 @@ const ServeMyRallies = () => {
     const [rally, setRally] = useState();
     const dispatch = useDispatch();
     let me = useSelector((state) => state.users.currentUser);
-    let rallies = useSelector((state) => state.rallies.publicRallies);
-    const myRallies = useSelector((state) =>
-        state.rallies.publicRallies.filter((r) => r.coordinator.id === me.uid)
-    );
+    let rallies = useSelector((state) => state.rallies.allRallies);
+    console.log('typeof rallies:', typeof rallies);
+    const myRallies = rallies.filter((r) => r.coordinator.id === me.uid);
     let displayData;
     async function sortRallies() {
         displayData = myRallies.sort(asc_sort);

@@ -31,7 +31,7 @@ export default function RallyMealForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const rallyEntry = useSelector((state) =>
-        state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+        state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
     const handleNext = (values) => {

@@ -13,7 +13,7 @@ const RallyRegister = ({ rallyId }) => {
     const [registrarCount, setRegistrar] = useState(0);
     const [mealCount, setMealCount] = useState(0);
     let ral = useSelector((state) =>
-        state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+        state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
     let rally = ral[0];
     const handleRegistarCountChange = (e) => {

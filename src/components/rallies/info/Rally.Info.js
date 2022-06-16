@@ -23,7 +23,7 @@ const RallyDetails = ({ rallyId }) => {
     const navigation = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
     const rallyEntry = useSelector((state) =>
-        state.rallies.publicRallies.filter((r) => r.uid === rallyId)
+        state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
     let rally = rallyEntry[0];
     const dispatch = useDispatch();
