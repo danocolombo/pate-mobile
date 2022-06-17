@@ -1,5 +1,12 @@
 import React, { useContext } from 'react';
-import { Pressable, StyleSheet, Text, View, Image } from 'react-native';
+import {
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
+    ImageBackground,
+    Image,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import CardDate from '../ui/RallyCardDate';
@@ -15,24 +22,29 @@ function RallyItem({ uid, eventDate, name, city, stateProv }) {
 
     return (
         <>
-            <Pressable
-                onPress={rallyPressHandler}
-                style={({ pressed }) => pressed && styles.pressed}
+            <ImageBackground
+                source={require('../../components/images/background.png')}
+                style={styles.bgImageContainer}
             >
-                <View style={styles.rootContainer}>
-                    <View style={styles.rallyItem}>
-                        <View style={styles.itemRow}>
-                            <CardDate date={eventDate} />
-                            <Text style={styles.locationText}>
-                                {city}, {stateProv}
-                            </Text>
-                        </View>
-                        <View style={styles.hostRow}>
-                            <Text style={styles.hostName}>{name}</Text>
+                <Pressable
+                    onPress={rallyPressHandler}
+                    style={({ pressed }) => pressed && styles.pressed}
+                >
+                    <View style={styles.rootContainer}>
+                        <View style={styles.rallyItem}>
+                            <View style={styles.itemRow}>
+                                <CardDate date={eventDate} />
+                                <Text style={styles.locationText}>
+                                    {city}, {stateProv}
+                                </Text>
+                            </View>
+                            <View style={styles.hostRow}>
+                                <Text style={styles.hostName}>{name}</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-            </Pressable>
+                </Pressable>
+            </ImageBackground>
         </>
     );
 }
@@ -81,5 +93,13 @@ const styles = StyleSheet.create({
         fontSize: 20,
         // fontWeight: 'bold',
         color: Colors.accent500,
+    },
+    imageContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    image: {
+        width: '85%',
+        height: '65%',
     },
 });

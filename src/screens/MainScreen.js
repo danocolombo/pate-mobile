@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, StyleSheet } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, Image } from 'react-native';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
@@ -87,7 +87,26 @@ export default function MainScreen() {
             style={styles.bgImageContainer}
         >
             <>
-                <RalliesOutput rallies={approvedRallies} />
+                {approvedRallies.length !== 0 ? (
+                    <RalliesOutput rallies={approvedRallies} />
+                ) : (
+                    <View style={styles.imageContainer}>
+                        <Image
+                            source={require('../components/images/no-events-card.png')}
+                            style={styles.image}
+                        />
+                    </View>
+                )}
+                {/* //{' '}
+                <View style={{ marginTop: 30 }}>
+                    //{' '}
+                    <Text styles={styles.infoText}>
+                        // RALLIES: {approvedRallies.length}
+                        //{' '}
+                    </Text>
+                    //{' '}
+                </View>
+                // <RalliesOutput rallies={approvedRallies} /> */}
             </>
         </ImageBackground>
     );
@@ -97,5 +116,17 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
+    },
+    infoText: {
+        color: 'white',
+        fontSize: 24,
+    },
+    imageContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    image: {
+        width: '85%',
+        height: '65%',
     },
 });
