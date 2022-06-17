@@ -1,9 +1,22 @@
-import { StyleSheet, Text, View, ViewBase, _View } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    ViewBase,
+    ImageBackground,
+} from 'react-native';
 import React from 'react';
 import ServeMyRallies from '../../components/serve/ServeMyRallies';
 
 const ServeEventsMyScreen = () => {
-    return <ServeMyRallies />;
+    return (
+        <ImageBackground
+            source={require('../../components/images/background.png')}
+            style={styles.bgImageContainer}
+        >
+            <ServeMyRallies />
+        </ImageBackground>
+    );
 };
 
 export default ServeEventsMyScreen;
@@ -18,5 +31,10 @@ const styles = StyleSheet.create({
     screenHeaderText: {
         fontSize: 30,
         fontWeight: 'bold',
+    },
+    bgImageContainer: {
+        flex: 1,
+        height: '100%',
+        width: '100%',
     },
 });

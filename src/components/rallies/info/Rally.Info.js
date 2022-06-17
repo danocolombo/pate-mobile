@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { View, Text, StyleSheet, Image, Modal, ScrollView } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    Modal,
+    ScrollView,
+    ImageBackground,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
@@ -66,122 +74,135 @@ const RallyDetails = ({ rallyId }) => {
     };
     return (
         <>
-            <Modal visible={showStatusModal} animationStyle='slide'>
-                <Surface style={styles.modalSurface}>
-                    <View style={styles.modalInfoWrapper}>
-                        <Text style={styles.modalTitle}>Manage Status</Text>
-                        <RallyLocationInfo rally={rally} />
-                    </View>
-                    <View style={styles.radioButtonContainer}>
-                        <SelectDropdown
-                            data={statusValues}
-                            // defaultValueByIndex={1}
-                            defaultValue={rally.status}
-                            onSelect={(selectedItem, index) => {
-                                setNewStatus(selectedItem);
-                                console.log(selectedItem, index);
-                            }}
-                            defaultButtonText={rally?.status}
-                            buttonTextAfterSelection={(selectedItem, index) => {
-                                return selectedItem;
-                            }}
-                            rowTextForSelection={(item, index) => {
-                                return item;
-                            }}
-                            buttonStyle={styles.dropdown1BtnStyle}
-                            buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                            renderDropdownIcon={(isOpened) => {
-                                return (
-                                    <Ionicons
-                                        name={
-                                            isOpened
-                                                ? 'chevron-up-sharp'
-                                                : 'chevron-down-sharp'
+            <ImageBackground
+                source={require('../../../components/images/background.png')}
+                style={styles.bgImageContainer}
+            >
+                <Modal visible={showStatusModal} animationStyle='slide'>
+                    <Surface style={styles.modalSurface}>
+                        <View style={styles.modalInfoWrapper}>
+                            <Text style={styles.modalTitle}>Manage Status</Text>
+                            <RallyLocationInfo rally={rally} />
+                        </View>
+                        <View style={styles.radioButtonContainer}>
+                            <SelectDropdown
+                                data={statusValues}
+                                // defaultValueByIndex={1}
+                                defaultValue={rally.status}
+                                onSelect={(selectedItem, index) => {
+                                    setNewStatus(selectedItem);
+                                    console.log(selectedItem, index);
+                                }}
+                                defaultButtonText={rally?.status}
+                                buttonTextAfterSelection={(
+                                    selectedItem,
+                                    index
+                                ) => {
+                                    return selectedItem;
+                                }}
+                                rowTextForSelection={(item, index) => {
+                                    return item;
+                                }}
+                                buttonStyle={styles.dropdown1BtnStyle}
+                                buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                                renderDropdownIcon={(isOpened) => {
+                                    return (
+                                        <Ionicons
+                                            name={
+                                                isOpened
+                                                    ? 'chevron-up-sharp'
+                                                    : 'chevron-down-sharp'
+                                            }
+                                            color={'black'}
+                                            size={24}
+                                        />
+                                    );
+                                }}
+                                dropdownIconPosition={'right'}
+                                dropdownStyle={styles.dropdown1DropdownStyle}
+                                rowStyle={styles.dropdown1RowStyle}
+                                rowTextStyle={styles.dropdown1RowTxtStyle}
+                            />
+                        </View>
+                        <View style={styles.modalButtonContainer}>
+                            <View style={styles.modalButtonWrapper}>
+                                <View style={styles.modalConfirmButton}>
+                                    <CustomButton
+                                        title='CANCEL'
+                                        graphic={null}
+                                        cbStyles={{
+                                            backgroundColor: Colors.gray35,
+                                            color: 'black',
+                                        }}
+                                        txtColor='white'
+                                        onPress={() =>
+                                            setShowStatusModal(false)
                                         }
-                                        color={'black'}
-                                        size={24}
                                     />
-                                );
-                            }}
-                            dropdownIconPosition={'right'}
-                            dropdownStyle={styles.dropdown1DropdownStyle}
-                            rowStyle={styles.dropdown1RowStyle}
-                            rowTextStyle={styles.dropdown1RowTxtStyle}
-                        />
-                    </View>
-                    <View style={styles.modalButtonContainer}>
-                        <View style={styles.modalButtonWrapper}>
-                            <View style={styles.modalConfirmButton}>
-                                <CustomButton
-                                    title='CANCEL'
-                                    graphic={null}
-                                    cbStyles={{
-                                        backgroundColor: Colors.gray35,
-                                        color: 'black',
-                                    }}
-                                    txtColor='white'
-                                    onPress={() => setShowStatusModal(false)}
-                                />
+                                </View>
+                            </View>
+
+                            <View style={styles.modalButtonWrapper}>
+                                <View style={styles.modalCancelButton}>
+                                    <CustomButton
+                                        title='UPDATE'
+                                        graphic={null}
+                                        cbStyles={{
+                                            backgroundColor: 'green',
+                                            color: 'white',
+                                        }}
+                                        txtColor='white'
+                                        onPress={() => {
+                                            handleStatusChange();
+                                        }}
+                                    />
+                                </View>
                             </View>
                         </View>
-
-                        <View style={styles.modalButtonWrapper}>
-                            <View style={styles.modalCancelButton}>
+                    </Surface>
+                </Modal>
+                <ScrollView>
+                    <RallyLocationInfo rally={rally} />
+                    <RallyLogisticsInfo rally={rally} />
+                    <RallyContactInfo rally={rally} />
+                    <RallyMealInfo rally={rally} />
+                    {rally.status !== 'pending' && rally.status !== 'draft' ? (
+                        <RallyRegistrars
+                            key={rally.uid}
+                            rally={rally}
+                            onPress={(reg) => handleRegistrarRequest(reg)}
+                        />
+                    ) : null}
+                    <RallyStatusInfo
+                        rally={rally}
+                        onPress={handleStatusPress}
+                    />
+                    <View style={styles.buttonContainer}></View>
+                    {user.uid === rally.coordinator.id ? (
+                        <View>
+                            <View style={styles.buttonContainer}>
                                 <CustomButton
-                                    title='UPDATE'
+                                    title='Edit This Event'
                                     graphic={null}
                                     cbStyles={{
                                         backgroundColor: 'green',
                                         color: 'white',
+                                        width: 200,
+                                        textAlign: 'center',
                                     }}
                                     txtColor='white'
-                                    onPress={() => {
-                                        handleStatusChange();
-                                    }}
+                                    onPress={() =>
+                                        navigation.navigate('RallyEditFlow', {
+                                            rallyId: rally.uid,
+                                            stage: 1,
+                                        })
+                                    }
                                 />
                             </View>
                         </View>
-                    </View>
-                </Surface>
-            </Modal>
-            <ScrollView>
-                <RallyLocationInfo rally={rally} />
-                <RallyLogisticsInfo rally={rally} />
-                <RallyContactInfo rally={rally} />
-                <RallyMealInfo rally={rally} />
-                {rally.status !== 'pending' && rally.status !== 'draft' ? (
-                    <RallyRegistrars
-                        key={rally.uid}
-                        rally={rally}
-                        onPress={(reg) => handleRegistrarRequest(reg)}
-                    />
-                ) : null}
-                <RallyStatusInfo rally={rally} onPress={handleStatusPress} />
-                <View style={styles.buttonContainer}></View>
-                {user.uid === rally.coordinator.id ? (
-                    <View>
-                        <View style={styles.buttonContainer}>
-                            <CustomButton
-                                title='Edit This Event'
-                                graphic={null}
-                                cbStyles={{
-                                    backgroundColor: 'green',
-                                    color: 'white',
-                                    width: 200,
-                                    textAlign: 'center',
-                                }}
-                                txtColor='white'
-                                onPress={() =>
-                                    navigation.navigate('RallyEditFlow', {
-                                        rallyId: rally.uid,
-                                        stage: 1,
-                                    })
-                                }
-                            />
-                        </View>
-                    </View>
-                ) : null}
-            </ScrollView>
+                    ) : null}
+                </ScrollView>
+            </ImageBackground>
         </>
     );
 };
