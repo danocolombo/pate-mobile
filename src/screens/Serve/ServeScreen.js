@@ -1,12 +1,22 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 function ServeScreen() {
     return (
         <>
-            <View>
+            <ImageBackground
+                source={require('../../components/images/background.png')}
+                style={styles.bgImageContainer}
+            >
                 <Text>Serve Screen</Text>
-            </View>
+            </ImageBackground>
         </>
     );
 }
 export default ServeScreen;
+const styles = StyleSheet.create({
+    bgImageContainer: {
+        flex: 1,
+        height: '100%',
+        width: '100%',
+    },
+});

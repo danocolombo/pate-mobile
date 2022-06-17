@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,10 +10,13 @@ import {
     loadRepRallies,
 } from '../features/rallies/ralliesSlice';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
+import NoEventsCard from '../components/ui/NoEventsCard';
 import RalliesOutput from '../components/rallies/RalliesOutput';
 import { UserInterfaceIdiom } from 'expo-constants';
 import { printObject } from '../utils/helpers';
 import { ScrollView } from 'react-native';
+import { StylesContext } from '@material-ui/styles';
+
 export default function MainScreen() {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
@@ -79,6 +82,20 @@ export default function MainScreen() {
     return isLoading ? (
         <LoadingOverlay />
     ) : (
-        <RalliesOutput rallies={approvedRallies} />
+        <ImageBackground
+            source={require('../components/images/background.png')}
+            style={styles.bgImageContainer}
+        >
+            <>
+                <RalliesOutput rallies={approvedRallies} />
+            </>
+        </ImageBackground>
     );
 }
+const styles = StyleSheet.create({
+    bgImageContainer: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+});
