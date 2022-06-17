@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, StyleSheet } from 'react-native-web';
+import { ImageBackground, StyleSheet } from 'react-native';
 import RallyDetails from '../components/rallies/RallyDetails';
 const RallyDetailsScreen = ({ route, navigation }) => {
     const rallyId = route.params.rallyId;
