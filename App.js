@@ -28,6 +28,7 @@ import RallyDetailScreen from './src/screens/RallyDetailsScreen';
 import RallyEditFlowScreen from './src/screens/RallyEditFlowScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import RegistrationScreen from './src/screens/RegistrationScreen';
+import ErrorScreen from './src/screens/ErrorScreen';
 import { Colors } from './src/constants/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -214,6 +215,17 @@ function PateStack() {
                 component={RallyEditFlowScreen}
                 options={({ navigation }) => ({
                     title: 'Rally Form',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
+            <Stack.Screen
+                name='ErrorMsg'
+                component={ErrorScreen}
+                options={({ navigation }) => ({
+                    title: 'Error Experience',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },

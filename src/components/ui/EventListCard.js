@@ -34,55 +34,63 @@ function EventListCard({ rally, deletePress }) {
                 ]}
             >
                 <View style={styles.cardRow}>
-                    <View>
+                    <View style={styles.dateWrapper}>
                         <CardDate date={rally.eventDate} />
                     </View>
-                    <View style={styles.locationName}>
-                        <Text style={styles.locationName}>{rally.name}</Text>
-                        <Text style={styles.geo}>
-                            {rally.city}, {rally.stateProv}
-                        </Text>
+                    <View style={styles.nameGeoContainer}>
+                        <View style={styles.nameWrapper}>
+                            <Text style={styles.locationName}>
+                                {rally.name}
+                            </Text>
+                        </View>
+                        <View style={styles.geoWrapper}>
+                            <Text style={styles.geo}>
+                                {rally.city}, {rally.stateProv}
+                            </Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={styles.cardStatusRow}>
+                    <View>
+                        {rally.approved === true ? (
+                            <Ionicons
+                                name='checkmark-circle-outline'
+                                size={32}
+                                color='gold'
+                            />
+                        ) : (
+                            <>
+                                <Text style={styles.rallyStatus}>
+                                    <Chip
+                                        variant={
+                                            rally.status === 'pending'
+                                                ? 'filled'
+                                                : 'outlined'
+                                        }
+                                        backgroundColor={
+                                            rally.status === 'pending'
+                                                ? 'yellow'
+                                                : Colors.gray50
+                                        }
+                                        color={
+                                            rally.status === 'pending'
+                                                ? 'black'
+                                                : 'white'
+                                        }
+                                        label={rally.status}
+                                    />
+                                </Text>
+                            </>
+                        )}
                     </View>
                     <View style={styles.deleteIcon}>
                         <Ionicons
                             name='trash'
-                            color='black'
-                            size={24}
+                            color={Colors.gray75}
+                            size={20}
                             onPress={() => deletePress(rally)}
                         />
                     </View>
-                </View>
-                <View style={styles.cardStatusRow}>
-                    {rally.approved === true ? (
-                        <Ionicons
-                            name='checkmark-circle-outline'
-                            size={32}
-                            color='gold'
-                        />
-                    ) : (
-                        <>
-                            <Text style={styles.rallyStatus}>
-                                <Chip
-                                    variant={
-                                        rally.status === 'pending'
-                                            ? 'filled'
-                                            : 'outlined'
-                                    }
-                                    backgroundColor={
-                                        rally.status === 'pending'
-                                            ? 'yellow'
-                                            : Colors.gray50
-                                    }
-                                    color={
-                                        rally.status === 'pending'
-                                            ? 'black'
-                                            : 'white'
-                                    }
-                                    label={rally.status}
-                                />
-                            </Text>
-                        </>
-                    )}
                 </View>
             </View>
         </>
@@ -105,13 +113,20 @@ const styles = StyleSheet.create({
     },
     cardRow: {
         flexDirection: 'row',
+        flex: 1,
     },
+    dateWrapper: {},
+    nameWrapper: {},
+    geoWrapper: {},
     cardStatusRow: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
         marginTop: 10,
         marginLeft: 0,
+    },
+    nameGeoContainer: {
+        flex: 1,
     },
     locationName: {
         fontWeight: 'bold',
