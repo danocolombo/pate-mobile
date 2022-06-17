@@ -63,3 +63,18 @@ ttRep: {
         "firstName": "Dano",
         "isLoggedIn": true
     }
+    ttguest: {
+        "uid": "9b380f22-40e3-4fe3-8b52-2d6fa3b66217",
+        "churchCity": "Tim-buk-tu",
+        "churchName": "New Beginnings",
+        "churchStateProv": "TT",
+        "email": "fortsonguru@gmail.com",
+        "firstName": "Guest",
+        "isLoggedIn": true,
+        "lastName": "Account",
+        "phone": "7062343456",
+        "city": "Tim-buk-tu",
+        "postalCode": "31904",
+        "stateProv": "TT",
+        "street": "123 Lost Lane",
+    }

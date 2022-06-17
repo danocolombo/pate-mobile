@@ -105,6 +105,7 @@ const RallyNewConfirmation = () => {
                         console.log('REC-106: error:', err);
                     });
             } else {
+                //todo: need DDB call
                 putRally(newRally, user).then((response) => {
                     console.log('submitted rally', newRally);
                     dispatch(addNewRally(response.Item));

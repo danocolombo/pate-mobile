@@ -1,17 +1,22 @@
 import { StyleSheet, Text, View } from 'react-native';
+import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { Surface, Stack } from '@react-native-material/core';
 import { Button } from 'react-native-elements';
 import { Colors } from '../../constants/colors';
+import { CONFIG, printObject } from '../../utils/helpers';
 import {
     dateNumsToLongDayLongMondayDay,
     numTimeToDisplayTime,
 } from '../../utils/date';
 import NumberInput from '../ui/NumberInput/NumberInput';
 const RallyRegister = ({ rallyId }) => {
+    const navigation = useNavigation();
     const [registrarCount, setRegistrar] = useState(0);
     const [mealCount, setMealCount] = useState(0);
+    const user = useSelector((state) => state.users.currentUser);
     let ral = useSelector((state) =>
         state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
@@ -22,7 +27,60 @@ const RallyRegister = ({ rallyId }) => {
     const handleMealCountChange = (e) => {
         setMealCount(parseInt(e));
     };
-    const handleRegistrationRequest = () => {};
+    const handleRegistrationRequest = () => {
+        // define the registar info
+        let newReg = {
+            attendeeCount: registrarCount,
+            mealCount: mealCount,
+            location: {
+                name: rally?.name,
+                street: rally?.street,
+                city: rally?.city,
+                stateProv: rally?.stateProv,
+                postalCode: rally?.postalCode,
+            },
+            endTime: rally?.endTime,
+            eventDate: rally?.eventDate,
+            eid: rally?.uid,
+            church: {
+                name: rally?.name,
+                city: rally?.city,
+            },
+            rid: user?.uid,
+            startTime: rally?.startTime,
+            registrar: {
+                firstName: user?.firstName,
+                lastName: user?.lastName,
+                residence: {
+                    street: user?.street,
+                    city: user?.city,
+                    stateProv: user?.stateProv,
+                    postalCode: user?.postalCode,
+                },
+                phone: user?.phone,
+                email: user?.email,
+            },
+        };
+        printObject('newReg', newReg);
+        let obj = {
+            operation: 'createRegistration',
+            payload: {
+                Item: newReg,
+            },
+        };
+        let body = JSON.stringify(obj);
+
+        let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
+        axios
+            .post(api2use, body, CONFIG)
+            .then((response) => {
+                console.log('registion added to ddb');
+            })
+            .catch((err) => {
+                console.log('RR-77: error:', err);
+            });
+        navigation.navigate('Main', null);
+    };
     return (
         <View style={styles.rootContainer}>
             {/* <View style={styles.screenHeader}>
