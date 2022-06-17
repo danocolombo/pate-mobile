@@ -3,6 +3,7 @@ import { View, Text, ImageBackground, StyleSheet, Image } from 'react-native';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import { ALL_EVENTS } from '../../data/getRegionalEvents';
 import {
     loadRallies,
@@ -18,6 +19,7 @@ import { ScrollView } from 'react-native';
 import { StylesContext } from '@material-ui/styles';
 
 export default function MainScreen() {
+    const navigation = useNavigation();
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
     const [rallies, setRallies] = useState([]);
@@ -74,6 +76,11 @@ export default function MainScreen() {
                 })
                 .catch((err) => {
                     console.log('MS-60: error:', err);
+                    navigation.navigate('ErrorMsg', {
+                        id: 'MS-60',
+                        message:
+                            'Cannot connect to server. Please check internet connection and try again.',
+                    });
                 });
         }
     }, []);
