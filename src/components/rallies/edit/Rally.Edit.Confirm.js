@@ -14,6 +14,7 @@ import {
 } from '../../../features/rallies/ralliesSlice';
 import { CONFIG } from '../../../utils/helpers';
 import { Colors } from '../../../constants/colors';
+
 import { printObject, getUniqueId } from '../../../utils/helpers';
 
 const RallyNewConfirmation = () => {
@@ -48,8 +49,8 @@ const RallyNewConfirmation = () => {
     }
     // create new eventCompKey in case date changed
     const yr = rally.eventDate.substr(0, 4);
-    const mo = rally.eventDate.substr(4, 2);
-    const da = rally.eventDate.substr(6, 2);
+    const mo = rally.eventDate.substr(4, 6);
+    const da = rally.eventDate.substr(6);
     let keyToUse;
     rally?.uid ? (keyToUse = rally.uid) : (keyToUse = 'TBD');
     let eventCompKey =

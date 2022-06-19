@@ -9,13 +9,11 @@ import {
     ScrollView,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-// import { Picker } from 'react-native-windows';
 import { useNavigation } from '@react-navigation/native';
 import { Headline } from 'react-native-paper';
 import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
-// import { putRally } from '../../providers/rallies';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import { Formik } from 'formik';
 import * as yup from 'yup';

@@ -18,6 +18,7 @@ import { Colors } from '../../../constants/colors';
 // import { putRally } from '../../providers/rallies';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
+import { getPateDate, getPateTime } from '../../../utils/date';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyLogisticsForm({ rallyId }) {
@@ -29,14 +30,44 @@ export default function RallyLogisticsForm({ rallyId }) {
     );
     const rally = rallyEntry[0];
     const [date, setDate] = useState(new Date(Date.now()));
-    const handleNext = (values) => {
-        //printObject('handleNext::values', values);
+    const [startTime, setStartTime] = useState(new Date(Date.now()));
+    const [endTime, setEndTime] = useState(new Date(Date.now()));
+    const handleNext = () => {
+        let theDateObject = date;
+        let ed = Date.parse(theDateObject);
+        let pDate = getPateDate(ed);
+
+        theDateObject = startTime;
+        let st = Date.parse(theDateObject);
+        let pStart = getPateTime(st);
+
+        theDateObject = endTime;
+        let et = Date.parse(theDateObject);
+        let pEnd = getPateTime(et);
+
+        // build object to save
+        let values = {
+            eventDate: pDate,
+            startTime: pStart,
+            endTime: pEnd,
+        };
+        // printObject('handleNext::values', values);
         dispatch(updateTmp(values));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
             stage: 3,
         });
     };
+    const onDateChange = (event, value) => {
+        setDate(value);
+    };
+    const onStartTimeChange = (event, value) => {
+        setStartTime(value);
+    };
+    const onEndTimeChange = (event, value) => {
+        setEndTime(value);
+    };
+
     // printObject('1. tmpRally:', tmp);
     return (
         <View>
@@ -59,6 +90,7 @@ export default function RallyLogisticsForm({ rallyId }) {
                                             >
                                                 <DateTimePicker
                                                     testID='dateTimePicker'
+                                                    minimumDate={new Date()}
                                                     value={date}
                                                     mode='date'
                                                     display={
@@ -67,7 +99,7 @@ export default function RallyLogisticsForm({ rallyId }) {
                                                             : 'default'
                                                     }
                                                     is24Hour={true}
-                                                    //onChange={onChange}
+                                                    onChange={onDateChange}
                                                     style={styles.datePicker}
                                                 />
                                             </View>
@@ -78,8 +110,8 @@ export default function RallyLogisticsForm({ rallyId }) {
                                                 style={styles.datePickerWrapper}
                                             >
                                                 <DateTimePicker
-                                                    testID='dateTimePicker'
-                                                    value={date}
+                                                    value={startTime}
+                                                    minuteInterval={15}
                                                     mode='time'
                                                     display={
                                                         Platform.OS === 'ios'
@@ -87,7 +119,7 @@ export default function RallyLogisticsForm({ rallyId }) {
                                                             : 'default'
                                                     }
                                                     is24Hour={true}
-                                                    //onChange={onChange}
+                                                    onChange={onStartTimeChange}
                                                     style={styles.datePicker}
                                                 />
                                             </View>
@@ -98,16 +130,16 @@ export default function RallyLogisticsForm({ rallyId }) {
                                                 style={styles.datePickerWrapper}
                                             >
                                                 <DateTimePicker
-                                                    testID='dateTimePicker'
-                                                    value={date}
+                                                    value={endTime}
                                                     mode='time'
+                                                    minuteInterval={15}
                                                     display={
                                                         Platform.OS === 'ios'
                                                             ? 'spinner'
                                                             : 'default'
                                                     }
                                                     is24Hour={true}
-                                                    //onChange={onChange}
+                                                    onChange={onEndTimeChange}
                                                     style={styles.datePicker}
                                                 />
                                             </View>

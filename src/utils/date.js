@@ -54,3 +54,66 @@ export function numTimeToDisplayTime(numTime) {
     const returnTime = format(result, 'h:mm a');
     return returnTime;
 }
+export function getPateDate(dateTimeNumber) {
+    // this gets the time dateStamp and returns P8 date string "YYYYMMDD"
+    let inputDate = new Date(dateTimeNumber);
+
+    let yr = String(inputDate.getFullYear());
+    let mo = String(inputDate.getMonth() + 1);
+    let da = String(inputDate.getDate());
+    // now see if we need to add zero to month
+    if (parseInt(mo) < 10) {
+        mo = '0' + mo;
+    }
+    // now see if we need to add zero to day of month
+    if (parseInt(da) < 10) {
+        da = '0' + da;
+    }
+    let returnValue = yr + mo + da;
+    return returnValue;
+}
+export function getPateTime(dateTimeNumber) {
+    let inputDate = new Date(dateTimeNumber);
+    let h = String(inputDate.getHours());
+    let m = String(inputDate.getMinutes());
+    //add zeros if necessary
+    if (parseInt(h) < 10) {
+        h = '0' + h;
+    }
+    if (parseInt(m) < 10) {
+        m = '0' + m;
+    }
+    let returnValue = h + m;
+    return returnValue;
+}
+export function convertPateDate(pDate) {
+    //break apart
+    let y = pDate.substring(0, 4);
+    let m = pDate.substring(4, 6);
+    let d = pDate.substring(6);
+    let date = new Date(y, m - 1, d);
+    let options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    };
+    let returnValue = date.toLocaleDateString('en-us', options);
+    return returnValue;
+}
+export function convertPateTime(pTime) {
+    //break apart, always 2 digits and 2 digits
+    let ho = pTime.substring(0, 2);
+    let mi = pTime.substring(2);
+    //determine if AM or PM
+    let half = 'AM';
+    if (parseInt(ho) < 12) {
+        half = 'AM';
+        ho = ho * 1; // this gets rid of leading zero if applicable
+    } else {
+        half = 'PM';
+        ho = ho - 12;
+    }
+    let returnValue = ho + ':' + mi + ' ' + half;
+    return returnValue;
+}
