@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
+import PhoneInput from '../../ui/PhoneInput';
 // import { putRally } from '../../providers/rallies';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import { Formik } from 'formik';
@@ -30,6 +31,7 @@ const rallyLocationSchema = yup.object({
 export default function RallyContactForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const [contactPhone, setContactPhone] = useState(rally?.contact?.phone);
     const tmp = useSelector((state) => state.rallies.tmpRally);
     const rallyEntry = useSelector((state) =>
         state.rallies.allRallies.filter((r) => r.uid === rallyId)
@@ -97,7 +99,23 @@ export default function RallyContactForm({ rallyId }) {
                                                     {formikProps.touched.name &&
                                                         formikProps.errors.name}
                                                 </Text>
-                                                <TextInput
+                                                <View
+                                                    style={styles.phoneWrapper}
+                                                >
+                                                    <PhoneInput
+                                                        overrideStyle={{
+                                                            borderColor:
+                                                                Colors.gray35,
+                                                            borderWidth: 2,
+                                                            borderRadius: 6,
+                                                        }}
+                                                        value={contactPhone}
+                                                        onChange={
+                                                            setContactPhone
+                                                        }
+                                                    />
+                                                </View>
+                                                {/* <TextInput
                                                     style={styles.input}
                                                     placeholder='Contact Phone'
                                                     onChangeText={formikProps.handleChange(
@@ -115,7 +133,7 @@ export default function RallyContactForm({ rallyId }) {
                                                         .phone &&
                                                         formikProps.errors
                                                             .phone}
-                                                </Text>
+                                                </Text> */}
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Contact Email'
@@ -184,6 +202,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         borderRadius: 6,
         width: '90%',
+    },
+    phoneWrapper: {
+        marginBottom: 10,
     },
     inputStateProv: {
         width: 75,
