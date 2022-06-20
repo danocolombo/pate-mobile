@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -10,9 +10,12 @@ import {
 } from 'react-native';
 import { Headline } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import CurrencyInput from 'react-native-currency-input';
 import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
+import { getPateTime, pateTimeToSpinner } from '../../../utils/date';
 // import { putRally } from '../../providers/rallies';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import { Formik } from 'formik';
@@ -34,6 +37,13 @@ export default function RallyMealForm({ rallyId }) {
         state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
+    const [mealTime, setMealTime] = useState(
+        pateTimeToSpinner(rally.eventDate, rally.meal.startTime)
+    );
+    const [cost, setCost] = useState();
+    const onMealTimeChange = (event, value) => {
+        setMealTime(value);
+    };
     const handleNext = (values) => {
         // build a meal object
         let meal = {
@@ -80,45 +90,55 @@ export default function RallyMealForm({ rallyId }) {
                                                 Rally Meal Information
                                             </Headline>
                                         </View>
+                                        <View style={styles.datePickerWrapper}>
+                                            <View>
+                                                <Text
+                                                    style={
+                                                        styles.datePickerLabel
+                                                    }
+                                                >
+                                                    Meal Start Time
+                                                </Text>
+                                            </View>
+                                            <DateTimePicker
+                                                value={mealTime}
+                                                minuteInterval={15}
+                                                mode='time'
+                                                display={
+                                                    Platform.OS === 'ios'
+                                                        ? 'spinner'
+                                                        : 'default'
+                                                }
+                                                is24Hour={true}
+                                                onChange={onMealTimeChange}
+                                                style={styles.datePicker}
+                                            />
+                                        </View>
+                                        <View style={styles.costWrapper}>
+                                            <Text style={styles.costLabel}>
+                                                Meal Cost
+                                            </Text>
+
+                                            <CurrencyInput
+                                                value={cost}
+                                                onChangeValue={setCost}
+                                                style={styles.costInput}
+                                                prefix='$'
+                                                placeholder='cost'
+                                                minValue={0}
+                                                delimiter=','
+                                                separator='.'
+                                                precision={2}
+                                                onChangeText={(
+                                                    formattedValue
+                                                ) => {
+                                                    console.log(formattedValue); // $2,310.46
+                                                }}
+                                            />
+                                        </View>
+
                                         <View style={styles.inputContainer}>
                                             <View>
-                                                <TextInput
-                                                    style={styles.input}
-                                                    placeholder='Meal Time'
-                                                    onChangeText={formikProps.handleChange(
-                                                        'startTime'
-                                                    )}
-                                                    value={
-                                                        formikProps.values
-                                                            .startTime
-                                                    }
-                                                    onBlur={formikProps.handleBlur(
-                                                        'startTime'
-                                                    )}
-                                                />
-                                                <Text style={styles.errorText}>
-                                                    {formikProps.touched
-                                                        .startTime &&
-                                                        formikProps.errors
-                                                            .startTime}
-                                                </Text>
-                                                <TextInput
-                                                    style={styles.input}
-                                                    placeholder='Meal Cost'
-                                                    onChangeText={formikProps.handleChange(
-                                                        'cost'
-                                                    )}
-                                                    value={
-                                                        formikProps.values.cost
-                                                    }
-                                                    onBlur={formikProps.handleBlur(
-                                                        'cost'
-                                                    )}
-                                                />
-                                                <Text style={styles.errorText}>
-                                                    {formikProps.touched.cost &&
-                                                        formikProps.errors.cost}
-                                                </Text>
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Meal Deadline'
@@ -262,5 +282,51 @@ const styles = StyleSheet.create({
     },
     submitButton: {
         width: '70%',
+    },
+    datePickerLabel: {
+        fontSize: 20,
+        fontWeight: '500',
+        marginBottom: 10,
+    },
+    datePickerWrapper: {
+        // borderWidth: 4,
+        // borderColor: Colors.gray35,
+        // borderRadius: 10,
+        marginBottom: 5,
+        alignItems: 'center',
+        // marginHorizontal: 3,
+    },
+    datePicker: {
+        width: 300,
+        height: 100,
+        // display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 0,
+        padding: 0,
+        borderWidth: 1,
+        borderRadius: 6,
+        // borderStyle: 'double',
+        borderColor: Colors.gray35,
+    },
+    costWrapper: {
+        flexDirection: 'column',
+        marginLeft: 35,
+        alignItems: 'flex-start',
+    },
+    costLabel: {
+        fontSize: 20,
+        fontWeight: '500',
+    },
+    costInput: {
+        marginVertical: 8,
+        fontSize: 18,
+        borderWidth: 1,
+        borderRadius: 6,
+        width: 100,
+        marginHorizontal: 0,
+        borderColor: Colors.gray35,
+        paddingHorizontal: 12,
+        height: 45,
     },
 });

@@ -1,11 +1,9 @@
 import { StyleSheet, Text, View, Button, Platform } from 'react-native';
 import React, { useState } from 'react';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Picker } from 'react-native-web';
+import CurrencyInput from 'react-native-currency-input';
+
 const ServeEventsHistoryScreen = () => {
-    const [date, setDate] = useState(new Date(1598051730000));
-    const [mode, setMode] = useState('date');
-    const [show, setShow] = useState(false);
+    const [cost, setCost] = useState();
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
@@ -13,78 +11,23 @@ const ServeEventsHistoryScreen = () => {
         setDate(currentDate);
     };
 
-    const showMode = (currentMode) => {
-        setShow(true);
-        setMode(currentMode);
-    };
-
-    const showDatepicker = () => {
-        showMode('date');
-    };
-
-    const showTimepicker = () => {
-        showMode('time');
-    };
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
                 <Text style={styles.screenHeaderText}>Historical Events</Text>
             </View>
-            <View>
-                <View>
-                    <Button
-                        onPress={showDatepicker}
-                        title='Show date picker!'
-                    />
-                </View>
-                <View>
-                    <Button
-                        onPress={showTimepicker}
-                        title='Show time picker!'
-                    />
-                </View>
-                <Text>selected: {date.toLocaleString()}</Text>
-                {show && (
-                    <DateTimePicker
-                        testID='dateTimePicker'
-                        value={date}
-                        mode={mode}
-                        is24Hour={true}
-                        onChange={onChange}
-                    />
-                )}
-            </View>
-            <View>
-                <DateTimePicker
-                    testID='dateTimePicker'
-                    value={date}
-                    mode='date'
-                    is24Hour={true}
-                    onChange={onChange}
-                />
-            </View>
-            <View style={styles.datePickerWrapper}>
-                <DateTimePicker
-                    testID='dateTimePicker'
-                    value={date}
-                    mode='date'
-                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                    is24Hour={true}
-                    onChange={onChange}
-                    style={styles.datePicker}
-                />
-            </View>
-            <View style={styles.datePickerWrapper}>
-                <DateTimePicker
-                    testID='dateTimePicker'
-                    value={date}
-                    mode='time'
-                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                    is24Hour={true}
-                    onChange={onChange}
-                    style={styles.datePicker}
-                />
-            </View>
+
+            <CurrencyInput
+                value={cost}
+                style={styles.costInput}
+                onChangeValue={setCost}
+                prefix={'$ '}
+                signPosition='beforePrefix'
+                delimiter=','
+                precision={2}
+                placeholder='cost'
+                separator='.'
+            />
         </View>
     );
 };
@@ -102,18 +45,14 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold',
     },
-    datePickerWrapper: {
-        borderWidth: 2,
-        borderColor: 'red',
-        alignItems: 'center',
-    },
-    datePicker: {
-        width: 320,
-        height: 100,
-        // display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 0,
-        padding: 0,
+    costInput: {
+        marginVertical: 8,
+        fontSize: 18,
+        borderWidth: 1,
+        width: 100,
+        marginHorizontal: 30,
+        borderColor: '#cdcdcd',
+        paddingHorizontal: 12,
+        height: 54,
     },
 });
