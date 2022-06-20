@@ -40,7 +40,11 @@ export default function RallyContactForm({ rallyId }) {
     const handleNext = (values) => {
         // build a contact object
         let contact = {
-            contact: values,
+            contact: {
+                name: values.contactName,
+                phone: contactPhone,
+                email: values.contactEmail,
+            },
         };
         dispatch(updateTmp(contact));
         navigation.navigate('RallyEditFlow', {
