@@ -1,9 +1,24 @@
 import { StyleSheet, Text, View, Button, Platform } from 'react-native';
 import React, { useState } from 'react';
-
+import MaskInput from 'react-native-mask-input';
 const ServeEventsHistoryScreen = () => {
-    const [cost, setCost] = useState();
-
+    const [pn, setPn] = useState();
+    const US_PHONE = [
+        "(",
+        /\d/,
+        /\d/,
+        /\d/,
+        ")",
+        " ",
+        /\d/,
+        /\d/,
+        /\d/,
+        "-",
+        /\d/,
+        /\d/,
+        /\d/,
+        /\d/
+    ];
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
         setShow(false);
@@ -15,7 +30,16 @@ const ServeEventsHistoryScreen = () => {
             <View style={styles.screenHeader}>
                 <Text style={styles.screenHeaderText}>Historical Events</Text>
                 <Text>
-                    
+                    <View style={{ alignItems: "center" }}>
+        <MaskInput
+          mask={US_PHONE}
+          keyboardType="numeric"
+          placeholderFillCharacter="x"
+          value={pn}
+          style={styles.textInput}
+          onChangeText={setPn}
+        />
+      </View>
                 </Text>
             </View>
         </View>
@@ -35,4 +59,10 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold',
     },
+    textInput: {
+        borderWidth: 1,
+        width: 120,
+        paddingLeft: 5,
+        alignText: 'center',
+  }
 });
