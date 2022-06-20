@@ -15,20 +15,14 @@ import CurrencyInput from 'react-native-currency-input';
 import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
-import { getPateTime, pateTimeToSpinner } from '../../../utils/date';
-// import { putRally } from '../../providers/rallies';
+import {
+    getPateDate,
+    getPateTime,
+    pateDateToSpinner,
+    pateTimeToSpinner,
+} from '../../../utils/date';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
-import { Formik } from 'formik';
-import * as yup from 'yup';
 import CustomNavButton from '../../ui/CustomNavButton';
-
-// create validation schema for yup to pass to formik
-const rallyMealSchema = yup.object({
-    startTime: yup.string(),
-    cost: yup.string(),
-    deadline: yup.string(),
-    message: yup.string(),
-});
 
 export default function RallyMealForm({ rallyId }) {
     const navigation = useNavigation();
@@ -40,14 +34,31 @@ export default function RallyMealForm({ rallyId }) {
     const [mealTime, setMealTime] = useState(
         pateTimeToSpinner(rally.eventDate, rally.meal.startTime)
     );
-    const [cost, setCost] = useState();
+    const [cost, setCost] = useState(0);
+    const [deadline, setDeadline] = useState(
+        pateDateToSpinner(rally.eventDate)
+    );
     const onMealTimeChange = (event, value) => {
         setMealTime(value);
     };
+    const onDeadlineChange = (event, value) => {
+        setDeadline(value);
+    };
     const handleNext = (values) => {
+        let theDateObject = deadline;
+        let mealDeadline = Date.parse(theDateObject);
+        let mDeadline = getPateDate(mealDeadline);
+
+        theDateObject = mealTime;
+        let mt = Date.parse(theDateObject);
+        let mTime = getPateTime(mt);
         // build a meal object
         let meal = {
-            meal: values,
+            meal: {
+                startTime: mTime,
+                cost: cost,
+                deadline: mDeadline,
+            },
         };
         dispatch(updateTmp(meal));
         navigation.navigate('RallyEditFlow', {
@@ -62,147 +73,119 @@ export default function RallyMealForm({ rallyId }) {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>
                         <ScrollView>
-                            <Formik
-                                initialValues={{
-                                    startTime: rally?.meal?.startTime
-                                        ? rally.meal.startTime
-                                        : '',
-                                    cost: rally?.meal?.cost
-                                        ? rally.meal.cost
-                                        : '',
-                                    deadline: rally?.meal?.deadline
-                                        ? rally.meal.deadline
-                                        : '',
-                                    message: rally?.meal?.message
-                                        ? rally.meal.message
-                                        : '',
-                                }}
-                                validationSchema={rallyMealSchema}
-                                onSubmit={async (values, actions) => {
-                                    // printObject('onSubmit::values', values);
-                                    handleNext(values);
-                                }}
-                            >
-                                {(formikProps) => (
-                                    <>
-                                        <View style={styles.formHeader}>
-                                            <Headline>
-                                                Rally Meal Information
-                                            </Headline>
-                                        </View>
-                                        <View style={styles.datePickerWrapper}>
-                                            <View>
-                                                <Text
-                                                    style={
-                                                        styles.datePickerLabel
-                                                    }
-                                                >
-                                                    Meal Start Time
-                                                </Text>
-                                            </View>
-                                            <DateTimePicker
-                                                value={mealTime}
-                                                minuteInterval={15}
-                                                mode='time'
-                                                display={
-                                                    Platform.OS === 'ios'
-                                                        ? 'spinner'
-                                                        : 'default'
-                                                }
-                                                is24Hour={true}
-                                                onChange={onMealTimeChange}
-                                                style={styles.datePicker}
-                                            />
-                                        </View>
-                                        <View style={styles.costWrapper}>
-                                            <Text style={styles.costLabel}>
-                                                Meal Cost
-                                            </Text>
+                            <View style={styles.formHeader}>
+                                <Headline>Rally Meal Information</Headline>
+                            </View>
+                            <View style={styles.datePickerWrapper}>
+                                <View>
+                                    <Text style={styles.datePickerLabel}>
+                                        Meal Start Time
+                                    </Text>
+                                </View>
+                                <DateTimePicker
+                                    value={mealTime}
+                                    minuteInterval={15}
+                                    mode='time'
+                                    display={
+                                        Platform.OS === 'ios'
+                                            ? 'spinner'
+                                            : 'default'
+                                    }
+                                    is24Hour={true}
+                                    onChange={onMealTimeChange}
+                                    style={styles.datePicker}
+                                />
+                            </View>
+                            <View style={styles.costWrapper}>
+                                <Text style={styles.costLabel}>Meal Cost</Text>
 
-                                            <CurrencyInput
-                                                value={cost}
-                                                onChangeValue={setCost}
-                                                style={styles.costInput}
-                                                prefix='$'
-                                                placeholder='cost'
-                                                minValue={0}
-                                                delimiter=','
-                                                separator='.'
-                                                precision={2}
-                                                onChangeText={(
-                                                    formattedValue
-                                                ) => {
-                                                    console.log(formattedValue); // $2,310.46
-                                                }}
-                                            />
-                                        </View>
+                                <CurrencyInput
+                                    value={cost}
+                                    onChangeValue={setCost}
+                                    style={styles.costInput}
+                                    prefix='$'
+                                    placeholder='cost'
+                                    minValue={0}
+                                    delimiter=','
+                                    separator='.'
+                                    precision={2}
+                                    onChangeText={(formattedValue) => {
+                                        console.log(formattedValue); // $2,310.46
+                                    }}
+                                />
+                            </View>
 
-                                        <View style={styles.inputContainer}>
-                                            <View>
-                                                <TextInput
-                                                    style={styles.input}
-                                                    placeholder='Meal Deadline'
-                                                    onChangeText={formikProps.handleChange(
-                                                        'deadline'
-                                                    )}
-                                                    value={
-                                                        formikProps.values
-                                                            .deadline
-                                                    }
-                                                    onBlur={formikProps.handleBlur(
-                                                        'deadline'
-                                                    )}
-                                                />
-                                                <Text style={styles.errorText}>
-                                                    {formikProps.touched
-                                                        .deadline &&
-                                                        formikProps.errors
-                                                            .deadline}
-                                                </Text>
-                                                <TextInput
-                                                    style={styles.input}
-                                                    placeholder='Meal Message'
-                                                    onChangeText={formikProps.handleChange(
-                                                        'message'
-                                                    )}
-                                                    value={
-                                                        formikProps.values
-                                                            .message
-                                                    }
-                                                    onBlur={formikProps.handleBlur(
-                                                        'message'
-                                                    )}
-                                                />
-                                                <Text style={styles.errorText}>
-                                                    {formikProps.touched
-                                                        .message &&
-                                                        formikProps.errors
-                                                            .message}
-                                                </Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.buttonContainer}>
-                                            <CustomNavButton
-                                                title='Next'
-                                                graphic={{
-                                                    name: 'forward',
-                                                    color: 'white',
-                                                    size: 10,
-                                                }}
-                                                cbStyles={{
-                                                    backgroundColor: 'green',
-                                                    color: 'white',
-                                                    width: '50%',
-                                                }}
-                                                onPress={
-                                                    formikProps.handleSubmit
-                                                }
-                                            />
-                                        </View>
-                                    </>
-                                )}
-                                {/* this ends the formik execution */}
-                            </Formik>
+                            <View style={styles.datePickerWrapper}>
+                                <Text style={styles.datePickerLabel}>
+                                    Deadline to signup for meal
+                                </Text>
+                                <DateTimePicker
+                                    value={deadline}
+                                    mode='date'
+                                    maximumDate={pateDateToSpinner(
+                                        rally.eventDate
+                                    )}
+                                    minuteInterval={15}
+                                    display={
+                                        Platform.OS === 'ios'
+                                            ? 'spinner'
+                                            : 'default'
+                                    }
+                                    is24Hour={true}
+                                    onChange={onDeadlineChange}
+                                    style={styles.datePicker}
+                                />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <View>
+                                    {/* <TextInput
+                                        style={styles.input}
+                                        placeholder='Meal Deadline'
+                                        onChangeText={formikProps.handleChange(
+                                            'deadline'
+                                        )}
+                                        value={formikProps.values.deadline}
+                                        onBlur={formikProps.handleBlur(
+                                            'deadline'
+                                        )}
+                                    />
+                                    <Text style={styles.errorText}>
+                                        {formikProps.touched.deadline &&
+                                            formikProps.errors.deadline}
+                                    </Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder='Meal Message'
+                                        onChangeText={formikProps.handleChange(
+                                            'message'
+                                        )}
+                                        value={formikProps.values.message}
+                                        onBlur={formikProps.handleBlur(
+                                            'message'
+                                        )}
+                                    />
+                                    <Text style={styles.errorText}>
+                                        {formikProps.touched.message &&
+                                            formikProps.errors.message}
+                                    </Text> */}
+                                </View>
+                            </View>
+                            <View style={styles.buttonContainer}>
+                                <CustomNavButton
+                                    title='Next'
+                                    graphic={{
+                                        name: 'forward',
+                                        color: 'white',
+                                        size: 10,
+                                    }}
+                                    cbStyles={{
+                                        backgroundColor: 'green',
+                                        color: 'white',
+                                        width: '50%',
+                                    }}
+                                    onPress={handleNext}
+                                />
+                            </View>
                         </ScrollView>
                     </View>
                 </TouchableWithoutFeedback>
@@ -233,48 +216,7 @@ const styles = StyleSheet.create({
     inputPostalCode: {
         width: 125,
     },
-    errorText: {
-        color: 'crimson',
-        fontWeight: 'bold',
-        marginBottom: 10,
-        marginTop: 5,
-        // textAlign: 'center',
-    },
-    stateProvPostalCodeContainerRow: {
-        // borderWidth: 1,
-        // borderColor: 'black',
-    },
-    stateProvPostalCodeContainer: {
-        flexDirection: 'row',
-    },
-    stateProvSectionContainer: {
-        // borderWidth: 1,
-        // borderColor: 'blue',
-        marginRight: 30,
-    },
-    stateProvInputContainer: {
-        // borderWidth: 1,
-        // borderColor: 'blue',
-    },
-    stateProvErrorContainer: {
-        //borderWidth: 1, borderColor: 'blue'
-    },
-    postalCodeSectionContainer: {
-        //borderWidth: 1, borderColor: 'black'
-    },
-    postalCodeInputContainer: {
-        //borderWidth: 1, borderColor: 'black'
-    },
-    postalCodeErrorContainer: {
-        //borderWidth: 1, borderColor: 'black'
-    },
-    stateContainer: {
-        backgroundColor: 'yellow',
 
-        borderWidth: 1,
-        borderColor: 'black',
-    },
-    postalCodeContainer: {},
     buttonContainer: {
         alignItems: 'center',
         marginTop: 10,
@@ -311,8 +253,8 @@ const styles = StyleSheet.create({
     },
     costWrapper: {
         flexDirection: 'column',
-        marginLeft: 35,
-        alignItems: 'flex-start',
+        // marginLeft: 35,
+        alignItems: 'center',
     },
     costLabel: {
         fontSize: 20,

@@ -1,6 +1,6 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
-import { Surface, Headline, Subheading } from 'react-native-paper';
+import { Surface, Headline } from 'react-native-paper';
 import { convertPateDate, convertPateTime } from '../../../utils/date';
 const RallyLogisticsInfo = ({ rally }) => {
     return (
@@ -11,20 +11,16 @@ const RallyLogisticsInfo = ({ rally }) => {
                         <Headline>Logistics Information</Headline>
                     </View>
                     <View style={styles.textWrapper}>
-                        {rally?.eventDate ? (
-                            <Subheading>
-                                {convertPateDate(rally?.eventDate)}
-                            </Subheading>
-                        ) : null}
+                        <Text style={styles.text}>
+                            {convertPateDate(rally?.eventDate)}
+                        </Text>
+
                         {rally?.startTime ? (
-                            <Subheading>
+                            <Text style={styles.text}>
                                 {convertPateTime(rally?.startTime)}
-                            </Subheading>
-                        ) : null}
-                        {rally?.endTime ? (
-                            <Subheading>
+                                {' - '}
                                 {convertPateTime(rally?.endTime)}
-                            </Subheading>
+                            </Text>
                         ) : null}
                     </View>
                 </Surface>
@@ -48,5 +44,9 @@ const styles = StyleSheet.create({
     },
     textWrapper: {
         alignItems: 'center',
+    },
+    text: {
+        fontSize: 16,
+        fontWeight: '500',
     },
 });

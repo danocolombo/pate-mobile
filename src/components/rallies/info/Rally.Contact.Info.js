@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 const RallyContactInfo = ({ rally }) => {
@@ -10,15 +10,11 @@ const RallyContactInfo = ({ rally }) => {
                         <Headline>Contact Information</Headline>
                     </View>
                     <View style={styles.textWrapper}>
-                        {rally?.contact?.name ? (
-                            <Subheading>{rally?.contact?.name}</Subheading>
-                        ) : null}
-                        {rally?.contact?.phone ? (
-                            <Subheading>{rally?.contact?.phone}</Subheading>
-                        ) : null}
-                        {rally?.contact?.email ? (
-                            <Subheading>{rally?.contact?.email}</Subheading>
-                        ) : null}
+                        <Text style={styles.text}>{rally?.contact?.name}</Text>
+
+                        <Text style={styles.text}>{rally?.contact?.phone}</Text>
+
+                        <Text style={styles.text}>{rally?.contact?.email}</Text>
                     </View>
                 </Surface>
             </View>
@@ -41,5 +37,7 @@ const styles = StyleSheet.create({
     },
     textWrapper: {
         alignItems: 'center',
+        marginBottom: 5,
     },
+    text: {},
 });

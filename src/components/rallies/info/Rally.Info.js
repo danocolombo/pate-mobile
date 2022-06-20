@@ -164,8 +164,9 @@ const RallyDetails = ({ rallyId }) => {
                 <ScrollView>
                     <RallyLocationInfo rally={rally} />
                     <RallyLogisticsInfo rally={rally} />
-                    <RallyContactInfo rally={rally} />
+
                     <RallyMealInfo rally={rally} />
+                    <RallyContactInfo rally={rally} />
                     {rally.status !== 'pending' && rally.status !== 'draft' ? (
                         <RallyRegistrars
                             key={rally.uid}
