@@ -63,6 +63,7 @@ export default function RallyLogisticsForm({ rallyId }) {
             startTime: pStart,
             endTime: pEnd,
         };
+
         // printObject('handleNext::values', values);
         dispatch(updateTmp(values));
         navigation.navigate('RallyEditFlow', {

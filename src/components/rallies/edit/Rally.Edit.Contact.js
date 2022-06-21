@@ -31,19 +31,23 @@ const rallyLocationSchema = yup.object({
 export default function RallyContactForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const [contactPhone, setContactPhone] = useState(rally?.contact?.phone);
+
     const tmp = useSelector((state) => state.rallies.tmpRally);
     const rallyEntry = useSelector((state) =>
         state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
+    const [contactPhone, setContactPhone] = useState(rally?.contact?.phone);
+    console.log('contactPhone(before)', contactPhone);
     const handleNext = (values) => {
         // build a contact object
+        printObject('values', values);
+        console.log('contactPhone(after):', contactPhone);
         let contact = {
             contact: {
-                name: values.contactName,
+                name: values.name,
                 phone: contactPhone,
-                email: values.contactEmail,
+                email: values.email,
             },
         };
         dispatch(updateTmp(contact));

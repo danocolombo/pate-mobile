@@ -69,6 +69,17 @@ export const CONFIG = {
         'Content-type': 'application/json; charset=UTF-8',
     },
 };
+export function createPatePhone(inputPhone) {
+    // we expect (208) 424-2494 need 2084242494
+    let p1 = inputPhone.substring(1, 4);
+    let p2 = inputPhone.substring(6, 9);
+    let p3 = inputPhone.substring(10);
+    console.log('p1', p1);
+    console.log('p2', p2);
+    console.log('p3', p3);
+    let patePhone = p1 + p2 + p3;
+    return patePhone;
+}
 export function createMtgCompKey(client, meetingDate) {
     let mtgCompKey =
         client +

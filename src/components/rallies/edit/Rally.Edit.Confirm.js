@@ -12,7 +12,7 @@ import {
     addNewRally,
     updateRally,
 } from '../../../features/rallies/ralliesSlice';
-import { CONFIG } from '../../../utils/helpers';
+import { CONFIG, createPatePhone } from '../../../utils/helpers';
 import { Colors } from '../../../constants/colors';
 
 import { printObject, getUniqueId } from '../../../utils/helpers';
@@ -25,6 +25,7 @@ const RallyNewConfirmation = () => {
     let rally = useSelector((state) => state.rallies.tmpRally);
     // printObject('CONFIRMING rally ++++++++++++++++++++++++', rally);
     let rallyBasic = {};
+
     // need to determine if this is new or edit
     if (!rally.uid) {
         // this is new entry
@@ -47,6 +48,7 @@ const RallyNewConfirmation = () => {
         //EVENT_REGION
         rallyBasic.eventRegion = process.env.EVENT_REGION;
     }
+    let strippedPhone = createPatePhone(rally?.contact?.phone);
     // create new eventCompKey in case date changed
     const yr = rally.eventDate.substr(0, 4);
     const mo = rally.eventDate.substr(4, 6);
@@ -71,6 +73,13 @@ const RallyNewConfirmation = () => {
     // printObject('CONFIRMING tmpRally:', rally);
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
+        if (newRally?.contact?.phone) {
+            //need to strip it
+            printObject('newRally', newRally);
+            let patePhone = createPatePhone(newRally?.contact?.phone);
+            newRally.contact.phone = patePhone;
+            printObject('updatedRally', newRally);
+        }
         if (process.env.ENV === 'DEV') {
             if (newRally?.uid) {
                 // DEV - UPDATE RALLY

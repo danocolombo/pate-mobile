@@ -19,7 +19,7 @@ const ServeMyRallies = () => {
     const dispatch = useDispatch();
     let me = useSelector((state) => state.users.currentUser);
     let rallies = useSelector((state) => state.rallies.allRallies);
-    printObject('SR20 rallies:', rallies);
+    // printObject('SR20 rallies:', rallies);
     const myRallies = rallies.filter((r) => r.coordinator.id === me.uid);
     let displayData;
     async function sortRallies() {
