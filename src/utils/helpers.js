@@ -1,4 +1,5 @@
 import * as Crypto from 'expo-crypto';
+import { PHONE_REGX } from '../constants/pate';
 export function dateIsBeforeToday(testDate) {
     // let testDate = '2022-01-15';
 
@@ -69,6 +70,66 @@ export const CONFIG = {
         'Content-type': 'application/json; charset=UTF-8',
     },
 };
+export function checkPatePhoneValue(patePhone) {
+    console.log('type of patePhone:', typeof patePhone);
+    if (patePhone.length !== 10) {
+        return false;
+    }
+    if (isNaN(patePhone)) {
+        // not a patePhone number
+        return false;
+    } else {
+        return true;
+    }
+}
+export function getPhoneType(patePhone) {
+    // this returns true if patePhone is in format of "(123) 233-3232"
+    let result = patePhone.match(PHONE_REGX);
+    if (result) {
+        if (patePhone.length === 10) {
+            return 'PATE';
+        } else {
+            return 'MASKED';
+        }
+    } else {
+        return null;
+    }
+}
+export function transformPatePhone(patePhone) {
+    // we take patePhone 1234567890 and return (123) 456-7890
+    if (patePhone.length !== 10) {
+        return null;
+    }
+    if (isNaN(patePhone)) {
+        // not a patePhone number
+        return null;
+    } else {
+        let p1 = patePhone.substring(0, 3);
+        let p2 = patePhone.substring(3, 6);
+        let p3 = patePhone.substring(6);
+        let returnValue = '(' + p1 + ') ' + p2 + '-' + p3;
+        return returnValue;
+    }
+}
+export function createPatePhone(inputPhone) {
+    // we expect (208) 424-2494 need 2084242494
+    // if (inputPhone.length > 0) {
+    //     let result = inputPhone.match(PHONE_REGX);
+    //     if (result === null) {
+    //         return null;
+    //     }
+    // } else {
+    //     return null;
+    // }
+    let p1 = inputPhone.substring(1, 4);
+    let p2 = inputPhone.substring(6, 9);
+    let p3 = inputPhone.substring(10);
+    // console.log('p1', p1);
+    // console.log('p2', p2);
+    // console.log('p3', p3);
+    let patePhone = p1 + p2 + p3;
+    return patePhone;
+}
 export function createMtgCompKey(client, meetingDate) {
     let mtgCompKey =
         client +

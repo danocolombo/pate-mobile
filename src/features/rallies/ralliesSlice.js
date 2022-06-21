@@ -84,7 +84,7 @@ export const ralliesSlice = createSlice({
             }
             let newBigger = newRallyList.sort(asc_sort);
             state.allRallies = newBigger;
-            printObject('new allRallies', state.allRallies);
+            // printObject('new allRallies', state.allRallies);
             return state;
         },
         addNewRally: (state, action) => {

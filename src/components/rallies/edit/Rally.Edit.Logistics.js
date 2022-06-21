@@ -18,7 +18,12 @@ import { Colors } from '../../../constants/colors';
 // import { putRally } from '../../providers/rallies';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
-import { getPateDate, getPateTime } from '../../../utils/date';
+import {
+    getPateDate,
+    getPateTime,
+    pateDateToSpinner,
+    pateTimeToSpinner,
+} from '../../../utils/date';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyLogisticsForm({ rallyId }) {
@@ -29,9 +34,16 @@ export default function RallyLogisticsForm({ rallyId }) {
         state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
-    const [date, setDate] = useState(new Date(Date.now()));
-    const [startTime, setStartTime] = useState(new Date(Date.now()));
-    const [endTime, setEndTime] = useState(new Date(Date.now()));
+    const [date, setDate] = useState(pateDateToSpinner(rally.eventDate));
+    // const [date, setDate] = useState(new Date(Date.now()));
+    const [startTime, setStartTime] = useState(
+        pateTimeToSpinner(rally.eventDate, rally.startTime)
+    );
+    // const [startTime, setStartTime] = useState(new Date(Date.now()));
+    const [endTime, setEndTime] = useState(
+        pateTimeToSpinner(rally.eventDate, rally.endTime)
+    );
+    // const [endTime, setEndTime] = useState(new Date(Date.now()));
     const handleNext = () => {
         let theDateObject = date;
         let ed = Date.parse(theDateObject);
@@ -51,6 +63,7 @@ export default function RallyLogisticsForm({ rallyId }) {
             startTime: pStart,
             endTime: pEnd,
         };
+
         // printObject('handleNext::values', values);
         dispatch(updateTmp(values));
         navigation.navigate('RallyEditFlow', {

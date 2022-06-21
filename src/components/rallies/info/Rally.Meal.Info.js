@@ -1,5 +1,6 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
+import { convertPateDate, convertPateTime } from '../../../utils/date';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 const RallyMealInfo = ({ rally }) => {
     return (
@@ -10,18 +11,27 @@ const RallyMealInfo = ({ rally }) => {
                         <Headline>Meal Information</Headline>
                     </View>
                     <View style={styles.textWrapper}>
-                        {rally?.meal?.startTime ? (
-                            <Subheading>{rally?.meal?.startTime}</Subheading>
-                        ) : null}
-                        {rally?.meal?.cost ? (
-                            <Subheading>{rally?.meal?.cost}</Subheading>
-                        ) : null}
+                        <View style={styles.timeCostWrapper}>
+                            <Text style={styles.mealTimeText}>
+                                {convertPateTime(rally?.meal?.startTime)}
+                            </Text>
+                            <Text style={styles.costText}>
+                                ${rally?.meal?.cost}
+                            </Text>
+                        </View>
                         {rally?.meal?.deadline ? (
-                            <Subheading>{rally?.meal?.deadline}</Subheading>
+                            <View style={styles.mealDeadlineWrapper}>
+                                <Text>
+                                    DEADLINE:{' '}
+                                    {convertPateDate(rally?.meal?.deadline)}
+                                </Text>
+                            </View>
                         ) : null}
-                        {rally?.meal?.message ? (
-                            <Subheading>{rally?.meal?.message}</Subheading>
-                        ) : null}
+                        <View style={styles.messageWrapper}>
+                            <Text style={styles.messageText}>
+                                {rally?.meal?.message}
+                            </Text>
+                        </View>
                     </View>
                 </Surface>
             </View>
@@ -45,4 +55,19 @@ const styles = StyleSheet.create({
     textWrapper: {
         alignItems: 'center',
     },
+    timeCostWrapper: {
+        flexDirection: 'row',
+        width: '100%',
+    },
+    mealTimeText: {
+        marginRight: 10,
+    },
+    costText: {
+        marginLeft: 10,
+    },
+    mealDeadlineWrapper: {
+        marginTop: 5,
+    },
+    messageWrapper: { marginVertical: 2 },
+    messageText: {},
 });

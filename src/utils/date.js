@@ -86,6 +86,16 @@ export function getPateTime(dateTimeNumber) {
     let returnValue = h + m;
     return returnValue;
 }
+export function pateDateToSpinner(pDate) {
+    // this takes in pateDate (YYYYMMDD) and returns Date object
+    //break apart
+    let y = pDate.substring(0, 4);
+    let m = pDate.substring(4, 6);
+    let d = pDate.substring(6);
+    let date = new Date(y, m - 1, d);
+    return date;
+}
+
 export function convertPateDate(pDate) {
     //break apart
     let y = pDate.substring(0, 4);
@@ -109,11 +119,30 @@ export function convertPateTime(pTime) {
     let half = 'AM';
     if (parseInt(ho) < 12) {
         half = 'AM';
-        ho = ho * 1; // this gets rid of leading zero if applicable
     } else {
         half = 'PM';
+    }
+    if (parseInt(ho) < 13) {
+        ho = ho * 1; // this gets rid of leading zero if applicable
+    } else {
         ho = ho - 12;
     }
     let returnValue = ho + ':' + mi + ' ' + half;
     return returnValue;
+}
+export function pateTimeToSpinner(pDate, pTime) {
+    //this takes pDate and pTime and returns date object
+    let y = pDate.substring(0, 4);
+    let m = pDate.substring(4, 6);
+    let d = pDate.substring(6);
+    let date = new Date(y, m - 1, d);
+
+    //break apart, always 2 digits and 2 digits
+    let ho = pTime.substring(0, 2);
+    let mi = pTime.substring(3);
+
+    date.setHours(ho);
+    date.setMinutes(mi);
+
+    return date;
 }

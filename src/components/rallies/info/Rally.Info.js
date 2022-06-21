@@ -72,6 +72,7 @@ const RallyDetails = ({ rallyId }) => {
     const handleRegistrarRequest = (reg) => {
         navigation.navigate('RegistrationDetails', { reg: reg });
     };
+    // printObject('RI:75-rally', rally);
     return (
         <>
             <ImageBackground
@@ -164,8 +165,9 @@ const RallyDetails = ({ rallyId }) => {
                 <ScrollView>
                     <RallyLocationInfo rally={rally} />
                     <RallyLogisticsInfo rally={rally} />
-                    <RallyContactInfo rally={rally} />
+
                     <RallyMealInfo rally={rally} />
+                    <RallyContactInfo rally={rally} />
                     {rally.status !== 'pending' && rally.status !== 'draft' ? (
                         <RallyRegistrars
                             key={rally.uid}
