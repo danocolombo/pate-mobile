@@ -18,7 +18,13 @@ import PhoneInput from '../../ui/PhoneInput';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { printObject } from '../../../utils/helpers';
+import {
+    createPatePhone,
+    printObject,
+    checkPatePhoneValue,
+    getPhoneType,
+    transformPatePhone,
+} from '../../../utils/helpers';
 import CustomNavButton from '../../ui/CustomNavButton';
 
 // create validation schema for yup to pass to formik
@@ -31,25 +37,64 @@ const rallyLocationSchema = yup.object({
 export default function RallyContactForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-
+    const [showPhoneError, setShowPhoneError] = useState(false);
     const tmp = useSelector((state) => state.rallies.tmpRally);
     const rallyEntry = useSelector((state) =>
         state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
-    const [contactPhone, setContactPhone] = useState(rally?.contact?.phone);
-    console.log('contactPhone(before)', contactPhone);
+    // phone control needs the value in numeric format. Check if we need to
+    // alter to use
+    let phoneDisplayValue;
+    if (rally?.contact?.phone) {
+        let phoneType = getPhoneType(rally?.contact?.phone);
+
+        switch (phoneType) {
+            case 'PATE':
+                phoneDisplayValue = rally.contact.phone;
+                break;
+            case 'MASKED':
+                // console.log('REC:57 rally.contact.phone', rally.contact.phone);
+                phoneDisplayValue = createPatePhone(rally.contact.phone);
+                break;
+            default:
+                phoneDisplayValue = '';
+                break;
+        }
+    }
+
+    const [contactPhone, setContactPhone] = useState(phoneDisplayValue);
+
     const handleNext = (values) => {
+        setShowPhoneError(false);
         // build a contact object
-        printObject('values', values);
-        console.log('contactPhone(after):', contactPhone);
+        // printObject('values', values);
+        let phoneToPass;
+        // if (contactPhone) {
+        //ensure that the phone is in expected format (xxx) xxx-xxxx
+        // 1. value needs to be either 0 or 14 characters.
+        let pType = getPhoneType(contactPhone);
+        switch (pType) {
+            case 'PATE':
+                phoneToPass = transformPatePhone(contactPhone);
+                break;
+            case 'MASKED':
+                phoneToPass = contactPhone;
+                break;
+            default:
+                phoneToPass = '';
+                break;
+        }
+        // }
+        // console.log('handleNext contactPhone(after):', contactPhone);
         let contact = {
             contact: {
                 name: values.name,
-                phone: contactPhone,
+                phone: phoneToPass,
                 email: values.email,
             },
         };
+        // printObject('updateTmp(contact)', contact);
         dispatch(updateTmp(contact));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
@@ -67,9 +112,6 @@ export default function RallyContactForm({ rallyId }) {
                                 initialValues={{
                                     name: rally?.contact?.name
                                         ? rally.contact.name
-                                        : '',
-                                    phone: rally?.contact?.phone
-                                        ? rally.contact.phone
                                         : '',
                                     email: rally?.contact?.email
                                         ? rally.contact.email
@@ -108,7 +150,11 @@ export default function RallyContactForm({ rallyId }) {
                                                         formikProps.errors.name}
                                                 </Text>
                                                 <View
-                                                    style={styles.phoneWrapper}
+                                                    style={
+                                                        showPhoneError
+                                                            ? styles.phoneWrapperError
+                                                            : styles.phoneWrapper
+                                                    }
                                                 >
                                                     <PhoneInput
                                                         overrideStyle={{
@@ -122,6 +168,16 @@ export default function RallyContactForm({ rallyId }) {
                                                             setContactPhone
                                                         }
                                                     />
+                                                    {showPhoneError ? (
+                                                        <Text
+                                                            style={
+                                                                styles.phoneError
+                                                            }
+                                                        >
+                                                            Please correct the
+                                                            phone number
+                                                        </Text>
+                                                    ) : null}
                                                 </View>
                                                 {/* <TextInput
                                                     style={styles.input}
@@ -212,7 +268,14 @@ const styles = StyleSheet.create({
         width: '90%',
     },
     phoneWrapper: {
+        marginBottom: 30,
+    },
+    phoneWrapperError: {
         marginBottom: 10,
+    },
+    phoneError: {
+        color: 'red',
+        fontWeight: '500',
     },
     inputStateProv: {
         width: 75,

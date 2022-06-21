@@ -26,6 +26,7 @@ const PhoneInput = (props) => {
                 mask={US_PHONE}
                 keyboardType='numeric'
                 placeholderFillCharacter='x'
+                maxLength={14}
                 value={value}
                 fontSize={18}
                 style={styles.textInput}

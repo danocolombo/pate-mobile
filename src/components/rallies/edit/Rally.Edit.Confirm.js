@@ -12,10 +12,11 @@ import {
     addNewRally,
     updateRally,
 } from '../../../features/rallies/ralliesSlice';
-import { CONFIG, createPatePhone } from '../../../utils/helpers';
+import { getPhoneType, CONFIG, createPatePhone } from '../../../utils/helpers';
 import { Colors } from '../../../constants/colors';
 
 import { printObject, getUniqueId } from '../../../utils/helpers';
+import { faCropSimple } from '@fortawesome/free-solid-svg-icons';
 
 const RallyNewConfirmation = () => {
     const navigation = useNavigation();
@@ -25,7 +26,7 @@ const RallyNewConfirmation = () => {
     let rally = useSelector((state) => state.rallies.tmpRally);
     // printObject('CONFIRMING rally ++++++++++++++++++++++++', rally);
     let rallyBasic = {};
-
+    // printObject('REC:29 rally', rally);
     // need to determine if this is new or edit
     if (!rally.uid) {
         // this is new entry
@@ -48,7 +49,12 @@ const RallyNewConfirmation = () => {
         //EVENT_REGION
         rallyBasic.eventRegion = process.env.EVENT_REGION;
     }
-    let strippedPhone = createPatePhone(rally?.contact?.phone);
+    let strippedPhone;
+    // printObject('REC:52 rally:', rally);
+    // console.log('REC:53 rally?.contact?.phone', rally?.contact?.phone);
+    if (rally?.contact?.phone !== '') {
+        strippedPhone = createPatePhone(rally?.contact?.phone);
+    }
     // create new eventCompKey in case date changed
     const yr = rally.eventDate.substr(0, 4);
     const mo = rally.eventDate.substr(4, 6);
@@ -74,11 +80,31 @@ const RallyNewConfirmation = () => {
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
         if (newRally?.contact?.phone) {
-            //need to strip it
-            printObject('newRally', newRally);
-            let patePhone = createPatePhone(newRally?.contact?.phone);
-            newRally.contact.phone = patePhone;
-            printObject('updatedRally', newRally);
+            // need value either blank or pateDate
+            let valueToUse;
+            let pType = getPhoneType(newRally.contact.phone);
+            switch (pType) {
+                case 'PATE':
+                    valueToUse = newRally.contact.phone;
+                    break;
+                case 'MASKED':
+                    // console.log(
+                    //     'REC:90 newRally.contact.phone',
+                    //     newRally.contact.phone
+                    // );
+                    valueToUse = createPatePhone(newRally.contact.phone);
+                    break;
+                default:
+                    valueToUse = '';
+                    break;
+            }
+            let newContact = {
+                name: newRally?.contact?.name,
+                phone: valueToUse,
+                email: newRally?.contact?.email,
+            };
+            newRally.contact = newContact;
+            // printObject('updatedRally', newRally);
         }
         if (process.env.ENV === 'DEV') {
             if (newRally?.uid) {

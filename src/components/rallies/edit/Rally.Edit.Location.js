@@ -47,7 +47,7 @@ export default function RallyLocationForm({ rallyId }) {
     if (rallyEntry) {
         rally = rallyEntry[0];
     }
-    console.log('rally.uid:', rally?.uid);
+    // console.log('REL:50 rally.uid:', rally?.uid);
     useEffect(() => {
         if (rally?.uid) {
             //save existing values to tmpEntry

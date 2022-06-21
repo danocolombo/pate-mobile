@@ -109,9 +109,9 @@ export default function RallyMealForm({ rallyId }) {
                                     delimiter=','
                                     separator='.'
                                     precision={2}
-                                    onChangeText={(formattedValue) => {
-                                        console.log(formattedValue); // $2,310.46
-                                    }}
+                                    // onChangeText={(formattedValue) => {
+                                    //     console.log(formattedValue); // $2,310.46
+                                    // }}
                                 />
                             </View>
 

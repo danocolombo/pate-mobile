@@ -72,6 +72,7 @@ const RallyDetails = ({ rallyId }) => {
     const handleRegistrarRequest = (reg) => {
         navigation.navigate('RegistrationDetails', { reg: reg });
     };
+    // printObject('RI:75-rally', rally);
     return (
         <>
             <ImageBackground

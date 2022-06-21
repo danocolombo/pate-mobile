@@ -1,7 +1,22 @@
 import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
+import { getPhoneType, transformPatePhone } from '../../../utils/helpers';
 const RallyContactInfo = ({ rally }) => {
+    let phoneValueToDisplay;
+    let pType = getPhoneType(rally?.contact?.phone);
+    switch (pType) {
+        case 'PATE':
+            phoneValueToDisplay = transformPatePhone(rally.contact.phone);
+            break;
+        case 'MASKED':
+            phoneValueToDisplay = rally.contact.phone;
+            break;
+        default:
+            phoneValueToDisplay = null;
+            break;
+    }
+
     return (
         <>
             <View style={styles.rootContainer}>
@@ -12,7 +27,7 @@ const RallyContactInfo = ({ rally }) => {
                     <View style={styles.textWrapper}>
                         <Text style={styles.text}>{rally?.contact?.name}</Text>
 
-                        <Text style={styles.text}>{rally?.contact?.phone}</Text>
+                        <Text style={styles.text}>{phoneValueToDisplay}</Text>
 
                         <Text style={styles.text}>{rally?.contact?.email}</Text>
                     </View>

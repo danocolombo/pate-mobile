@@ -5,8 +5,8 @@ import RallyContactForm from './Rally.Edit.Contact';
 import RallyMealForm from './Rally.Edit.Meal';
 import RallyNewConfirmation from './Rally.Edit.Confirm';
 const RallyEdit = ({ rallyId, stage }) => {
-    console.log('stage', stage);
-    console.log('rallyId', rallyId);
+    // console.log('stage', stage);
+    // console.log('rallyId', rallyId);
 
     if (stage === 1) {
         return (
