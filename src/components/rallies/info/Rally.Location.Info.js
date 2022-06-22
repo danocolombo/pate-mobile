@@ -12,18 +12,18 @@ const RallyLocationInfo = ({ rally }) => {
                     </View>
                     <View style={styles.textWrapper}>
                         {rally?.name ? (
-                            <Subheading>{rally?.name}</Subheading>
+                            <Text style={styles.text}>{rally?.name}</Text>
                         ) : null}
                         {rally?.street ? (
-                            <Subheading>{rally?.street}</Subheading>
+                            <Text style={styles.text}>{rally?.street}</Text>
                         ) : null}
                         {rally?.city ? (
-                            <Subheading>{rally?.city}</Subheading>
+                            <Text style={styles.text}>{rally?.city}</Text>
                         ) : null}
                         {rally?.stateProv || rally?.postalCode ? (
-                            <Subheading>
+                            <Text style={styles.text}>
                                 {rally?.stateProv}, {rally?.postalCode}
-                            </Subheading>
+                            </Text>
                         ) : null}
                     </View>
                 </Surface>
@@ -48,5 +48,9 @@ const styles = StyleSheet.create({
     },
     textWrapper: {
         alignItems: 'center',
+    },
+    text: {
+        fontSize: 20,
+        fontWeight: '500',
     },
 });
