@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -12,6 +12,7 @@ import { Headline, Surface } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 // import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
+import PhoneInput from './ui/PhoneInput';
 // import { Colors } from '../../../constants/colors';
 // import { putRally } from '../../providers/rallies';
 // import { createTmp, updateTmp } from '../../../features/rallies/ralliesSlice';
@@ -20,13 +21,13 @@ import * as yup from 'yup';
 import CustomButton from './ui/CustomButton';
 import { updateCurrentUser } from '../features/users/usersSlice';
 import { updateProfile } from '../providers/users';
-import { printObject } from '../utils/helpers';
+import { Colors } from '../constants/colors';
+import { printObject, getPhoneType, createPatePhone } from '../utils/helpers';
 
 // create validation schema for yup to pass to formik
 const profileSchema = yup.object({
     firstName: yup.string().required('first name is required').min(2),
     lastName: yup.string().required('last name is required'),
-    phone: yup.string(),
     email: yup.string().email(),
     street: yup.string(),
     city: yup.string().min(2),
@@ -44,11 +45,47 @@ export default function ProfileForm() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     let user = useSelector((state) => state.users.currentUser);
+    const [showPhoneError, setShowPhoneError] = useState(false);
     printObject('user', user);
+    let phoneDisplayValue;
+    if (user.phone) {
+        let phoneType = getPhoneType(user.phone);
+
+        switch (phoneType) {
+            case 'PATE':
+                phoneDisplayValue = user.phone;
+                break;
+            case 'MASKED':
+                // console.log('PF:60 user.phone', user.phone);
+                phoneDisplayValue = createPatePhone(user.phone);
+                break;
+            default:
+                phoneDisplayValue = '';
+                break;
+        }
+    }
+
+    const [userPhone, setUserPhone] = useState(phoneDisplayValue);
+
     let rally;
 
     const handleSubmit = (values) => {
+        //ensure that the phone is in expected format 1234567890
+        // 1. value needs to be either 0 or 14 characters.
+        let pType = getPhoneType(userPhone);
+        switch (pType) {
+            case 'PATE':
+                phoneToPass = userPhone;
+                break;
+            case 'MASKED':
+                phoneToPass = createPatePhone(userPhone);
+                break;
+            default:
+                phoneToPass = '';
+                break;
+        }
         // gather data
+        values.phone = phoneToPass;
         dispatch(updateCurrentUser(values));
         // need to create residence structure
         let dbProfile = {
@@ -56,7 +93,7 @@ export default function ProfileForm() {
             firstName: values?.firstName ? values.firstName : '',
             lastName: values?.lastName ? values.lastName : '',
             email: values?.email ? values.email : '',
-            phone: values?.phone ? values.phone : '',
+            phone: userPhone,
             residence: {
                 street: values?.street ? values.street : '',
                 city: values?.city ? values.city : '',
@@ -230,36 +267,37 @@ export default function ProfileForm() {
                                                                     .email}
                                                         </Text>
                                                     ) : null}
-                                                    <TextInput
-                                                        style={styles.input}
-                                                        placeholder='Phone'
-                                                        autocomplete='off'
-                                                        onChangeText={formikProps.handleChange(
-                                                            'phone'
-                                                        )}
-                                                        value={
-                                                            formikProps.values
-                                                                .phone
+                                                    <View
+                                                        style={
+                                                            showPhoneError
+                                                                ? styles.phoneWrapperError
+                                                                : styles.phoneWrapper
                                                         }
-                                                        onBlur={formikProps.handleBlur(
-                                                            'phone'
-                                                        )}
-                                                    />
-                                                    {formikProps.errors.phone &&
-                                                    formikProps.touched
-                                                        .phone ? (
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
+                                                    >
+                                                        <PhoneInput
+                                                            overrideStyle={{
+                                                                borderColor:
+                                                                    Colors.gray20,
+                                                                borderWidth: 2,
+                                                                borderRadius: 6,
+                                                            }}
+                                                            value={userPhone}
+                                                            onChange={
+                                                                setUserPhone
                                                             }
-                                                        >
-                                                            {formikProps.touched
-                                                                .phone &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .phone}
-                                                        </Text>
-                                                    ) : null}
+                                                        />
+                                                        {showPhoneError ? (
+                                                            <Text
+                                                                style={
+                                                                    styles.phoneError
+                                                                }
+                                                            >
+                                                                Please correct
+                                                                the phone number
+                                                            </Text>
+                                                        ) : null}
+                                                    </View>
+
                                                     <TextInput
                                                         style={styles.input}
                                                         placeholder='Street'
@@ -607,6 +645,17 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginTop: 5,
         // textAlign: 'center',
+    },
+    phoneWrapper: {
+        marginTop: 5,
+        marginBottom: 3,
+    },
+    phoneWrapperError: {
+        marginBottom: 10,
+    },
+    phoneError: {
+        color: 'red',
+        fontWeight: '500',
     },
     stateProvPostalCodeContainerRow: {
         // borderWidth: 1,
