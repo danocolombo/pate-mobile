@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer, StackActions } from '@react-navigation/native';
-
+import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
@@ -238,7 +238,8 @@ function PateStack() {
 }
 //   --------- Navigation !!!!! ----------------
 function Navigation() {
-    const [user, setUser] = useState(undefined);
+    const user = useSelector((state) => state.users.currentUser);
+    // const [user, setUser] = useState(undefined);
     const checkUser = async () => {
         try {
             const authUser = await Auth.currentAuthenticatedUser({
@@ -271,7 +272,7 @@ function Navigation() {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
-                {user ? (
+                {user?.jwtToken ? (
                     <Stack.Screen name='PateStack' component={PateStack} />
                 ) : (
                     <>

@@ -14,12 +14,14 @@ import SocialSignInButtons from '../../../components/ui/Auth/SocialSignInButtons
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { Auth } from 'aws-amplify';
-import { SectionList } from 'react-native-web';
+import { useDispatch } from 'react-redux';
+import { saveCurrentUser } from '../../../features/users/usersSlice';
 
 const SignInScreen = () => {
     const [loading, setLoading] = useState(false);
     const { height } = useWindowDimensions();
     const navigation = useNavigation();
+    const dispatch = useDispatch();
     const {
         control,
         handleSubmit,
@@ -31,6 +33,8 @@ const SignInScreen = () => {
     // need this to pass the username on to forgot password
     const user = watch('username');
     const onSignInPressed = async (data) => {
+        let signInUser = {};
+        let currentAuthUser = {};
         let currentUserInfo = {};
         let currentSession = {};
         // this loading feature prevents user from sending another request before the first one returns
@@ -39,14 +43,32 @@ const SignInScreen = () => {
         }
         setLoading(true);
         try {
-            const response = await Auth.signIn(data.username, data.password);
-            
-            currentUserInfo = await Auth.currentUserInfo();
-            currentSession = await Auth.currentSession();
-
-            console.log(response);
+            console.log('username:', data.username);
+            console.log('password:', data.password);
+            Auth.signIn(data.username, data.password)
+                .then((response) => {
+                    console.log('login response:', response);
+                    signInUser = response.attributes;
+                    let currentUser = {
+                        uid: response.attributes.sub,
+                        username: response.username,
+                        email: response.attributes.email,
+                        groups: response.signInUserSession.idToken.payload[
+                            'cognito:groups'
+                        ],
+                        jwtToken: response.signInUserSession.idToken.jwtToken,
+                    };
+                    console.log('currentUser (derived)', currentUser);
+                    dispatch(saveCurrentUser(currentUser));
+                })
+                .catch((err) => {
+                    console.log(
+                        'Error getting current user database values: ',
+                        err
+                    );
+                });
         } catch (error) {
-            Alert.alert('Yikes', error.message);
+            Alert.alert('Error\n' + error.message + '\nSIS:71');
         }
         setLoading(false);
         // console.log(data);

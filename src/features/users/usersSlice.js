@@ -38,6 +38,10 @@ export const usersSlice = createSlice({
             state.currentUser = updates;
             return state;
         },
+        saveCurrentUser: (state, action) => {
+            state.currentUser = action.payload;
+            return state;
+        },
         logout: (state) => {
             state.currentUser = {};
             return state;
@@ -46,6 +50,7 @@ export const usersSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { getCurrentUser, updateCurrentUser, logout } = usersSlice.actions;
+export const { getCurrentUser, updateCurrentUser, saveCurrentUser, logout } =
+    usersSlice.actions;
 
 export default usersSlice.reducer;
