@@ -1,19 +1,15 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { View, Text } from 'react-native';
-// import { Auth } from 'aws-amplify';
-// import { logout } from '../features/users/userSlice';
+import { Auth } from 'aws-amplify';
+import { logout } from '../features/users/usersSlice';
 
 const PateSignOut = () => {
     const dispatch = useDispatch();
-    // useEffect(() => {
-    //     Auth.signOut()
-    //         .then(() => {
-    //             dispatch(logout());
-    //             console.log('logout');
-    //         })
-    //         .catch((err) => console.log('LOGOUT Error\n', err));
-    // }, []);
+    useEffect(() => {
+        dispatch(logout());
+        Auth.signOut();
+    }, []);
 
     return (
         <View>

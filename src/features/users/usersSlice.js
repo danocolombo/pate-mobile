@@ -38,10 +38,14 @@ export const usersSlice = createSlice({
             state.currentUser = updates;
             return state;
         },
+        logout: (state) => {
+            state.currentUser = {};
+            return state;
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { getCurrentUser, updateCurrentUser } = usersSlice.actions;
+export const { getCurrentUser, updateCurrentUser, logout } = usersSlice.actions;
 
 export default usersSlice.reducer;
