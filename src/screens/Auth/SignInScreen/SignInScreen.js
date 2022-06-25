@@ -31,6 +31,8 @@ const SignInScreen = () => {
     // need this to pass the username on to forgot password
     const user = watch('username');
     const onSignInPressed = async (data) => {
+        let currentUserInfo = {};
+        let currentSession = {};
         // this loading feature prevents user from sending another request before the first one returns
         if (loading) {
             return;
@@ -38,6 +40,10 @@ const SignInScreen = () => {
         setLoading(true);
         try {
             const response = await Auth.signIn(data.username, data.password);
+            
+            currentUserInfo = await Auth.currentUserInfo();
+            currentSession = await Auth.currentSession();
+
             console.log(response);
         } catch (error) {
             Alert.alert('Yikes', error.message);
