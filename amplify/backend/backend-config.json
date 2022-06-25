@@ -1,0 +1,11 @@
+{
+  "auth": {
+    "patemobile": {
+      "service": "Cognito",
+      "serviceType": "imported",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
