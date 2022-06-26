@@ -15,8 +15,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { Auth } from 'aws-amplify';
 import { useDispatch } from 'react-redux';
-import { saveCurrentUser } from '../../../features/users/usersSlice';
-
+import { updateCurrentUser } from '../../../features/users/usersSlice';
+import { authenticateUser, appendUserProfile } from '../../../actions/auth';
 const SignInScreen = () => {
     const [loading, setLoading] = useState(false);
     const { height } = useWindowDimensions();
@@ -33,47 +33,50 @@ const SignInScreen = () => {
     // need this to pass the username on to forgot password
     const user = watch('username');
     const onSignInPressed = async (data) => {
-        let signInUser = {};
-        let currentAuthUser = {};
-        let currentUserInfo = {};
-        let currentSession = {};
+        const { username, password } = data;
+
         // this loading feature prevents user from sending another request before the first one returns
         if (loading) {
             return;
         }
         setLoading(true);
-        try {
-            console.log('username:', data.username);
-            console.log('password:', data.password);
-            Auth.signIn(data.username, data.password)
-                .then((response) => {
-                    console.log('login response:', response);
-                    signInUser = response.attributes;
-                    let currentUser = {
-                        uid: response.attributes.sub,
-                        username: response.username,
-                        email: response.attributes.email,
-                        groups: response.signInUserSession.idToken.payload[
-                            'cognito:groups'
-                        ],
-                        jwtToken: response.signInUserSession.idToken.jwtToken,
-                    };
-                    console.log('currentUser (derived)', currentUser);
-                    dispatch(saveCurrentUser(currentUser));
-                })
-                .catch((err) => {
-                    console.log(
-                        'Error getting current user database values: ',
-                        err
-                    );
-                });
-        } catch (error) {
-            Alert.alert('Error\n' + error.message + '\nSIS:71');
+        // authenticate with AWS cognito
+        let authResponse = await authenticateUser(username, password);
+        if (authResponse.status === 404) {
+            //todo --- Show modal that login failed.
+            return;
         }
+        if (authResponse.status === 400) {
+            //todo ---- system error
+            return;
+        }
+        if (authResponse.status !== 200) {
+            //todo --- show an error
+            return;
+        }
+        let signedInUser = authResponse.user;
+        // get the user profile information
+        let profileCheckResponse = await appendUserProfile(signedInUser);
+        if (
+            profileCheckResponse.status === 200 ||
+            profileCheckResponse.status === 404
+        ) {
+            //user needs to be saved. status will determine navigation
+            dispatch(updateCurrentUser(profileCheckResponse.user));
+            if (profileCheckResponse.status === 200) {
+                navigation.navigate('Home');
+            } else {
+                navigation.navigate('Profile', {
+                    dialogAction: 'FINISH_PROFILE',
+                });
+            }
+        } else {
+            Alert.alert('System Error');
+            return;
+        }
+
+        //====================================
         setLoading(false);
-        // console.log(data);
-        // //todo validate user
-        // navigation.navigate('Home');
     };
     const onSignUpPressed = () => {
         navigation.navigate('SignUp');

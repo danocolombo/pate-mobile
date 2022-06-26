@@ -4,7 +4,7 @@ import { View, Text, Button, SafeAreaView, StyleSheet } from 'react-native';
 import Navigation from './src/Navigation';
 // - - - - - redux toolkit - -  - - - - -
 import { store } from './src/app/store';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
 import { Amplify } from 'aws-amplify';

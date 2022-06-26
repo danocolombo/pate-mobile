@@ -21,3 +21,18 @@ export async function updateProfile(profile) {
     var returnValue = res.data.Item;
     return returnValue;
 }
+
+export async function getProfile(uid) {
+    let obj = {
+        operation: 'getUser',
+        payload: {
+            uid: uid,
+        },
+    };
+    let body = JSON.stringify(obj);
+    let api2use = process.env.AWS_API_ENDPOINT + '/users';
+
+    let res = await axios.post(api2use, body, config);
+    var returnValue = res.data.Item;
+    return returnValue;
+}
