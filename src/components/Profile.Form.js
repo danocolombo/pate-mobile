@@ -139,25 +139,29 @@ export default function ProfileForm() {
                                         : '',
                                     phone: user?.phone ? user.phone : '',
                                     email: user?.email ? user.email : '',
-                                    street: user?.street ? user.street : '',
-                                    city: user?.city ? user.city : '',
-                                    stateProv: user?.stateProv
-                                        ? user.stateProv
+                                    street: user?.residence?.street
+                                        ? user.residence.street
                                         : '',
-                                    postalCode: user?.postalCode
-                                        ? user.postalCode
+                                    city: user?.residence?.city
+                                        ? user.residence.city
                                         : '',
-                                    churchName: user?.churchName
-                                        ? user.churchName
+                                    stateProv: user?.residence?.stateProv
+                                        ? user.residence.stateProv
                                         : '',
-                                    churchStreet: user?.churchStreet
-                                        ? user.churchStreet
+                                    postalCode: user?.residence?.postalCode
+                                        ? user.residence.postalCode
                                         : '',
-                                    churchCity: user?.churchCity
-                                        ? user.churchCity
+                                    churchName: user?.church.name
+                                        ? user.church.name
                                         : '',
-                                    churchStateProv: user?.churchStateProv
-                                        ? user.churchStateProv
+                                    // churchStreet: user?.churchStreet
+                                    //     ? user.churchStreet
+                                    //     : '',
+                                    churchCity: user?.church.city
+                                        ? user.church.city
+                                        : '',
+                                    churchStateProv: user?.church.stateProv
+                                        ? user.church.stateProv
                                         : '',
                                 }}
                                 validationSchema={profileSchema}
