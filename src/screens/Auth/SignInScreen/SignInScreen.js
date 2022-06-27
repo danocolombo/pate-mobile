@@ -88,6 +88,7 @@ const SignInScreen = () => {
                             msg: e.message,
                             alertType: 'danger',
                         };
+                        break;
                     default:
                         alertPayload = {
                             msg: 'Signin error: [' + e.message + ']',
@@ -95,11 +96,14 @@ const SignInScreen = () => {
                         };
                         break;
                 }
-                console.log(alertPayload);
-                console.log('we should return');
-                // return;
             });
-
+        // if we have error loaded, let's return
+        if(alertPayload.msg){
+            Alert.alert(alertPayload.msg);
+            alertPayload = {};
+            setLoading(false);
+            return;
+        }
         let currentUserInfo = {};
         let currentSession = {};
         await Auth.currentUserInfo().then((u) => {
