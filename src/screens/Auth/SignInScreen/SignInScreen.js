@@ -35,7 +35,7 @@ const SignInScreen = () => {
     const user = watch('username');
     const onSignInPressed = async (data) => {
         const { username, password } = data;
-
+        let alertPayload = {};
         // this loading feature prevents user from sending another request before the first one returns
         if (loading) {
             return;
@@ -98,7 +98,7 @@ const SignInScreen = () => {
                 }
             });
         // if we have error loaded, let's return
-        if(alertPayload.msg){
+        if (alertPayload.msg) {
             Alert.alert(alertPayload.msg);
             alertPayload = {};
             setLoading(false);
