@@ -239,15 +239,15 @@ function PateStack() {
 //   --------- Navigation !!!!! ----------------
 function Navigation() {
     const user = useSelector((state) => state.users.currentUser);
-    // const [user, setUser] = useState(undefined);
+    const [userCheck, setUserCheck] = useState(undefined);
     const checkUser = async () => {
         try {
             const authUser = await Auth.currentAuthenticatedUser({
                 bypassCache: true,
             });
-            setUser(authUser);
+            setUserCheck(authUser);
         } catch (e) {
-            setUser(null);
+            setUserCheck(null);
         }
     };
 

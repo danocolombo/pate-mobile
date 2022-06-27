@@ -34,7 +34,7 @@ export const usersSlice = createSlice({
         },
         updateCurrentUser: (state, action) => {
             const newValues = action.payload;
-            const updates = { ...state.currentUser, newValues };
+            const updates = { ...state.currentUser, ...newValues };
             state.currentUser = updates;
             return state;
         },

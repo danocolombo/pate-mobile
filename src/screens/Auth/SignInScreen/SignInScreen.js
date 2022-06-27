@@ -16,7 +16,8 @@ import { useForm } from 'react-hook-form';
 import { Auth } from 'aws-amplify';
 import { useDispatch } from 'react-redux';
 import { updateCurrentUser } from '../../../features/users/usersSlice';
-import { authenticateUser, appendUserProfile } from '../../../actions/auth';
+import { getProfile } from '../../../providers/users';
+
 const SignInScreen = () => {
     const [loading, setLoading] = useState(false);
     const { height } = useWindowDimensions();
@@ -41,42 +42,119 @@ const SignInScreen = () => {
         }
         setLoading(true);
         // authenticate with AWS cognito
-        let authResponse = await authenticateUser(username, password);
-        if (authResponse.status === 404) {
-            //todo --- Show modal that login failed.
-            return;
-        }
-        if (authResponse.status === 400) {
-            //todo ---- system error
-            return;
-        }
-        if (authResponse.status !== 200) {
-            //todo --- show an error
-            return;
-        }
-        let signedInUser = authResponse.user;
-        // get the user profile information
-        let profileCheckResponse = await appendUserProfile(signedInUser);
-        if (
-            profileCheckResponse.status === 200 ||
-            profileCheckResponse.status === 404
-        ) {
-            //user needs to be saved. status will determine navigation
-            dispatch(updateCurrentUser(profileCheckResponse.user));
-            if (profileCheckResponse.status === 200) {
-                navigation.navigate('Home');
-            } else {
-                navigation.navigate('Profile', {
-                    dialogAction: 'FINISH_PROFILE',
-                });
-            }
-        } else {
-            Alert.alert('System Error');
-            return;
-        }
+        let setAlert = {};
+        await Auth.signIn(username, password)
+            .then((user) => {
+                if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+                    const { requiredAttributes } = user.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
+                    Auth.completeNewPassword(
+                        username, // the Cognito User Object
+                        password,
+                        []
+                    )
+                        .then((user) => {
+                            // at this time the user is logged in if no MFA required
+                            console.log(user);
+                        })
+                        .catch((e) => {
+                            const alertPayload = {
+                                msg: 'Authentication failed. Please check your credentials',
+                                alertType: 'danger',
+                            };
+                            setAlert(alertPayload);
+                            console.log(' need to return');
+                            // return;
+                        });
+                } else {
+                    console.log('the user is good...');
+                }
+            })
+            .catch((e) => {
+                switch (e.code) {
+                    case 'UserNotFoundException':
+                        alertPayload = {
+                            msg: e.message,
+                            alertType: 'danger',
+                        };
+                        break;
+                    case 'PasswordResetRequiredException':
+                        alertPayload = {
+                            msg: e.message,
+                            alertType: 'danger',
+                        };
+                        break;
+                    case 'NotAuthorizedException':
+                        alertPayload = {
+                            msg: e.message,
+                            alertType: 'danger',
+                        };
+                    default:
+                        alertPayload = {
+                            msg: 'Signin error: [' + e.message + ']',
+                            alertType: 'danger',
+                        };
+                        break;
+                }
+                console.log(alertPayload);
+                console.log('we should return');
+                // return;
+            });
 
-        //====================================
-        setLoading(false);
+        let currentUserInfo = {};
+        let currentSession = {};
+        await Auth.currentUserInfo().then((u) => {
+            currentUserInfo = u;
+        });
+        await Auth.currentSession().then((data) => {
+            currentSession = data;
+        });
+        console.log('userInfo:', currentUserInfo);
+        console.log('currentSession', currentSession);
+        console.log('STOP RIGHT HERE');
+        //   WAIT
+        let i = currentSession?.idToken?.payload?.sub;
+        let u = currentSession?.idToken?.payload['cognito:username'];
+        let e = currentSession?.idToken?.payload?.email;
+        let j = currentSession?.idToken?.jwtToken;
+        let g = currentSession?.idToken?.payload['cognito:groups'];
+        let theUser = {};
+
+        theUser.uid = i;
+        theUser.username = u;
+        theUser.email = e;
+        theUser.jwtToken = j;
+        theUser.groups = g;
+
+        console.log('theUser: ', theUser);
+        let fullUserInfo = {};
+        await getProfile(theUser.uid).then((profileResponse) => {
+            console.log('profileResponse', profileResponse);
+            switch (profileResponse.statusCode) {
+                case 200:
+                    // profile found
+                    let profileInfo = profileResponse.userProfile;
+                    fullUserInfo = { ...theUser, ...profileInfo };
+                    fullUserInfo.profile = true;
+                    break;
+                case 404:
+                    // no profile for uid
+                    fullUserInfo = theUser;
+                    fullUserInfo.profile = false;
+                default:
+                    // we should get the error code, message and error
+                    console.log('Error: ', profileResponse.statusCode);
+                    console.log('Message: ', profileResponse.message);
+                    console.log('Error:', profileResponse.error);
+                    Alert.alert('Error getting the profile information');
+                    fullUserInfo = theUser;
+                    break;
+            }
+            dispatch(updateCurrentUser(fullUserInfo));
+
+            //====================================
+            setLoading(false);
+            return;
+        });
     };
     const onSignUpPressed = () => {
         navigation.navigate('SignUp');
