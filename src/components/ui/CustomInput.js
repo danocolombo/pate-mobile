@@ -16,10 +16,6 @@ const CustomInput = ({
         <Controller
             control={control}
             name={name}
-            autoCapitalize={autoCapitalize}
-            autoCorrect={autoCorrect}
-            autoComplete={autoComplete}
-            keyboardType={keyboardType}
             rules={rules}
             render={({
                 field: { value, onChange, onBlur },
@@ -36,6 +32,10 @@ const CustomInput = ({
                             value={value}
                             placeholder={placeholder}
                             onChangeText={onChange}
+                            autoCapitalize={autoCapitalize}
+                            autoCorrect={autoCorrect}
+                            autoComplete={autoComplete}
+                            keyboardType={keyboardType}
                             onBlur={onBlur}
                             style={styles.input}
                             secureTextEntry={secureTextEntry}
