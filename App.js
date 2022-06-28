@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { View, Text, Button, SafeAreaView, StyleSheet } from 'react-native';
-import Navigation from './src/Navigation';
+import Navigation from './src/navigation/Navigation';
 // - - - - - redux toolkit - -  - - - - -
 import { store } from './src/app/store';
 import { Provider, useSelector } from 'react-redux';

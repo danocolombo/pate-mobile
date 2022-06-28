@@ -11,153 +11,40 @@ import {
     DrawerItem,
 } from '@react-navigation/drawer';
 
-import { Ionicons } from '@expo/vector-icons';
-import { Colors } from './constants/colors';
+import { Colors } from '../constants/colors';
 
-import MainScreen from './screens/MainScreen';
-import ServeScreen from './screens/Serve/ServeScreen';
-import ServeEventsMyScreen from './screens/Serve/ServeEventsMyScreen';
-import ServeEventsStateScreen from './screens/Serve/ServeEventsStateScreen';
-import ServeEventsHistoryScreen from './screens/Serve/ServeEventsHistoryScreen';
-import ServeRallyFormScreen from './screens/Serve/ServeRallyFormScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import PateSignOut from './screens/PateSignOut';
-import RallyInfoScreen from './screens/RallyInfoScreen';
-import RallyDetailScreen from './screens/RallyDetailsScreen';
-import RallyEditFlowScreen from './screens/RallyEditFlowScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import RegistrationScreen from './screens/RegistrationScreen';
-import ErrorScreen from './screens/ErrorScreen';
-import SignInScreen from './screens/Auth/SignInScreen';
-import SignUpScreen from './screens/Auth/SignUpScreen';
-import ConfirmEmailScreen from './screens/Auth/ConfirmEmailScreen';
-import ForgotPasswordScreen from './screens/Auth/ForgotPasswordScreen';
-import NewPasswordScreen from './screens/Auth/NewPasswordScreen';
+import ServeRallyFormScreen from '../screens/Serve/ServeRallyFormScreen';
+import RallyInfoScreen from '../screens/RallyInfoScreen';
+import RallyDetailScreen from '../screens/RallyDetailsScreen';
+import RallyEditFlowScreen from '../screens/RallyEditFlowScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import RegistrationScreen from '../screens/RegistrationScreen';
+import ErrorScreen from '../screens/ErrorScreen';
+import SignInScreen from '../screens/Auth/SignInScreen';
+import SignUpScreen from '../screens/Auth/SignUpScreen';
+import ConfirmEmailScreen from '../screens/Auth/ConfirmEmailScreen';
+import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
+import NewPasswordScreen from '../screens/Auth/NewPasswordScreen';
+import AuthDrawer from './AuthDrawer';
 import { Auth, Hub } from 'aws-amplify';
 
-const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
-const BottomTab = createBottomTabNavigator();
 //    ------ before going into action.....
-function CustomDrawerContent(props) {
-    return (
-        <DrawerContentScrollView {...props}>
-            <DrawerItemList {...props} />
-        </DrawerContentScrollView>
-    );
-}
+// function CustomDrawerContent(props) {
+//     return (
+//         <DrawerContentScrollView {...props}>
+//             <DrawerItemList {...props} />
+//         </DrawerContentScrollView>
+//     );
+// }
 
-function AuthenticatedDrawer() {
-    return (
-        <Drawer.Navigator
-            screenOptions={({ navigation }) => ({
-                headerStyle: {
-                    backgroundColor: Colors.primary,
-                },
-                headerTintColor: 'white',
-                tabBarStyle: {
-                    backgroundColor: Colors.primary,
-                },
-                tabBarActiveTintColor: 'white',
-            })}
-        >
-            <Drawer.Screen
-                name='Main'
-                component={MainScreen}
-                options={({ navigation }) => ({
-                    title: 'Rallies',
-                    headerStyle: {
-                        backgroundColor: Colors.primary,
-                    },
-
-                    headerTintColor: 'white',
-                    tabBarStyle: {
-                        backgroundColor: Colors.primary,
-                    },
-                    tabBarActiveTintColor: 'white',
-                })}
-            />
-            <Drawer.Screen
-                name='Serve'
-                component={ServeConfig}
-                options={({ navigation }) => ({
-                    title: 'Serve',
-                    headerStyle: {
-                        backgroundColor: Colors.primary,
-                    },
-
-                    headerTintColor: 'white',
-                    tabBarStyle: {
-                        backgroundColor: Colors.primary,
-                    },
-                    tabBarActiveTintColor: 'white',
-                })}
-            />
-            <Stack.Screen name='Profile' component={ProfileScreen} />
-            <Stack.Screen name='Logout' component={PateSignOut} />
-        </Drawer.Navigator>
-    );
-}
-function ServeConfig() {
-    return (
-        <BottomTab.Navigator
-            initialRouteName='ServeMy'
-            screenOptions={{ headerShown: false }}
-        >
-            <BottomTab.Screen
-                name='ServeMy'
-                component={ServeEventsMyScreen}
-                options={{
-                    title: 'Serve: Personal Events',
-                    tabBarLabel: 'Mine',
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons
-                            name='md-caret-back-circle-sharp'
-                            size={size}
-                            color={color}
-                        />
-                    ),
-                }}
-            />
-            <BottomTab.Screen
-                name='ServeState'
-                component={ServeEventsStateScreen}
-                options={{
-                    title: 'Serve: State Events',
-                    tabBarLabel: 'State',
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons
-                            name='md-caret-forward-circle-sharp'
-                            size={size}
-                            color={color}
-                        />
-                    ),
-                }}
-            />
-            <BottomTab.Screen
-                name='ServeHistory'
-                component={ServeEventsHistoryScreen}
-                options={{
-                    title: 'Serve: History',
-                    tabBarLabel: 'History',
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons
-                            name='md-caret-forward-circle-sharp'
-                            size={size}
-                            color={color}
-                        />
-                    ),
-                }}
-            />
-        </BottomTab.Navigator>
-    );
-}
 function PateStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen
                 name='AuthenticatedDrawer'
-                component={AuthenticatedDrawer}
+                // component={AuthenticatedDrawer}
+                component={AuthDrawer}
                 options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -170,6 +57,7 @@ function PateStack() {
                     headerTintColor: 'white',
                 })}
             />
+
             <Stack.Screen
                 name='RallyInfo'
                 component={RallyInfoScreen}
@@ -180,6 +68,7 @@ function PateStack() {
                     headerTintColor: 'white',
                 })}
             />
+
             <Stack.Screen
                 name='RallyRegister'
                 component={RegisterScreen}
@@ -236,6 +125,7 @@ function PateStack() {
         </Stack.Navigator>
     );
 }
+
 //   --------- Navigation !!!!! ----------------
 function Navigation() {
     const user = useSelector((state) => state.users.currentUser);
