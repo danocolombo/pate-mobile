@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, StyleSheet, Image } from 'react-native';
+import {
+    View,
+    Text,
+    ImageBackground,
+    StyleSheet,
+    Image,
+    Modal,
+    ScrollView,
+} from 'react-native';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,12 +23,13 @@ import NoEventsCard from '../components/ui/NoEventsCard';
 import RalliesOutput from '../components/rallies/RalliesOutput';
 import { UserInterfaceIdiom } from 'expo-constants';
 import { printObject } from '../utils/helpers';
-import { ScrollView } from 'react-native';
+
 import { StylesContext } from '@material-ui/styles';
 
 export default function MainScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const [showProfileNeededModal, setShowProfileNeededModal] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [rallies, setRallies] = useState([]);
     const [approvedRallies, setApprovedRallies] = useState([]);
@@ -86,6 +95,9 @@ export default function MainScreen() {
     }, []);
     console.log('ENV:', process.env.ENV);
     const stateRallies = useSelector((state) => state.rallies.allRallies);
+    const handleProfileAcknowledge = () => {
+        setShowProfileNeededModal(false);
+    };
     return isLoading ? (
         <LoadingOverlay />
     ) : (
@@ -94,17 +106,46 @@ export default function MainScreen() {
             style={styles.bgImageContainer}
         >
             <>
-                {approvedRallies.length !== 0 ? (
-                    <RalliesOutput rallies={approvedRallies} />
-                ) : (
-                    <View style={styles.imageContainer}>
-                        <Image
-                            source={require('../components/images/no-events-card.png')}
-                            style={styles.image}
-                        />
-                    </View>
-                )}
-                {/* //{' '}
+                <ScrollView>
+                    <Modal visible={showStatusModal} animationStyle='slide'>
+                        <Surface style={styles.modalSurface}>
+                            <View style={styles.modalInfoWrapper}>
+                                <Text style={styles.modalTitle}>
+                                    PROFILE NEEDED
+                                </Text>
+                            </View>
+                            <View style={styles.modalButtonContainer}>
+                                <View style={styles.modalButtonWrapper}>
+                                    <View style={styles.modalCancelButton}>
+                                        <CustomButton
+                                            title='OK'
+                                            graphic={null}
+                                            cbStyles={{
+                                                backgroundColor: 'green',
+                                                color: 'white',
+                                            }}
+                                            txtColor='white'
+                                            onPress={() => {
+                                                handleProfileAcknowledge();
+                                            }}
+                                        />
+                                    </View>
+                                </View>
+                            </View>
+                        </Surface>
+                    </Modal>
+
+                    {approvedRallies.length !== 0 ? (
+                        <RalliesOutput rallies={approvedRallies} />
+                    ) : (
+                        <View style={styles.imageContainer}>
+                            <Image
+                                source={require('../components/images/no-events-card.png')}
+                                style={styles.image}
+                            />
+                        </View>
+                    )}
+                    {/* //{' '}
                 <View style={{ marginTop: 30 }}>
                     //{' '}
                     <Text styles={styles.infoText}>
@@ -114,6 +155,7 @@ export default function MainScreen() {
                     //{' '}
                 </View>
                 // <RalliesOutput rallies={approvedRallies} /> */}
+                </ScrollView>
             </>
         </ImageBackground>
     );
