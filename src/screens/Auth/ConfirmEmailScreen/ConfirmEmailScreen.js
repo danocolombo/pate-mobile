@@ -42,7 +42,10 @@ const ConfirmEmailScreen = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.root}>
                 <Text style={styles.title}>Confirm your email</Text>
-
+                <View style={{ alignItems: 'center' }}>
+                    <Text>A code had been sent to your email.</Text>
+                    <Text>Please enter that code below.</Text>
+                </View>
                 <CustomInput
                     name='username'
                     control={control}

@@ -151,16 +151,16 @@ export default function ProfileForm() {
                                     postalCode: user?.residence?.postalCode
                                         ? user.residence.postalCode
                                         : '',
-                                    churchName: user?.church.name
+                                    churchName: user?.church?.name
                                         ? user.church.name
                                         : '',
                                     // churchStreet: user?.churchStreet
                                     //     ? user.churchStreet
                                     //     : '',
-                                    churchCity: user?.church.city
+                                    churchCity: user?.church?.city
                                         ? user.church.city
                                         : '',
-                                    churchStateProv: user?.church.stateProv
+                                    churchStateProv: user?.church?.stateProv
                                         ? user.church.stateProv
                                         : '',
                                 }}

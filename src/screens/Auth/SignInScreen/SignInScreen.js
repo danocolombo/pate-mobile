@@ -149,7 +149,7 @@ const SignInScreen = () => {
                     console.log('Error: ', profileResponse.statusCode);
                     console.log('Message: ', profileResponse.message);
                     console.log('Error:', profileResponse.error);
-                    Alert.alert('Error getting the profile information');
+                    // Alert.alert('Error getting the profile information');
                     fullUserInfo = theUser;
                     break;
             }
