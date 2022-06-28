@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native';
 import React, { useState } from 'react';
-import CustomInput from '../../../components/ui/CustomButton';
+import CustomInput from '../../../components/ui/CustomInput';
 import CustomButton from '../../../components/ui/Auth/CustomButton/CustomButton';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
@@ -31,7 +31,9 @@ const ForgotPasswordScreen = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.root}>
                 <Text style={styles.title}>Reset your password</Text>
-
+                <View>
+                    <Text>WHAT?</Text>
+                </View>
                 <CustomInput
                     name='username'
                     control={control}
