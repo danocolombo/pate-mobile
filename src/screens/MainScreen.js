@@ -13,6 +13,8 @@ import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { ALL_EVENTS } from '../../data/getRegionalEvents';
+import CustomButton from '../components/ui/CustomButton';
+import { Surface } from 'react-native-paper';
 import {
     loadRallies,
     loadUserRallies,
@@ -29,7 +31,10 @@ import { StylesContext } from '@material-ui/styles';
 export default function MainScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const [showProfileNeededModal, setShowProfileNeededModal] = useState(true);
+    const user = useSelector((state) => state.users.currentUser);
+    const [showProfileNeededModal, setShowProfileNeededModal] = useState(
+        !user.profile
+    );
     const [isLoading, setIsLoading] = useState(true);
     const [rallies, setRallies] = useState([]);
     const [approvedRallies, setApprovedRallies] = useState([]);
@@ -97,6 +102,7 @@ export default function MainScreen() {
     const stateRallies = useSelector((state) => state.rallies.allRallies);
     const handleProfileAcknowledge = () => {
         setShowProfileNeededModal(false);
+        navigation.navigate('Profile');
     };
     return isLoading ? (
         <LoadingOverlay />
@@ -106,46 +112,46 @@ export default function MainScreen() {
             style={styles.bgImageContainer}
         >
             <>
-                <ScrollView>
-                    <Modal visible={showStatusModal} animationStyle='slide'>
-                        <Surface style={styles.modalSurface}>
-                            <View style={styles.modalInfoWrapper}>
-                                <Text style={styles.modalTitle}>
-                                    PROFILE NEEDED
-                                </Text>
-                            </View>
-                            <View style={styles.modalButtonContainer}>
-                                <View style={styles.modalButtonWrapper}>
-                                    <View style={styles.modalCancelButton}>
-                                        <CustomButton
-                                            title='OK'
-                                            graphic={null}
-                                            cbStyles={{
-                                                backgroundColor: 'green',
-                                                color: 'white',
-                                            }}
-                                            txtColor='white'
-                                            onPress={() => {
-                                                handleProfileAcknowledge();
-                                            }}
-                                        />
-                                    </View>
+                {/* <ScrollView> */}
+                <Modal visible={showProfileNeededModal} animationStyle='slide'>
+                    <Surface style={styles.modalSurface}>
+                        <View style={styles.modalInfoWrapper}>
+                            <Text style={styles.modalTitle}>
+                                Please complete your profile.
+                            </Text>
+                        </View>
+                        <View style={styles.modalButtonContainer}>
+                            <View style={styles.modalButtonWrapper}>
+                                <View style={styles.modalCancelButton}>
+                                    <CustomButton
+                                        title='OK'
+                                        graphic={null}
+                                        cbStyles={{
+                                            backgroundColor: 'green',
+                                            color: 'white',
+                                        }}
+                                        txtColor='white'
+                                        onPress={() => {
+                                            handleProfileAcknowledge();
+                                        }}
+                                    />
                                 </View>
                             </View>
-                        </Surface>
-                    </Modal>
-
-                    {approvedRallies.length !== 0 ? (
-                        <RalliesOutput rallies={approvedRallies} />
-                    ) : (
-                        <View style={styles.imageContainer}>
-                            <Image
-                                source={require('../components/images/no-events-card.png')}
-                                style={styles.image}
-                            />
                         </View>
-                    )}
-                    {/* //{' '}
+                    </Surface>
+                </Modal>
+
+                {approvedRallies.length !== 0 ? (
+                    <RalliesOutput rallies={approvedRallies} />
+                ) : (
+                    <View style={styles.imageContainer}>
+                        <Image
+                            source={require('../components/images/no-events-card.png')}
+                            style={styles.image}
+                        />
+                    </View>
+                )}
+                {/* //{' '}
                 <View style={{ marginTop: 30 }}>
                     //{' '}
                     <Text styles={styles.infoText}>
@@ -155,7 +161,7 @@ export default function MainScreen() {
                     //{' '}
                 </View>
                 // <RalliesOutput rallies={approvedRallies} /> */}
-                </ScrollView>
+                {/* </ScrollView> */}
             </>
         </ImageBackground>
     );
@@ -177,5 +183,31 @@ const styles = StyleSheet.create({
     image: {
         width: '85%',
         height: '65%',
+    },
+    modalContainer: {
+        marginTop: '200',
+        // alignSelf: 'flex-end',
+    },
+    modalSurface: {
+        marginTop: '50%',
+        marginHorizontal: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+    },
+    modalInfoWrapper: {
+        alignItems: 'center',
+    },
+    modalTitle: {
+        marginTop: 15,
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    modalButtonContainer: {
+        marginVertical: 20,
+        flexDirection: 'row',
+    },
+    modalButtonWrapper: {
+        marginHorizontal: 10,
     },
 });
