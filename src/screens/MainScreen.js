@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, StyleSheet, Image } from 'react-native';
+import {
+    View,
+    Text,
+    ImageBackground,
+    StyleSheet,
+    Image,
+    Modal,
+    ScrollView,
+} from 'react-native';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { ALL_EVENTS } from '../../data/getRegionalEvents';
+import CustomButton from '../components/ui/CustomButton';
+import { Surface } from 'react-native-paper';
 import {
     loadRallies,
     loadUserRallies,
@@ -15,12 +25,16 @@ import NoEventsCard from '../components/ui/NoEventsCard';
 import RalliesOutput from '../components/rallies/RalliesOutput';
 import { UserInterfaceIdiom } from 'expo-constants';
 import { printObject } from '../utils/helpers';
-import { ScrollView } from 'react-native';
+
 import { StylesContext } from '@material-ui/styles';
 
 export default function MainScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const user = useSelector((state) => state.users.currentUser);
+    const [showProfileNeededModal, setShowProfileNeededModal] = useState(
+        !user.profile
+    );
     const [isLoading, setIsLoading] = useState(true);
     const [rallies, setRallies] = useState([]);
     const [approvedRallies, setApprovedRallies] = useState([]);
@@ -86,6 +100,10 @@ export default function MainScreen() {
     }, []);
     console.log('ENV:', process.env.ENV);
     const stateRallies = useSelector((state) => state.rallies.allRallies);
+    const handleProfileAcknowledge = () => {
+        setShowProfileNeededModal(false);
+        navigation.navigate('Profile');
+    };
     return isLoading ? (
         <LoadingOverlay />
     ) : (
@@ -94,6 +112,35 @@ export default function MainScreen() {
             style={styles.bgImageContainer}
         >
             <>
+                {/* <ScrollView> */}
+                <Modal visible={showProfileNeededModal} animationStyle='slide'>
+                    <Surface style={styles.modalSurface}>
+                        <View style={styles.modalInfoWrapper}>
+                            <Text style={styles.modalTitle}>
+                                Please complete your profile.
+                            </Text>
+                        </View>
+                        <View style={styles.modalButtonContainer}>
+                            <View style={styles.modalButtonWrapper}>
+                                <View style={styles.modalCancelButton}>
+                                    <CustomButton
+                                        title='OK'
+                                        graphic={null}
+                                        cbStyles={{
+                                            backgroundColor: 'green',
+                                            color: 'white',
+                                        }}
+                                        txtColor='white'
+                                        onPress={() => {
+                                            handleProfileAcknowledge();
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </Surface>
+                </Modal>
+
                 {approvedRallies.length !== 0 ? (
                     <RalliesOutput rallies={approvedRallies} />
                 ) : (
@@ -114,6 +161,7 @@ export default function MainScreen() {
                     //{' '}
                 </View>
                 // <RalliesOutput rallies={approvedRallies} /> */}
+                {/* </ScrollView> */}
             </>
         </ImageBackground>
     );
@@ -135,5 +183,31 @@ const styles = StyleSheet.create({
     image: {
         width: '85%',
         height: '65%',
+    },
+    modalContainer: {
+        marginTop: '200',
+        // alignSelf: 'flex-end',
+    },
+    modalSurface: {
+        marginTop: '50%',
+        marginHorizontal: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+    },
+    modalInfoWrapper: {
+        alignItems: 'center',
+    },
+    modalTitle: {
+        marginTop: 15,
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    modalButtonContainer: {
+        marginVertical: 20,
+        flexDirection: 'row',
+    },
+    modalButtonWrapper: {
+        marginHorizontal: 10,
     },
 });
