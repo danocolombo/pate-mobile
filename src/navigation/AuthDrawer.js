@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainScreen from '../screens/MainScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PateSignOut from '../screens/PateSignOut';
+import MyHistoryScreen from '../screens/MyHistoryScreen';
 import ServeConfig from './ServeConfig';
 import { Colors } from '../constants/colors';
 const Drawer = createDrawerNavigator();
@@ -71,6 +72,22 @@ const AuthDrawer = (navigation) => {
                     })}
                 />
             ) : null}
+            <Stack.Screen
+                name='MyHistory'
+                component={MyHistoryScreen}
+                options={({ navigation }) => ({
+                    title: 'My History',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+
+                    headerTintColor: 'white',
+                    tabBarStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    tabBarActiveTintColor: 'white',
+                })}
+            />
             <Stack.Screen name='Profile' component={ProfileScreen} />
             <Stack.Screen name='Logout' component={PateSignOut} />
         </Drawer.Navigator>
