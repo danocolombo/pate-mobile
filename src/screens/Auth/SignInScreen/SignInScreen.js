@@ -112,9 +112,7 @@ const SignInScreen = () => {
         await Auth.currentSession().then((data) => {
             currentSession = data;
         });
-        console.log('userInfo:', currentUserInfo);
-        console.log('currentSession', currentSession);
-        console.log('STOP RIGHT HERE');
+
         //   WAIT
         let i = currentSession?.idToken?.payload?.sub;
         let u = currentSession?.idToken?.payload['cognito:username'];

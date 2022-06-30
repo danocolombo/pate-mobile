@@ -46,13 +46,45 @@ export function getToday() {
     return target;
 }
 export function numTimeToDisplayTime(numTime) {
-    // numTime expecting something like 13:30 which would be 1:30pm
-    let timeParts = numTime.split(':');
+    let A = '';
+    let B = '';
+    let confirmedValue;
+    // the length of numTime can only be 4 or 5 characters, if not return ""
+    if (numTime.length < 4 || numTime.length > 5) {
+        console.log('1');
+        return '';
+    }
+    if (numTime.length === 4) {
+        const colon = numTime.indexOf(':');
+        if (colon === -1) {
+            //no colon, split the numbers and stick colon in.
+            A = numTime.substr(0, 2);
+            B = numTime.substr(2);
+            let returnValue = A + ':' + B;
+            confirmedValue = returnValue;
+        } else {
+            let parts = numTime.split(':');
+            let returnValue = parts[0] + ':' + parts[1];
+            confirmedValue = returnValue;
+        }
+    } else if (numTime.length === 5) {
+        const colon = numTime.indexOf(':');
+        if (colon === -1) {
+            return '';
+        } else {
+            confirmedValue = numTime;
+        }
+    }
+    let timeParts = confirmedValue.split(':');
 
     // Get the hours of 29 February 2012 11:45:00:
-    const result = new Date(2012, 1, 29, timeParts[0], timeParts[1]);
-    const returnTime = format(result, 'h:mm a');
-    return returnTime;
+    try {
+        const result = new Date(2012, 1, 29, timeParts[0], timeParts[1]);
+        const returnTime = format(result, 'h:mm a');
+        return returnTime;
+    } catch (error) {
+        return '';
+    }
 }
 export function getPateDate(dateTimeNumber) {
     // this gets the time dateStamp and returns P8 date string "YYYYMMDD"
