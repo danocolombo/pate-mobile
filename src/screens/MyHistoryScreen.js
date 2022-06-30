@@ -5,15 +5,19 @@ import {
     Text,
     View,
     ImageBackground,
+    Pressable,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { REGISTRATIONS_TTLEAD } from '../../data/getRegistrationsForUser_ttrep';
 import RegListCard from '../components/ui/RegistrationListCard';
 import { useSelector } from 'react-redux';
 
 import { printObject } from '../utils/helpers';
+import { dateNumToDateDash, isDateDashBeforeToday } from '../utils/date';
 
 const MyHistoryScreen = () => {
+    const navigation = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
     const [myRegistrations, setMyRegistrations] = useState([]);
     useEffect(() => {
@@ -52,7 +56,12 @@ const MyHistoryScreen = () => {
                 });
         }
     }, []);
-
+    function regPressHandler(uid) {
+        console.log('pressed:', uid);
+        navigation.navigate('RallyDetail', {
+            rallyId: uid,
+        });
+    }
     return (
         <ImageBackground
             source={require('../components/images/background.png')}
@@ -68,14 +77,43 @@ const MyHistoryScreen = () => {
                                 </Text>
                             </View>
                             {myRegistrations ? (
-                                myRegistrations.map((r) => (
-                                    <View key={r.uid}>
-                                        <RegListCard
-                                            key={r.uid}
-                                            registration={r}
-                                        />
-                                    </View>
-                                ))
+                                myRegistrations.map((r) => {
+                                    const enablePress = !isDateDashBeforeToday(
+                                        dateNumToDateDash(r.eventDate)
+                                    );
+                                    console.log('enablePress:', enablePress);
+                                    if (enablePress) {
+                                        return (
+                                            <>
+                                                <Pressable
+                                                    onPress={() =>
+                                                        regPressHandler(r.uid)
+                                                    }
+                                                    style={({ pressed }) =>
+                                                        pressed &&
+                                                        styles.pressed
+                                                    }
+                                                >
+                                                    <View key={r.uid}>
+                                                        <RegListCard
+                                                            key={r.uid}
+                                                            registration={r}
+                                                        />
+                                                    </View>
+                                                </Pressable>
+                                            </>
+                                        );
+                                    } else {
+                                        return (
+                                            <View key={r.uid}>
+                                                <RegListCard
+                                                    key={r.uid}
+                                                    registration={r}
+                                                />
+                                            </View>
+                                        );
+                                    }
+                                })
                             ) : (
                                 <View>
                                     <Text>No History Recorded</Text>

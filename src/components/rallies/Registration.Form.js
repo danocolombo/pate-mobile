@@ -12,10 +12,14 @@ import {
     dateNumToDisplayTime,
 } from '../../utils/date';
 import NumberInput from '../ui/NumberInput/NumberInput';
-const RallyRegister = ({ rallyId }) => {
+const RallyRegister = (rally = null) => {
     const navigation = useNavigation();
-    const [registrarCount, setRegistrar] = useState(0);
-    const [mealCount, setMealCount] = useState(0);
+    const [registrarCount, setRegistrar] = useState(
+        rally?.attendeeCount ? rally?.attendeeCount : 0
+    );
+    const [mealCount, setMealCount] = useState(
+        rally?.mealCount ? rally?.mealCount : 0
+    );
     const user = useSelector((state) => state.users.currentUser);
     let ral = useSelector((state) =>
         state.rallies.allRallies.filter((r) => r.uid === rallyId)

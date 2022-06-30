@@ -52,6 +52,11 @@ function RallyItem({ uid, eventDate, name, city, stateProv }) {
 export default RallyItem;
 
 const styles = StyleSheet.create({
+    bgImageContainer: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
     pressed: {
         opacity: 0.75,
     },

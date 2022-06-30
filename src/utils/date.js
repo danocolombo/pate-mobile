@@ -4,6 +4,7 @@ export function getFormattedDate(date) {
     return date.toISOString().slice(0, 10);
 }
 export function dateNumToJSDate(dateNum) {
+    // YYYYMMDD to JSDate
     const year = +dateNum.substring(0, 4);
     const month = +dateNum.substring(4, 6);
     const day = +dateNum.substring(6, 8);
@@ -12,11 +13,22 @@ export function dateNumToJSDate(dateNum) {
 }
 
 export function dateNumsToLongDayLongMondayDay(dateNum) {
+    // YYYYMMDD to long date
     const convDate = dateNumToJSDate(dateNum);
     const result = format(convDate, 'EEEE, LLLL do');
     return result;
 }
-
+export function dateNumToDateDash(dateNum) {
+    // converts YYYYMMDD to YYYY-MM-DD
+    if (dateNum.length !== 8) {
+        return '';
+    }
+    const y = dateNum.substr(0, 4);
+    const m = dateNum.substr(4, 2);
+    const d = dateNum.substr(6);
+    const returnValue = y + '-' + m + '-' + d;
+    return returnValue;
+}
 export function getDateMinusDays(date, days) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate() - days);
 }
@@ -25,8 +37,9 @@ export function subtractMonths(numOfMonths, date = new Date()) {
 
     return date;
 }
-export function isDateBeforeToday(meetingDate) {
-    let datePart = meetingDate.split('-');
+export function isDateDashBeforeToday(dateDash) {
+    // uses dashDate yyyy-mm-dd
+    let datePart = dateDash.split('-');
     //need to increment month
     let mo = parseInt(datePart[1] - 1);
     let mDate = new Date(parseInt(datePart[0]), mo, parseInt(datePart[2]));
@@ -45,7 +58,8 @@ export function getToday() {
     const target = yr + '-' + mn + '-' + da;
     return target;
 }
-export function numTimeToDisplayTime(numTime) {
+export function dateNumToDisplayTime(numTime) {
+    // 1330 or 13:30 to 1:30 PM
     let A = '';
     let B = '';
     let confirmedValue;
@@ -87,6 +101,7 @@ export function numTimeToDisplayTime(numTime) {
     }
 }
 export function getPateDate(dateTimeNumber) {
+    // takes dateStamp and returns YYYYMMDD
     // this gets the time dateStamp and returns P8 date string "YYYYMMDD"
     let inputDate = new Date(dateTimeNumber);
 
@@ -105,6 +120,7 @@ export function getPateDate(dateTimeNumber) {
     return returnValue;
 }
 export function getPateTime(dateTimeNumber) {
+    // dateTimeStamp to 1230
     let inputDate = new Date(dateTimeNumber);
     let h = String(inputDate.getHours());
     let m = String(inputDate.getMinutes());

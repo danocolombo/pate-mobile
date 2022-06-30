@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    ImageBackground,
+    ScrollView,
+} from 'react-native';
 import { Card, ListItem, Button, Icon } from 'react-native-elements';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -9,7 +16,7 @@ import { Colors } from '../../constants/colors';
 import { printObject } from '../../utils/helpers';
 import {
     dateNumsToLongDayLongMondayDay,
-    numTimeToDisplayTime,
+    dateNumToDisplayTime,
 } from '../../utils/date';
 
 const RallyDetails = ({ rallyId }) => {
@@ -34,65 +41,67 @@ const RallyDetails = ({ rallyId }) => {
                     source={require('../../components/images/background.png')}
                     style={styles.bgImageContainer}
                 >
-                    <View style={styles.cardContainer}>
-                        <Card style={styles.rallyCard}>
-                            <View style={styles.nameContainer}>
-                                <Card.Title style={styles.nameText}>
-                                    {rally.name}
-                                </Card.Title>
-                            </View>
-                            <Card.Divider />
-                            <View style={styles.dateContainer}>
-                                <Text style={styles.dateValues}>
-                                    {dateNumsToLongDayLongMondayDay(
-                                        rally.eventDate
-                                    )}
-                                </Text>
-                            </View>
-                            <View style={styles.timeContainer}>
-                                <Text style={styles.timeValues}>
-                                    {numTimeToDisplayTime(rally.startTime)} -{' '}
-                                    {numTimeToDisplayTime(rally.endTime)}
-                                </Text>
-                            </View>
-                            <View style={styles.addressWrapper}>
-                                <View style={styles.addressContainer}>
-                                    <Text style={styles.addressText}>
-                                        {rally.street}
-                                    </Text>
-                                    <Text style={styles.addressText}>
-                                        {rally.city}, {rally.stateProv}{' '}
-                                        {rally.postalCode}
+                    <ScrollView>
+                        <View style={styles.cardContainer}>
+                            <Card style={styles.rallyCard}>
+                                <View style={styles.nameContainer}>
+                                    <Card.Title style={styles.nameText}>
+                                        {rally.name}
+                                    </Card.Title>
+                                </View>
+                                <Card.Divider />
+                                <View style={styles.dateContainer}>
+                                    <Text style={styles.dateValues}>
+                                        {dateNumsToLongDayLongMondayDay(
+                                            rally.eventDate
+                                        )}
                                     </Text>
                                 </View>
-                            </View>
-                            <View style={styles.graphicWrapper}>
-                                <Image
-                                    style={styles.image}
-                                    resizeMode='cover'
-                                    source={{
-                                        uri: 'https://pate20213723ed06531948b6a5a0b14d1c3fb499175248-dev.s3.amazonaws.com/public/events/9262496f849827c155ca8865b7a39b65CORDELE.jpg',
+                                <View style={styles.timeContainer}>
+                                    <Text style={styles.timeValues}>
+                                        {dateNumToDisplayTime(rally.startTime)}{' '}
+                                        - {dateNumToDisplayTime(rally.endTime)}
+                                    </Text>
+                                </View>
+                                <View style={styles.addressWrapper}>
+                                    <View style={styles.addressContainer}>
+                                        <Text style={styles.addressText}>
+                                            {rally.street}
+                                        </Text>
+                                        <Text style={styles.addressText}>
+                                            {rally.city}, {rally.stateProv}{' '}
+                                            {rally.postalCode}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={styles.graphicWrapper}>
+                                    <Image
+                                        style={styles.image}
+                                        resizeMode='cover'
+                                        source={{
+                                            uri: 'https://pate20213723ed06531948b6a5a0b14d1c3fb499175248-dev.s3.amazonaws.com/public/events/9262496f849827c155ca8865b7a39b65CORDELE.jpg',
+                                        }}
+                                    />
+                                </View>
+                                <View style={styles.notesContainer}>
+                                    <Text style={styles.notesText}>
+                                        Come check it out
+                                    </Text>
+                                </View>
+                                <Button
+                                    // icon={<Icon name='code' color='#ffffff' />}
+                                    buttonStyle={{
+                                        borderRadius: 5,
+                                        marginLeft: 40,
+                                        marginRight: 40,
+                                        marginBottom: 0,
                                     }}
+                                    title='REGISTER NOW'
+                                    onPress={handleRegisterRequest}
                                 />
-                            </View>
-                            <View style={styles.notesContainer}>
-                                <Text style={styles.notesText}>
-                                    Come check it out
-                                </Text>
-                            </View>
-                            <Button
-                                // icon={<Icon name='code' color='#ffffff' />}
-                                buttonStyle={{
-                                    borderRadius: 5,
-                                    marginLeft: 40,
-                                    marginRight: 40,
-                                    marginBottom: 0,
-                                }}
-                                title='REGISTER NOW'
-                                onPress={handleRegisterRequest}
-                            />
-                        </Card>
-                    </View>
+                            </Card>
+                        </View>
+                    </ScrollView>
                 </ImageBackground>
             </>
         );
@@ -100,6 +109,11 @@ const RallyDetails = ({ rallyId }) => {
 };
 export default RallyDetails;
 const styles = StyleSheet.create({
+    bgImageContainer: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
     pressed: {
         opacity: 0.75,
     },
@@ -138,17 +152,18 @@ const styles = StyleSheet.create({
     addressText: {
         fontSize: 24,
     },
-    notesContainer: { margin: 15, alignItems: 'center' },
-    notesText: {},
+    notesContainer: { margin: 0, alignItems: 'center' },
+    notesText: {
+        color: 'black',
+    },
     location: {
         color: Colors.primary,
     },
-    imageContainer: {
-        justifyContent: 'center',
+    graphicWrapper: {
+        // justifyContent: 'center',
         alignItems: 'center',
     },
     image: {
-        width: '85%',
-        height: '65%',
+        // width: '85%',
     },
 });
