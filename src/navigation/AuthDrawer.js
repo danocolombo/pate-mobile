@@ -76,7 +76,7 @@ const AuthDrawer = (navigation) => {
                 name='MyHistory'
                 component={MyHistoryScreen}
                 options={({ navigation }) => ({
-                    title: 'My History',
+                    title: 'My Registrations',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
