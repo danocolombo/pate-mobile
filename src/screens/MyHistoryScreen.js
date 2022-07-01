@@ -60,10 +60,10 @@ const MyHistoryScreen = () => {
                 });
         }
     }, []);
-    function regPressHandler(uid) {
-        console.log('pressed:', uid);
-        navigation.navigate('RallyDetail', {
-            rallyId: uid,
+    function regPressHandler(reg) {
+        // printObject('MHS:64-->reg', reg);
+        navigation.navigate('RallyRegister', {
+            registration: reg,
         });
     }
     if (isLoading) {
@@ -89,25 +89,20 @@ const MyHistoryScreen = () => {
                                             !isDateDashBeforeToday(
                                                 dateNumToDateDash(r.eventDate)
                                             );
-                                        console.log(
-                                            'enablePress:',
-                                            enablePress
-                                        );
+
                                         if (enablePress) {
                                             return (
                                                 <>
                                                     <Pressable
                                                         onPress={() =>
-                                                            regPressHandler(
-                                                                r.uid
-                                                            )
+                                                            regPressHandler(r)
                                                         }
                                                         style={({ pressed }) =>
                                                             pressed &&
                                                             styles.pressed
                                                         }
                                                     >
-                                                        <View key={r.uid}>
+                                                        <View>
                                                             <RegListCard
                                                                 key={r.uid}
                                                                 registration={r}
@@ -118,7 +113,7 @@ const MyHistoryScreen = () => {
                                             );
                                         } else {
                                             return (
-                                                <View key={r.uid}>
+                                                <View>
                                                     <RegListCard
                                                         key={r.uid}
                                                         registration={r}

@@ -12,21 +12,28 @@ import {
     dateNumToDisplayTime,
 } from '../../utils/date';
 import NumberInput from '../ui/NumberInput/NumberInput';
-const RallyRegister = ({rally, registration = {}}) => {
-    printObject('RR:15 -->', rally);
+const RallyRegister = ({ rally = {}, registration = {} }) => {
+    let ral = rally;
+    let reg = registration;
+    if (!ral?.uid && reg?.eid) {
+        //need to get the rally from reg.eid
+        let rallyArray = useSelector((state) =>
+            state.rallies.allRallies.filter((r) => r.uid === reg.eid)
+        );
+        ral = rallyArray[0];
+    }
+    printObject('RR:25 -->rally', ral);
+    printObject('RR:26 -->registration', reg);
     // const r = rally.rally;
     const navigation = useNavigation();
     const [registrarCount, setRegistrar] = useState(
-        registration?.attendeeCount ? registration?.attendeeCount : 0
+        reg?.attendeeCount ? reg?.attendeeCount : 0
     );
     const [mealCount, setMealCount] = useState(
-        registration?.mealCount ? registration?.mealCount : 0
+        reg?.mealCount ? reg?.mealCount : 0
     );
     const user = useSelector((state) => state.users.currentUser);
-    // let ral = useSelector((state) =>
-    //     state.rallies.allRallies.filter((r) => r.uid === rallyId)
-    // );
-    // let rally = ral[0];
+
     const handleRegistarCountChange = (e) => {
         setRegistrar(parseInt(e));
     };
@@ -34,64 +41,72 @@ const RallyRegister = ({rally, registration = {}}) => {
         setMealCount(parseInt(e));
     };
     const handleRegistrationRequest = () => {
-        // define the registar info
-        let newReg = {
-            attendeeCount: registrarCount,
-            mealCount: mealCount,
-            location: {
-                name: rally?.name,
-                street: rally?.street,
-                city: rally?.city,
-                stateProv: rally?.stateProv,
-                postalCode: rally?.postalCode,
-            },
-            endTime: rally?.endTime,
-            eventDate: rally?.eventDate,
-            eid: rally?.uid,
-            church: {
-                name: rally?.name,
-                city: rally?.city,
-            },
-            rid: user?.uid,
-            startTime: rally?.startTime,
-            registrar: {
-                firstName: user?.firstName,
-                lastName: user?.lastName,
-                residence: {
-                    street: user?.street,
-                    city: user?.city,
-                    stateProv: user?.stateProv,
-                    postalCode: user?.postalCode,
+        //determine if update or new
+        if (reg?.uid) {
+            // this is update to exising registration
+        } else {
+            // this is a new registration
+            let newReg = {
+                attendeeCount: registrarCount,
+                mealCount: mealCount,
+                location: {
+                    name: rally?.name,
+                    street: rally?.street,
+                    city: rally?.city,
+                    stateProv: rally?.stateProv,
+                    postalCode: rally?.postalCode,
                 },
-                phone: user?.phone,
-                email: user?.email,
-            },
-        };
-        printObject('newReg', newReg);
-        let obj = {
-            operation: 'createRegistration',
-            payload: {
-                Item: newReg,
-            },
-        };
-        let body = JSON.stringify(obj);
+                endTime: rally?.endTime,
+                eventDate: rally?.eventDate,
+                eid: rally?.uid,
+                church: {
+                    name: rally?.name,
+                    city: rally?.city,
+                },
+                rid: user?.uid,
+                startTime: rally?.startTime,
+                registrar: {
+                    firstName: user?.firstName,
+                    lastName: user?.lastName,
+                    residence: {
+                        street: user?.street,
+                        city: user?.city,
+                        stateProv: user?.stateProv,
+                        postalCode: user?.postalCode,
+                    },
+                    phone: user?.phone,
+                    email: user?.email,
+                },
+            };
+            printObject('newReg', newReg);
+            let obj = {
+                operation: 'createRegistration',
+                payload: {
+                    Item: newReg,
+                },
+            };
+            let body = JSON.stringify(obj);
 
-        let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
-        axios
-            .post(api2use, body, CONFIG)
-            .then((response) => {
-                console.log('registion added to ddb');
-            })
-            .catch((err) => {
-                console.log('RR-77: error:', err);
-            });
-        navigation.navigate('Main', null);
+            let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
+            axios
+                .post(api2use, body, CONFIG)
+                .then((response) => {
+                    console.log('registion added to ddb');
+                })
+                .catch((err) => {
+                    console.log('RR-77: error:', err);
+                });
+            navigation.navigate('Main', null);
+        }
     };
 
     if (!rally) {
-        return <ActivityIndicator />;
+        return (
+            <View style={styles.rootContainer}>
+                <ActivityIndicator size='large' />
+            </View>
+        );
     } else {
-        printObject('rally 90', rally);
         return (
             <View style={styles.rootContainer}>
                 {/* <View style={styles.screenHeader}>
@@ -106,27 +121,26 @@ const RallyRegister = ({rally, registration = {}}) => {
                     >
                         <View style={styles.hostContainer}>
                             <Text style={[styles.hostText, styles.hostName]}>
-                                {rally.name}
+                                {ral.name}
                             </Text>
                             <Text style={[styles.hostText, styles.hostAddress]}>
-                                {rally.street}
+                                {ral.street}
                             </Text>
                             <Text style={[styles.hostText, styles.hostAddress]}>
-                                {rally.city}, {rally.stateProv}{' '}
-                                {rally.postalCode}
+                                {ral.city}, {ral.stateProv} {ral.postalCode}
                             </Text>
                             <View style={styles.logisticsContainer}>
                                 <View style={styles.dateContainer}>
                                     <Text style={styles.dateValues}>
                                         {dateNumsToLongDayLongMondayDay(
-                                            rally.eventDate
+                                            ral.eventDate
                                         )}
                                     </Text>
                                 </View>
                                 <View style={styles.timeContainer}>
                                     <Text style={styles.timeValues}>
-                                        {dateNumToDisplayTime(rally.startTime)}{' '}
-                                        - {dateNumToDisplayTime(rally.endTime)}
+                                        {dateNumToDisplayTime(ral.startTime)} -{' '}
+                                        {dateNumToDisplayTime(ral.endTime)}
                                     </Text>
                                 </View>
                             </View>
@@ -147,19 +161,19 @@ const RallyRegister = ({rally, registration = {}}) => {
                                 </View>
                             </Surface>
 
-                            {rally?.meal?.startTime ? (
+                            {ral?.meal?.startTime ? (
                                 <View style={styles.registrationCountContainer}>
                                     <Text style={styles.regisrationCountText}>
                                         There is a meal offered at the event.
                                     </Text>
-                                    {rally?.meal?.cost ? (
+                                    {ral?.meal?.cost ? (
                                         <View style={styles.mealTextWrapper}>
                                             <Text style={styles.mealCostText}>
-                                                Cost: {rally.meal.cost}
+                                                Cost: {ral.meal.cost}
                                             </Text>
                                             <Text style={styles.mealStartTime}>
                                                 Meal starts at{' '}
-                                                {rally.meal.startTime}
+                                                {ral.meal.startTime}
                                             </Text>
                                             <Text style={styles.mealCostText}>
                                                 Will any of your group like to
@@ -187,7 +201,7 @@ const RallyRegister = ({rally, registration = {}}) => {
                                     marginRight: 40,
                                     marginBottom: 0,
                                 }}
-                                title='REGISTER'
+                                title={reg.uid ? 'UPDATE' : 'REGISTER'}
                                 onPress={handleRegistrationRequest}
                             />
                         </View>
