@@ -112,7 +112,15 @@ export default function MainScreen() {
             axios
                 .post(api2use, body, config)
                 .then((response) => {
-                    dispatch(loadRegistrations(response.data.body));
+                    let respData = response.data.body;
+                    if (respData) {
+                        function asc_sort(a, b) {
+                            return b.eventDate - a.eventDate;
+                        }
+                        let newRegList = respData.sort(asc_sort);
+
+                        dispatch(loadRegistrations(newRegList));
+                    }
                 })
                 .catch((err) => {
                     console.log('MS-120: error:', err);

@@ -44,10 +44,7 @@ export const usersSlice = createSlice({
             allRegs.push(action.payload);
             // ascending sort
             function asc_sort(a, b) {
-                return (
-                    new Date(a.eventDate).getTime() -
-                    new Date(b.eventDate).getTime()
-                );
+                return b.eventDate - a.eventDate;
             }
             let newBigger = allRegs.sort(asc_sort);
             state.registrations = newBigger;
@@ -62,6 +59,7 @@ export const usersSlice = createSlice({
         },
         logout: (state) => {
             state.currentUser = {};
+            state.registrations = [];
             return state;
         },
     },

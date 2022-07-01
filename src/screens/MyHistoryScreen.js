@@ -21,45 +21,46 @@ import { dateNumToDateDash, isDateDashBeforeToday } from '../utils/date';
 const MyHistoryScreen = () => {
     const navigation = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
+    const registrations = useSelector((state) => state.users.registrations);
     const [myRegistrations, setMyRegistrations] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    useEffect(() => {
-        setIsLoading(true);
-        if (process.env.ENV === 'DEV') {
-            const registrations = REGISTRATIONS_TTLEAD.body;
-            setMyRegistrations(registrations);
-        } else {
-            const config = {
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
-            };
-            let obj = {
-                operation: 'getAllUserRegistrations',
-                payload: {
-                    rid: user.uid,
-                },
-            };
-            let body = JSON.stringify(obj);
+    // useEffect(() => {
+    //     setIsLoading(true);
+    //     if (process.env.ENV === 'DEV') {
+    //         const registrations = REGISTRATIONS_TTLEAD.body;
+    //         setMyRegistrations(registrations);
+    //     } else {
+    //         const config = {
+    //             headers: {
+    //                 'Content-type': 'application/json; charset=UTF-8',
+    //             },
+    //         };
+    //         let obj = {
+    //             operation: 'getAllUserRegistrations',
+    //             payload: {
+    //                 rid: user.uid,
+    //             },
+    //         };
+    //         let body = JSON.stringify(obj);
 
-            let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
-            //let dbRallies = await axios.post(api2use, body, config);
-            axios
-                .post(api2use, body, config)
-                .then((response) => {
-                    setMyRegistrations(response?.data?.body);
-                    setIsLoading(false);
-                })
-                .catch((err) => {
-                    console.log('MHS-40: error:', err);
-                    navigation.navigate('ErrorMsg', {
-                        id: 'MS-60',
-                        message:
-                            'Cannot connect to server. Please check internet connection and try again.',
-                    });
-                });
-        }
-    }, []);
+    //         let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
+    //         //let dbRallies = await axios.post(api2use, body, config);
+    //         axios
+    //             .post(api2use, body, config)
+    //             .then((response) => {
+    //                 setMyRegistrations(response?.data?.body);
+    //                 setIsLoading(false);
+    //             })
+    //             .catch((err) => {
+    //                 console.log('MHS-40: error:', err);
+    //                 navigation.navigate('ErrorMsg', {
+    //                     id: 'MS-60',
+    //                     message:
+    //                         'Cannot connect to server. Please check internet connection and try again.',
+    //                 });
+    //             });
+    //     }
+    // }, []);
     function regPressHandler(reg) {
         // printObject('MHS:64-->reg', reg);
         navigation.navigate('RallyRegister', {
@@ -80,11 +81,12 @@ const MyHistoryScreen = () => {
                             <View style={styles.entry}>
                                 <View style={styles.heading}>
                                     <Text style={styles.headerText}>
-                                        Your past registrations
+                                        Your Registrations
                                     </Text>
+                                    <Text>Tap to edit active events.</Text>
                                 </View>
-                                {myRegistrations ? (
-                                    myRegistrations.map((r) => {
+                                {registrations ? (
+                                    registrations.map((r) => {
                                         const enablePress =
                                             !isDateDashBeforeToday(
                                                 dateNumToDateDash(r.eventDate)
