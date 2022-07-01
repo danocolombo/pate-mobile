@@ -11,12 +11,15 @@ import { useNavigation } from '@react-navigation/native';
 
 import CardDate from '../ui/RallyCardDate';
 import { Colors } from '../../constants/colors';
+import { printObject } from '../../utils/helpers';
 
-function RallyItem({ uid, eventDate, name, city, stateProv }) {
+function RallyItem(rally) {
+    const { uid, eventDate, name, city, stateProv } = rally;
+    // printObject('RI:18', rally);
     const navigation = useNavigation();
     function rallyPressHandler() {
         navigation.navigate('RallyDetail', {
-            rallyId: uid,
+            rally: rally,
         });
     }
 

@@ -19,17 +19,19 @@ import {
     dateNumToDisplayTime,
 } from '../../utils/date';
 
-const RallyDetails = ({ rallyId }) => {
+const RallyDetails = (rallyIn) => {
+    // printObject('RD:23==>>>', rallyIn.rally);
+    const rally = rallyIn.rally;
     const navigation = useNavigation();
-    const dispatch = useDispatch();
-    let ral = useSelector((state) =>
-        state.rallies.allRallies.filter((r) => r.uid === rallyId)
-    );
-    let rally = ral[0];
+    // const dispatch = useDispatch();
+    // let ral = useSelector((state) =>
+    //     state.rallies.allRallies.filter((r) => r.uid === rally.rallyId)
+    // );
+    // let rally = ral[0];
     // printObject('rally', rally);
     const handleRegisterRequest = () => {
         navigation.navigate('RallyRegister', {
-            rallyId: rally.uid,
+            rally: rally,
         });
     };
     if (!rally) {

@@ -4,7 +4,6 @@ import { printObject } from '../../utils/helpers';
 import RallyItem from './RallyItem';
 
 function renderRallyItem(itemData) {
-    // console.log('itemData\n', itemData, '==============================');
     return <RallyItem {...itemData.item} />;
 }
 

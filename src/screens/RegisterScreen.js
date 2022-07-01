@@ -3,10 +3,10 @@ import React from 'react';
 import RallyRegister from '../components/rallies/RallyRegister';
 import { printObject } from '../utils/helpers';
 const RegisterScreen = (props) => {
-    let rallyId = props.route.params.rallyId;
+    let rally = props.route.params.rally;
     return (
         <>
-            <RallyRegister rallyId={rallyId} />
+            <RallyRegister rally={rally} />
         </>
     );
 };

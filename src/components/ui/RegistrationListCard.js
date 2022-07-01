@@ -10,7 +10,7 @@ import { printObject } from '../../utils/helpers';
 
 // function EventListCard({ date, locationName, city, stateProv }) {
 function RegListCard({ registration }) {
-    printObject('RLC:12 ', registration);
+    // printObject('RLC:12 ', registration);
 
     return (
         <>
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
         //borderWidth: 1,
         paddingVertical: 5,
         paddingHorizontal: 5,
+        marginVertical: 5,
         backgroundColor: Colors.secondary,
     },
 
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     dateWrapper: {
         borderWidth: 0,
         paddingHorizontal: 10,
-        borderRadius: 5,
+        borderRadius: 10,
         backgroundColor: Colors.secondary2,
         alignItems: 'center',
         justifyContent: 'center',

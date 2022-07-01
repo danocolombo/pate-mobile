@@ -5,6 +5,12 @@ export function getFormattedDate(date) {
 }
 export function dateNumToJSDate(dateNum) {
     // YYYYMMDD to JSDate
+    if (!dateNum) {
+        return null;
+    }
+    if (dateNum.length < 8) {
+        return null;
+    }
     const year = +dateNum.substring(0, 4);
     const month = +dateNum.substring(4, 6);
     const day = +dateNum.substring(6, 8);
@@ -13,6 +19,9 @@ export function dateNumToJSDate(dateNum) {
 }
 
 export function dateNumsToLongDayLongMondayDay(dateNum) {
+    if (!dateNum){
+        return null;
+    }
     // YYYYMMDD to long date
     const convDate = dateNumToJSDate(dateNum);
     const result = format(convDate, 'EEEE, LLLL do');
@@ -59,6 +68,7 @@ export function getToday() {
     return target;
 }
 export function dateNumToDisplayTime(numTime) {
+    if (!numTime){ return null}
     // 1330 or 13:30 to 1:30 PM
     let A = '';
     let B = '';
