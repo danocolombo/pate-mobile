@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -9,18 +9,31 @@ import { Colors } from '../../constants/colors';
 import { CONFIG, printObject } from '../../utils/helpers';
 import {
     dateNumsToLongDayLongMondayDay,
-    numTimeToDisplayTime,
+    dateNumToDisplayTime,
 } from '../../utils/date';
 import NumberInput from '../ui/NumberInput/NumberInput';
-const RallyRegister = ({ rallyId }) => {
+const RallyRegister = ({ rally = {}, registration = {} }) => {
+    let ral = rally;
+    let reg = registration;
+    if (!ral?.uid && reg?.eid) {
+        //need to get the rally from reg.eid
+        let rallyArray = useSelector((state) =>
+            state.rallies.allRallies.filter((r) => r.uid === reg.eid)
+        );
+        ral = rallyArray[0];
+    }
+    printObject('RR:25 -->rally', ral);
+    printObject('RR:26 -->registration', reg);
+    // const r = rally.rally;
     const navigation = useNavigation();
-    const [registrarCount, setRegistrar] = useState(0);
-    const [mealCount, setMealCount] = useState(0);
-    const user = useSelector((state) => state.users.currentUser);
-    let ral = useSelector((state) =>
-        state.rallies.allRallies.filter((r) => r.uid === rallyId)
+    const [registrarCount, setRegistrar] = useState(
+        reg?.attendeeCount ? reg?.attendeeCount : 0
     );
-    let rally = ral[0];
+    const [mealCount, setMealCount] = useState(
+        reg?.mealCount ? reg?.mealCount : 0
+    );
+    const user = useSelector((state) => state.users.currentUser);
+
     const handleRegistarCountChange = (e) => {
         setRegistrar(parseInt(e));
     };
@@ -28,159 +41,196 @@ const RallyRegister = ({ rallyId }) => {
         setMealCount(parseInt(e));
     };
     const handleRegistrationRequest = () => {
-        // define the registar info
-        let newReg = {
-            attendeeCount: registrarCount,
-            mealCount: mealCount,
-            location: {
-                name: rally?.name,
-                street: rally?.street,
-                city: rally?.city,
-                stateProv: rally?.stateProv,
-                postalCode: rally?.postalCode,
-            },
-            endTime: rally?.endTime,
-            eventDate: rally?.eventDate,
-            eid: rally?.uid,
-            church: {
-                name: rally?.name,
-                city: rally?.city,
-            },
-            rid: user?.uid,
-            startTime: rally?.startTime,
-            registrar: {
-                firstName: user?.firstName,
-                lastName: user?.lastName,
-                residence: {
-                    street: user?.street,
-                    city: user?.city,
-                    stateProv: user?.stateProv,
-                    postalCode: user?.postalCode,
+        //determine if update or new
+        if (reg?.uid) {
+            // update attendeeCount and mealCount values
+            reg.attendeeCount = registrarCount;
+            reg.mealCount = mealCount;
+            printObject('RR:49-->updated reg:', reg);
+            let obj = {
+                operation: 'updateRegistration',
+                payload: {
+                    Item: reg,
                 },
-                phone: user?.phone,
-                email: user?.email,
-            },
-        };
-        printObject('newReg', newReg);
-        let obj = {
-            operation: 'createRegistration',
-            payload: {
-                Item: newReg,
-            },
-        };
-        let body = JSON.stringify(obj);
+            };
+            let body = JSON.stringify(obj);
 
-        let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
-        axios
-            .post(api2use, body, CONFIG)
-            .then((response) => {
-                console.log('registion added to ddb');
-            })
-            .catch((err) => {
-                console.log('RR-77: error:', err);
-            });
-        navigation.navigate('Main', null);
+            let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
+            axios
+                .post(api2use, body, CONFIG)
+                .then((response) => {
+                    console.log('registion updated in ddb');
+                })
+                .catch((err) => {
+                    console.log('RR-65: error:', err);
+                });
+            navigation.navigate('Main', null);
+        } else {
+            // this is a new registration
+            let newReg = {
+                attendeeCount: registrarCount,
+                mealCount: mealCount,
+                location: {
+                    name: rally?.name,
+                    street: rally?.street,
+                    city: rally?.city,
+                    stateProv: rally?.stateProv,
+                    postalCode: rally?.postalCode,
+                },
+                endTime: rally?.endTime,
+                eventDate: rally?.eventDate,
+                eid: rally?.uid,
+                church: {
+                    name: rally?.name,
+                    city: rally?.city,
+                },
+                rid: user?.uid,
+                startTime: rally?.startTime,
+                registrar: {
+                    firstName: user?.firstName,
+                    lastName: user?.lastName,
+                    residence: {
+                        street: user?.street,
+                        city: user?.city,
+                        stateProv: user?.stateProv,
+                        postalCode: user?.postalCode,
+                    },
+                    phone: user?.phone,
+                    email: user?.email,
+                },
+            };
+            printObject('RR:82-->newReg', newReg);
+            let obj = {
+                operation: 'createRegistration',
+                payload: {
+                    Item: newReg,
+                },
+            };
+            let body = JSON.stringify(obj);
+
+            let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
+            axios
+                .post(api2use, body, CONFIG)
+                .then((response) => {
+                    console.log('registion added to ddb');
+                })
+                .catch((err) => {
+                    console.log('RR-77: error:', err);
+                });
+            navigation.navigate('Main', null);
+        }
     };
-    return (
-        <View style={styles.rootContainer}>
-            {/* <View style={styles.screenHeader}>
+
+    if (!rally) {
+        return (
+            <View style={styles.rootContainer}>
+                <ActivityIndicator size='large' />
+            </View>
+        );
+    } else {
+        return (
+            <View style={styles.rootContainer}>
+                {/* <View style={styles.screenHeader}>
                 <Text style={styles.screenHeaderText}>Rally Registration</Text>
             </View> */}
 
-            <View style={styles.registrationCardContainer}>
-                <Surface
-                    elevation={6}
-                    category='medium'
-                    style={styles.registrationCard}
-                >
-                    <View style={styles.hostContainer}>
-                        <Text style={[styles.hostText, styles.hostName]}>
-                            {rally.name}
-                        </Text>
-                        <Text style={[styles.hostText, styles.hostAddress]}>
-                            {rally.street}
-                        </Text>
-                        <Text style={[styles.hostText, styles.hostAddress]}>
-                            {rally.city}, {rally.stateProv} {rally.postalCode}
-                        </Text>
-                        <View style={styles.logisticsContainer}>
-                            <View style={styles.dateContainer}>
-                                <Text style={styles.dateValues}>
-                                    {dateNumsToLongDayLongMondayDay(
-                                        rally.eventDate
-                                    )}
-                                </Text>
-                            </View>
-                            <View style={styles.timeContainer}>
-                                <Text style={styles.timeValues}>
-                                    {numTimeToDisplayTime(rally.startTime)} -{' '}
-                                    {numTimeToDisplayTime(rally.endTime)}
-                                </Text>
-                            </View>
-                        </View>
-
-                        <Surface>
-                            <Text style={styles.regisrationCountText}>
-                                How many will be attending with you?
+                <View style={styles.registrationCardContainer}>
+                    <Surface
+                        elevation={6}
+                        category='medium'
+                        style={styles.registrationCard}
+                    >
+                        <View style={styles.hostContainer}>
+                            <Text style={[styles.hostText, styles.hostName]}>
+                                {ral.name}
                             </Text>
-                            <View
-                                style={styles.registrationCountNumberContainer}
-                            >
-                                <NumberInput
-                                    value={registrarCount}
-                                    onAction={handleRegistarCountChange}
-                                />
+                            <Text style={[styles.hostText, styles.hostAddress]}>
+                                {ral.street}
+                            </Text>
+                            <Text style={[styles.hostText, styles.hostAddress]}>
+                                {ral.city}, {ral.stateProv} {ral.postalCode}
+                            </Text>
+                            <View style={styles.logisticsContainer}>
+                                <View style={styles.dateContainer}>
+                                    <Text style={styles.dateValues}>
+                                        {dateNumsToLongDayLongMondayDay(
+                                            ral.eventDate
+                                        )}
+                                    </Text>
+                                </View>
+                                <View style={styles.timeContainer}>
+                                    <Text style={styles.timeValues}>
+                                        {dateNumToDisplayTime(ral.startTime)} -{' '}
+                                        {dateNumToDisplayTime(ral.endTime)}
+                                    </Text>
+                                </View>
                             </View>
-                        </Surface>
 
-                        {rally?.meal?.startTime ? (
-                            <View style={styles.registrationCountContainer}>
+                            <Surface>
                                 <Text style={styles.regisrationCountText}>
-                                    There is a meal offered at the event.
+                                    How many will be attending with you?
                                 </Text>
-                                {rally?.meal?.cost ? (
-                                    <View style={styles.mealTextWrapper}>
-                                        <Text style={styles.mealCostText}>
-                                            Cost: {rally.meal.cost}
-                                        </Text>
-                                        <Text style={styles.mealStartTime}>
-                                            Meal starts at{' '}
-                                            {rally.meal.startTime}
-                                        </Text>
-                                        <Text style={styles.mealCostText}>
-                                            Will any of your group like to
-                                            attend?
-                                        </Text>
-                                    </View>
-                                ) : null}
                                 <View
                                     style={
                                         styles.registrationCountNumberContainer
                                     }
                                 >
                                     <NumberInput
-                                        value={mealCount}
-                                        onAction={handleMealCountChange}
+                                        value={registrarCount}
+                                        onAction={handleRegistarCountChange}
                                     />
                                 </View>
-                            </View>
-                        ) : null}
-                        <Button
-                            // icon={<Icon name='code' color='#ffffff' />}
-                            buttonStyle={{
-                                borderRadius: 5,
-                                marginLeft: 40,
-                                marginRight: 40,
-                                marginBottom: 0,
-                            }}
-                            title='REGISTER'
-                            onPress={handleRegistrationRequest}
-                        />
-                    </View>
-                </Surface>
+                            </Surface>
+
+                            {ral?.meal?.startTime ? (
+                                <View style={styles.registrationCountContainer}>
+                                    <Text style={styles.regisrationCountText}>
+                                        There is a meal offered at the event.
+                                    </Text>
+                                    {ral?.meal?.cost ? (
+                                        <View style={styles.mealTextWrapper}>
+                                            <Text style={styles.mealCostText}>
+                                                Cost: {ral.meal.cost}
+                                            </Text>
+                                            <Text style={styles.mealStartTime}>
+                                                Meal starts at{' '}
+                                                {ral.meal.startTime}
+                                            </Text>
+                                            <Text style={styles.mealCostText}>
+                                                Will any of your group like to
+                                                attend?
+                                            </Text>
+                                        </View>
+                                    ) : null}
+                                    <View
+                                        style={
+                                            styles.registrationCountNumberContainer
+                                        }
+                                    >
+                                        <NumberInput
+                                            value={mealCount}
+                                            onAction={handleMealCountChange}
+                                        />
+                                    </View>
+                                </View>
+                            ) : null}
+                            <Button
+                                // icon={<Icon name='code' color='#ffffff' />}
+                                buttonStyle={{
+                                    borderRadius: 5,
+                                    marginLeft: 40,
+                                    marginRight: 40,
+                                    marginBottom: 0,
+                                }}
+                                title={reg.uid ? 'UPDATE' : 'REGISTER'}
+                                onPress={handleRegistrationRequest}
+                            />
+                        </View>
+                    </Surface>
+                </View>
             </View>
-        </View>
-    );
+        );
+    }
 };
 
 export default RallyRegister;

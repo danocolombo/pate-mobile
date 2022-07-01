@@ -1,22 +1,30 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
     ScrollView,
     StyleSheet,
     Text,
     View,
     ImageBackground,
+    Pressable,
+    ActivityIndicator,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { REGISTRATIONS_TTLEAD } from '../../data/getRegistrationsForUser_ttrep';
 import RegListCard from '../components/ui/RegistrationListCard';
 import { useSelector } from 'react-redux';
 
 import { printObject } from '../utils/helpers';
+import { dateNumToDateDash, isDateDashBeforeToday } from '../utils/date';
 
 const MyHistoryScreen = () => {
+    const navigation = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
     const [myRegistrations, setMyRegistrations] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
+        setIsLoading(true);
         if (process.env.ENV === 'DEV') {
             const registrations = REGISTRATIONS_TTLEAD.body;
             setMyRegistrations(registrations);
@@ -39,7 +47,7 @@ const MyHistoryScreen = () => {
             axios
                 .post(api2use, body, config)
                 .then((response) => {
-                    setMyRegistrations(response.body);
+                    setMyRegistrations(response?.data?.body);
                     setIsLoading(false);
                 })
                 .catch((err) => {
@@ -52,41 +60,80 @@ const MyHistoryScreen = () => {
                 });
         }
     }, []);
-
-    return (
-        <ImageBackground
-            source={require('../components/images/background.png')}
-            style={styles.bgImageContainer}
-        >
-            <View style={styles.rootContainer}>
-                <Surface style={styles.surfaceContainer}>
-                    <ScrollView>
-                        <View style={styles.entry}>
-                            <View style={styles.heading}>
-                                <Text style={styles.headerText}>
-                                    Your past registrations
-                                </Text>
-                            </View>
-                            {myRegistrations ? (
-                                myRegistrations.map((r) => (
-                                    <View key={r.uid}>
-                                        <RegListCard
-                                            key={r.uid}
-                                            registration={r}
-                                        />
-                                    </View>
-                                ))
-                            ) : (
-                                <View>
-                                    <Text>No History Recorded</Text>
+    function regPressHandler(reg) {
+        // printObject('MHS:64-->reg', reg);
+        navigation.navigate('RallyRegister', {
+            registration: reg,
+        });
+    }
+    if (isLoading) {
+        return <ActivityIndicator />;
+    } else {
+        return (
+            <ImageBackground
+                source={require('../components/images/background.png')}
+                style={styles.bgImageContainer}
+            >
+                <View style={styles.rootContainer}>
+                    <Surface style={styles.surfaceContainer}>
+                        <ScrollView>
+                            <View style={styles.entry}>
+                                <View style={styles.heading}>
+                                    <Text style={styles.headerText}>
+                                        Your past registrations
+                                    </Text>
                                 </View>
-                            )}
-                        </View>
-                    </ScrollView>
-                </Surface>
-            </View>
-        </ImageBackground>
-    );
+                                {myRegistrations ? (
+                                    myRegistrations.map((r) => {
+                                        const enablePress =
+                                            !isDateDashBeforeToday(
+                                                dateNumToDateDash(r.eventDate)
+                                            );
+
+                                        if (enablePress) {
+                                            return (
+                                                <>
+                                                    <Pressable
+                                                        onPress={() =>
+                                                            regPressHandler(r)
+                                                        }
+                                                        style={({ pressed }) =>
+                                                            pressed &&
+                                                            styles.pressed
+                                                        }
+                                                    >
+                                                        <View>
+                                                            <RegListCard
+                                                                key={r.uid}
+                                                                registration={r}
+                                                            />
+                                                        </View>
+                                                    </Pressable>
+                                                </>
+                                            );
+                                        } else {
+                                            return (
+                                                <View>
+                                                    <RegListCard
+                                                        key={r.uid}
+                                                        registration={r}
+                                                    />
+                                                </View>
+                                            );
+                                        }
+                                    })
+                                ) : (
+                                    <View>
+                                        <Text>No History Recorded</Text>
+                                    </View>
+                                )}
+                            </View>
+                        </ScrollView>
+                    </Surface>
+                </View>
+            </ImageBackground>
+        );
+    }
 };
 
 export default MyHistoryScreen;

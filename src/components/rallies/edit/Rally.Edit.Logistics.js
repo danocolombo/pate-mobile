@@ -34,14 +34,20 @@ export default function RallyLogisticsForm({ rallyId }) {
         state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
-    const [date, setDate] = useState(pateDateToSpinner(rally.eventDate));
+    const [date, setDate] = useState(
+        rally?.eventDate ? pateDateToSpinner(rally?.eventDate) : ''
+    );
     // const [date, setDate] = useState(new Date(Date.now()));
     const [startTime, setStartTime] = useState(
-        pateTimeToSpinner(rally.eventDate, rally.startTime)
+        rally?.startTime
+            ? pateTimeToSpinner(rally?.eventDate, rally?.startTime)
+            : ''
     );
     // const [startTime, setStartTime] = useState(new Date(Date.now()));
     const [endTime, setEndTime] = useState(
-        pateTimeToSpinner(rally.eventDate, rally.endTime)
+        rally?.endTime
+            ? pateTimeToSpinner(rally?.eventDate, rally?.endTime)
+            : ''
     );
     // const [endTime, setEndTime] = useState(new Date(Date.now()));
     const handleNext = () => {

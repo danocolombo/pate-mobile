@@ -66,7 +66,7 @@ const SignInScreen = () => {
                             // return;
                         });
                 } else {
-                    console.log('the user is good...');
+                    // console.log('the user is good...');
                 }
             })
             .catch((e) => {
@@ -112,9 +112,7 @@ const SignInScreen = () => {
         await Auth.currentSession().then((data) => {
             currentSession = data;
         });
-        console.log('userInfo:', currentUserInfo);
-        console.log('currentSession', currentSession);
-        console.log('STOP RIGHT HERE');
+
         //   WAIT
         let i = currentSession?.idToken?.payload?.sub;
         let u = currentSession?.idToken?.payload['cognito:username'];
@@ -129,10 +127,10 @@ const SignInScreen = () => {
         theUser.jwtToken = j;
         theUser.groups = g;
 
-        console.log('theUser: ', theUser);
+        // console.log('theUser: ', theUser);
         let fullUserInfo = {};
         await getProfile(theUser.uid).then((profileResponse) => {
-            console.log('profileResponse', profileResponse);
+            // console.log('profileResponse', profileResponse);
             switch (profileResponse.statusCode) {
                 case 200:
                     // profile found
@@ -146,7 +144,7 @@ const SignInScreen = () => {
                     fullUserInfo.profile = false;
                 default:
                     // we should get the error code, message and error
-                    console.log('Error: ', profileResponse.statusCode);
+                    console.log('StatusCode: ', profileResponse.statusCode);
                     console.log('Message: ', profileResponse.message);
                     console.log('Error:', profileResponse.error);
                     // Alert.alert('Error getting the profile information');
