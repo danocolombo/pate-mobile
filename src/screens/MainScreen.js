@@ -20,6 +20,7 @@ import {
     loadUserRallies,
     loadRepRallies,
 } from '../features/rallies/ralliesSlice';
+import { loadRegistrations } from '../features/users/usersSlice';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 import NoEventsCard from '../components/ui/NoEventsCard';
 import RalliesOutput from '../components/rallies/RalliesOutput';
@@ -86,7 +87,6 @@ export default function MainScreen() {
                         (r) => r.approved === true && r.eventDate >= '20220616'
                     );
                     setApprovedRallies(publicRallies);
-                    setIsLoading(false);
                 })
                 .catch((err) => {
                     console.log('MS-60: error:', err);
@@ -96,6 +96,34 @@ export default function MainScreen() {
                             'Cannot connect to server. Please check internet connection and try again.',
                     });
                 });
+            //================================================
+            // now get all the registrations for the user
+            //================================================
+            obj = {
+                operation: 'getAllUserRegistrations',
+                payload: {
+                    rid: user.uid,
+                },
+            };
+            body = JSON.stringify(obj);
+
+            api2use = process.env.AWS_API_ENDPOINT + '/registrations';
+            //let dbRallies = await axios.post(api2use, body, config);
+            axios
+                .post(api2use, body, config)
+                .then((response) => {
+                    dispatch(loadRegistrations(response.data.body));
+                })
+                .catch((err) => {
+                    console.log('MS-120: error:', err);
+                    navigation.navigate('ErrorMsg', {
+                        id: 'MS-60',
+                        message:
+                            'Cannot connect to server. Please check internet connection and try again.',
+                    });
+                });
+
+            setIsLoading(false);
         }
     }, []);
     console.log('ENV:', process.env.ENV);
