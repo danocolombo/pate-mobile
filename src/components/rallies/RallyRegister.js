@@ -43,7 +43,28 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
     const handleRegistrationRequest = () => {
         //determine if update or new
         if (reg?.uid) {
-            // this is update to exising registration
+            // update attendeeCount and mealCount values
+            reg.attendeeCount = registrarCount;
+            reg.mealCount = mealCount;
+            printObject('RR:49-->updated reg:', reg);
+            let obj = {
+                operation: 'updateRegistration',
+                payload: {
+                    Item: reg,
+                },
+            };
+            let body = JSON.stringify(obj);
+
+            let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
+            axios
+                .post(api2use, body, CONFIG)
+                .then((response) => {
+                    console.log('registion updated in ddb');
+                })
+                .catch((err) => {
+                    console.log('RR-65: error:', err);
+                });
+            navigation.navigate('Main', null);
         } else {
             // this is a new registration
             let newReg = {
@@ -78,7 +99,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                     email: user?.email,
                 },
             };
-            printObject('newReg', newReg);
+            printObject('RR:82-->newReg', newReg);
             let obj = {
                 operation: 'createRegistration',
                 payload: {
