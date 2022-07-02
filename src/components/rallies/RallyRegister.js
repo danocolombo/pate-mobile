@@ -238,6 +238,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                                 }}
                                 title={reg.uid ? 'UPDATE' : 'REGISTER'}
                                 onPress={handleRegistrationRequest}
+                                disabled={registrarCount < 1}
                             />
                         </View>
                     </Surface>
