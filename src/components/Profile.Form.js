@@ -171,14 +171,27 @@ export default function ProfileForm() {
                             >
                                 {(formikProps) => (
                                     <>
-                                        <View style={styles.formHeader}>
+                                        {/* <View style={styles.formHeader}>
                                             <Headline>
                                                 Your Profile Information
                                             </Headline>
-                                        </View>
+                                        </View> */}
                                         <Surface style={styles.personalSurface}>
                                             <View style={styles.inputContainer}>
                                                 <View>
+                                                    <View
+                                                        style={
+                                                            styles.labelContainer
+                                                        }
+                                                    >
+                                                        <Text
+                                                            style={
+                                                                styles.labelText
+                                                            }
+                                                        >
+                                                            First Name
+                                                        </Text>
+                                                    </View>
                                                     <TextInput
                                                         style={styles.input}
                                                         placeholder='First Name'
@@ -210,6 +223,19 @@ export default function ProfileForm() {
                                                                     .firstName}
                                                         </Text>
                                                     ) : null}
+                                                    <View
+                                                        style={
+                                                            styles.labelContainer
+                                                        }
+                                                    >
+                                                        <Text
+                                                            style={
+                                                                styles.labelText
+                                                            }
+                                                        >
+                                                            Last Name
+                                                        </Text>
+                                                    </View>
                                                     <TextInput
                                                         style={styles.input}
                                                         placeholder='Last Name'
@@ -241,6 +267,19 @@ export default function ProfileForm() {
                                                                     .lastName}
                                                         </Text>
                                                     ) : null}
+                                                    <View
+                                                        style={
+                                                            styles.labelContainer
+                                                        }
+                                                    >
+                                                        <Text
+                                                            style={
+                                                                styles.labelText
+                                                            }
+                                                        >
+                                                            Email
+                                                        </Text>
+                                                    </View>
                                                     <TextInput
                                                         style={styles.input}
                                                         placeholder='Email'
@@ -273,6 +312,19 @@ export default function ProfileForm() {
                                                     ) : null}
                                                     <View
                                                         style={
+                                                            styles.labelContainer
+                                                        }
+                                                    >
+                                                        <Text
+                                                            style={
+                                                                styles.labelText
+                                                            }
+                                                        >
+                                                            Phone
+                                                        </Text>
+                                                    </View>
+                                                    <View
+                                                        style={
                                                             showPhoneError
                                                                 ? styles.phoneWrapperError
                                                                 : styles.phoneWrapper
@@ -301,7 +353,19 @@ export default function ProfileForm() {
                                                             </Text>
                                                         ) : null}
                                                     </View>
-
+                                                    <View
+                                                        style={
+                                                            styles.labelContainer
+                                                        }
+                                                    >
+                                                        <Text
+                                                            style={
+                                                                styles.labelText
+                                                            }
+                                                        >
+                                                            Address
+                                                        </Text>
+                                                    </View>
                                                     <TextInput
                                                         style={styles.input}
                                                         placeholder='Street'
@@ -332,6 +396,19 @@ export default function ProfileForm() {
                                                                     .street}
                                                         </Text>
                                                     ) : null}
+                                                    <View
+                                                        style={
+                                                            styles.labelContainer
+                                                        }
+                                                    >
+                                                        <Text
+                                                            style={
+                                                                styles.labelText
+                                                            }
+                                                        >
+                                                            City
+                                                        </Text>
+                                                    </View>
                                                     <TextInput
                                                         style={styles.input}
                                                         placeholder='City'
@@ -381,6 +458,19 @@ export default function ProfileForm() {
                                                                         styles.stateProvInputContainer
                                                                     }
                                                                 >
+                                                                    <View
+                                                                        style={
+                                                                            styles.labelContainer
+                                                                        }
+                                                                    >
+                                                                        <Text
+                                                                            style={
+                                                                                styles.labelText
+                                                                            }
+                                                                        >
+                                                                            State
+                                                                        </Text>
+                                                                    </View>
                                                                     <TextInput
                                                                         style={[
                                                                             styles.input,
@@ -436,6 +526,20 @@ export default function ProfileForm() {
                                                                         styles.postalCodeInputContainer
                                                                     }
                                                                 >
+                                                                    <View
+                                                                        style={
+                                                                            styles.labelContainer
+                                                                        }
+                                                                    >
+                                                                        <Text
+                                                                            style={
+                                                                                styles.labelText
+                                                                            }
+                                                                        >
+                                                                            Postal
+                                                                            Code
+                                                                        </Text>
+                                                                    </View>
                                                                     <TextInput
                                                                         style={[
                                                                             styles.input,
@@ -502,6 +606,17 @@ export default function ProfileForm() {
                                                         Church Affiliation
                                                     </Text>
                                                 </View>
+                                                <View
+                                                    style={
+                                                        styles.labelContainer
+                                                    }
+                                                >
+                                                    <Text
+                                                        style={styles.labelText}
+                                                    >
+                                                        Church Name
+                                                    </Text>
+                                                </View>
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Church Name'
@@ -529,6 +644,17 @@ export default function ProfileForm() {
                                                                 .churchName}
                                                     </Text>
                                                 ) : null}
+                                                <View
+                                                    style={
+                                                        styles.labelContainer
+                                                    }
+                                                >
+                                                    <Text
+                                                        style={styles.labelText}
+                                                    >
+                                                        City
+                                                    </Text>
+                                                </View>
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='City'
@@ -556,6 +682,17 @@ export default function ProfileForm() {
                                                                 .churchCity}
                                                     </Text>
                                                 ) : null}
+                                                <View
+                                                    style={
+                                                        styles.labelContainer
+                                                    }
+                                                >
+                                                    <Text
+                                                        style={styles.labelText}
+                                                    >
+                                                        State
+                                                    </Text>
+                                                </View>
                                                 <TextInput
                                                     style={[
                                                         styles.input,
@@ -623,16 +760,23 @@ const styles = StyleSheet.create({
         padding: 5,
         marginHorizontal: 20,
         paddingVertical: 10,
-        marginBottom: 20,
+        marginBottom: 10,
+        marginTop: 10,
     },
     inputContainer: {
         marginLeft: '10%',
     },
+    labelContainer: {
+        marginTop: 3,
+    },
+    labelText: {
+        fontSize: 14,
+    },
     input: {
         borderWidth: 1,
         borderColor: 'grey',
-        padding: 10,
-        marginTop: 5,
+        padding: 5,
+        marginTop: 2,
         fontSize: 18,
         borderRadius: 6,
         width: '90%',
