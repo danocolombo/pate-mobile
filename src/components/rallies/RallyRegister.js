@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Surface, Stack } from '@react-native-material/core';
 import { Button } from 'react-native-elements';
 import { Colors } from '../../constants/colors';
@@ -11,8 +11,10 @@ import {
     dateNumsToLongDayLongMondayDay,
     dateNumToDisplayTime,
 } from '../../utils/date';
+import { updateRegistration } from '../../features/users/usersSlice';
 import NumberInput from '../ui/NumberInput/NumberInput';
 const RallyRegister = ({ rally = {}, registration = {} }) => {
+    const dispatch = useDispatch();
     let ral = rally;
     let reg = registration;
     if (!ral?.uid && reg?.eid) {
@@ -44,13 +46,17 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         //determine if update or new
         if (reg?.uid) {
             // update attendeeCount and mealCount values
-            reg.attendeeCount = registrarCount;
-            reg.mealCount = mealCount;
-            printObject('RR:49-->updated reg:', reg);
+
+            let updateReg = {
+                ...reg,
+                ...{ attendeeCount: registrarCount, mealCount: mealCount },
+            };
+            printObject('RR:49-->updateReg:', updateReg);
+            dispatch(updateRegistration(updateReg));
             let obj = {
                 operation: 'updateRegistration',
                 payload: {
-                    Item: reg,
+                    Item: updateReg,
                 },
             };
             let body = JSON.stringify(obj);

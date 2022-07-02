@@ -33,7 +33,7 @@ export const usersSlice = createSlice({
             });
 
             function asc_sort(a, b) {
-                return a.eventDate - b.eventDate;
+                return b.eventDate - a.eventDate;
             }
             let newBigger = newRegList.sort(asc_sort);
             state.registrations = newBigger;
@@ -72,6 +72,7 @@ export const {
     saveCurrentUser,
     loadRegistrations,
     deleteRegistration,
+    updateRegistration,
     addNewRegistration,
     logout,
 } = usersSlice.actions;
