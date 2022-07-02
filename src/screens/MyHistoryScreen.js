@@ -13,12 +13,14 @@ import { useNavigation } from '@react-navigation/native';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { REGISTRATIONS_TTLEAD } from '../../data/getRegistrationsForUser_ttrep';
 import RegListCard from '../components/ui/RegistrationListCard';
-import { useSelector } from 'react-redux';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteRegistration } from '../providers/registrations';
+import { deleteRegistration as deleteReduxRegistration } from '../features/users/usersSlice';
 import { printObject } from '../utils/helpers';
 import { dateNumToDateDash, isDateDashBeforeToday } from '../utils/date';
 
 const MyHistoryScreen = () => {
+    const dispatch = useDispatch();
     const navigation = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
     const registrations = useSelector((state) => state.users.registrations);
@@ -67,6 +69,12 @@ const MyHistoryScreen = () => {
             registration: reg,
         });
     }
+    async function onDeletePress(reg) {
+        console.log('DELETING ', reg.uid);
+        dispatch(deleteReduxRegistration(reg));
+        const results = await deleteRegistration(reg);
+        //deleteRegistration
+    }
     if (isLoading) {
         return <ActivityIndicator />;
     } else {
@@ -108,6 +116,9 @@ const MyHistoryScreen = () => {
                                                             <RegListCard
                                                                 key={r.uid}
                                                                 registration={r}
+                                                                onDeletePress={
+                                                                    onDeletePress
+                                                                }
                                                             />
                                                         </View>
                                                     </Pressable>

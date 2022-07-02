@@ -11,7 +11,10 @@ import {
     dateNumsToLongDayLongMondayDay,
     dateNumToDisplayTime,
 } from '../../utils/date';
-import { updateRegistration } from '../../features/users/usersSlice';
+import {
+    updateRegistration,
+    addNewRegistration,
+} from '../../features/users/usersSlice';
 import NumberInput from '../ui/NumberInput/NumberInput';
 const RallyRegister = ({ rally = {}, registration = {} }) => {
     const dispatch = useDispatch();
@@ -106,6 +109,11 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 },
             };
             printObject('RR:82-->newReg', newReg);
+            //=====================================
+            // insert reg into redux userSlice
+            //=====================================
+            dispatch(addNewRegistration(newReg));
+
             let obj = {
                 operation: 'createRegistration',
                 payload: {

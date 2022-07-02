@@ -25,7 +25,7 @@ import LoadingOverlay from '../components/ui/LoadingOverlay';
 import NoEventsCard from '../components/ui/NoEventsCard';
 import RalliesOutput from '../components/rallies/RalliesOutput';
 import { UserInterfaceIdiom } from 'expo-constants';
-import { printObject } from '../utils/helpers';
+import { getToday, printObject } from '../utils/helpers';
 
 import { StylesContext } from '@material-ui/styles';
 
@@ -52,9 +52,9 @@ export default function MainScreen() {
             loadStateRallies(response).then(() => {
                 console.log('rallies loaded');
             });
-
+            const tDay = getToday();
             const publicRallies = fileRallies.filter(
-                (r) => r.approved === true && r.eventDate >= '20220616'
+                (r) => r.approved === true && r.eventDate >= tDay
             );
             setApprovedRallies(publicRallies);
             setIsLoading(false);
