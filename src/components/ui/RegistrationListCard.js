@@ -7,9 +7,9 @@ import { useSelector } from 'react-redux';
 
 import CardDate from './RallyCardDateStack';
 import { printObject } from '../../utils/helpers';
-
+import { isDateDashBeforeToday, dateNumToDateDash } from '../../utils/date';
 // function EventListCard({ date, locationName, city, stateProv }) {
-function RegListCard({ registration }) {
+function RegListCard({ registration, onDeletePress }) {
     // printObject('RLC:12 ', registration);
 
     return (
@@ -54,6 +54,18 @@ function RegListCard({ registration }) {
                                 Meal: {registration.mealCount}
                             </Text>
                         </View>
+                        {!isDateDashBeforeToday(
+                            dateNumToDateDash(registration.eventDate)
+                        ) ? (
+                            <View style={styles.deleteIcon}>
+                                <Ionicons
+                                    name='trash'
+                                    color={Colors.gray10}
+                                    size={20}
+                                    onPress={() => onDeletePress(registration)}
+                                />
+                            </View>
+                        ) : null}
                     </View>
                 </View>
             </View>
@@ -129,5 +141,9 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         color: 'white',
         fontSize: 16,
+    },
+    deleteIcon: {
+        flex: 1,
+        alignItems: 'flex-end',
     },
 });
