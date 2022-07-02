@@ -34,6 +34,13 @@ const RallyDetails = (rallyIn) => {
             rally: rally,
         });
     };
+    //-----------------------------------
+    // get long date and break apart to display better
+    const lDate = dateNumsToLongDayLongMondayDay(rally.eventDate);
+    //find the comma
+    const cma = lDate.indexOf(',');
+    const dow = lDate.substring(0, cma);
+    const calDate = lDate.substring(cma + 2);
     if (!rally) {
         return <LoadingOverly />;
     } else {
@@ -53,10 +60,9 @@ const RallyDetails = (rallyIn) => {
                                 </View>
                                 <Card.Divider />
                                 <View style={styles.dateContainer}>
+                                    <Text style={styles.dateValues}>{dow}</Text>
                                     <Text style={styles.dateValues}>
-                                        {dateNumsToLongDayLongMondayDay(
-                                            rally.eventDate
-                                        )}
+                                        {calDate}
                                     </Text>
                                 </View>
                                 <View style={styles.timeContainer}>
@@ -157,6 +163,7 @@ const styles = StyleSheet.create({
     notesContainer: { margin: 0, alignItems: 'center' },
     notesText: {
         color: 'black',
+        marginVertical: 10,
     },
     location: {
         color: Colors.primary,
