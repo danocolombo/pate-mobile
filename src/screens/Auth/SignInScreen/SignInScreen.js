@@ -177,8 +177,8 @@ const SignInScreen = () => {
                     rules={{
                         required: 'Username is required',
                         minLength: {
-                            value: 6,
-                            message: 'Username minimum length is 6',
+                            value: 4,
+                            message: 'Username minimum length is 4',
                         },
                     }}
                     placeholder='Username'
