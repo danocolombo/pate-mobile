@@ -135,47 +135,59 @@ const RallyDetails = ({ rallyId }) => {
                             </Text>
                         </View>
                         <View>
-                            <Text>
+                            <Text style={[styles.modalText, { marginTop: 20 }]}>
                                 {regInquiry?.registrar?.firstName}{' '}
                                 {regInquiry?.registrar?.lastName}
                             </Text>
                         </View>
                         <View>
-                            <Text>
+                            <Text style={styles.modalText}>
+                                {regInquiry?.registrar?.residence?.street}
+                            </Text>
+                        </View>
+                        <View>
+                            <Text style={styles.modalText}>
                                 {regInquiry?.registrar?.residence?.city}
                             </Text>
                         </View>
                         <View>
-                            <Text>
-                                {regInquiry?.registrar?.residence?.stateProv},
+                            <Text style={styles.modalText}>
+                                {regInquiry?.registrar?.residence?.stateProv}
+                                {', '}
                                 {regInquiry?.registrar?.residence?.postalCode}
                             </Text>
                         </View>
-                        {regInquiry?.registar?.phone ? (
-                            <View>
-                                <Text>
-                                    {transformPatePhone(
-                                        regInquiry?.registrar?.phone
-                                    )}
-                                </Text>
-                            </View>
-                        ) : null}
+
                         <View>
-                            <Text>{regInquiry?.registrar?.email}</Text>
+                            <Text style={[styles.modalText, { marginTop: 10 }]}>
+                                {transformPatePhone(
+                                    regInquiry?.registrar?.phone
+                                )}
+                            </Text>
                         </View>
-                        {regInquiry?.registar?.email ? (
-                            <View>
-                                <Text>
-                                    Registrations: {regInquiry?.attendeeCount}
-                                </Text>
-                            </View>
-                        ) : null}
+
                         <View>
-                            <Text>Meal Count: {regInquiry?.mealCount}</Text>
+                            <Text style={styles.modalText}>
+                                {regInquiry?.registrar?.email}
+                            </Text>
+                        </View>
+
+                        <View>
+                            <Text style={[styles.modalText, { marginTop: 20 }]}>
+                                Registrations: {regInquiry?.attendeeCount}
+                            </Text>
+                        </View>
+
+                        <View>
+                            <Text style={styles.modalText}>
+                                Meal Count: {regInquiry?.mealCount}
+                            </Text>
                         </View>
                         <View>
-                            <Text>{regInquiry?.church?.name}</Text>
-                            <Text>
+                            <Text style={[styles.modalText, { marginTop: 20 }]}>
+                                {regInquiry?.church?.name}
+                            </Text>
+                            <Text style={styles.modalText}>
                                 {regInquiry?.church?.city},{' '}
                                 {regInquiry?.church?.stateProv}
                             </Text>
@@ -413,6 +425,9 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
     },
+    modalText: {
+        fontSize: 24,
+    },
     radioButtonContainer: {
         marginTop: 20,
         marginHorizontal: 50,
@@ -427,6 +442,7 @@ const styles = StyleSheet.create({
     },
     modalButtonWrapper: {
         marginHorizontal: 10,
+        marginVertical: 25,
     },
     dropdown1BtnStyle: {
         width: '80%',

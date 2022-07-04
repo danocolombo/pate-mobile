@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Surface, Stack } from '@react-native-material/core';
 import { Button } from 'react-native-elements';
 import { Colors } from '../../constants/colors';
-import { CONFIG, printObject } from '../../utils/helpers';
+import { CONFIG, printObject, createPatePhone } from '../../utils/helpers';
 import {
     dateNumsToLongDayLongMondayDay,
     dateNumToDisplayTime,
@@ -90,8 +90,9 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 eventDate: rally?.eventDate,
                 eid: rally?.uid,
                 church: {
-                    name: rally?.name,
-                    city: rally?.city,
+                    name: user?.church?.name,
+                    city: user?.church?.city,
+                    stateProv: user?.church?.stateProv,
                 },
                 rid: user?.uid,
                 startTime: rally?.startTime,
@@ -99,12 +100,12 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                     firstName: user?.firstName,
                     lastName: user?.lastName,
                     residence: {
-                        street: user?.street,
-                        city: user?.city,
-                        stateProv: user?.stateProv,
-                        postalCode: user?.postalCode,
+                        street: user?.residence?.street,
+                        city: user?.residence?.city,
+                        stateProv: user?.residence?.stateProv,
+                        postalCode: user?.residence?.postalCode,
                     },
-                    phone: user?.phone,
+                    phone: createPatePhone(user?.phone),
                     email: user?.email,
                 },
             };

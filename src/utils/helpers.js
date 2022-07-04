@@ -121,6 +121,9 @@ export function createPatePhone(inputPhone) {
     // } else {
     //     return null;
     // }
+    if (inputPhone.length < 1) {
+        return null;
+    }
     let p1 = inputPhone.substring(1, 4);
     let p2 = inputPhone.substring(6, 9);
     let p3 = inputPhone.substring(10);
