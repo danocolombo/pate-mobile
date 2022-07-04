@@ -38,8 +38,8 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         );
         ral = rallyArray[0];
     }
-    // printObject('RR:25 -->rally', ral);
-    // printObject('RR:26 -->registration', reg);
+    printObject('RR:25 -->rally', ral);
+    printObject('RR:26 -->registration', reg);
     // const r = rally.rally;
     const navigation = useNavigation();
     const [registrarCount, setRegistrar] = useState(
@@ -87,40 +87,40 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
             navigation.navigate('Main', null);
         } else {
             // this is a new registration
-            printObject('RR:85-->rally', rally);
-            printObject('RR:86-->user', user);
+            printObject('RR:90-->rally', rally);
+            printObject('RR:91-->user', user);
             let newReg = {
                 attendeeCount: registrarCount,
                 mealCount: mealCount,
-                location: {
-                    name: rally?.name,
-                    street: rally?.street,
-                    city: rally?.city,
-                    stateProv: rally?.stateProv,
-                    postalCode: rally?.postalCode,
-                },
-                endTime: rally?.endTime,
-                eventDate: rally?.eventDate,
+                // location: {
+                //     name: rally?.name,
+                //     street: rally?.street,
+                //     city: rally?.city,
+                //     stateProv: rally?.stateProv,
+                //     postalCode: rally?.postalCode,
+                // },
+                // endTime: rally?.endTime,
+                // eventDate: rally?.eventDate,
                 eid: rally?.uid,
-                church: {
-                    name: user?.church?.name,
-                    city: user?.church?.city,
-                    stateProv: user?.church?.stateProv,
-                },
+                // church: {
+                //     name: user?.church?.name,
+                //     city: user?.church?.city,
+                //     stateProv: user?.church?.stateProv,
+                // },
                 rid: user?.uid,
-                startTime: rally?.startTime,
-                registrar: {
-                    firstName: user?.firstName,
-                    lastName: user?.lastName,
-                    residence: {
-                        street: user?.residence?.street,
-                        city: user?.residence?.city,
-                        stateProv: user?.residence?.stateProv,
-                        postalCode: user?.residence?.postalCode,
-                    },
-                    phone: getPhoneType(createPatePhone(user?.phone)),
-                    email: user?.email,
-                },
+                // startTime: rally?.startTime,
+                // registrar: {
+                //     firstName: user?.firstName,
+                //     lastName: user?.lastName,
+                //     residence: {
+                //         street: user?.residence?.street,
+                //         city: user?.residence?.city,
+                //         stateProv: user?.residence?.stateProv,
+                //         postalCode: user?.residence?.postalCode,
+                //     },
+                //     phone: getPhoneType(createPatePhone(user?.phone)),
+                //     email: user?.email,
+                // },
             };
             printObject('RR:82-->newReg', newReg);
             //=====================================

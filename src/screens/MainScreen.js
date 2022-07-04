@@ -33,6 +33,7 @@ export default function MainScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
+    console.log('MS:35-->user', user);
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
     );
@@ -78,6 +79,7 @@ export default function MainScreen() {
                 .post(api2use, body, config)
                 .then((response) => {
                     dispatch(loadRallies(response.data.body.Items));
+                    console.log('MS:81-->events', response.data.body.Items);
                     loadStateRallies(response.data.body.Items).then(() => {
                         console.log('rallies loaded');
                     });
@@ -118,7 +120,7 @@ export default function MainScreen() {
                             return b.eventDate - a.eventDate;
                         }
                         let newRegList = respData.sort(asc_sort);
-
+                        printObject('MS:122-->regList', newRegList);
                         dispatch(loadRegistrations(newRegList));
                     }
                 })
