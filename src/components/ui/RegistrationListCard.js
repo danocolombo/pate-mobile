@@ -10,7 +10,7 @@ import { printObject } from '../../utils/helpers';
 import { isDateDashBeforeToday, dateNumToDateDash } from '../../utils/date';
 // function EventListCard({ date, locationName, city, stateProv }) {
 function RegListCard({ registration, onDeletePress, oldStyle = {} }) {
-    // printObject('RLC:12 ', registration);
+    // printObject('RLC:13-->registration', registration);
 
     return (
         <>
