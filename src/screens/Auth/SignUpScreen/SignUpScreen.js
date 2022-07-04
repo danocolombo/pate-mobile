@@ -59,9 +59,9 @@ const SignUpScreen = () => {
                     rules={{
                         required: 'Name is required',
                         minLength: {
-                            value: 6,
+                            value: 4,
                             message:
-                                'Name should be at least 6 characters long',
+                                'Name should be at least 4 characters long',
                         },
                         maxLength: {
                             value: 24,
@@ -77,7 +77,7 @@ const SignUpScreen = () => {
                     rules={{
                         required: 'Username is required',
                         minLength: {
-                            value: 6,
+                            value: 4,
                             message:
                                 'Username should be at least 6 characters long',
                         },

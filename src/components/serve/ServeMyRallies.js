@@ -20,7 +20,12 @@ const ServeMyRallies = () => {
     let me = useSelector((state) => state.users.currentUser);
     let rallies = useSelector((state) => state.rallies.allRallies);
     // printObject('SR20 rallies:', rallies);
-    const myRallies = rallies.filter((r) => r.coordinator.id === me.uid);
+    const myRalliesRAW = rallies.filter((r) => r.coordinator.id === me.uid);
+    // now sort the rallies
+    function asc_sort(a, b) {
+        return b.eventDate - a.eventDate;
+    }
+    let myRallies = myRalliesRAW.sort(asc_sort);
     let displayData;
     async function sortRallies() {
         displayData = myRallies.sort(asc_sort);

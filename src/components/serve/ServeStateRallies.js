@@ -19,14 +19,14 @@ const ServeMyRallies = () => {
         }
     });
     let rallies = useSelector((state) => state.rallies.allRallies);
-    const stateRallies = useSelector((state) =>
+    const stateRalliesRAW = useSelector((state) =>
         state.rallies.allRallies.filter((r) => r.stateProv === me.stateRep)
     );
 
     function asc_sort(a, b) {
-        return a.eventDate - b.eventDate;
+        return b.eventDate - a.eventDate;
     }
-    let displayData = stateRallies.sort(asc_sort);
+    let displayData = stateRalliesRAW.sort(asc_sort);
 
     // sortRallies()
     //     .then((results) => {
