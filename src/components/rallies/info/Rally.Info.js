@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
     View,
@@ -8,6 +8,7 @@ import {
     Modal,
     ScrollView,
     ImageBackground,
+    Pressable,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
@@ -20,14 +21,20 @@ import RallyMealInfo from './Rally.Meal.Info';
 import RallyStatusInfo from './Rally.Status.Info';
 import CustomButton from '../../ui/CustomButton';
 import SelectDropdown from 'react-native-select-dropdown';
+import RegScrollItem from '../../serve/ServeRegistrationScrollItem';
+import ServeRegDetailModal from '../../serve/ServeRegDetailModal';
 import { Colors } from '../../../constants/colors';
-import { CONFIG } from '../../../utils/helpers';
+import { CONFIG, transformPatePhone } from '../../../utils/helpers';
 import { printObject } from '../../../utils/helpers';
 //import { ScrollView } from 'react-native-gesture-handler';
 import { updateRally } from '../../../features/rallies/ralliesSlice';
+import { getRegistrarsForEvent } from '../../../providers/registrations';
 import RallyRegistrars from './RallyRegistrars';
 const RallyDetails = ({ rallyId }) => {
     const [showStatusModal, setShowStatusModal] = useState(false);
+    const [showRegDetail, setShowRegDetail] = useState(false);
+    const [regInquiry, setRegInquiry] = useState({});
+    // let regInquiry = {};
     const [statusRally, setStatusRally] = useState();
     const [newStatus, setNewStatus] = useState();
     const navigation = useNavigation();
@@ -39,10 +46,51 @@ const RallyDetails = ({ rallyId }) => {
     const dispatch = useDispatch();
     //modal stuff
     const statusValues = ['draft', 'pending', 'approved'];
+    const [registrations, setRegistrations] = useState([]);
+
+    const getRegistrations = async (id) => {
+        // go get the registration for id
+        getRegistrarsForEvent(id)
+            .then((regs) => {
+                const justRegs = regs.data.body.Items;
+                printObject('RI:50 --> justRegs', justRegs);
+                return justRegs;
+            })
+            .catch((error) => {
+                console.log('BI:53 --> error getting registrations');
+                console.log(error);
+            });
+    };
+    useEffect(() => {
+        const fetchData = async () => {
+            getRegistrarsForEvent(rallyId)
+                .then((regs) => {
+                    const justRegs = regs.data.body.Items;
+                    printObject('RI:50 --> justRegs', justRegs);
+                    setRegistrations(justRegs);
+                })
+                .catch((error) => {
+                    console.log('BI:53 --> error getting registrations');
+                    console.log(error);
+                });
+        };
+        fetchData()
+            // make sure to catch any error
+            .catch(console.error);
+    }, []);
+
     const handleStatusPress = () => {
         // setStatusRally(rally);
         setNewStatus(rally?.status);
         setShowStatusModal(true);
+    };
+    const handleRegRequest = (reg) => {
+        setRegInquiry(reg);
+        // regInquiry = reg;
+        setShowRegDetail(true);
+    };
+    const handleRegDetailDismiss = () => {
+        setShowRegDetail(false);
     };
     const handleStatusChange = () => {
         // console.log('NEW STATUS WOULD BE ===>', newStatus);
@@ -79,6 +127,78 @@ const RallyDetails = ({ rallyId }) => {
                 source={require('../../../components/images/background.png')}
                 style={styles.bgImageContainer}
             >
+                <Modal visible={showRegDetail} animationStyle='slide'>
+                    <Surface style={styles.modalSurface}>
+                        <View>
+                            <Text style={styles.modalTitle}>
+                                Registrar Information
+                            </Text>
+                        </View>
+                        <View>
+                            <Text>
+                                {regInquiry?.registrar?.firstName}{' '}
+                                {regInquiry?.registrar?.lastName}
+                            </Text>
+                        </View>
+                        <View>
+                            <Text>
+                                {regInquiry?.registrar?.residence?.city}
+                            </Text>
+                        </View>
+                        <View>
+                            <Text>
+                                {regInquiry?.registrar?.residence?.stateProv},
+                                {regInquiry?.registrar?.residence?.postalCode}
+                            </Text>
+                        </View>
+                        {regInquiry?.registar?.phone ? (
+                            <View>
+                                <Text>
+                                    {transformPatePhone(
+                                        regInquiry?.registrar?.phone
+                                    )}
+                                </Text>
+                            </View>
+                        ) : null}
+                        <View>
+                            <Text>{regInquiry?.registrar?.email}</Text>
+                        </View>
+                        {regInquiry?.registar?.email ? (
+                            <View>
+                                <Text>
+                                    Registrations: {regInquiry?.attendeeCount}
+                                </Text>
+                            </View>
+                        ) : null}
+                        <View>
+                            <Text>Meal Count: {regInquiry?.mealCount}</Text>
+                        </View>
+                        <View>
+                            <Text>{regInquiry?.church?.name}</Text>
+                            <Text>
+                                {regInquiry?.church?.city},{' '}
+                                {regInquiry?.church?.stateProv}
+                            </Text>
+                        </View>
+
+                        <View style={styles.modalButtonWrapper}>
+                            <View style={styles.modalCancelButton}>
+                                <CustomButton
+                                    title='OK'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: Colors.gray50,
+                                        color: 'white',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() => {
+                                        handleRegDetailDismiss();
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </Surface>
+                </Modal>
                 <Modal visible={showStatusModal} animationStyle='slide'>
                     <Surface style={styles.modalSurface}>
                         <View style={styles.modalInfoWrapper}>
@@ -168,13 +288,72 @@ const RallyDetails = ({ rallyId }) => {
 
                     <RallyMealInfo rally={rally} />
                     <RallyContactInfo rally={rally} />
-                    {rally.status !== 'pending' && rally.status !== 'draft' ? (
+                    {/* {rally.status !== 'pending' && rally.status !== 'draft' ? (
                         <RallyRegistrars
                             key={rally.uid}
                             rally={rally}
                             onPress={(reg) => handleRegistrarRequest(reg)}
                         />
-                    ) : null}
+                    ) : null} */}
+                    {/** ------------------------------ */}
+                    {/**  REGISTRATIONS SECTION         */}
+                    {/** ------------------------------ */}
+                    <View style={{ alignItems: 'center', height: 100 }}>
+                        <Surface
+                            style={{
+                                width: '90%',
+                                //height: '100%',
+                                alignItems: 'center',
+                                padding: 3,
+                            }}
+                        >
+                            <View>
+                                <Text
+                                    style={{ fontWeight: 'bold', fontSize: 14 }}
+                                >
+                                    Registrations
+                                </Text>
+                            </View>
+
+                            <View
+                                style={{
+                                    borderWidth: 2,
+                                    borderRadius: 3,
+                                    margin: 2,
+                                    width: '100%',
+                                    padding: 5,
+                                    height: 85,
+                                }}
+                            >
+                                <ScrollView
+                                    style={{ width: '100%' }}
+                                    showsVerticalScrollIndicator={true}
+                                    persistentScrollbar={true}
+                                >
+                                    {registrations
+                                        ? registrations.map((r) => {
+                                              return (
+                                                  <Pressable
+                                                      onPress={() =>
+                                                          handleRegRequest(r)
+                                                      }
+                                                      style={({ pressed }) =>
+                                                          pressed &&
+                                                          styles.pressed
+                                                      }
+                                                  >
+                                                      <RegScrollItem
+                                                          key={r.uid}
+                                                          reg={r}
+                                                      />
+                                                  </Pressable>
+                                              );
+                                          })
+                                        : null}
+                                </ScrollView>
+                            </View>
+                        </Surface>
+                    </View>
                     <RallyStatusInfo
                         rally={rally}
                         onPress={handleStatusPress}
