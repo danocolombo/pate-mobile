@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     rallyItem: {
         padding: 2,
         marginVertical: 8,
-        backgroundColor: Colors.secondary,
+        backgroundColor: Colors.primary,
         // flexDirection: 'row',
         justifyContent: 'space-between',
         borderRadius: 10,

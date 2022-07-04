@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    ImageBackground,
+    ActivityIndicator,
+} from 'react-native';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -144,107 +150,142 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         );
     } else {
         return (
-            <View style={styles.rootContainer}>
-                {/* <View style={styles.screenHeader}>
+            <ImageBackground
+                source={require('../images/background.png')}
+                style={styles.bgImageContainer}
+            >
+                <View style={styles.rootContainer}>
+                    {/* <View style={styles.screenHeader}>
                 <Text style={styles.screenHeaderText}>Rally Registration</Text>
             </View> */}
 
-                <View style={styles.registrationCardContainer}>
-                    <Surface
-                        elevation={6}
-                        category='medium'
-                        style={styles.registrationCard}
-                    >
-                        <View style={styles.hostContainer}>
-                            <Text style={[styles.hostText, styles.hostName]}>
-                                {ral.name}
-                            </Text>
-                            <Text style={[styles.hostText, styles.hostAddress]}>
-                                {ral.street}
-                            </Text>
-                            <Text style={[styles.hostText, styles.hostAddress]}>
-                                {ral.city}, {ral.stateProv} {ral.postalCode}
-                            </Text>
-                            <View style={styles.logisticsContainer}>
-                                <View style={styles.dateContainer}>
-                                    <Text style={styles.dateValues}>
-                                        {dateNumsToLongDayLongMondayDay(
-                                            ral.eventDate
-                                        )}
-                                    </Text>
-                                </View>
-                                <View style={styles.timeContainer}>
-                                    <Text style={styles.timeValues}>
-                                        {dateNumToDisplayTime(ral.startTime)} -{' '}
-                                        {dateNumToDisplayTime(ral.endTime)}
-                                    </Text>
-                                </View>
-                            </View>
-
-                            <Surface>
-                                <Text style={styles.regisrationCountText}>
-                                    How many will be attending with you?
-                                </Text>
-                                <View
-                                    style={
-                                        styles.registrationCountNumberContainer
-                                    }
+                    <View style={styles.registrationCardContainer}>
+                        <Surface
+                            elevation={6}
+                            category='medium'
+                            style={styles.registrationCard}
+                        >
+                            <View style={styles.hostContainer}>
+                                <Text
+                                    style={[styles.hostText, styles.hostName]}
                                 >
-                                    <NumberInput
-                                        value={registrarCount}
-                                        onAction={handleRegistarCountChange}
-                                    />
+                                    {ral.name}
+                                </Text>
+                                <Text
+                                    style={[
+                                        styles.hostText,
+                                        styles.hostAddress,
+                                    ]}
+                                >
+                                    {ral.street}
+                                </Text>
+                                <Text
+                                    style={[
+                                        styles.hostText,
+                                        styles.hostAddress,
+                                    ]}
+                                >
+                                    {ral.city}, {ral.stateProv} {ral.postalCode}
+                                </Text>
+                                <View style={styles.logisticsContainer}>
+                                    <View style={styles.dateContainer}>
+                                        <Text style={styles.dateValues}>
+                                            {dateNumsToLongDayLongMondayDay(
+                                                ral.eventDate
+                                            )}
+                                        </Text>
+                                    </View>
+                                    <View style={styles.timeContainer}>
+                                        <Text style={styles.timeValues}>
+                                            {dateNumToDisplayTime(
+                                                ral.startTime
+                                            )}{' '}
+                                            -{' '}
+                                            {dateNumToDisplayTime(ral.endTime)}
+                                        </Text>
+                                    </View>
                                 </View>
-                            </Surface>
 
-                            {ral?.meal?.startTime ? (
-                                <View style={styles.registrationCountContainer}>
+                                <Surface>
                                     <Text style={styles.regisrationCountText}>
-                                        There is a meal offered at the event.
+                                        How many will be attending with you?
                                     </Text>
-                                    {ral?.meal?.cost ? (
-                                        <View style={styles.mealTextWrapper}>
-                                            <Text style={styles.mealCostText}>
-                                                Cost: {ral.meal.cost}
-                                            </Text>
-                                            <Text style={styles.mealStartTime}>
-                                                Meal starts at{' '}
-                                                {ral.meal.startTime}
-                                            </Text>
-                                            <Text style={styles.mealCostText}>
-                                                Will any of your group like to
-                                                attend?
-                                            </Text>
-                                        </View>
-                                    ) : null}
                                     <View
                                         style={
                                             styles.registrationCountNumberContainer
                                         }
                                     >
                                         <NumberInput
-                                            value={mealCount}
-                                            onAction={handleMealCountChange}
+                                            value={registrarCount}
+                                            onAction={handleRegistarCountChange}
                                         />
                                     </View>
-                                </View>
-                            ) : null}
-                            <Button
-                                // icon={<Icon name='code' color='#ffffff' />}
-                                buttonStyle={{
-                                    borderRadius: 5,
-                                    marginLeft: 40,
-                                    marginRight: 40,
-                                    marginBottom: 0,
-                                }}
-                                title={reg.uid ? 'UPDATE' : 'REGISTER'}
-                                onPress={handleRegistrationRequest}
-                                disabled={registrarCount < 1}
-                            />
-                        </View>
-                    </Surface>
+                                </Surface>
+
+                                {ral?.meal?.startTime ? (
+                                    <View
+                                        style={
+                                            styles.registrationCountContainer
+                                        }
+                                    >
+                                        <Text
+                                            style={styles.regisrationCountText}
+                                        >
+                                            There is a meal offered at the
+                                            event.
+                                        </Text>
+                                        {ral?.meal?.cost ? (
+                                            <View
+                                                style={styles.mealTextWrapper}
+                                            >
+                                                <Text
+                                                    style={styles.mealCostText}
+                                                >
+                                                    Cost: {ral.meal.cost}
+                                                </Text>
+                                                <Text
+                                                    style={styles.mealStartTime}
+                                                >
+                                                    Meal starts at{' '}
+                                                    {ral.meal.startTime}
+                                                </Text>
+                                                <Text
+                                                    style={styles.mealCostText}
+                                                >
+                                                    Will any of your group like
+                                                    to attend?
+                                                </Text>
+                                            </View>
+                                        ) : null}
+                                        <View
+                                            style={
+                                                styles.registrationCountNumberContainer
+                                            }
+                                        >
+                                            <NumberInput
+                                                value={mealCount}
+                                                onAction={handleMealCountChange}
+                                            />
+                                        </View>
+                                    </View>
+                                ) : null}
+                                <Button
+                                    // icon={<Icon name='code' color='#ffffff' />}
+                                    buttonStyle={{
+                                        borderRadius: 5,
+                                        marginLeft: 40,
+                                        marginRight: 40,
+                                        marginBottom: 0,
+                                    }}
+                                    title={reg.uid ? 'UPDATE' : 'REGISTER'}
+                                    onPress={handleRegistrationRequest}
+                                    disabled={registrarCount < 1}
+                                />
+                            </View>
+                        </Surface>
+                    </View>
                 </View>
-            </View>
+            </ImageBackground>
         );
     }
 };
@@ -254,6 +295,12 @@ export default RallyRegister;
 const styles = StyleSheet.create({
     rootContainer: {
         flex: 1,
+    },
+    bgImageContainer: {
+        flex: 1,
+
+        width: '100%',
+        height: '100%',
     },
     screenHeader: {
         marginVertical: 10,

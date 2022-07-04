@@ -18,6 +18,7 @@ import { deleteRegistration } from '../providers/registrations';
 import { deleteRegistration as deleteReduxRegistration } from '../features/users/usersSlice';
 import { printObject } from '../utils/helpers';
 import { dateNumToDateDash, isDateDashBeforeToday } from '../utils/date';
+import { Colors } from '../constants/colors';
 
 const MyHistoryScreen = () => {
     const dispatch = useDispatch();
@@ -111,6 +112,7 @@ const MyHistoryScreen = () => {
                                                             pressed &&
                                                             styles.pressed
                                                         }
+                                                        key={r.uid}
                                                     >
                                                         <View>
                                                             <RegListCard
@@ -126,10 +128,14 @@ const MyHistoryScreen = () => {
                                             );
                                         } else {
                                             return (
-                                                <View>
+                                                <View key={r.uid}>
                                                     <RegListCard
                                                         key={r.uid}
                                                         registration={r}
+                                                        oldStyle={{
+                                                            backgroundColor:
+                                                                Colors.secondary,
+                                                        }}
                                                     />
                                                 </View>
                                             );

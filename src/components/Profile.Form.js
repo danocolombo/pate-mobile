@@ -762,6 +762,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         marginBottom: 10,
         marginTop: 10,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
     },
     inputContainer: {
         marginLeft: '10%',
@@ -843,10 +845,14 @@ const styles = StyleSheet.create({
     churchSurfaceContainter: {
         padding: 5,
         marginHorizontal: 20,
-        marginBottom: 20,
+        paddingVertical: 10,
+        marginBottom: 0,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
     },
     churchTitle: {
         textAlign: 'center',
+        fontSize: 24,
     },
     buttonContainer: {
         alignItems: 'center',

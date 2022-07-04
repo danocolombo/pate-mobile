@@ -19,7 +19,7 @@ export function dateNumToJSDate(dateNum) {
 }
 
 export function dateNumsToLongDayLongMondayDay(dateNum) {
-    if (!dateNum){
+    if (!dateNum) {
         return null;
     }
     // YYYYMMDD to long date
@@ -29,6 +29,9 @@ export function dateNumsToLongDayLongMondayDay(dateNum) {
 }
 export function dateNumToDateDash(dateNum) {
     // converts YYYYMMDD to YYYY-MM-DD
+    if (!dateNum) {
+        return null;
+    }
     if (dateNum.length !== 8) {
         return '';
     }
@@ -48,6 +51,14 @@ export function subtractMonths(numOfMonths, date = new Date()) {
 }
 export function isDateDashBeforeToday(dateDash) {
     // uses dashDate yyyy-mm-dd
+    //check if we have any dashes
+    if (!dateDash) {
+        return null;
+    }
+    let dashPos = dateDash.indexOf('-');
+    if (dashPos === -1) {
+        return null;
+    }
     let datePart = dateDash.split('-');
     //need to increment month
     let mo = parseInt(datePart[1] - 1);
@@ -68,7 +79,9 @@ export function getToday() {
     return target;
 }
 export function dateNumToDisplayTime(numTime) {
-    if (!numTime){ return null}
+    if (!numTime) {
+        return null;
+    }
     // 1330 or 13:30 to 1:30 PM
     let A = '';
     let B = '';
