@@ -8,14 +8,13 @@ import PateSignOut from '../screens/PateSignOut';
 import MyHistoryScreen from '../screens/MyHistoryScreen';
 import ServeConfig from './ServeConfig';
 import { Colors } from '../constants/colors';
+import { printObject } from '../utils/helpers';
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
 const AuthDrawer = (navigation) => {
     const user = useSelector((state) => state.users.currentUser);
-    console.log('user?.role', user?.role);
-    console.log('user.stateRep', user?.stateRep);
-    console.log('user.stateLead', user?.stateLead);
+    // printObject('PF:17-->user', user);
     let patron = false;
     if (
         user?.role === 'rep' ||

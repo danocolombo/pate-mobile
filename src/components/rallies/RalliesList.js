@@ -4,7 +4,7 @@ import { printObject } from '../../utils/helpers';
 import RallyItem from './RallyItem';
 
 function renderRallyItem(itemData) {
-    return <RallyItem {...itemData.item} />;
+    return <RallyItem {...itemData.item} key={itemData.item.uid} />;
 }
 
 function RalliesList({ rallies }) {

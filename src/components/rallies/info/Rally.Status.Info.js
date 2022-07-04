@@ -6,7 +6,7 @@ import CustomSmallButton from '../../ui/CustomSmallButton';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 const RallyStatusInfo = ({ rally, onPress }) => {
-    // printObject('rally', rally);
+    // printObject('RSI:9 --> rally', rally);
     let tColor = 'gold';
     let bColor = 'blue';
     // console.log('uid:', rally.uid);
@@ -71,6 +71,11 @@ const RallyStatusInfo = ({ rally, onPress }) => {
                             <View style={styles.statusRow}>
                                 <Text style={styles.textWrapper}>
                                     UID: {rally.uid}
+                                </Text>
+                            </View>
+                            <View style={styles.statusRow}>
+                                <Text style={styles.textWrapper}>
+                                    Coordinator: {rally?.coordinator?.name}
                                 </Text>
                             </View>
                         </View>

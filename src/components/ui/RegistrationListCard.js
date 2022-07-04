@@ -9,12 +9,12 @@ import CardDate from './RallyCardDateStack';
 import { printObject } from '../../utils/helpers';
 import { isDateDashBeforeToday, dateNumToDateDash } from '../../utils/date';
 // function EventListCard({ date, locationName, city, stateProv }) {
-function RegListCard({ registration, onDeletePress }) {
-    // printObject('RLC:12 ', registration);
+function RegListCard({ registration, onDeletePress, oldStyle = {} }) {
+    // printObject('RLC:13-->registration', registration);
 
     return (
         <>
-            <View style={styles.cardBackground}>
+            <View style={[styles.cardBackground, oldStyle]}>
                 <View style={styles.cardRow}>
                     <View style={styles.firstRow}>
                         <View style={styles.dateWrapper}>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 5,
         marginVertical: 5,
-        backgroundColor: Colors.secondary,
+        backgroundColor: Colors.primary,
     },
 
     cardRow: {
