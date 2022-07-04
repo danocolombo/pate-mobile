@@ -12,7 +12,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Surface, Stack } from '@react-native-material/core';
 import { Button } from 'react-native-elements';
 import { Colors } from '../../constants/colors';
-import { CONFIG, printObject, createPatePhone } from '../../utils/helpers';
+import {
+    CONFIG,
+    printObject,
+    createPatePhone,
+    getPhoneType,
+} from '../../utils/helpers';
 import {
     dateNumsToLongDayLongMondayDay,
     dateNumToDisplayTime,
@@ -33,8 +38,8 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         );
         ral = rallyArray[0];
     }
-    printObject('RR:25 -->rally', ral);
-    printObject('RR:26 -->registration', reg);
+    // printObject('RR:25 -->rally', ral);
+    // printObject('RR:26 -->registration', reg);
     // const r = rally.rally;
     const navigation = useNavigation();
     const [registrarCount, setRegistrar] = useState(
@@ -82,6 +87,8 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
             navigation.navigate('Main', null);
         } else {
             // this is a new registration
+            printObject('RR:85-->rally', rally);
+            printObject('RR:86-->user', user);
             let newReg = {
                 attendeeCount: registrarCount,
                 mealCount: mealCount,
@@ -111,7 +118,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                         stateProv: user?.residence?.stateProv,
                         postalCode: user?.residence?.postalCode,
                     },
-                    phone: createPatePhone(user?.phone),
+                    phone: getPhoneType(createPatePhone(user?.phone)),
                     email: user?.email,
                 },
             };

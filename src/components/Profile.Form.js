@@ -46,7 +46,7 @@ export default function ProfileForm() {
     const dispatch = useDispatch();
     let user = useSelector((state) => state.users.currentUser);
     const [showPhoneError, setShowPhoneError] = useState(false);
-    printObject('user', user);
+    //printObject('PF:49-->user', user);
     let phoneDisplayValue;
     if (user.phone) {
         let phoneType = getPhoneType(user.phone);

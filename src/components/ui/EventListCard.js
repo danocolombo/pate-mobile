@@ -106,10 +106,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
     },
     cardBackGroundMine: {
-        backgroundColor: Colors.secondary,
+        backgroundColor: Colors.primary,
     },
     cardBackGroundNotMine: {
-        backgroundColor: Colors.gray35,
+        backgroundColor: Colors.secondary,
     },
     cardRow: {
         flexDirection: 'row',

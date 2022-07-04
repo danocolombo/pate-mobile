@@ -114,7 +114,7 @@ const MyHistoryScreen = () => {
                                                         }
                                                         key={r.uid}
                                                     >
-                                                        <View>
+                                                        <View key={r.uid}>
                                                             <RegListCard
                                                                 key={r.uid}
                                                                 registration={r}

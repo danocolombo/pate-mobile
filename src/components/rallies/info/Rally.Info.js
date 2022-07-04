@@ -53,7 +53,7 @@ const RallyDetails = ({ rallyId }) => {
         getRegistrarsForEvent(id)
             .then((regs) => {
                 const justRegs = regs.data.body.Items;
-                printObject('RI:50 --> justRegs', justRegs);
+                printObject('RI:56 --> justRegs', justRegs);
                 return justRegs;
             })
             .catch((error) => {
@@ -66,7 +66,7 @@ const RallyDetails = ({ rallyId }) => {
             getRegistrarsForEvent(rallyId)
                 .then((regs) => {
                     const justRegs = regs.data.body.Items;
-                    printObject('RI:50 --> justRegs', justRegs);
+                    // printObject('RI:69 --> justRegs', justRegs);
                     setRegistrations(justRegs);
                 })
                 .catch((error) => {
@@ -85,6 +85,7 @@ const RallyDetails = ({ rallyId }) => {
         setShowStatusModal(true);
     };
     const handleRegRequest = (reg) => {
+        // printObject('RI:88-reg', reg);
         setRegInquiry(reg);
         // regInquiry = reg;
         setShowRegDetail(true);
@@ -118,9 +119,10 @@ const RallyDetails = ({ rallyId }) => {
         setShowStatusModal(false);
     };
     const handleRegistrarRequest = (reg) => {
+        printObject('RI:122-reg', reg);
         navigation.navigate('RegistrationDetails', { reg: reg });
     };
-    // printObject('RI:75-rally', rally);
+    // printObject('RI:124-rally', rally);
     return (
         <>
             <ImageBackground
@@ -188,7 +190,8 @@ const RallyDetails = ({ rallyId }) => {
                                 {regInquiry?.church?.name}
                             </Text>
                             <Text style={styles.modalText}>
-                                {regInquiry?.church?.city},{' '}
+                                {regInquiry?.church?.city}
+                                {', '}
                                 {regInquiry?.church?.stateProv}
                             </Text>
                         </View>
@@ -346,6 +349,7 @@ const RallyDetails = ({ rallyId }) => {
                                         ? registrations.map((r) => {
                                               return (
                                                   <Pressable
+                                                      key={r.uid}
                                                       onPress={() =>
                                                           handleRegRequest(r)
                                                       }
@@ -402,6 +406,11 @@ const RallyDetails = ({ rallyId }) => {
 
 export default RallyDetails;
 const styles = StyleSheet.create({
+    bgImageContainer: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
     buttonContainer: {
         marginTop: 15,
         alignItems: 'center',
