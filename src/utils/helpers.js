@@ -97,9 +97,7 @@ export function getPhoneType(patePhone) {
 }
 export function transformPatePhone(patePhone) {
     // we take patePhone 1234567890 and return (123) 456-7890
-    if (patePhone.length !== 10) {
-        return null;
-    }
+
     if (isNaN(patePhone)) {
         // not a patePhone number
         return null;
