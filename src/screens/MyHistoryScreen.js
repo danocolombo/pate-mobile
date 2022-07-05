@@ -24,9 +24,38 @@ const MyHistoryScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
+    const allRallies = useSelector((state) => state.rallies.allRallies);
     const registrations = useSelector((state) => state.users.registrations);
     const [myRegistrations, setMyRegistrations] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const combineDetails = async () => {
+        let summaryRegs = [];
+        printObject('MHS:33-->registrations', registrations);
+        printObject('MHS-34-->allRallies', allRallies);
+        registrations.map((reg) => {
+            //for each registration
+            let rallyInfo = allRallies.filter((ral) => {
+                return ral.uid === reg.eid;
+            });
+            let regId = reg.uid;
+            let entireRegDetails = { reg, rallyInfo };
+            entireRegDetails.uid = regId;
+            summaryRegs.push(entireRegDetails);
+        });
+        printObject('MHS:43-->summaryRegs', summaryRegs);
+    };
+    useEffect(() => {
+        //we want to associate rally details with each registration
+        setIsLoading(true);
+        combineDetails()
+            .then((results) => {
+                console.log('done');
+            })
+            .catch((error) => {
+                console.log('MHS:51-->error', error);
+            });
+        setIsLoading(false);
+    }, []);
     // useEffect(() => {
     //     setIsLoading(true);
     //     if (process.env.ENV === 'DEV') {

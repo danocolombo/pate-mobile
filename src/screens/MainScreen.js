@@ -33,6 +33,8 @@ export default function MainScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
+    const [entireRallyList, setEntireRallyList] = useState([]);
+    const [entireRegList, setEntireRegList] = useState([]);
     console.log('MS:35-->user', user);
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
@@ -42,6 +44,9 @@ export default function MainScreen() {
     const [approvedRallies, setApprovedRallies] = useState([]);
     async function loadStateRallies(dbRallies) {
         setRallies(dbRallies);
+    }
+    async function saveAllRallies(allRallies) {
+        setEntireRallyList(allRallies);
     }
     useEffect(() => {
         if (process.env.ENV === 'DEV') {
@@ -75,10 +80,12 @@ export default function MainScreen() {
 
             let api2use = process.env.AWS_API_ENDPOINT + '/events';
             //let dbRallies = await axios.post(api2use, body, config);
+
             axios
                 .post(api2use, body, config)
                 .then((response) => {
                     dispatch(loadRallies(response.data.body.Items));
+                    saveAllRallies(response.data.body.Items);
                     console.log('MS:81-->events', response.data.body.Items);
                     loadStateRallies(response.data.body.Items).then(() => {
                         console.log('rallies loaded');
@@ -86,7 +93,7 @@ export default function MainScreen() {
 
                     let dbRallies = response.data.body.Items;
                     const publicRallies = dbRallies.filter(
-                        (r) => r.approved === true && r.eventDate >= '20220616'
+                        (r) => r.approved === true && r.eventDate >= getToday
                     );
                     setApprovedRallies(publicRallies);
                 })
@@ -101,6 +108,7 @@ export default function MainScreen() {
             //================================================
             // now get all the registrations for the user
             //================================================
+            printObject('MS:107--> entireRallyList', entireRallyList);
             obj = {
                 operation: 'getAllUserRegistrations',
                 payload: {
@@ -121,6 +129,7 @@ export default function MainScreen() {
                         }
                         let newRegList = respData.sort(asc_sort);
                         printObject('MS:122-->regList', newRegList);
+
                         dispatch(loadRegistrations(newRegList));
                     }
                 })
@@ -132,7 +141,17 @@ export default function MainScreen() {
                             'Cannot connect to server. Please check internet connection and try again.',
                     });
                 });
+            //now load the event details for each registration
+            //let's get event details for each registration
 
+            const fullRegInfo = entireRegList.map((reg) => {
+                //for each registration, try to get event details
+                const matchedRally = entireRallyList.filter(
+                    (rally) => rally.uid === reg.eid
+                );
+                let combinedInfo = { reg, matchedRally };
+                return combinedInfo;
+            });
             setIsLoading(false);
         }
     }, []);
