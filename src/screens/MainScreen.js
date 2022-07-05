@@ -56,7 +56,7 @@ export default function MainScreen() {
             };
             dispatch(loadRallies(fileRallies));
             loadStateRallies(response).then(() => {
-                console.log('rallies loaded');
+                console.log('MS:59-->rallies loaded');
             });
             const tDay = getToday();
             const publicRallies = fileRallies.filter(
@@ -150,7 +150,7 @@ export default function MainScreen() {
                 const matchedRally = entireRallyList.filter(
                     (rally) => rally.uid === reg.eid
                 );
-                let combinedInfo = { reg, matchedRally };
+                let combinedInfo = Object.assign({}, reg, matchedRally);
                 return combinedInfo;
             });
             setIsLoading(false);

@@ -7,12 +7,12 @@ const RegScrollItem = ({ reg }) => {
             <View style={styles.itemBox}>
                 <View style={{ flex: 1 }}>
                     <Text>
-                        {reg.registrar.firstName} {reg.registrar.lastName}
+                        {reg?.registrar?.firstName} {reg?.registrar?.lastName}
                     </Text>
                 </View>
                 <View>
                     <Text>
-                        {reg.attendeeCount}/{reg.mealCount}
+                        {reg?.attendeeCount}/{reg?.mealCount}
                     </Text>
                 </View>
             </View>
