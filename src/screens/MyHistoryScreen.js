@@ -30,14 +30,16 @@ const MyHistoryScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     const combineDetails = async () => {
         let summaryRegs = [];
-        printObject('MHS:33-->registrations', registrations);
-        printObject('MHS-34-->allRallies', allRallies);
+        // printObject('MHS:33-->registrations', registrations);
+        // printObject('MHS-34-->allRallies', allRallies);
         registrations.map((reg) => {
             //for each registration
+            printObject('MHS:37-->reg:', reg);
             let rallyInfo = allRallies.filter((ral) => {
                 return ral.uid === reg.eid;
             });
             let regId = reg.uid;
+            printObject('MHS:42-->rallyInfo', rallyInfo);
             let entireRegDetails = { reg, rallyInfo };
             entireRegDetails.uid = regId;
             summaryRegs.push(entireRegDetails);

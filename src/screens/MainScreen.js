@@ -71,10 +71,7 @@ export default function MainScreen() {
                 },
             };
             let obj = {
-                operation: 'getRegionalEvents',
-                payload: {
-                    region: process.env.EVENT_REGION,
-                },
+                operation: 'getAllEvents',
             };
             let body = JSON.stringify(obj);
 
@@ -87,9 +84,13 @@ export default function MainScreen() {
                     dispatch(loadRallies(response.data.body.Items));
                     saveAllRallies(response.data.body.Items);
                     console.log('MS:81-->events', response.data.body.Items);
-                    loadStateRallies(response.data.body.Items).then(() => {
-                        console.log('rallies loaded');
-                    });
+                    loadStateRallies(response.data.body.Items)
+                        .then(() => {
+                            console.log('rallies loaded');
+                        })
+                        .catch((error) => {
+                            console.log('error loading rallies\n', error);
+                        });
 
                     let dbRallies = response.data.body.Items;
                     const publicRallies = dbRallies.filter(
