@@ -26,6 +26,7 @@ import NoEventsCard from '../components/ui/NoEventsCard';
 import RalliesOutput from '../components/rallies/RalliesOutput';
 import { UserInterfaceIdiom } from 'expo-constants';
 import { getToday, printObject } from '../utils/helpers';
+import { getPateDate } from '../utils/date';
 
 import { StylesContext } from '@material-ui/styles';
 
@@ -35,7 +36,7 @@ export default function MainScreen() {
     const user = useSelector((state) => state.users.currentUser);
     const [entireRallyList, setEntireRallyList] = useState([]);
     const [entireRegList, setEntireRegList] = useState([]);
-    console.log('MS:35-->user', user);
+    // console.log('MS:39-->user', user);
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
     );
@@ -49,6 +50,8 @@ export default function MainScreen() {
         setEntireRallyList(allRallies);
     }
     useEffect(() => {
+        const eventRegion = process.env.EVENT_REGION;
+        // console.log('MS:54-->process.env.EVENT_REGION', eventRegion);
         if (process.env.ENV === 'DEV') {
             const fileRallies = ALL_EVENTS.body.Items;
             let response = {
@@ -65,6 +68,7 @@ export default function MainScreen() {
             setApprovedRallies(publicRallies);
             setIsLoading(false);
         } else {
+            const tDay = getPateDate(getToday());
             const config = {
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
@@ -83,7 +87,7 @@ export default function MainScreen() {
                 .then((response) => {
                     dispatch(loadRallies(response.data.body.Items));
                     saveAllRallies(response.data.body.Items);
-                    console.log('MS:81-->events', response.data.body.Items);
+                    // console.log('MS:81-->events', response.data.body.Items);
                     loadStateRallies(response.data.body.Items)
                         .then(() => {
                             console.log('rallies loaded');
@@ -93,9 +97,21 @@ export default function MainScreen() {
                         });
 
                     let dbRallies = response.data.body.Items;
-                    const publicRallies = dbRallies.filter(
-                        (r) => r.approved === true && r.eventDate >= getToday
-                    );
+                    const publicRallies = dbRallies.filter((r) => {
+                        return (
+                            r.approved === true &&
+                            r.eventDate >= tDay &&
+                            r.eventRegion === eventRegion
+                        );
+                        // console.log('==============================');
+                        // console.log('r.name:', r.name);
+                        // console.log('r.approved:', r.approved);
+                        // console.log('r.eventDate', r.eventDate);
+                        // console.log('tDay:', tDay);
+                        // console.log('r.eventRegion:', r.eventRegion);
+                        // console.log('EVENT_REGION:', eventRegion);
+                    });
+                    // printObject('MS:112->publicRallies', publicRallies);
                     setApprovedRallies(publicRallies);
                 })
                 .catch((err) => {
@@ -109,7 +125,7 @@ export default function MainScreen() {
             //================================================
             // now get all the registrations for the user
             //================================================
-            printObject('MS:107--> entireRallyList', entireRallyList);
+            // printObject('MS:128--> entireRallyList', entireRallyList);
             obj = {
                 operation: 'getAllUserRegistrations',
                 payload: {
@@ -129,7 +145,7 @@ export default function MainScreen() {
                             return b.eventDate - a.eventDate;
                         }
                         let newRegList = respData.sort(asc_sort);
-                        printObject('MS:122-->regList', newRegList);
+                        // printObject('MS:148-->regList', newRegList);
 
                         dispatch(loadRegistrations(newRegList));
                     }
