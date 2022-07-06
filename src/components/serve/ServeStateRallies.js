@@ -40,7 +40,7 @@ const ServeMyRallies = () => {
         printObject('event', e);
     };
     let sliceRallies = getStateRallies();
-    printObject('sliceRallies', sliceRallies);
+    // printObject('SSR:43-->sliceRallies', sliceRallies);
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>

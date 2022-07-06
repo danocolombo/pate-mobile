@@ -24,46 +24,53 @@ const MyHistoryScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
+    const allRallies = useSelector((state) => state.rallies.allRallies);
     const registrations = useSelector((state) => state.users.registrations);
     const [myRegistrations, setMyRegistrations] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    // useEffect(() => {
-    //     setIsLoading(true);
-    //     if (process.env.ENV === 'DEV') {
-    //         const registrations = REGISTRATIONS_TTLEAD.body;
-    //         setMyRegistrations(registrations);
-    //     } else {
-    //         const config = {
-    //             headers: {
-    //                 'Content-type': 'application/json; charset=UTF-8',
-    //             },
-    //         };
-    //         let obj = {
-    //             operation: 'getAllUserRegistrations',
-    //             payload: {
-    //                 rid: user.uid,
-    //             },
-    //         };
-    //         let body = JSON.stringify(obj);
+    const combineDetails = async () => {
+        let summaryRegs = [];
+        // printObject('MHS:33-->registrations', registrations);
+        // printObject('MHS-34-->allRallies', allRallies);
+        registrations.map((reg) => {
+            //for each registration
+            // printObject('MHS:37-->reg:', reg);
+            //get eventId
+            let eventId;
+            if (reg?.eventId) {
+                eventId = reg.eventId;
+            } else {
+                //old registration
+                eventId = reg.eid;
+            }
+            let rallyInfo = allRallies.filter((ral) => {
+                return ral.uid === eventId;
+            });
 
-    //         let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
-    //         //let dbRallies = await axios.post(api2use, body, config);
-    //         axios
-    //             .post(api2use, body, config)
-    //             .then((response) => {
-    //                 setMyRegistrations(response?.data?.body);
-    //                 setIsLoading(false);
-    //             })
-    //             .catch((err) => {
-    //                 console.log('MHS-40: error:', err);
-    //                 navigation.navigate('ErrorMsg', {
-    //                     id: 'MS-60',
-    //                     message:
-    //                         'Cannot connect to server. Please check internet connection and try again.',
-    //                 });
-    //             });
-    //     }
-    // }, []);
+            // printObject('MHS:50-->eventId', eventId);
+            // printObject('MHS:50-->rallyInfo', rallyInfo);
+            let entireRegDetails = Object.assign({}, reg, rallyInfo[0]);
+            entireRegDetails.uid = eventId;
+            // printObject('MHS:52-->entireRegDetails', entireRegDetails);
+
+            summaryRegs.push(entireRegDetails);
+        });
+        setMyRegistrations(summaryRegs);
+        // printObject('MHS:56-->summaryRegs', summaryRegs);
+    };
+    useEffect(() => {
+        //we want to associate rally details with each registration
+        setIsLoading(true);
+        combineDetails()
+            .then((results) => {
+                console.log('done');
+            })
+            .catch((error) => {
+                console.log('MHS:66-->error', error);
+            });
+        setIsLoading(false);
+    }, []);
+
     function regPressHandler(reg) {
         // printObject('MHS:64-->reg', reg);
         navigation.navigate('RallyRegister', {
@@ -92,10 +99,11 @@ const MyHistoryScreen = () => {
                                     <Text style={styles.headerText}>
                                         Your Registrations
                                     </Text>
+
                                     <Text>Tap to edit active events.</Text>
                                 </View>
-                                {registrations ? (
-                                    registrations.map((r) => {
+                                {myRegistrations ? (
+                                    myRegistrations.map((r) => {
                                         const enablePress =
                                             !isDateDashBeforeToday(
                                                 dateNumToDateDash(r.eventDate)
@@ -112,11 +120,11 @@ const MyHistoryScreen = () => {
                                                             pressed &&
                                                             styles.pressed
                                                         }
-                                                        key={r.uid}
+                                                        key={r.name}
                                                     >
-                                                        <View key={r.uid}>
+                                                        <View key={r.name}>
                                                             <RegListCard
-                                                                key={r.uid}
+                                                                key={r.name}
                                                                 registration={r}
                                                                 onDeletePress={
                                                                     onDeletePress
@@ -142,9 +150,13 @@ const MyHistoryScreen = () => {
                                         }
                                     })
                                 ) : (
-                                    <View>
-                                        <Text>No History Recorded</Text>
-                                    </View>
+                                    <>
+                                        <View>
+                                            <Text>
+                                                No Historical Information
+                                            </Text>
+                                        </View>
+                                    </>
                                 )}
                             </View>
                         </ScrollView>

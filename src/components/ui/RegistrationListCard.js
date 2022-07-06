@@ -18,24 +18,24 @@ function RegListCard({ registration, onDeletePress, oldStyle = {} }) {
                 <View style={styles.cardRow}>
                     <View style={styles.firstRow}>
                         <View style={styles.dateWrapper}>
-                            <CardDate date={registration.eventDate} />
+                            <CardDate date={registration?.eventDate} />
                         </View>
                         <View style={styles.nameGeoContainer}>
                             <View style={styles.nameWrapper}>
                                 <Text style={styles.locationName}>
-                                    {registration.location.name}
+                                    {registration?.name}
                                 </Text>
                             </View>
                             <View style={styles.geoWrapper}>
                                 <View>
                                     <Text style={styles.text}>
-                                        {registration.location.street}
+                                        {registration?.street}
                                     </Text>
                                 </View>
                                 <View>
                                     <Text style={styles.text}>
-                                        {registration.location.city},{' '}
-                                        {registration.location.stateProv}
+                                        {registration?.city},{' '}
+                                        {registration?.stateProv}
                                     </Text>
                                 </View>
                             </View>
@@ -46,16 +46,16 @@ function RegListCard({ registration, onDeletePress, oldStyle = {} }) {
                     <View style={styles.numberSpread}>
                         <View style={styles.numberItem}>
                             <Text style={styles.text}>
-                                Attendance: {registration.attendeeCount}
+                                Attendance: {registration?.attendeeCount}
                             </Text>
                         </View>
                         <View style={styles.numberItem}>
                             <Text style={styles.text}>
-                                Meal: {registration.mealCount}
+                                Meal: {registration?.mealCount}
                             </Text>
                         </View>
                         {!isDateDashBeforeToday(
-                            dateNumToDateDash(registration.eventDate)
+                            dateNumToDateDash(registration?.eventDate)
                         ) ? (
                             <View style={styles.deleteIcon}>
                                 <Ionicons
