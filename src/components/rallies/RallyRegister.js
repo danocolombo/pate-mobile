@@ -102,25 +102,27 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 // endTime: rally?.endTime,
                 // eventDate: rally?.eventDate,
                 eid: rally?.uid,
-                // church: {
-                //     name: user?.church?.name,
-                //     city: user?.church?.city,
-                //     stateProv: user?.church?.stateProv,
-                // },
+                eventId: rally?.uid,
+                church: {
+                    name: user?.church?.name,
+                    city: user?.church?.city,
+                    stateProv: user?.church?.stateProv,
+                },
                 rid: user?.uid,
+                registrarId: user?.uid,
                 // startTime: rally?.startTime,
-                // registrar: {
-                //     firstName: user?.firstName,
-                //     lastName: user?.lastName,
-                //     residence: {
-                //         street: user?.residence?.street,
-                //         city: user?.residence?.city,
-                //         stateProv: user?.residence?.stateProv,
-                //         postalCode: user?.residence?.postalCode,
-                //     },
-                //     phone: getPhoneType(createPatePhone(user?.phone)),
-                //     email: user?.email,
-                // },
+                registrar: {
+                    firstName: user?.firstName,
+                    lastName: user?.lastName,
+                    residence: {
+                        street: user?.residence?.street,
+                        city: user?.residence?.city,
+                        stateProv: user?.residence?.stateProv,
+                        postalCode: user?.residence?.postalCode,
+                    },
+                    phone: getPhoneType(createPatePhone(user?.phone)),
+                    email: user?.email,
+                },
             };
             printObject('RR:82-->newReg', newReg);
             //=====================================

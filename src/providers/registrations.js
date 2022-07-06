@@ -6,6 +6,8 @@ const config = {
     },
 };
 export async function getRegistrarsForEvent(eid) {
+    //this will need to join users
+
     let obj = {
         operation: 'getRegistrationsForEvent',
         payload: {
@@ -30,7 +32,7 @@ export async function deleteRegistration(reg) {
     };
     let body = JSON.stringify(obj);
     let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
-    console.log('body:',body);
+    console.log('body:', body);
     console.log('api2use', api2use);
     await axios
         .post(api2use, body, config)

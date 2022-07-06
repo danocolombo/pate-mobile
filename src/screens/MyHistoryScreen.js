@@ -42,6 +42,8 @@ const MyHistoryScreen = () => {
             printObject('MHS:42-->rallyInfo', rallyInfo);
             let entireRegDetails = Object.assign({}, reg, rallyInfo);
             entireRegDetails.uid = regId;
+            printObject('MHS:44-->entireRegDetails', entireRegDetails);
+
             summaryRegs.push(entireRegDetails);
         });
         printObject('MHS:43-->summaryRegs', summaryRegs);
