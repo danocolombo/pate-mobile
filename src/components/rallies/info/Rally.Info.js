@@ -48,25 +48,12 @@ const RallyDetails = ({ rallyId }) => {
     const statusValues = ['draft', 'pending', 'approved'];
     const [registrations, setRegistrations] = useState([]);
 
-    // const getRegistrations = async (id) => {
-    //     // go get the registration for id
-    //     getRegistrarsForEvent(id)
-    //         .then((regs) => {
-    //             const justRegs = regs.data.body.Items;
-    //             printObject('RI:56 --> justRegs', justRegs);
-    //             return justRegs;
-    //         })
-    //         .catch((error) => {
-    //             console.log('BI:53 --> error getting registrations');
-    //             console.log(error);
-    //         });
-    // };
     useEffect(() => {
         const fetchData = async () => {
             getRegistrarsForEvent(rallyId)
                 .then((regs) => {
                     const justRegs = regs.data.body.Items;
-                    printObject('RI:69 --> justRegs', justRegs);
+                    // printObject('RI:69 --> justRegs', justRegs);
                     setRegistrations(justRegs);
                 })
                 .catch((error) => {

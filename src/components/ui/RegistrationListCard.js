@@ -23,19 +23,19 @@ function RegListCard({ registration, onDeletePress, oldStyle = {} }) {
                         <View style={styles.nameGeoContainer}>
                             <View style={styles.nameWrapper}>
                                 <Text style={styles.locationName}>
-                                    {registration?.location?.name}
+                                    {registration?.name}
                                 </Text>
                             </View>
                             <View style={styles.geoWrapper}>
                                 <View>
                                     <Text style={styles.text}>
-                                        {registration?.location?.street}
+                                        {registration?.street}
                                     </Text>
                                 </View>
                                 <View>
                                     <Text style={styles.text}>
-                                        {registration?.location?.city},{' '}
-                                        {registration?.location?.stateProv}
+                                        {registration?.city},{' '}
+                                        {registration?.stateProv}
                                     </Text>
                                 </View>
                             </View>
