@@ -10,29 +10,35 @@ const RallyMealInfo = ({ rally }) => {
                     <View>
                         <Headline>Meal Information</Headline>
                     </View>
-                    <View style={styles.textWrapper}>
-                        <View style={styles.timeCostWrapper}>
-                            <Text style={styles.mealTimeText}>
-                                {convertPateTime(rally?.meal?.startTime)}
-                            </Text>
-                            <Text style={styles.costText}>
-                                ${rally?.meal?.cost}
-                            </Text>
-                        </View>
-                        {rally?.meal?.deadline ? (
-                            <View style={styles.mealDeadlineWrapper}>
-                                <Text>
-                                    DEADLINE:{' '}
-                                    {convertPateDate(rally?.meal?.deadline)}
+                    {rally?.meal?.offered ? (
+                        <View style={styles.textWrapper}>
+                            <View style={styles.timeCostWrapper}>
+                                <Text style={styles.mealTimeText}>
+                                    {convertPateTime(rally?.meal?.startTime)}
+                                </Text>
+                                <Text style={styles.costText}>
+                                    ${rally?.meal?.cost}
                                 </Text>
                             </View>
-                        ) : null}
-                        <View style={styles.messageWrapper}>
-                            <Text style={styles.messageText}>
-                                {rally?.meal?.message}
-                            </Text>
+                            {rally?.meal?.deadline ? (
+                                <View style={styles.mealDeadlineWrapper}>
+                                    <Text>
+                                        DEADLINE:{' '}
+                                        {convertPateDate(rally?.meal?.deadline)}
+                                    </Text>
+                                </View>
+                            ) : null}
+                            <View style={styles.messageWrapper}>
+                                <Text style={styles.messageText}>
+                                    {rally?.meal?.message}
+                                </Text>
+                            </View>
                         </View>
-                    </View>
+                    ) : (
+                        <View>
+                            <Text>No Meal Offered</Text>
+                        </View>
+                    )}
                 </Surface>
             </View>
         </>
