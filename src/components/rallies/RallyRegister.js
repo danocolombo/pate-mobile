@@ -27,6 +27,7 @@ import {
     addNewRegistration,
 } from '../../features/users/usersSlice';
 import NumberInput from '../ui/NumberInput/NumberInput';
+import RegisterMeal from './RegisterMeal.component';
 const RallyRegister = ({ rally = {}, registration = {} }) => {
     const dispatch = useDispatch();
     let ral = rally;
@@ -39,7 +40,6 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         );
         ral = rallyArray[0];
     }
-    let [mealOffered, setMealOffered] = useState(ral?.meal?.offered);
     printObject('RR:25 -->ral', ral);
     printObject('RR:26 -->reg', reg);
     // const r = rally.rally;
@@ -232,55 +232,12 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                                         />
                                     </View>
                                 </Surface>
-                                <View>
-                                    <Text>offered: {mealOffered}</Text>
-                                </View>
-                                {mealOffered !== false ? (
-                                    <View
-                                        style={
-                                            styles.registrationCountContainer
-                                        }
-                                    >
-                                        <Text
-                                            style={styles.regisrationCountText}
-                                        >
-                                            There is a meal offered at the
-                                            event.
-                                        </Text>
-                                        {ral?.meal?.cost ? (
-                                            <View
-                                                style={styles.mealTextWrapper}
-                                            >
-                                                <Text
-                                                    style={styles.mealCostText}
-                                                >
-                                                    Cost: {ral.meal.cost}
-                                                </Text>
-                                                <Text
-                                                    style={styles.mealStartTime}
-                                                >
-                                                    Meal starts at{' '}
-                                                    {ral.meal.startTime}
-                                                </Text>
-                                                <Text
-                                                    style={styles.mealCostText}
-                                                >
-                                                    Will any of your group like
-                                                    to attend?
-                                                </Text>
-                                            </View>
-                                        ) : null}
-                                        <View
-                                            style={
-                                                styles.registrationCountNumberContainer
-                                            }
-                                        >
-                                            <NumberInput
-                                                value={mealCount}
-                                                onAction={handleMealCountChange}
-                                            />
-                                        </View>
-                                    </View>
+                                {ral?.meal?.offered ? (
+                                    <RegisterMeal
+                                        ral={ral}
+                                        mealCount={mealCount}
+                                        onPress={handleMealCountChange}
+                                    />
                                 ) : null}
                                 <Button
                                     // icon={<Icon name='code' color='#ffffff' />}
