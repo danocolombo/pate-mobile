@@ -32,8 +32,8 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
     const dispatch = useDispatch();
     let ral = rally;
     let reg = registration;
-    printObject('RR:35 -->ral', ral);
-    printObject('RR:36 -->reg', reg);
+    // printObject('RR:35 -->ral', ral);
+    // printObject('RR:36 -->reg', reg);
     if (!ral?.uid && reg?.eid) {
         //need to get the rally from reg.eid
         let rallyArray = useSelector((state) =>

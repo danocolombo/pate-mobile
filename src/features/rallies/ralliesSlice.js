@@ -75,10 +75,16 @@ export const ralliesSlice = createSlice({
             return found;
         },
         updateRally: (state, action) => {
+            const newValue = action.payload;
+            // console.log('newValue:', newValue);
             const newRallyList = state.allRallies.map((ral) => {
-                return ral.uid === action.payload.uid ? action.payload : ral;
+                // console.log('typeof ral:', typeof ral);
+                // console.log('typeof action.payload', typeof action.payload);
+                return ral.uid === newValue.uid ? newValue : ral;
             });
-
+            // console.log('=========FEATURE START==============');
+            // console.log('f.r.RS:82-->newRallyList', newRallyList);
+            // console.log('=========FEATURE END==============');
             function asc_sort(a, b) {
                 return a.eventDate - b.eventDate;
             }
