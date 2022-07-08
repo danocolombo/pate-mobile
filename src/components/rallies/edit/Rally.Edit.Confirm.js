@@ -79,6 +79,7 @@ const RallyNewConfirmation = () => {
     // printObject('CONFIRMING tmpRally:', rally);
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
+        printObject('S.R.E.REC:82-->newRally', newRally);
         if (newRally?.contact?.phone) {
             // need value either blank or pateDate
             let valueToUse;
@@ -135,7 +136,8 @@ const RallyNewConfirmation = () => {
                 axios
                     .post(api2use, body, CONFIG)
                     .then((response) => {
-                        dispatch(updateRally(response.data.Item));
+                        //dispatch(updateRally(response.data.Item));
+                        dispatch(updateRally(newRally));
                     })
                     .catch((err) => {
                         console.log('REC-106: error:', err);
