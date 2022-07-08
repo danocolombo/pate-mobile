@@ -35,8 +35,10 @@ const RallyMealInfo = ({ rally }) => {
                             </View>
                         </View>
                     ) : (
-                        <View>
-                            <Text>No Meal Offered</Text>
+                        <View style={styles.noMealWrapper}>
+                            <Text style={styles.noMealText}>
+                                No Meal Offered
+                            </Text>
                         </View>
                     )}
                 </Surface>
@@ -73,6 +75,13 @@ const styles = StyleSheet.create({
     },
     mealDeadlineWrapper: {
         marginTop: 5,
+    },
+    noMealWrapper: {
+        marginVertical: 5,
+    },
+    noMealText: {
+        fontSize: 18,
+        paddingBottom: 10,
     },
     messageWrapper: { marginVertical: 2 },
     messageText: {},

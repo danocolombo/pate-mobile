@@ -51,19 +51,26 @@ export default function RallyMealForm({ rallyId }) {
     };
     const handleNext = (values) => {
         let mealOffered = offerMeal;
-        let theDateObject = deadline;
-        let mealDeadline = Date.parse(theDateObject);
-        let mDeadline = getPateDate(mealDeadline);
+        let theDateObject = '';
+        let mTime = '';
+        let mDeadline = '';
+        let mCost = '';
+        if (mealOffered === true) {
+            theDateObject = mealTime;
+            let mt = Date.parse(theDateObject);
+            mTime = getPateTime(mt);
+            theDateObject = deadline;
+            let mealDeadline = Date.parse(theDateObject);
+            mDeadline = getPateDate(mealDeadline);
+            mCost = cost;
+        }
 
-        theDateObject = mealTime;
-        let mt = Date.parse(theDateObject);
-        let mTime = getPateTime(mt);
         // build a meal object
         let meal = {
             meal: {
                 offered: mealOffered,
                 startTime: mTime,
-                cost: cost,
+                cost: mCost,
                 deadline: mDeadline,
             },
         };

@@ -31,6 +31,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
     const dispatch = useDispatch();
     let ral = rally;
     let reg = registration;
+
     if (!ral?.uid && reg?.eid) {
         //need to get the rally from reg.eid
         let rallyArray = useSelector((state) =>
@@ -38,8 +39,9 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         );
         ral = rallyArray[0];
     }
-    printObject('RR:25 -->rally', ral);
-    printObject('RR:26 -->registration', reg);
+    let [mealOffered, setMealOffered] = useState(ral?.meal?.offered);
+    printObject('RR:25 -->ral', ral);
+    printObject('RR:26 -->reg', reg);
     // const r = rally.rally;
     const navigation = useNavigation();
     const [registrarCount, setRegistrar] = useState(
@@ -230,8 +232,10 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                                         />
                                     </View>
                                 </Surface>
-
-                                {ral?.meal?.startTime ? (
+                                <View>
+                                    <Text>offered: {mealOffered}</Text>
+                                </View>
+                                {mealOffered !== false ? (
                                     <View
                                         style={
                                             styles.registrationCountContainer
