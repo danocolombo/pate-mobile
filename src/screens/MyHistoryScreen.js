@@ -26,13 +26,16 @@ const MyHistoryScreen = () => {
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const registrations = useSelector((state) => state.users.registrations);
-    const [myRegistrations, setMyRegistrations] = useState([]);
+    const myRegistrations = registrations.filter(
+        (r) => r.registarId === user.uid
+    );
     const [isLoading, setIsLoading] = useState(false);
+    const [displayEvents, setDisplayEvents] = useState();
     const combineDetails = async () => {
         let summaryRegs = [];
         // printObject('MHS:33-->registrations', registrations);
         // printObject('MHS-34-->allRallies', allRallies);
-        registrations.map((reg) => {
+        myRegistrations.map((reg) => {
             //for each registration
             // printObject('MHS:37-->reg:', reg);
 
@@ -60,10 +63,9 @@ const MyHistoryScreen = () => {
             );
             entireRegDetails.uid = registration.registrationId;
             printObject('MHS:52-->entireRegDetails', entireRegDetails);
-
-            summaryRegs.push(entireRegDetails);
+            setDisplayEvents(entireRegDetails);
         });
-        setMyRegistrations(summaryRegs);
+        // setMyRegistrations(summaryRegs);
         // printObject('MHS:56-->summaryRegs', summaryRegs);
     };
     useEffect(() => {
