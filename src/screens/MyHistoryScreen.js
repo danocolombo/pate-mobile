@@ -104,8 +104,21 @@ const MyHistoryScreen = () => {
                                     <Text style={styles.headerText}>
                                         Your Registrations
                                     </Text>
-
-                                    <Text>Tap to edit active events.</Text>
+                                    {displayEvents ? (
+                                        displayEvents.length > 0 ? (
+                                            <View
+                                                style={
+                                                    styles.taglineTextWrapper
+                                                }
+                                            >
+                                                <Text
+                                                    style={styles.taglineText}
+                                                >
+                                                    Tap events for details.
+                                                </Text>
+                                            </View>
+                                        ) : null
+                                    ) : null}
                                 </View>
                                 {displayEvents ? (
                                     displayEvents.map((r) => {
@@ -210,6 +223,12 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 30,
         fontWeight: 'bold',
+    },
+    taglineTextWrapper: {
+        marginTop: 5,
+    },
+    taglineText: {
+        fontSize: 16,
     },
     text: {
         fontSize: 16,

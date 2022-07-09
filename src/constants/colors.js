@@ -1,5 +1,5 @@
 export const Colors = {
-    primary: '#49274A',
+    primary: '#1656A3',
     primary3: '#003b88',
     primary4: '#0000FF',
     primary1: '#4169E1',
@@ -11,7 +11,10 @@ export const Colors = {
     primary500: '#1aacf0',
     primary700: '#0570c9',
     primary800: '#003b88',
-    secondary: '#84618E',
+    secondary: '#A8C7ED',
+    secondaryLight: '#FFC55C',
+    secondaryMedium: '#F0B13E',
+    secondaryDark: '#A3731A',
     secondary4: '#1E90FF',
     secondary3: '#00BFFF',
     secondary2: '#a6a6a6',

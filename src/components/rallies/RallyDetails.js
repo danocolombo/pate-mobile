@@ -96,22 +96,35 @@ const RallyDetails = (rallyIn) => {
                                         }}
                                     />
                                 </View>
-                                <View style={styles.notesContainer}>
-                                    <Text style={styles.notesText}>
-                                        Come check it out
-                                    </Text>
+                                {rally?.meal?.offered === true ? (
+                                    <View style={styles.mealOfferRow}>
+                                        <View style={styles.mealOfferWrapper}>
+                                            <Text style={styles.mealOfferText}>
+                                                MEAL AVAILABLE!!
+                                            </Text>
+                                        </View>
+                                    </View>
+                                ) : null}
+                                {rally?.message.length > 0 ? (
+                                    <View style={styles.notesContainer}>
+                                        <Text style={styles.notesText}>
+                                            {rally.message}
+                                        </Text>
+                                    </View>
+                                ) : null}
+                                <View style={styles.registerButtonWrapper}>
+                                    <Button
+                                        // icon={<Icon name='code' color='#ffffff' />}
+                                        buttonStyle={{
+                                            borderRadius: 5,
+                                            marginLeft: 40,
+                                            marginRight: 40,
+                                            marginBottom: 0,
+                                        }}
+                                        title='REGISTER NOW'
+                                        onPress={handleRegisterRequest}
+                                    />
                                 </View>
-                                <Button
-                                    // icon={<Icon name='code' color='#ffffff' />}
-                                    buttonStyle={{
-                                        borderRadius: 5,
-                                        marginLeft: 40,
-                                        marginRight: 40,
-                                        marginBottom: 0,
-                                    }}
-                                    title='REGISTER NOW'
-                                    onPress={handleRegisterRequest}
-                                />
                             </Card>
                         </View>
                     </ScrollView>
@@ -173,6 +186,16 @@ const styles = StyleSheet.create({
     location: {
         color: Colors.primary,
     },
+    mealOfferRow: { alignItems: 'center', marginVertical: 10 },
+    mealOfferWrapper: {
+        backgroundColor: 'yellow',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+        borderWidth: 1,
+    },
+    mealOfferText: {},
+    registerButtonWrapper: { marginTop: 10 },
     graphicWrapper: {
         // justifyContent: 'center',
         alignItems: 'center',
