@@ -20,7 +20,12 @@ import {
 } from '../../utils/date';
 
 const RallyDetails = (rallyIn) => {
-    // printObject('RD:23==>>>', rallyIn.rally);
+    printObject('S.C.R.RD:23==>>>', rallyIn.rally);
+    //always get the latest from allRallies
+    let ral = useSelector((state) =>
+        state.rallies.allRallies.filter((r) => r.uid === rallyIn.uid)
+    );
+    printObject('S.C.R.RD:28==>>>REDUX', rallyIn.rally);
     const rally = rallyIn.rally;
     const navigation = useNavigation();
     // const dispatch = useDispatch();

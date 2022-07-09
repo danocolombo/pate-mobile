@@ -12,7 +12,7 @@ import { Headline } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import CurrencyInput from 'react-native-currency-input';
-import { Button } from '@react-native-material/core';
+import { Switch } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
 import {
@@ -31,6 +31,11 @@ export default function RallyMealForm({ rallyId }) {
         state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
     const rally = rallyEntry[0];
+    let mealSetting = true;
+    if (rally?.meal?.offered === false) {
+        mealSetting = false;
+    }
+    const [offerMeal, setOfferMeal] = useState(mealSetting);
     const [mealTime, setMealTime] = useState(
         pateTimeToSpinner(rally.eventDate, rally.meal.startTime)
     );
@@ -45,18 +50,27 @@ export default function RallyMealForm({ rallyId }) {
         setDeadline(value);
     };
     const handleNext = (values) => {
-        let theDateObject = deadline;
-        let mealDeadline = Date.parse(theDateObject);
-        let mDeadline = getPateDate(mealDeadline);
+        let mealOffered = offerMeal;
+        let theDateObject = '';
+        let mTime = '';
+        let mDeadline = '';
+        let mCost = '';
+        if (mealOffered === true) {
+            theDateObject = mealTime;
+            let mt = Date.parse(theDateObject);
+            mTime = getPateTime(mt);
+            theDateObject = deadline;
+            let mealDeadline = Date.parse(theDateObject);
+            mDeadline = getPateDate(mealDeadline);
+            mCost = cost;
+        }
 
-        theDateObject = mealTime;
-        let mt = Date.parse(theDateObject);
-        let mTime = getPateTime(mt);
         // build a meal object
         let meal = {
             meal: {
+                offered: mealOffered,
                 startTime: mTime,
-                cost: cost,
+                cost: mCost,
                 deadline: mDeadline,
             },
         };
@@ -76,6 +90,22 @@ export default function RallyMealForm({ rallyId }) {
                             <View style={styles.formHeader}>
                                 <Headline>Rally Meal Information</Headline>
                             </View>
+                            <View style={styles.offerRow}>
+                                <View style={styles.offerTextWrapper}>
+                                    <Text style={styles.offerText}>
+                                        Offer a meal:
+                                    </Text>
+                                </View>
+                                <View style={styles.offerSwitchWrapper}>
+                                    <Switch
+                                        value={offerMeal}
+                                        onValueChange={() =>
+                                            setOfferMeal(!offerMeal)
+                                        }
+                                        style={styles.offerSwitch}
+                                    />
+                                </View>
+                            </View>
                             <View style={styles.datePickerWrapper}>
                                 <View>
                                     <Text style={styles.datePickerLabel}>
@@ -86,6 +116,7 @@ export default function RallyMealForm({ rallyId }) {
                                     value={mealTime}
                                     minuteInterval={15}
                                     mode='time'
+                                    disabled={!offerMeal}
                                     display={
                                         Platform.OS === 'ios'
                                             ? 'spinner'
@@ -102,13 +133,18 @@ export default function RallyMealForm({ rallyId }) {
                                 <CurrencyInput
                                     value={cost}
                                     onChangeValue={setCost}
-                                    style={styles.costInput}
                                     prefix='$'
                                     placeholder='cost'
                                     minValue={0}
                                     delimiter=','
                                     separator='.'
                                     precision={2}
+                                    editable={offerMeal}
+                                    style={
+                                        offerMeal
+                                            ? styles.costInput
+                                            : styles.costInputDisabled
+                                    }
                                     // onChangeText={(formattedValue) => {
                                     //     console.log(formattedValue); // $2,310.46
                                     // }}
@@ -126,6 +162,7 @@ export default function RallyMealForm({ rallyId }) {
                                         rally.eventDate
                                     )}
                                     minuteInterval={15}
+                                    disabled={!offerMeal}
                                     display={
                                         Platform.OS === 'ios'
                                             ? 'spinner'
@@ -198,6 +235,20 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         alignItems: 'center',
     },
+    offerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 10,
+    },
+    offerTextWrapper: {
+        marginRight: 10,
+    },
+    offerText: {
+        fontSize: 20,
+    },
+    offerSwitchWrapper: {},
+    offerSwitch: {},
     inputContainer: {
         marginLeft: '10%',
     },
@@ -266,6 +317,18 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 6,
         width: 100,
+        marginHorizontal: 0,
+        borderColor: Colors.gray35,
+        paddingHorizontal: 12,
+        height: 45,
+    },
+    costInputDisabled: {
+        marginVertical: 8,
+        fontSize: 18,
+        borderWidth: 1,
+        borderRadius: 6,
+        width: 100,
+        color: Colors.gray35,
         marginHorizontal: 0,
         borderColor: Colors.gray35,
         paddingHorizontal: 12,

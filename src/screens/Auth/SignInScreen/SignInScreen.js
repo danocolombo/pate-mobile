@@ -6,6 +6,7 @@ import {
     useWindowDimensions,
     Alert,
 } from 'react-native';
+import axios from 'axios';
 import React, { useState } from 'react';
 import Logo from '../../../../assets/images/P8-Logo150.png';
 import CustomInput from '../../../components/ui/CustomInput';
@@ -15,9 +16,13 @@ import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { Auth } from 'aws-amplify';
 import { useDispatch } from 'react-redux';
+import { ALL_EVENTS } from '../../../../data/getRegionalEvents';
 import { updateCurrentUser } from '../../../features/users/usersSlice';
 import { getProfile } from '../../../providers/users';
-
+import { loadRallies } from '../../../features/rallies/ralliesSlice';
+import { loadRegistrations } from '../../../features/users/usersSlice';
+import { getToday, printObject } from '../../../utils/helpers';
+import { getPateDate } from '../../../utils/date';
 const SignInScreen = () => {
     const [loading, setLoading] = useState(false);
     const { height } = useWindowDimensions();
@@ -127,7 +132,9 @@ const SignInScreen = () => {
         theUser.jwtToken = j;
         theUser.groups = g;
 
-        // console.log('theUser: ', theUser);
+        //   ########################
+        //   get user profile
+        //   ########################
         let fullUserInfo = {};
         await getProfile(theUser.uid).then((profileResponse) => {
             // console.log('profileResponse', profileResponse);
@@ -152,11 +159,120 @@ const SignInScreen = () => {
                     break;
             }
             dispatch(updateCurrentUser(fullUserInfo));
-
-            //====================================
-            setLoading(false);
-            return;
         });
+        // let's load redux with rallies.
+        //   ====================================
+        //   START RALLY LOADING
+        //   ====================================
+        const eventRegion = process.env.EVENT_REGION;
+        // console.log('MS:54-->process.env.EVENT_REGION', eventRegion);
+        if (process.env.ENV === 'DEV') {
+            const fileRallies = ALL_EVENTS.body.Items;
+            let response = {
+                body: fileRallies,
+            };
+            dispatch(loadRallies(fileRallies));
+
+            const tDay = getToday();
+            const publicRallies = fileRallies.filter(
+                (r) => r.approved === true && r.eventDate >= tDay
+            );
+            setApprovedRallies(publicRallies);
+            // setIsLoading(false);
+        } else {
+            const tDay = getPateDate(getToday());
+            const config = {
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            };
+            let obj = {
+                operation: 'getAllEvents',
+            };
+            let body = JSON.stringify(obj);
+
+            let api2use = process.env.AWS_API_ENDPOINT + '/events';
+            //let dbRallies = await axios.post(api2use, body, config);
+
+            axios
+                .post(api2use, body, config)
+                .then((response) => {
+                    //   SAVE ALL RALLIES TO REDUX
+                    dispatch(loadRallies(response.data.body.Items));
+
+                    //saveAllRallies(response.data.body.Items);
+                    // console.log('MS:81-->events', response.data.body.Items);
+
+                    // let dbRallies = response.data.body.Items;
+                    // const publicRallies = dbRallies.filter((r) => {
+                    //     return (
+                    //         r.approved === true &&
+                    //         r.eventDate >= tDay &&
+                    //         r.eventRegion === eventRegion
+                    //     );
+                    // console.log('==============================');
+                    // console.log('r.name:', r.name);
+                    // console.log('r.approved:', r.approved);
+                    // console.log('r.eventDate', r.eventDate);
+                    // console.log('tDay:', tDay);
+                    // console.log('r.eventRegion:', r.eventRegion);
+                    // console.log('EVENT_REGION:', eventRegion);
+                    // });
+                    // printObject('MS:112->publicRallies', publicRallies);
+                    // setApprovedRallies(publicRallies);
+                })
+                .catch((err) => {
+                    console.log('MS-60: error:', err);
+                    navigation.navigate('ErrorMsg', {
+                        id: 'MS-60',
+                        message:
+                            'Cannot connect to server. Please check internet connection and try again.',
+                    });
+                });
+            //   ================================================
+            //    now get all the registrations for the user
+            //   ================================================
+            // printObject('MS:128--> entireRallyList', entireRallyList);
+            obj = {
+                operation: 'getAllUserRegistrations',
+                payload: {
+                    rid: theUser.uid,
+                },
+            };
+            body = JSON.stringify(obj);
+
+            api2use = process.env.AWS_API_ENDPOINT + '/registrations';
+            //let dbRallies = await axios.post(api2use, body, config);
+            try {
+                axios
+                    .post(api2use, body, config)
+                    .then((response) => {
+                        let respData = response.data.body;
+                        if (respData) {
+                            function asc_sort(a, b) {
+                                return b.eventDate - a.eventDate;
+                            }
+                            let newRegList = respData.sort(asc_sort);
+                            printObject('SIS:256-->regList', newRegList);
+
+                            dispatch(loadRegistrations(newRegList));
+                        }
+                    })
+                    .catch((err) => {
+                        console.log('SIS:255: error:', err);
+                        navigation.navigate('ErrorMsg', {
+                            id: 'SIS-257',
+                            message:
+                                'Cannot connect to server. Please check internet connection and try again.',
+                        });
+                    });
+            } catch (error) {
+                console.log('SIS:265-->Axios errror.');
+            }
+        }
+
+        setLoading(false);
+        return;
     };
     const onSignUpPressed = () => {
         navigation.navigate('SignUp');

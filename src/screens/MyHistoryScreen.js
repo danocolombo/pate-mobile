@@ -35,7 +35,11 @@ const MyHistoryScreen = () => {
         registrations.map((reg) => {
             //for each registration
             // printObject('MHS:37-->reg:', reg);
-            //get eventId
+
+            let registration = reg;
+            registration = { ...registration, registrationId: reg?.uid };
+            registration = { ...registration, rallyId: reg?.eid };
+            registration = { ...registration, registrar: reg?.rid };
             let eventId;
             if (reg?.eventId) {
                 eventId = reg.eventId;
@@ -47,11 +51,15 @@ const MyHistoryScreen = () => {
                 return ral.uid === eventId;
             });
 
-            // printObject('MHS:50-->eventId', eventId);
-            // printObject('MHS:50-->rallyInfo', rallyInfo);
-            let entireRegDetails = Object.assign({}, reg, rallyInfo[0]);
-            entireRegDetails.uid = eventId;
-            // printObject('MHS:52-->entireRegDetails', entireRegDetails);
+            printObject('MHS:56-->registration', registration);
+            printObject('MHS:50-->rallyInfo', rallyInfo);
+            let entireRegDetails = Object.assign(
+                {},
+                registration,
+                rallyInfo[0]
+            );
+            entireRegDetails.uid = registration.registrationId;
+            printObject('MHS:52-->entireRegDetails', entireRegDetails);
 
             summaryRegs.push(entireRegDetails);
         });
