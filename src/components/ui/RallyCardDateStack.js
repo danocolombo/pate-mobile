@@ -1,6 +1,9 @@
 import { Text, TextInput, View, StyleSheet } from 'react-native';
 import { Colors } from '../../constants/colors';
 function CardDate({ date }) {
+    if (!date) {
+        return null;
+    }
     let yr = '?';
     let mo = '?';
     let da = '?';

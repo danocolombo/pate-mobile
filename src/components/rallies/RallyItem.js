@@ -14,12 +14,12 @@ import { Colors } from '../../constants/colors';
 import { printObject } from '../../utils/helpers';
 
 function RallyItem(rally) {
-    const { uid, eventDate, name, city, stateProv } = rally;
-    // printObject('RI:18', rally);
+    const { uid, eventDate, name, city, stateProv } = rally.rally;
+    printObject('RI:18', rally.rally);
     const navigation = useNavigation();
     function rallyPressHandler() {
         navigation.navigate('RallyDetail', {
-            rally: rally,
+            rally: rally.rally,
         });
     }
 

@@ -6,12 +6,14 @@ import {
     StyleSheet,
     Image,
     Modal,
+    FlatList,
     ScrollView,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../components/ui/CustomButton';
 import { Surface } from 'react-native-paper';
+import RallyItem from '../components/rallies/RallyItem';
 import RalliesOutput from '../components/rallies/RalliesOutput';
 import { getToday, printObject } from '../utils/helpers';
 import { getPateDate } from '../utils/date';
@@ -76,8 +78,16 @@ export default function MainScreen() {
                     </Surface>
                 </Modal>
 
-                {allRallies.length !== 0 ? (
-                    <RalliesOutput rallies={displayData} />
+                {displayData.length !== 0 ? (
+                    <View>
+                        <FlatList
+                            data={displayData}
+                            keyExtractor={(item) => item.uid}
+                            renderItem={({ item }) => (
+                                <RallyItem rally={item} />
+                            )}
+                        />
+                    </View>
                 ) : (
                     <View style={styles.imageContainer}>
                         <Image
