@@ -13,8 +13,8 @@ export async function updateProfile(profile) {
         },
     };
     let body = JSON.stringify(obj);
-    printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
-    console.log('\n###########################\n');
+    // printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
+    // console.log('\n###########################\n');
     let api2use = process.env.AWS_API_ENDPOINT + '/users';
 
     let res = await axios.post(api2use, body, config);

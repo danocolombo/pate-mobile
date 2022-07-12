@@ -53,10 +53,29 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
     const user = useSelector((state) => state.users.currentUser);
 
     const handleRegistarCountChange = (e) => {
-        setRegistrar(parseInt(e));
+        let x = parseInt(e);
+        let mc = parseInt(mealCount);
+        let rc = parseInt(registrarCount);
+        if (x < rc) {
+            setRegistrar(x);
+            if (rc <= mc) {
+                setMealCount(x);
+            }
+        }
+        if (x > rc) {
+            setRegistrar(x);
+        }
     };
     const handleMealCountChange = (e) => {
-        setMealCount(parseInt(e));
+        let x = parseInt(e);
+        let mc = parseInt(mealCount);
+        let rc = parseInt(registrarCount);
+        if (x < mc && mc !== 0) {
+            setMealCount(x);
+        }
+        if (x > mc && mc < rc && x <= rc) {
+            setMealCount(x);
+        }
     };
     const handleRegistrationRequest = () => {
         //determine if update or new
