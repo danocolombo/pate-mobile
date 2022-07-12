@@ -70,9 +70,12 @@ export default function ProfileForm() {
     let rally;
 
     const handleSubmit = (values) => {
+        // printObject('PF:73-->values', values);
+        // printObject('PF:74-->user', user);
         //ensure that the phone is in expected format 1234567890
         // 1. value needs to be either 0 or 14 characters.
         let pType = getPhoneType(userPhone);
+        let phoneToPass;
         switch (pType) {
             case 'PATE':
                 phoneToPass = userPhone;
@@ -113,11 +116,16 @@ export default function ProfileForm() {
         // now conditionally add the rep and lead info if applicable
         if (user?.stateRep) {
             dbProfile = { ...dbProfile, stateRep: user.stateRep };
+            dbProfile = { ...dbProfile, profile: user.profile };
         }
         if (user?.stateLead) {
             dbProfile = { ...dbProfile, stateLead: user.stateLead };
+            dbProfile = { ...dbProfile, profile: user.profile };
         }
-        dbProfile = { ...dbProfile, region: 'us#east#south#tt' };
+        dbProfile = { ...dbProfile, username: user.username };
+        dbProfile = { ...dbProfile, role: user.role };
+        dbProfile = { ...dbProfile, region: user.region };
+        // printObject('PF:127-->dbProfile', dbProfile);
         updateProfile(dbProfile).then((response) => {
             navigation.navigate('Main', null);
         });

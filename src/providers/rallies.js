@@ -52,8 +52,8 @@ export async function updateRally(rally, user) {
         },
     };
     let body = JSON.stringify(obj);
-    printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
-    console.log('\n###########################\n');
+    //printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
+    //console.log('\n###########################\n');
     let api2use = process.env.AWS_API_ENDPOINT + '/events';
 
     let res = await axios.post(api2use, body, config);
@@ -144,11 +144,11 @@ export async function putRally(rally, user) {
             Item: readyEvent,
         },
     };
-    printObject('obj to DBDBDBDBDBDBDBDBDBDBDB', obj);
-    console.log('\n###########################\n');
+    // printObject('obj to DBDBDBDBDBDBDBDBDBDBDB', obj);
+    // console.log('\n###########################\n');
     let body = JSON.stringify(obj);
-    printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
-    console.log('\n###########################\n');
+    // printObject('body going to DBDBDBDBDBDBDBDBDBDBDB', body);
+    // console.log('\n###########################\n');
     let api2use = process.env.AWS_API_ENDPOINT + '/events';
 
     let res = await axios.post(api2use, body, config);

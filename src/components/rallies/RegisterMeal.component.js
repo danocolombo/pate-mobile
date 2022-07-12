@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import NumberInput from '../ui/NumberInput/NumberInput';
+import { dateNumToDisplayTime } from '../../utils/date';
 import { Colors } from '../../constants/colors';
 const RegisterMeal = ({ ral, mealCount, onPress }) => {
     return (
@@ -8,19 +9,26 @@ const RegisterMeal = ({ ral, mealCount, onPress }) => {
             <Text style={styles.regisrationCountText}>
                 There is a meal offered at the event.
             </Text>
-            {ral?.meal?.cost ? (
-                <View style={styles.mealTextWrapper}>
+            <View style={styles.mealTextWrapper}>
+                <View>
                     <Text style={styles.mealCostText}>
-                        Cost: {ral.meal.cost}
+                        Cost:{' '}
+                        {ral.meal.cost === 0 ? 'FREE' : ['$', ral.meal.cost]}
                     </Text>
+                </View>
+                <View>
                     <Text style={styles.mealStartTime}>
-                        Meal starts at {ral.meal.startTime}
+                        Meal starts at{' '}
+                        {dateNumToDisplayTime(ral.meal.startTime)}
                     </Text>
+                </View>
+                <View>
                     <Text style={styles.mealCostText}>
                         Will any of your group like to attend?
                     </Text>
                 </View>
-            ) : null}
+            </View>
+
             <View style={styles.registrationCountNumberContainer}>
                 <NumberInput value={mealCount} onAction={onPress} />
             </View>
@@ -36,7 +44,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         borderColor: Colors.primary,
         marginVertical: 10,
-        backgroundColor: Colors.gray10,
+        backgroundColor: Colors.secondaryMedium,
     },
     regisrationCountText: {
         fontSize: 16,

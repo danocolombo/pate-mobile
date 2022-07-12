@@ -253,7 +253,7 @@ const SignInScreen = () => {
                                 return b.eventDate - a.eventDate;
                             }
                             let newRegList = respData.sort(asc_sort);
-                            printObject('SIS:256-->regList', newRegList);
+                            // printObject('SIS:256-->regList', newRegList);
 
                             dispatch(loadRegistrations(newRegList));
                         }

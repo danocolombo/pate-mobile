@@ -10,8 +10,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Surface, Headline, Subheading } from 'react-native-paper';
-import { REGISTRATIONS_TTLEAD } from '../../data/getRegistrationsForUser_ttrep';
+import { Surface } from 'react-native-paper';
 import RegListCard from '../components/ui/RegistrationListCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteRegistration } from '../providers/registrations';
@@ -26,13 +25,13 @@ const MyHistoryScreen = () => {
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const registrations = useSelector((state) => state.users.registrations);
-    const [myRegistrations, setMyRegistrations] = useState([]);
+
     const [isLoading, setIsLoading] = useState(false);
+    const [displayEvents, setDisplayEvents] = useState();
     const combineDetails = async () => {
-        let summaryRegs = [];
         // printObject('MHS:33-->registrations', registrations);
         // printObject('MHS-34-->allRallies', allRallies);
-        registrations.map((reg) => {
+        const allCombinedRegs = registrations.map((reg) => {
             //for each registration
             // printObject('MHS:37-->reg:', reg);
 
@@ -50,34 +49,32 @@ const MyHistoryScreen = () => {
             let rallyInfo = allRallies.filter((ral) => {
                 return ral.uid === eventId;
             });
-
-            printObject('MHS:56-->registration', registration);
-            printObject('MHS:50-->rallyInfo', rallyInfo);
+            // printObject('MHS:53-->registration', registration);
+            // printObject('MHS:54-->rallyInfo[0]', rallyInfo[0]);
             let entireRegDetails = Object.assign(
                 {},
                 registration,
                 rallyInfo[0]
             );
             entireRegDetails.uid = registration.registrationId;
-            printObject('MHS:52-->entireRegDetails', entireRegDetails);
-
-            summaryRegs.push(entireRegDetails);
+            // printObject('MHS:61-->entireRegDetails', entireRegDetails);
+            return entireRegDetails;
         });
-        setMyRegistrations(summaryRegs);
-        // printObject('MHS:56-->summaryRegs', summaryRegs);
+        return allCombinedRegs;
     };
+
     useEffect(() => {
         //we want to associate rally details with each registration
         setIsLoading(true);
         combineDetails()
             .then((results) => {
-                console.log('done');
+                setDisplayEvents(results);
             })
             .catch((error) => {
-                console.log('MHS:66-->error', error);
+                console.log('MHS:74-->error', error);
             });
         setIsLoading(false);
-    }, []);
+    }, [registrations]);
 
     function regPressHandler(reg) {
         // printObject('MHS:64-->reg', reg);
@@ -107,11 +104,24 @@ const MyHistoryScreen = () => {
                                     <Text style={styles.headerText}>
                                         Your Registrations
                                     </Text>
-
-                                    <Text>Tap to edit active events.</Text>
+                                    {displayEvents ? (
+                                        displayEvents.length > 0 ? (
+                                            <View
+                                                style={
+                                                    styles.taglineTextWrapper
+                                                }
+                                            >
+                                                <Text
+                                                    style={styles.taglineText}
+                                                >
+                                                    Tap events for details.
+                                                </Text>
+                                            </View>
+                                        ) : null
+                                    ) : null}
                                 </View>
-                                {myRegistrations ? (
-                                    myRegistrations.map((r) => {
+                                {displayEvents ? (
+                                    displayEvents.map((r) => {
                                         const enablePress =
                                             !isDateDashBeforeToday(
                                                 dateNumToDateDash(r.eventDate)
@@ -213,6 +223,12 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 30,
         fontWeight: 'bold',
+    },
+    taglineTextWrapper: {
+        marginTop: 5,
+    },
+    taglineText: {
+        fontSize: 16,
     },
     text: {
         fontSize: 16,

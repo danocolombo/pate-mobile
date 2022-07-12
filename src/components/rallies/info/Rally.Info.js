@@ -106,7 +106,7 @@ const RallyDetails = ({ rallyId }) => {
         setShowStatusModal(false);
     };
     const handleRegistrarRequest = (reg) => {
-        printObject('RI:122-reg', reg);
+        // printObject('RI:122-reg', reg);
         navigation.navigate('RegistrationDetails', { reg: reg });
     };
     // printObject('RI:124-rally', rally);

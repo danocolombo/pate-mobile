@@ -50,9 +50,11 @@ function RegListCard({ registration, onDeletePress, oldStyle = {} }) {
                             </Text>
                         </View>
                         <View style={styles.numberItem}>
-                            <Text style={styles.text}>
-                                Meal: {registration?.mealCount}
-                            </Text>
+                            {registration.meal.offered === true ? (
+                                <Text style={styles.text}>
+                                    Meal: {registration?.mealCount}
+                                </Text>
+                            ) : null}
                         </View>
                         {!isDateDashBeforeToday(
                             dateNumToDateDash(registration?.eventDate)
