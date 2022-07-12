@@ -16,7 +16,7 @@ import { convertPateTime } from '../../utils/date';
 
 function RallyItem(rally) {
     const { uid, eventDate, name, city, stateProv, startTime } = rally.rally;
-    printObject('RI:18', rally.rally);
+    // printObject('RI:18', rally.rally);
     const navigation = useNavigation();
     function rallyPressHandler() {
         navigation.navigate('RallyDetail', {
@@ -48,11 +48,9 @@ function RallyItem(rally) {
                             </View>
                             <View style={styles.col2}>
                                 <View style={styles.locationWrapper}>
-                                    <View style={styles.itemRow}>
-                                        <Text style={styles.locationText}>
-                                            {city}, {stateProv}
-                                        </Text>
-                                    </View>
+                                    <Text style={styles.locationText}>
+                                        {city}, {stateProv}
+                                    </Text>
                                 </View>
 
                                 <View style={styles.hostWrapper}>
@@ -98,7 +96,7 @@ const styles = StyleSheet.create({
     //     flexDirection: 'column',
     // },
     col1: {
-        // flex: 1,
+        paddingVertical: 8,
         flexDirection: 'column',
         justifyContent: 'space-around',
         paddingLeft: 10,
@@ -106,13 +104,16 @@ const styles = StyleSheet.create({
         // borderColor: 'yellow',
     },
     eventDateWrapper: {
-        paddingTop: 5,
+        // paddingTop: 5,
+        // borderWidth: 1,
+        // borderColor: 'yellow',
     },
 
     eventTimeWrapper: {
         // paddingHorizontal: 0,
         // justifyContent: 'center',
         alignItems: 'center',
+        paddingVertical: 2,
         // borderWidth: 1,
         // borderColor: 'white',
     },
@@ -125,10 +126,16 @@ const styles = StyleSheet.create({
     },
     col2: {
         flex: 1,
+        paddingVertical: 8,
         flexDirection: 'column',
         justifyContent: 'space-around',
         // borderWidth: 1,
         // borderColor: 'yellow',
+    },
+    locationWrapper: {
+        justifyContent: 'center',
+        // borderWidth: 1,
+        // borderColor: 'white',
     },
     locationText: {
         width: '100%',
@@ -140,7 +147,7 @@ const styles = StyleSheet.create({
     hostWrapper: {
         paddingLeft: 25,
         // borderWidth: 1,
-        // borderColor: 'yellow',
+        // borderColor: 'white',
     },
     hostName: {
         // marginLeft: 20,
@@ -152,21 +159,5 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-start',
-
-        // marginBottom: 10,
-    },
-    itemRow: {
-        margin: 5,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-
-    imageContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    image: {
-        width: '85%',
-        height: '65%',
     },
 });

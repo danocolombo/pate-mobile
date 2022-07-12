@@ -6,9 +6,11 @@ import { Card } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import CardDate from './RallyCardDateStack';
 import { printObject } from '../../utils/helpers';
+import { convertPateTime } from '../../utils/date';
 
-// function EventListCard({ date, locationName, city, stateProv }) {
+// function EventListCard({ date, locationName, city, stateProv, eventTime }) {
 function EventListCard({ rally, deletePress }) {
+    // printObject('C.U.RLC:13==>rally', rally);
     const user = useSelector((state) => state.users.currentUser);
     let bgStyle;
     if (user.uid === rally.coordinator.id) {
@@ -50,6 +52,22 @@ function EventListCard({ rally, deletePress }) {
                         </View>
                     </View>
                 </View>
+                <View style={styles.cardRow}>
+                    <View style={styles.timeWrapper}>
+                        <Text style={styles.timeText}>
+                            {convertPateTime(rally.startTime)}
+                            {' - '}
+                            {convertPateTime(rally.endTime)}
+                        </Text>
+                    </View>
+                    {rally.meal.offered ? (
+                        <View style={styles.mealOfferedWrapper}>
+                            <Text style={styles.mealOfferedText}>
+                                Meal offered
+                            </Text>
+                        </View>
+                    ) : null}
+                </View>
                 <View style={styles.cardStatusRow}>
                     <View>
                         {rally.approved === true ? (
@@ -83,10 +101,27 @@ function EventListCard({ rally, deletePress }) {
                             </>
                         )}
                     </View>
+                    {rally.approved === true ? (
+                        <View style={styles.registrationsWrapper}>
+                            <Text style={styles.registrationsText}>
+                                Registrations: {rally?.registrations}
+                            </Text>
+                        </View>
+                    ) : null}
+                    {rally.approved === true && rally?.meal?.offered ? (
+                        <View style={styles.mealsWrapper}>
+                            <Text style={styles.mealsText}>
+                                Meals:{' '}
+                                {rally?.meal?.mealCount
+                                    ? rally?.meal?.mealCount
+                                    : 0}
+                            </Text>
+                        </View>
+                    ) : null}
                     <View style={styles.deleteIcon}>
                         <Ionicons
                             name='trash'
-                            color={Colors.gray75}
+                            color='white'
                             size={20}
                             onPress={() => deletePress(rally)}
                         />
@@ -122,7 +157,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        marginTop: 10,
+        // marginTop: 10,
         marginLeft: 0,
     },
     nameGeoContainer: {
@@ -140,6 +175,29 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
     },
+    timeWrapper: {
+        marginTop: 5,
+        marginBottom: 5,
+        // borderWidth: 1,
+        // borderColor: 'white',
+    },
+    timeText: {
+        paddingHorizontal: 10,
+        // paddingVertical: 5,
+        color: 'white',
+    },
+    mealOfferedWrapper: {
+        // borderWidth: 1,
+        backgroundColor: 'yellow',
+        borderRadius: 5,
+        // borderColor: 'yellow',
+        justifyContent: 'center',
+        paddingHorizontal: 5,
+    },
+    mealOfferedText: {
+        // paddingLeft: 5,
+        color: 'black',
+    },
     indicatorContainer: {
         flex: 1,
         alignItems: 'flex-end',
@@ -150,6 +208,14 @@ const styles = StyleSheet.create({
     rallyStatus: {
         color: 'white',
         fontWeight: 'bold',
+    },
+    registrationsWrapper: { paddingLeft: 15 },
+    registrationsText: { color: 'white' },
+    mealsWrapper: {
+        paddingLeft: 15,
+    },
+    mealsText: {
+        color: 'white',
     },
     deleteIcon: {
         flex: 1,
