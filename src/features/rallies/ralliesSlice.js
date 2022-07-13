@@ -78,8 +78,16 @@ export const ralliesSlice = createSlice({
             // this receives object with CHANGES in registrations and meal count
             const { uid, rDiff, mDiff } = action.numberUpdaetes;
             // get existing registration
+            const existingRally = state.allRallies.filter(
+                (ral) => ral.uid === uid
+            );
+            let theRally = existingRally[0];
+
+            let newRegValue = theRally.registrations + rDiff;
+            let newMealValue = theRally.meal.mealCount + mDiff;
 
             // update the registration
+            theRally = { ...theRally, registrations: newRegValue };
 
             // update reg in list and return
         },
