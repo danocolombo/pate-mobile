@@ -8,20 +8,35 @@ import {
     Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import { useSelector } from 'react-redux';
 import CardDate from '../ui/RallyCardDate';
 import { Colors } from '../../constants/colors';
 import { printObject } from '../../utils/helpers';
 import { convertPateTime } from '../../utils/date';
 
 function RallyItem(rally) {
+    const registrations = useSelector((state) => state.users.registrations);
     const { uid, eventDate, name, city, stateProv, startTime } = rally.rally;
+    let registered = false;
+    let found = registrations.find((r) => {
+        return r.eventId === uid;
+    });
+    if (found) {
+        registered = true;
+    }
     // printObject('RI:18', rally.rally);
     const navigation = useNavigation();
     function rallyPressHandler() {
-        navigation.navigate('RallyDetail', {
-            rally: rally.rally,
-        });
+        // if the user is registered, take them to registerForm
+        if (registered) {
+            navigation.navigate('RallyRegister', {
+                registration: found,
+            });
+        } else {
+            navigation.navigate('RallyDetail', {
+                rally: rally.rally,
+            });
+        }
     }
 
     return (
@@ -45,6 +60,13 @@ function RallyItem(rally) {
                                         {convertPateTime(startTime)}
                                     </Text>
                                 </View>
+                                {!!registered && (
+                                    <View style={styles.registeredWrapper}>
+                                        <Text style={styles.registeredText}>
+                                            REGISTERED
+                                        </Text>
+                                    </View>
+                                )}
                             </View>
                             <View style={styles.col2}>
                                 <View style={styles.locationWrapper}>
@@ -110,6 +132,8 @@ const styles = StyleSheet.create({
     },
 
     eventTimeWrapper: {
+        marginTop: 5,
+        marginBottom: 5,
         // paddingHorizontal: 0,
         // justifyContent: 'center',
         alignItems: 'center',
@@ -124,6 +148,15 @@ const styles = StyleSheet.create({
         color: 'white',
         justifyContent: 'center',
     },
+    registeredWrapper: {
+        borderWidth: 1,
+        padding: 4,
+        borderRadius: 10,
+        borderColor: Colors.success,
+        backgroundColor: Colors.success,
+        alignItems: 'center',
+    },
+    registeredText: { color: 'white', fontSize: 10 },
     col2: {
         flex: 1,
         paddingVertical: 8,
