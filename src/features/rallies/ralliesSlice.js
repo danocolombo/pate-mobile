@@ -74,6 +74,15 @@ export const ralliesSlice = createSlice({
             );
             return found;
         },
+        updateRallyNumbers: (state, action) => {
+            // this receives object with CHANGES in registrations and meal count
+            const { uid, rDiff, mDiff } = action.numberUpdaetes;
+            // get existing registration
+
+            // update the registration
+
+            // update reg in list and return
+        },
         updateRally: (state, action) => {
             const newValue = action.payload;
             // console.log('newValue:', newValue);
@@ -160,6 +169,7 @@ export const {
     getRally,
     addNewRally,
     updateRally,
+    updateRallyNumbers,
     deleteRally,
     // loadUserRallies,
     createTmp,

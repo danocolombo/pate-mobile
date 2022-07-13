@@ -26,6 +26,7 @@ import {
     updateRegistration,
     addNewRegistration,
 } from '../../features/users/usersSlice';
+import { updateRallyNumbers } from '../../features/rallies/ralliesSlice';
 import NumberInput from '../ui/NumberInput/NumberInput';
 import RegisterMeal from './RegisterMeal.component';
 const RallyRegister = ({ rally = {}, registration = {} }) => {
@@ -78,8 +79,46 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         }
     };
     const handleRegistrationRequest = () => {
-        //determine if update or new
+        // --- determine if registrations and/or meal count is changed.
+
+        let numberUpdates = {};
+        if (!!reg) {
+            // UPDATE
+            let rDiff = 0;
+            let mDiff = 0;
+            if (registration.registrations < registrarCount) {
+                rDiff = registrarCount - registration.registrations;
+            } else if (registration.registrations > registrarCount) {
+                rDiff = registrarCount - registration.registrations;
+            } else {
+                rDiff = 0;
+            }
+            if (registration.meals < mealCount) {
+                mDiff = mealCount - registration.meals;
+            } else if (registration.meals > mealCount) {
+                mDiff = mealCount - registration.meals;
+            } else {
+                mDiff = 0;
+            }
+            let numberUpdates = {
+                rDiff: rDiff,
+                mDiff: mDiff,
+            };
+        } else {
+            // NEW
+            console.log('NEW');
+            let numberUpdates = {
+                rDiff: registrarCount,
+                mDiff: mealCount,
+            };
+        }
+        // at this point numberUpdates ready for API and registrations REDUX
+        numberUpdates = { ...numberUpdates, uid: reg.uid };
+        printObject('RR:115-->numberUpdates:', numberUpdates);
+        dispatch(updateRallyNumbers(numberUpdates));
+
         if (reg?.uid) {
+            //   ------ UPDATE -----
             // update attendeeCount and mealCount values
 
             let updateReg = {
@@ -107,7 +146,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 });
             navigation.navigate('Main', null);
         } else {
-            // this is a new registration
+            //   --- NEW REGISTRATION ---
             printObject('RR:90-->rally', rally);
             printObject('RR:91-->user', user);
             let newReg = {
