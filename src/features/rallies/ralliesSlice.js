@@ -1,41 +1,40 @@
 import { createAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { ThemeProvider } from 'react-native-elements';
 import { printObject } from '../../utils/helpers';
-export const loadUserRallies = createAsyncThunk(
-    'rallies/loadUserRallies',
-    async (userId, thunkAPI) => {
-        try {
-            let response;
-            console.log('userId', userId);
-            const fetchRepEvents = async (userId) => {
-                response = await fetch(
-                    process.env.AWS_API_ENDPOINT + '/events',
-                    {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            operation: 'getEventsForRep',
-                            payload: {
-                                uid: userId,
-                            },
-                        }),
-                        headers: {
-                            'Content-type': 'application/json; charset=UTF-8',
-                        },
-                    }
-                );
-            };
-            await fetchRepEvents(userId);
-            printObject('fetchResponse', response);
-            //const resp = await axios(url);
-            // printObject('meetings(1)', resp);
-            console.log('before return');
-            return response;
-        } catch (error) {
-            return thunkAPI.rejectWithValue('something went wrong');
-        }
-    }
-);
+// export const loadUserRallies = createAsyncThunk(
+//     'rallies/loadUserRallies',
+//     async (userId, thunkAPI) => {
+//         try {
+//             let response;
+//             console.log('userId', userId);
+//             const fetchRepEvents = async (userId) => {
+//                 response = await fetch(
+//                     process.env.AWS_API_ENDPOINT + '/events',
+//                     {
+//                         method: 'POST',
+//                         body: JSON.stringify({
+//                             operation: 'getEventsForRep',
+//                             payload: {
+//                                 uid: userId,
+//                             },
+//                         }),
+//                         headers: {
+//                             'Content-type': 'application/json; charset=UTF-8',
+//                         },
+//                     }
+//                 );
+//             };
+//             await fetchRepEvents(userId);
+//             printObject('fetchResponse', response);
+//             //const resp = await axios(url);
+//             // printObject('meetings(1)', resp);
+//             console.log('before return');
+//             return response;
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue('something went wrong');
+//         }
+//     }
+// );
 const initialState = {
     value: 0,
     // publicRallies: [],
@@ -78,11 +77,10 @@ export const ralliesSlice = createSlice({
         updateRegNumbers: (state, action) => {
             // this receives object with CHANGES in registrations and meal count
             const { uid, registrationCount, mealCount } = action.payload;
+            let allRallies = state.allRallies;
             // get existing registration
-            const existingRally = state.allRallies.map((ral) => {
-                if (ral.uid === uid) {
-                    return ral;
-                }
+            const existingRally = allRallies.filter((ral) => {
+                (ral) => ral.uid == uid;
             });
             let theRally = existingRally[0];
             let newMealValues = {
@@ -95,7 +93,7 @@ export const ralliesSlice = createSlice({
             };
             //adjust the mealCount value
             let newMealCount =
-                parseInt(theRally.meal.mealCount) + parseInt(mealCount);
+                parseInt(theRally?.meal.mealCount) + parseInt(mealCount);
             newMealValues.mealCount = newMealCount;
             theRally.meal = newMealValues;
             //adjust the registration value
@@ -171,21 +169,21 @@ export const ralliesSlice = createSlice({
             state.value += action.payload;
         },
     },
-    extraReducers: {
-        [loadUserRallies.pending]: (state) => {
-            state.isLoading = true;
-        },
-        [loadUserRallies.fulfilled]: (state, action) => {
-            state.isLoading = false;
-            printObject('Extra action:', action);
-            // printObject('Extra state', state);
-            // state.userRallies = action.payload;
-        },
-        [loadUserRallies.rejected]: (state, action) => {
-            console.log('yep, we got rejected...');
-            state.isLoading = false;
-        },
-    },
+    // extraReducers: {
+    //     [loadUserRallies.pending]: (state) => {
+    //         state.isLoading = true;
+    //     },
+    //     [loadUserRallies.fulfilled]: (state, action) => {
+    //         state.isLoading = false;
+    //         printObject('Extra action:', action);
+    //         // printObject('Extra state', state);
+    //         // state.userRallies = action.payload;
+    //     },
+    //     [loadUserRallies.rejected]: (state, action) => {
+    //         console.log('yep, we got rejected...');
+    //         state.isLoading = false;
+    //     },
+    // },
 });
 
 // Action creators are generated for each case reducer function
