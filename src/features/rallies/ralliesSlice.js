@@ -1,5 +1,6 @@
 import { createAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { ThemeProvider } from 'react-native-elements';
 import { printObject } from '../../utils/helpers';
 export const loadUserRallies = createAsyncThunk(
     'rallies/loadUserRallies',
@@ -74,21 +75,37 @@ export const ralliesSlice = createSlice({
             );
             return found;
         },
-        updateRallyNumbers: (state, action) => {
+        updateRegNumbers: (state, action) => {
             // this receives object with CHANGES in registrations and meal count
-            const { uid, rDiff, mDiff } = action.numberUpdaetes;
+            const { uid, registrationCount, mealCount } = action.payload;
             // get existing registration
-            const existingRally = state.allRallies.filter(
-                (ral) => ral.uid === uid
-            );
+            const existingRally = state.allRallies.map((ral) => {
+                if (ral.uid === uid) {
+                    return ral;
+                }
+            });
             let theRally = existingRally[0];
+            let newMealValues = {
+                startTime: theRally?.meal?.startTime,
+                cost: theRally?.meal?.cost,
+                deadline: theRally?.meal?.deadline,
+                offered: theRally?.meal?.offered,
+                mealCount: theRally?.meal?.mealCount,
+                mealsServed: theRally?.meal?.mealsServed,
+            };
+            //adjust the mealCount value
+            let newMealCount =
+                parseInt(theRally.meal.mealCount) + parseInt(mealCount);
+            newMealValues.mealCount = newMealCount;
+            theRally.meal = newMealValues;
+            //adjust the registration value
+            theRally.registrations =
+                parseInt(registrationCount) + parseInt(theRally.registrations);
 
-            let newRegValue = theRally.registrations + rDiff;
-            let newMealValue = theRally.meal.mealCount + mDiff;
-
-            // update the registration
-            theRally = { ...theRally, registrations: newRegValue };
-
+            const newRallies = state.allRallies.map((ral) =>
+                ral.uid !== uid ? ral : theRally
+            );
+            state.allRallies = newRallies;
             // update reg in list and return
         },
         updateRally: (state, action) => {
@@ -177,7 +194,7 @@ export const {
     getRally,
     addNewRally,
     updateRally,
-    updateRallyNumbers,
+    updateRegNumbers,
     deleteRally,
     // loadUserRallies,
     createTmp,

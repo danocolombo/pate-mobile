@@ -22,11 +22,12 @@ import {
     dateNumsToLongDayLongMondayDay,
     dateNumToDisplayTime,
 } from '../../utils/date';
+import { updateEventNumbers } from '../../providers/rallies';
 import {
     updateRegistration,
     addNewRegistration,
 } from '../../features/users/usersSlice';
-import { updateRallyNumbers } from '../../features/rallies/ralliesSlice';
+import { updateRegNumbers } from '../../features/rallies/ralliesSlice';
 import NumberInput from '../ui/NumberInput/NumberInput';
 import RegisterMeal from './RegisterMeal.component';
 const RallyRegister = ({ rally = {}, registration = {} }) => {
@@ -79,10 +80,10 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         }
     };
     const handleRegistrationRequest = () => {
-        // --- determine if registrations and/or meal count is changed.
-
+        // if we have rally, it is not an update, but new
         let numberUpdates = {};
-        if (!!reg) {
+
+        if (!rally.approved) {
             // UPDATE
             let rDiff = 0;
             let mDiff = 0;
@@ -100,22 +101,30 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
             } else {
                 mDiff = 0;
             }
-            let numberUpdates = {
+            numberUpdates = {
                 rDiff: rDiff,
                 mDiff: mDiff,
             };
         } else {
             // NEW
             console.log('NEW');
-            let numberUpdates = {
+            numberUpdates = {
                 rDiff: registrarCount,
                 mDiff: mealCount,
             };
         }
-        // at this point numberUpdates ready for API and registrations REDUX
+        dispatch(
+            updateRegNumbers({
+                
+                    uid: rally.uid ? rally.uid : reg.uid,
+                    registrationCount: numberUpdates.rDiff,
+                    mealCount: numberUpdates.mDiff,
+                
+            })
+        );
+
         numberUpdates = { ...numberUpdates, uid: reg.uid };
         printObject('RR:115-->numberUpdates:', numberUpdates);
-        dispatch(updateRallyNumbers(numberUpdates));
 
         if (reg?.uid) {
             //   ------ UPDATE -----

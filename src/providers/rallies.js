@@ -26,6 +26,36 @@ export async function fetchActiveApprovedRallies() {
             return plans;
         });
 }
+export async function updateEventNumbers(deltas) {
+    //the goal for sending...
+    /*
+        const request = {
+            uid: "65ff55fb33fe4c0447b086188f2e9b1g",
+            "adjustments": {
+                "registrationCount": "2",
+                "mealCount": "2",
+                "attendance": "-1",
+                "mealsServed": "-1",
+            }
+        }
+    */
+    let obj = {
+        operation: 'insertNewEvent',
+        payload: {
+            uid: deltas.uid,
+            adjustments: {
+                registrationCount: deltas.registrationCount,
+                mealCount: deltas.mealCount,
+            },
+        },
+    };
+    let body = JSON.stringify(obj);
+    let api2use = process.env.AWS_API_ENDPOINT + '/events';
+
+    let res = await axios.post(api2use, body, config);
+    var returnValue = res.data;
+    return returnValue;
+}
 export async function getAllEventsForCoordinator(uid) {
     await fetch(process.env.AWS_API_ENDPOINT + '/events', {
         method: 'POST',
