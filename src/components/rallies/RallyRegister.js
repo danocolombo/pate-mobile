@@ -34,8 +34,8 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
     const dispatch = useDispatch();
     let ral = rally;
     let reg = registration;
-    // printObject('RR:35 -->ral', ral);
-    // printObject('RR:36 -->reg', reg);
+    printObject('RR:35 -->ral', ral);
+    printObject('RR:36 -->reg', reg);
     if (!ral?.uid && reg?.eid) {
         //need to get the rally from reg.eid
         let rallyArray = useSelector((state) =>
@@ -82,7 +82,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
     const handleRegistrationRequest = () => {
         // if we have rally, it is not an update, but new
         let numberUpdates = {};
-
+        let rallyId = 0;
         if (!rally.approved) {
             // UPDATE
             let rDiff = 0;
@@ -101,6 +101,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
             } else {
                 mDiff = 0;
             }
+            rallyId = reg.eid;
             numberUpdates = {
                 rDiff: rDiff,
                 mDiff: mDiff,
@@ -108,6 +109,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         } else {
             // NEW
             console.log('NEW');
+            rallyId = ral.uid;
             numberUpdates = {
                 rDiff: registrarCount,
                 mDiff: mealCount,
@@ -115,14 +117,13 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         }
         dispatch(
             updateRegNumbers({
-                
-                    uid: rally.uid ? rally.uid : reg.uid,
-                    registrationCount: numberUpdates.rDiff,
-                    mealCount: numberUpdates.mDiff,
-                
+                uid: rallyId,
+                registrationCount: numberUpdates.rDiff,
+                mealCount: numberUpdates.mDiff,
             })
         );
-
+        //todo: remove this when ready
+        return;
         numberUpdates = { ...numberUpdates, uid: reg.uid };
         printObject('RR:115-->numberUpdates:', numberUpdates);
 

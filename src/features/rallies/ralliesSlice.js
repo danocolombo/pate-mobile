@@ -41,6 +41,8 @@ const initialState = {
     allRallies: [],
     userRallies: [],
     tmpRally: {},
+    ratchet: 0,
+    gagle: [],
 };
 
 export const ralliesSlice = createSlice({
@@ -75,6 +77,17 @@ export const ralliesSlice = createSlice({
             return found;
         },
         updateRegNumbers: (state, action) => {
+            // console.log('HIT IT');
+            console.log('action.payload:', action.payload);
+            //printObject('allRallies:', state.allRallies);
+            state.allRallies.forEach((ral) => {
+                console.log('ral', ral.uid);
+                if (ral.uid === action.payload.uid) {
+                    console.log('BINGO');
+                }
+            });
+        },
+        updateRegNumbersOLD: (state, action) => {
             // this receives object with CHANGES in registrations and meal count
             const { uid, registrationCount, mealCount } = action.payload;
             let allRallies = state.allRallies;
@@ -93,12 +106,12 @@ export const ralliesSlice = createSlice({
             };
             //adjust the mealCount value
             let newMealCount =
-                parseInt(theRally?.meal.mealCount) + parseInt(mealCount);
+                parseInt(theRally?.meal?.mealCount) + parseInt(mealCount);
             newMealValues.mealCount = newMealCount;
             theRally.meal = newMealValues;
             //adjust the registration value
             theRally.registrations =
-                parseInt(registrationCount) + parseInt(theRally.registrations);
+                parseInt(registrationCount) + parseInt(theRally?.registrations);
 
             const newRallies = state.allRallies.map((ral) =>
                 ral.uid !== uid ? ral : theRally
