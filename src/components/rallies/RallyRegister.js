@@ -84,20 +84,26 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         let numberUpdates = {};
         let rallyId = 0;
         if (!rally.approved) {
-            // UPDATE
+            // UPDATE: we have reg, not ral
+            // console.log('#############\n');
+            // console.log('registrarCount', registrarCount);
+            // console.log('mealCount', mealCount);
+            // console.log('#############\n');
+            // printObject('registration:', registration);
+            // console.log('#############\n');
             let rDiff = 0;
             let mDiff = 0;
-            if (registration.registrations < registrarCount) {
-                rDiff = registrarCount - registration.registrations;
-            } else if (registration.registrations > registrarCount) {
-                rDiff = registrarCount - registration.registrations;
+            if (registration.attendeeCount < registrarCount) {
+                rDiff = registrarCount - registration.attendeeCount;
+            } else if (registration.attendeeCount > registrarCount) {
+                rDiff = registrarCount - registration.attendeeCount;
             } else {
                 rDiff = 0;
             }
-            if (registration.meals < mealCount) {
-                mDiff = mealCount - registration.meals;
-            } else if (registration.meals > mealCount) {
-                mDiff = mealCount - registration.meals;
+            if (registration.mealCount < mealCount) {
+                mDiff = mealCount - registration.mealCount;
+            } else if (registration.mealCount > mealCount) {
+                mDiff = mealCount - registration.mealCount;
             } else {
                 mDiff = 0;
             }
@@ -115,6 +121,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 mDiff: mealCount,
             };
         }
+        //   1. update REDUX Rallies.allRallies numbers
         dispatch(
             updateRegNumbers({
                 uid: rallyId,
@@ -122,13 +129,12 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 mealCount: numberUpdates.mDiff,
             })
         );
-        //todo: remove this when ready
-        return;
+        //   2. update DDB p8Events numbers
         numberUpdates = { ...numberUpdates, uid: reg.uid };
-        printObject('RR:115-->numberUpdates:', numberUpdates);
+        // printObject('RR:115-->numberUpdates:', numberUpdates);
 
         if (reg?.uid) {
-            //   ------ UPDATE -----
+            // update we have reg, not ral
             // update attendeeCount and mealCount values
 
             let updateReg = {
@@ -136,7 +142,10 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 ...{ attendeeCount: registrarCount, mealCount: mealCount },
             };
             printObject('RR:49-->updateReg:', updateReg);
+            //   3. update REDUX users.registrations
             dispatch(updateRegistration(updateReg));
+
+            //   4. update DDB p8Regisrations
             let obj = {
                 operation: 'updateRegistration',
                 payload: {
@@ -149,11 +158,34 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
             axios
                 .post(api2use, body, CONFIG)
                 .then((response) => {
-                    console.log('registion updated in ddb');
+                    console.log('RR:157-->registration updated in ddb');
                 })
                 .catch((err) => {
                     console.log('RR-65: error:', err);
                 });
+
+            // Now update event numbers
+            // obj = {
+            //     operation: 'maintainEventNumbers',
+            //     payload: {
+            //         uid: numberUpdates.uid,
+            //         adjustments: {
+            //             registrationCount: numberUpdates.rDiff,
+            //             mealCount: numberUpdates.mDiff,
+            //         },
+            //     },
+            // };
+            // body = JSON.stringify(obj);
+
+            // api2use = process.env.AWS_API_ENDPOINT + '/events';
+            // axios
+            //     .post(api2use, body, CONFIG)
+            //     .then((response) => {
+            //         console.log('RR:157-->registration updated in ddb');
+            //     })
+            //     .catch((err) => {
+            //         console.log('RR-184: error:', err);
+            //     });
             navigation.navigate('Main', null);
         } else {
             //   --- NEW REGISTRATION ---

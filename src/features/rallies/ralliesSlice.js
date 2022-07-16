@@ -77,15 +77,54 @@ export const ralliesSlice = createSlice({
             return found;
         },
         updateRegNumbers: (state, action) => {
+            let regMealCount = action.payload.mealCount;
+            let regRegistrationsCount = action.payload.registrationCount;
+
+            // console.log('regMealCount:', regMealCount);
+            // console.log('regRegistrationsCount:', regRegistrationsCount);
             // console.log('HIT IT');
-            console.log('action.payload:', action.payload);
+            // console.log('action.payload:', action.payload);
             //printObject('allRallies:', state.allRallies);
-            state.allRallies.forEach((ral) => {
-                console.log('ral', ral.uid);
+            const updates = state.allRallies.map((ral) => {
+                // console.log('ral', ral.uid);
                 if (ral.uid === action.payload.uid) {
-                    console.log('BINGO');
+                    // printObject('BINGO:', ral);
+                    //deal with mealCount
+                    let newMealInfo = {};
+                    newMealInfo = {
+                        startTime: ral.meal.startTime,
+                        cost: ral.meal.cost,
+                        deadline: ral.meal.deadline,
+                        offered: true,
+                        mealsServed: ral?.meal?.mealsServed
+                            ? parseInt(ral.meal.mealsServed)
+                            : 0,
+                    };
+                    let mCount = ral?.meal?.mealCount
+                        ? parseInt(ral.meal.mealCount)
+                        : 0;
+                    mCount = mCount + parseInt(action.payload.mealCount);
+                    newMealInfo = { ...newMealInfo, mealsServed: mCount };
+                    let newRal = {};
+                    newRal = { ...ral, meal: newMealInfo };
+                    // deal with registrations
+                    let regCount = 0;
+                    regCount = ral?.registrations
+                        ? parseInt(ral.registrations)
+                        : 0;
+                    regCount =
+                        regCount + parseInt(action.payload.registrationCount);
+                    newRal = { ...newRal, registrations: regCount };
+                    // printObject('newRal:', newRal);
+
+                    return newRal;
+                } else {
+                    return ral;
                 }
             });
+            // printObject('udpates:', updates);
+            state.allRallies = updates;
+            return state;
         },
         updateRegNumbersOLD: (state, action) => {
             // this receives object with CHANGES in registrations and meal count

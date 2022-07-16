@@ -50,7 +50,7 @@ function RegListCard({ registration, onDeletePress, oldStyle = {} }) {
                             </Text>
                         </View>
                         <View style={styles.numberItem}>
-                            {registration.meal.offered === true ? (
+                            {registration?.meal?.offered === true ? (
                                 <Text style={styles.text}>
                                     Meal: {registration?.mealCount}
                                 </Text>
