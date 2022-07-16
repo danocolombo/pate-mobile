@@ -40,7 +40,7 @@ export async function updateEventNumbers(deltas) {
         }
     */
     let obj = {
-        operation: 'insertNewEvent',
+        operation: 'maintainEventNumbers',
         payload: {
             uid: deltas.uid,
             adjustments: {

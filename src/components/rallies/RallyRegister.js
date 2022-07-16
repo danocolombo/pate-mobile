@@ -28,6 +28,7 @@ import {
     addNewRegistration,
 } from '../../features/users/usersSlice';
 import { updateRegNumbers } from '../../features/rallies/ralliesSlice';
+
 import NumberInput from '../ui/NumberInput/NumberInput';
 import RegisterMeal from './RegisterMeal.component';
 const RallyRegister = ({ rally = {}, registration = {} }) => {
@@ -121,6 +122,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 mDiff: mealCount,
             };
         }
+        //   These number updates will be done on NEW or UPDATE
         //   1. update REDUX Rallies.allRallies numbers
         dispatch(
             updateRegNumbers({
@@ -132,7 +134,11 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         //   2. update DDB p8Events numbers
         numberUpdates = { ...numberUpdates, uid: reg.uid };
         // printObject('RR:115-->numberUpdates:', numberUpdates);
-
+        updateEventNumbers(numberUpdates)
+            .then(() => console.log('DDB event numbers updated'))
+            .catch((err) =>
+                console.log('RR:137--> error saving numbers to DDB\n', err)
+            );
         if (reg?.uid) {
             // update we have reg, not ral
             // update attendeeCount and mealCount values
@@ -251,9 +257,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 .catch((err) => {
                     console.log('RR-77: error:', err);
                 });
-            //   3.  update REDUX Rallies.allRallies numbers
 
-            //   4. update DDB p8Events numbers
             navigation.navigate('Main', null);
         }
     };
