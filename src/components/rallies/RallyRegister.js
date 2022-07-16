@@ -189,8 +189,8 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
             navigation.navigate('Main', null);
         } else {
             //   --- NEW REGISTRATION ---
-            printObject('RR:90-->rally', rally);
-            printObject('RR:91-->user', user);
+            // printObject('RR:192-->rally', rally);
+            // printObject('RR:193-->user', user);
             let newReg = {
                 attendeeCount: registrarCount,
                 mealCount: mealCount,
@@ -226,12 +226,14 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                     email: user?.email,
                 },
             };
-            printObject('RR:82-->newReg', newReg);
+            printObject('RR:229-->newReg', newReg);
             //=====================================
             // insert reg into redux userSlice
             //=====================================
+            //   1. add to REDUX user.registrations
             dispatch(addNewRegistration(newReg));
-
+            //   2. add to DDB p8Registrations
+            //todo: move this to provider
             let obj = {
                 operation: 'createRegistration',
                 payload: {
@@ -249,6 +251,9 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 .catch((err) => {
                     console.log('RR-77: error:', err);
                 });
+            //   3.  update REDUX Rallies.allRallies numbers
+
+            //   4. update DDB p8Events numbers
             navigation.navigate('Main', null);
         }
     };
