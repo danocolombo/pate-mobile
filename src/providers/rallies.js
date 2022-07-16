@@ -44,8 +44,8 @@ export async function updateEventNumbers(deltas) {
         payload: {
             uid: deltas.uid,
             adjustments: {
-                registrationCount: deltas.registrationCount,
-                mealCount: deltas.mealCount,
+                registrationCount: deltas.rDiff,
+                mealCount: deltas.mDiff,
             },
         },
     };
