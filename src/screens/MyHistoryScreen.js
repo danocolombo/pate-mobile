@@ -98,7 +98,7 @@ const MyHistoryScreen = () => {
         dispatch(
             updateRegNumbers({
                 uid: reg.eid,
-                registrationCount: parseInt(reg.registrations) * -1,
+                registrationCount: parseInt(reg.attendeeCount) * -1,
                 mealCount: parseInt(reg.mealCount) * -1,
             })
         );
