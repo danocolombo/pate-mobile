@@ -96,24 +96,21 @@ export const ralliesSlice = createSlice({
                         cost: ral.meal.cost,
                         deadline: ral.meal.deadline,
                         offered: true,
-                        mealsServed: ral?.meal?.mealsServed
-                            ? parseInt(ral.meal.mealsServed)
+                        mealsServed: ral.meal.mealsServed,
+                        mealCount: ral?.meal?.mealCount
+                            ? parseInt(ral.meal.mealCount) +
+                              parseInt(regMealCount)
                             : 0,
                     };
-                    let mCount = ral?.meal?.mealCount
-                        ? parseInt(ral.meal.mealCount)
-                        : 0;
-                    mCount = mCount + parseInt(action.payload.mealCount);
-                    newMealInfo = { ...newMealInfo, mealsServed: mCount };
                     let newRal = {};
                     newRal = { ...ral, meal: newMealInfo };
                     // deal with registrations
                     let regCount = 0;
                     regCount = ral?.registrations
-                        ? parseInt(ral.registrations)
+                        ? parseInt(ral.registrations) +
+                          parseInt(regRegistrationsCount)
                         : 0;
-                    regCount =
-                        regCount + parseInt(action.payload.registrationCount);
+
                     newRal = { ...newRal, registrations: regCount };
                     // printObject('newRal:', newRal);
 
