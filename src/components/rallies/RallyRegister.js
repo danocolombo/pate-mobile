@@ -132,7 +132,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
             })
         );
         //   2. update DDB p8Events numbers
-        numberUpdates = { ...numberUpdates, uid: reg.uid ? reg.eid : ral.uid };
+        numberUpdates = { ...numberUpdates, uid: rallyId };
         // printObject('RR:115-->numberUpdates:', numberUpdates);
         updateEventNumbers(numberUpdates)
             .then(() => console.log('DDB event numbers updated'))

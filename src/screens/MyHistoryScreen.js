@@ -15,6 +15,8 @@ import RegListCard from '../components/ui/RegistrationListCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteRegistration } from '../providers/registrations';
 import { deleteRegistration as deleteReduxRegistration } from '../features/users/usersSlice';
+import { updateRegNumbers } from '../features/rallies/ralliesSlice';
+import { updateEventNumbers } from '../providers/rallies';
 import { printObject } from '../utils/helpers';
 import { dateNumToDateDash, isDateDashBeforeToday } from '../utils/date';
 import { Colors } from '../constants/colors';
@@ -82,11 +84,32 @@ const MyHistoryScreen = () => {
             registration: reg,
         });
     }
-    async function onDeletePress(reg) {
-        console.log('DELETING ', reg.uid);
+    async function handleDeleteRequest(reg) {
+        printObject('MHS:86-->reg', reg);
         dispatch(deleteReduxRegistration(reg));
         const results = await deleteRegistration(reg);
-        //deleteRegistration
+        // determine the numbers to reduce.
+        let numberUpdates = {
+            rDiff: parseInt(reg.registrations) * -1,
+            mDiff: parseInt(reg.mealCount) * -1,
+        };
+        //todo:  Need to update REDUX allRallies nums
+        //   1. update REDUX Rallies.allRallies numbers
+        dispatch(
+            updateRegNumbers({
+                uid: reg.eid,
+                registrationCount: parseInt(reg.registrations) * -1,
+                mealCount: parseInt(reg.mealCount) * -1,
+            })
+        );
+        //   2. update DDB p8Events numbers
+        numberUpdates = { ...numberUpdates, uid: reg.eid };
+
+        updateEventNumbers(numberUpdates)
+            .then(() => console.log('DDB event numbers updated'))
+            .catch((err) =>
+                console.log('RR:137--> error saving numbers to DDB\n', err)
+            );
     }
     if (isLoading) {
         return <ActivityIndicator />;
@@ -145,7 +168,7 @@ const MyHistoryScreen = () => {
                                                                 key={r.name}
                                                                 registration={r}
                                                                 onDeletePress={
-                                                                    onDeletePress
+                                                                    handleDeleteRequest
                                                                 }
                                                             />
                                                         </View>
