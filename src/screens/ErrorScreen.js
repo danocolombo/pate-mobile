@@ -4,7 +4,7 @@ import { Surface, Headline, Subheading } from 'react-native-paper';
 import { printObject } from '../utils/helpers';
 
 const ErrorScreen = (props) => {
-    printObject('props', props);
+    // printObject('props', props);
     const errorCode = props.route.params.id;
     const errorMsg = props.route.params.message;
     return (

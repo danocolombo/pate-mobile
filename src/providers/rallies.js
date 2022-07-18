@@ -21,7 +21,7 @@ export async function fetchActiveApprovedRallies() {
     })
         .then((response) => response.json())
         .then((data) => {
-            printObject('data.body', data.body);
+            // printObject('data.body', data.body);
             setPlans(data.body);
             return plans;
         });

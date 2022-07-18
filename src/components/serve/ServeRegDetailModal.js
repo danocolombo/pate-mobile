@@ -3,7 +3,7 @@ import React from 'react';
 import { printObject } from '../../utils/helpers';
 
 const ServeRegDetailModal = (reg) => {
-    printObject('SRDM:6-->reg', reg);
+    // printObject('SRDM:6-->reg', reg);
     return (
         <View>
             <Text>WHAT??</Text>

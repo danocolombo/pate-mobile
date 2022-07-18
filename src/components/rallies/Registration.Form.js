@@ -65,7 +65,7 @@ const RallyRegister = (rally = null) => {
                 email: user?.email,
             },
         };
-        printObject('newReg', newReg);
+        // printObject('newReg', newReg);
         let obj = {
             operation: 'createRegistration',
             payload: {

@@ -85,7 +85,7 @@ const MyHistoryScreen = () => {
         });
     }
     async function handleDeleteRequest(reg) {
-        printObject('MHS:86-->reg', reg);
+        // printObject('MHS:86-->reg', reg);
         //   1. deleteReduxUserRegistration
         dispatch(deleteReduxUserRegistration(reg));
         //   2. deleteDDBRegistration

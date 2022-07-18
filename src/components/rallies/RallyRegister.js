@@ -35,8 +35,8 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
     const dispatch = useDispatch();
     let ral = rally;
     let reg = registration;
-    printObject('RR:35 -->ral', ral);
-    printObject('RR:36 -->reg', reg);
+    // printObject('RR:35 -->ral', ral);
+    // printObject('RR:36 -->reg', reg);
     if (!ral?.uid && reg?.eid) {
         //need to get the rally from reg.eid
         let rallyArray = useSelector((state) =>
@@ -147,7 +147,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 ...reg,
                 ...{ attendeeCount: registrarCount, mealCount: mealCount },
             };
-            printObject('RR:49-->updateReg:', updateReg);
+            // printObject('RR:49-->updateReg:', updateReg);
             //   3. update REDUX users.registrations
             dispatch(updateRegistration(updateReg));
 
@@ -195,8 +195,8 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
             navigation.navigate('Main', null);
         } else {
             //   --- NEW REGISTRATION ---
-            printObject('RR:192-->rally', rally);
-            printObject('RR:193-->user', user);
+            // printObject('RR:192-->rally', rally);
+            // printObject('RR:193-->user', user);
             let newReg = {
                 attendeeCount: parseInt(registrarCount),
                 mealCount: parseInt(mealCount),
@@ -235,13 +235,13 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 registrarId: user?.uid,
                 // startTime: rally?.startTime,
             };
-            printObject('RR:229-->newReg', newReg);
+            // printObject('RR:229-->newReg', newReg);
             //=====================================
             // insert reg into redux userSlice
             //=====================================
             //   1. add to REDUX user.registrations
-            console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-            printObject('RR:241--->newReg:', newReg);
+            // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+            // printObject('RR:241--->newReg:', newReg);
             dispatch(addNewREDUXUserRegistration(newReg));
             //   2. add to DDB p8Registrations
             //todo: move this to provider
