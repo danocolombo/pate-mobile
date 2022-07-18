@@ -22,18 +22,21 @@ import {
     dateNumsToLongDayLongMondayDay,
     dateNumToDisplayTime,
 } from '../../utils/date';
+import { updateEventNumbers } from '../../providers/rallies';
 import {
     updateRegistration,
-    addNewRegistration,
+    addNewRegistration as addNewREDUXUserRegistration,
 } from '../../features/users/usersSlice';
+import { updateRegNumbers as updateREDUXRalliesNumbers } from '../../features/rallies/ralliesSlice';
+
 import NumberInput from '../ui/NumberInput/NumberInput';
 import RegisterMeal from './RegisterMeal.component';
 const RallyRegister = ({ rally = {}, registration = {} }) => {
     const dispatch = useDispatch();
     let ral = rally;
     let reg = registration;
-    // printObject('RR:35 -->ral', ral);
-    // printObject('RR:36 -->reg', reg);
+    printObject('RR:35 -->ral', ral);
+    printObject('RR:36 -->reg', reg);
     if (!ral?.uid && reg?.eid) {
         //need to get the rally from reg.eid
         let rallyArray = useSelector((state) =>
@@ -78,8 +81,66 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         }
     };
     const handleRegistrationRequest = () => {
-        //determine if update or new
+        // if we have rally, it is not an update, but new
+        let numberUpdates = {};
+        let rallyId = 0;
+        if (!rally.approved) {
+            // UPDATE: we have reg, not ral
+            // console.log('#############\n');
+            // console.log('registrarCount', registrarCount);
+            // console.log('mealCount', mealCount);
+            // console.log('#############\n');
+            // printObject('registration:', registration);
+            // console.log('#############\n');
+            let rDiff = 0;
+            let mDiff = 0;
+            if (registration.attendeeCount < registrarCount) {
+                rDiff = registrarCount - registration.attendeeCount;
+            } else if (registration.attendeeCount > registrarCount) {
+                rDiff = registrarCount - registration.attendeeCount;
+            } else {
+                rDiff = 0;
+            }
+            if (registration.mealCount < mealCount) {
+                mDiff = mealCount - registration.mealCount;
+            } else if (registration.mealCount > mealCount) {
+                mDiff = mealCount - registration.mealCount;
+            } else {
+                mDiff = 0;
+            }
+            rallyId = reg.eid;
+            numberUpdates = {
+                rDiff: rDiff,
+                mDiff: mDiff,
+            };
+        } else {
+            // NEW
+            console.log('NEW');
+            rallyId = ral.uid;
+            numberUpdates = {
+                rDiff: registrarCount,
+                mDiff: mealCount,
+            };
+        }
+        //   These number updates will be done on NEW or UPDATE
+        //   1. update REDUX Rallies.allRallies numbers
+        dispatch(
+            updateREDUXRalliesNumbers({
+                uid: rallyId,
+                registrationCount: numberUpdates.rDiff,
+                mealCount: numberUpdates.mDiff,
+            })
+        );
+        //   2. update DDB p8Events numbers
+        numberUpdates = { ...numberUpdates, uid: rallyId };
+        // printObject('RR:115-->numberUpdates:', numberUpdates);
+        updateEventNumbers(numberUpdates)
+            .then(() => console.log('DDB event numbers updated'))
+            .catch((err) =>
+                console.log('RR:137--> error saving numbers to DDB\n', err)
+            );
         if (reg?.uid) {
+            // update we have reg, not ral
             // update attendeeCount and mealCount values
 
             let updateReg = {
@@ -87,7 +148,10 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 ...{ attendeeCount: registrarCount, mealCount: mealCount },
             };
             printObject('RR:49-->updateReg:', updateReg);
+            //   3. update REDUX users.registrations
             dispatch(updateRegistration(updateReg));
+
+            //   4. update DDB p8Regisrations
             let obj = {
                 operation: 'updateRegistration',
                 payload: {
@@ -100,57 +164,87 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
             axios
                 .post(api2use, body, CONFIG)
                 .then((response) => {
-                    console.log('registion updated in ddb');
+                    console.log('RR:157-->registration updated in ddb');
                 })
                 .catch((err) => {
                     console.log('RR-65: error:', err);
                 });
+
+            // Now update event numbers
+            // obj = {
+            //     operation: 'maintainEventNumbers',
+            //     payload: {
+            //         uid: numberUpdates.uid,
+            //         adjustments: {
+            //             registrationCount: numberUpdates.rDiff,
+            //             mealCount: numberUpdates.mDiff,
+            //         },
+            //     },
+            // };
+            // body = JSON.stringify(obj);
+
+            // api2use = process.env.AWS_API_ENDPOINT + '/events';
+            // axios
+            //     .post(api2use, body, CONFIG)
+            //     .then((response) => {
+            //         console.log('RR:157-->registration updated in ddb');
+            //     })
+            //     .catch((err) => {
+            //         console.log('RR-184: error:', err);
+            //     });
             navigation.navigate('Main', null);
         } else {
-            // this is a new registration
-            printObject('RR:90-->rally', rally);
-            printObject('RR:91-->user', user);
+            //   --- NEW REGISTRATION ---
+            printObject('RR:192-->rally', rally);
+            printObject('RR:193-->user', user);
             let newReg = {
-                attendeeCount: registrarCount,
-                mealCount: mealCount,
-                // location: {
-                //     name: rally?.name,
-                //     street: rally?.street,
-                //     city: rally?.city,
-                //     stateProv: rally?.stateProv,
-                //     postalCode: rally?.postalCode,
-                // },
-                // endTime: rally?.endTime,
-                // eventDate: rally?.eventDate,
+                attendeeCount: parseInt(registrarCount),
+                mealCount: parseInt(mealCount),
+                church: {
+                    name: user?.church?.name ? user?.church?.name : '',
+                    city: user?.church?.city ? user?.church?.city : '',
+                    stateProv: user?.church?.stateProv
+                        ? user?.church?.stateProv
+                        : '',
+                },
                 eid: rally?.uid,
                 eventId: rally?.uid,
-                church: {
-                    name: user?.church?.name,
-                    city: user?.church?.city,
-                    stateProv: user?.church?.stateProv,
-                },
-                rid: user?.uid,
-                registrarId: user?.uid,
-                // startTime: rally?.startTime,
                 registrar: {
                     firstName: user?.firstName,
                     lastName: user?.lastName,
                     residence: {
-                        street: user?.residence?.street,
-                        city: user?.residence?.city,
-                        stateProv: user?.residence?.stateProv,
-                        postalCode: user?.residence?.postalCode,
+                        street: user?.residence?.street
+                            ? user?.residence?.street
+                            : '',
+                        city: user?.residence?.city
+                            ? user?.residence?.city
+                            : '',
+                        stateProv: user?.residence?.stateProv
+                            ? user?.residence?.stateProv
+                            : '',
+                        postalCode: user?.residence?.postalCode
+                            ? user?.residence?.postalCode
+                            : '',
                     },
-                    phone: getPhoneType(createPatePhone(user?.phone)),
+                    phone: user?.phone
+                        ? getPhoneType(createPatePhone(user?.phone))
+                        : '',
                     email: user?.email,
                 },
+                rid: user?.uid,
+                registrarId: user?.uid,
+                // startTime: rally?.startTime,
             };
-            printObject('RR:82-->newReg', newReg);
+            printObject('RR:229-->newReg', newReg);
             //=====================================
             // insert reg into redux userSlice
             //=====================================
-            dispatch(addNewRegistration(newReg));
-
+            //   1. add to REDUX user.registrations
+            console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+            printObject('RR:241--->newReg:', newReg);
+            dispatch(addNewREDUXUserRegistration(newReg));
+            //   2. add to DDB p8Registrations
+            //todo: move this to provider
             let obj = {
                 operation: 'createRegistration',
                 payload: {
@@ -168,6 +262,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                 .catch((err) => {
                     console.log('RR-77: error:', err);
                 });
+
             navigation.navigate('Main', null);
         }
     };

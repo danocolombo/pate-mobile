@@ -13,8 +13,10 @@ import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
 import RegListCard from '../components/ui/RegistrationListCard';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteRegistration } from '../providers/registrations';
-import { deleteRegistration as deleteReduxRegistration } from '../features/users/usersSlice';
+import { deleteRegistration as deleteDDBRegistration } from '../providers/registrations';
+import { deleteRegistration as deleteReduxUserRegistration } from '../features/users/usersSlice';
+import { updateRegNumbers as updateReduxRalliesNumbers } from '../features/rallies/ralliesSlice';
+import { updateEventNumbers as updateDDBEventNumbers } from '../providers/rallies';
 import { printObject } from '../utils/helpers';
 import { dateNumToDateDash, isDateDashBeforeToday } from '../utils/date';
 import { Colors } from '../constants/colors';
@@ -82,11 +84,37 @@ const MyHistoryScreen = () => {
             registration: reg,
         });
     }
-    async function onDeletePress(reg) {
-        console.log('DELETING ', reg.uid);
-        dispatch(deleteReduxRegistration(reg));
-        const results = await deleteRegistration(reg);
-        //deleteRegistration
+    async function handleDeleteRequest(reg) {
+        printObject('MHS:86-->reg', reg);
+        //   1. deleteReduxUserRegistration
+        dispatch(deleteReduxUserRegistration(reg));
+        //   2. deleteDDBRegistration
+        await deleteDDBRegistration(reg)
+            .then(() => console.log('deleteDDBRegistration success'))
+            .catch((err) =>
+                console.log('deleteDDBRegistration failure\n', err)
+            );
+        // determine the numbers to reduce.
+        let numberUpdates = {
+            rDiff: parseInt(reg.attendeeCount) * -1,
+            mDiff: parseInt(reg.mealCount) * -1,
+        };
+        //   3. update REDUX Rallies.allRallies numbers
+        dispatch(
+            updateReduxRalliesNumbers({
+                uid: reg.eid,
+                registrationCount: parseInt(reg.attendeeCount) * -1,
+                mealCount: parseInt(reg.mealCount) * -1,
+            })
+        );
+        //   4. update DDB p8Events numbers
+        numberUpdates = { ...numberUpdates, uid: reg.eid };
+
+        updateDDBEventNumbers(numberUpdates)
+            .then(() => console.log('DDB event numbers updated'))
+            .catch((err) =>
+                console.log('RR:137--> error saving numbers to DDB\n', err)
+            );
     }
     if (isLoading) {
         return <ActivityIndicator />;
@@ -145,7 +173,7 @@ const MyHistoryScreen = () => {
                                                                 key={r.name}
                                                                 registration={r}
                                                                 onDeletePress={
-                                                                    onDeletePress
+                                                                    handleDeleteRequest
                                                                 }
                                                             />
                                                         </View>

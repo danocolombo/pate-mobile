@@ -1,12 +1,15 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { useSelector } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import ServeEventsMyScreen from '../screens/Serve/ServeEventsMyScreen';
 import ServeEventsStateScreen from '../screens/Serve/ServeEventsStateScreen';
 import ServeEventsHistoryScreen from '../screens/Serve/ServeEventsHistoryScreen';
 const BottomTab = createBottomTabNavigator();
 const ServeConfig = () => {
+    let user = useSelector((state) => state.users.currentUser);
     return (
         <BottomTab.Navigator
             initialRouteName='ServeMy'
@@ -17,13 +20,9 @@ const ServeConfig = () => {
                 component={ServeEventsMyScreen}
                 options={{
                     title: 'Serve: Personal Events',
-                    tabBarLabel: 'Mine',
+                    tabBarLabel: 'MINE',
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons
-                            name='md-caret-back-circle-sharp'
-                            size={size}
-                            color={color}
-                        />
+                        <FontAwesome name='user' size={24} color='black' />
                     ),
                 }}
             />
@@ -32,31 +31,29 @@ const ServeConfig = () => {
                 component={ServeEventsStateScreen}
                 options={{
                     title: 'Serve: State Events',
-                    tabBarLabel: 'State',
+                    tabBarLabel: 'STATE',
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons
-                            name='md-caret-forward-circle-sharp'
-                            size={size}
-                            color={color}
-                        />
+                        <FontAwesome name='users' size={24} color='black' />
                     ),
                 }}
             />
-            <BottomTab.Screen
-                name='ServeHistory'
-                component={ServeEventsHistoryScreen}
-                options={{
-                    title: 'Serve: History',
-                    tabBarLabel: 'History',
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons
-                            name='md-caret-forward-circle-sharp'
-                            size={size}
-                            color={color}
-                        />
-                    ),
-                }}
-            />
+            {user.role === 'lead' || user.role === 'superuser' ? (
+                <BottomTab.Screen
+                    name='ServeHistory'
+                    component={ServeEventsHistoryScreen}
+                    options={{
+                        title: 'Serve: History',
+                        tabBarLabel: 'ADMIN',
+                        tabBarIcon: ({ color, size }) => (
+                            <Ionicons
+                                name='settings-sharp'
+                                size={24}
+                                color='black'
+                            />
+                        ),
+                    }}
+                />
+            ) : null}
         </BottomTab.Navigator>
     );
 };

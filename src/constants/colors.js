@@ -31,4 +31,7 @@ export const Colors = {
     darkBackground: '#49274A',
     mediumBackground: '#94618E',
     lightBackground: '#F4DECB',
+    success: "green",
+    warning: "yellow",
+    critical: "red"
 };

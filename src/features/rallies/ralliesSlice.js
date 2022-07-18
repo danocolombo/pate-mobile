@@ -1,46 +1,48 @@
 import { createAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { printObject } from '../../utils/helpers';
-export const loadUserRallies = createAsyncThunk(
-    'rallies/loadUserRallies',
-    async (userId, thunkAPI) => {
-        try {
-            let response;
-            console.log('userId', userId);
-            const fetchRepEvents = async (userId) => {
-                response = await fetch(
-                    process.env.AWS_API_ENDPOINT + '/events',
-                    {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            operation: 'getEventsForRep',
-                            payload: {
-                                uid: userId,
-                            },
-                        }),
-                        headers: {
-                            'Content-type': 'application/json; charset=UTF-8',
-                        },
-                    }
-                );
-            };
-            await fetchRepEvents(userId);
-            printObject('fetchResponse', response);
-            //const resp = await axios(url);
-            // printObject('meetings(1)', resp);
-            console.log('before return');
-            return response;
-        } catch (error) {
-            return thunkAPI.rejectWithValue('something went wrong');
-        }
-    }
-);
+// export const loadUserRallies = createAsyncThunk(
+//     'rallies/loadUserRallies',
+//     async (userId, thunkAPI) => {
+//         try {
+//             let response;
+//             console.log('userId', userId);
+//             const fetchRepEvents = async (userId) => {
+//                 response = await fetch(
+//                     process.env.AWS_API_ENDPOINT + '/events',
+//                     {
+//                         method: 'POST',
+//                         body: JSON.stringify({
+//                             operation: 'getEventsForRep',
+//                             payload: {
+//                                 uid: userId,
+//                             },
+//                         }),
+//                         headers: {
+//                             'Content-type': 'application/json; charset=UTF-8',
+//                         },
+//                     }
+//                 );
+//             };
+//             await fetchRepEvents(userId);
+//             printObject('fetchResponse', response);
+//             //const resp = await axios(url);
+//             // printObject('meetings(1)', resp);
+//             console.log('before return');
+//             return response;
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue('something went wrong');
+//         }
+//     }
+// );
 const initialState = {
     value: 0,
     // publicRallies: [],
     allRallies: [],
     userRallies: [],
     tmpRally: {},
+    ratchet: 0,
+    gagle: [],
 };
 
 export const ralliesSlice = createSlice({
@@ -73,6 +75,85 @@ export const ralliesSlice = createSlice({
                 (r) => r.uid === action.payload
             );
             return found;
+        },
+        updateRegNumbers: (state, action) => {
+            let regMealCount = action.payload.mealCount;
+            let regRegistrationsCount = action.payload.registrationCount;
+
+            // console.log('regMealCount:', regMealCount);
+            // console.log('regRegistrationsCount:', regRegistrationsCount);
+            // console.log('HIT IT');
+            // console.log('action.payload:', action.payload);
+            //printObject('allRallies:', state.allRallies);
+            const updates = state.allRallies.map((ral) => {
+                // console.log('ral', ral.uid);
+                if (ral.uid === action.payload.uid) {
+                    // printObject('BINGO:', ral);
+                    //deal with mealCount
+                    let newMealInfo = {};
+                    newMealInfo = {
+                        startTime: ral.meal.startTime,
+                        cost: ral.meal.cost,
+                        deadline: ral.meal.deadline,
+                        offered: true,
+                        mealsServed: ral.meal.mealsServed,
+                        mealCount: ral?.meal?.mealCount
+                            ? parseInt(ral.meal.mealCount) +
+                              parseInt(regMealCount)
+                            : 0,
+                    };
+                    let newRal = {};
+                    newRal = { ...ral, meal: newMealInfo };
+                    // deal with registrations
+                    let regCount = 0;
+                    regCount = ral?.registrations
+                        ? parseInt(ral.registrations) +
+                          parseInt(regRegistrationsCount)
+                        : 0;
+
+                    newRal = { ...newRal, registrations: regCount };
+                    // printObject('newRal:', newRal);
+
+                    return newRal;
+                } else {
+                    return ral;
+                }
+            });
+            // printObject('udpates:', updates);
+            state.allRallies = updates;
+            return state;
+        },
+        updateRegNumbersOLD: (state, action) => {
+            // this receives object with CHANGES in registrations and meal count
+            const { uid, registrationCount, mealCount } = action.payload;
+            let allRallies = state.allRallies;
+            // get existing registration
+            const existingRally = allRallies.filter((ral) => {
+                (ral) => ral.uid == uid;
+            });
+            let theRally = existingRally[0];
+            let newMealValues = {
+                startTime: theRally?.meal?.startTime,
+                cost: theRally?.meal?.cost,
+                deadline: theRally?.meal?.deadline,
+                offered: theRally?.meal?.offered,
+                mealCount: theRally?.meal?.mealCount,
+                mealsServed: theRally?.meal?.mealsServed,
+            };
+            //adjust the mealCount value
+            let newMealCount =
+                parseInt(theRally?.meal?.mealCount) + parseInt(mealCount);
+            newMealValues.mealCount = newMealCount;
+            theRally.meal = newMealValues;
+            //adjust the registration value
+            theRally.registrations =
+                parseInt(registrationCount) + parseInt(theRally?.registrations);
+
+            const newRallies = state.allRallies.map((ral) =>
+                ral.uid !== uid ? ral : theRally
+            );
+            state.allRallies = newRallies;
+            // update reg in list and return
         },
         updateRally: (state, action) => {
             const newValue = action.payload;
@@ -137,21 +218,21 @@ export const ralliesSlice = createSlice({
             state.value += action.payload;
         },
     },
-    extraReducers: {
-        [loadUserRallies.pending]: (state) => {
-            state.isLoading = true;
-        },
-        [loadUserRallies.fulfilled]: (state, action) => {
-            state.isLoading = false;
-            printObject('Extra action:', action);
-            // printObject('Extra state', state);
-            // state.userRallies = action.payload;
-        },
-        [loadUserRallies.rejected]: (state, action) => {
-            console.log('yep, we got rejected...');
-            state.isLoading = false;
-        },
-    },
+    // extraReducers: {
+    //     [loadUserRallies.pending]: (state) => {
+    //         state.isLoading = true;
+    //     },
+    //     [loadUserRallies.fulfilled]: (state, action) => {
+    //         state.isLoading = false;
+    //         printObject('Extra action:', action);
+    //         // printObject('Extra state', state);
+    //         // state.userRallies = action.payload;
+    //     },
+    //     [loadUserRallies.rejected]: (state, action) => {
+    //         console.log('yep, we got rejected...');
+    //         state.isLoading = false;
+    //     },
+    // },
 });
 
 // Action creators are generated for each case reducer function
@@ -160,6 +241,7 @@ export const {
     getRally,
     addNewRally,
     updateRally,
+    updateRegNumbers,
     deleteRally,
     // loadUserRallies,
     createTmp,
