@@ -7,10 +7,13 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
+    Modal,
 } from 'react-native';
 import { Headline } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import CustomButton from '../../../components/ui/CustomButton';
+import { Surface } from 'react-native-paper';
 import CurrencyInput from 'react-native-currency-input';
 import { Switch } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,14 +26,20 @@ import {
 } from '../../../utils/date';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
+import { normalize } from 'react-native-elements';
 
 export default function RallyMealForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+
     const rallyEntry = useSelector((state) =>
         state.rallies.allRallies.filter((r) => r.uid === rallyId)
     );
+    // get the current rally information
     const rally = rallyEntry[0];
+    const [showMealCountConfirm, setShowMealCountConfirm] = useState(
+        parseInt(rally?.meal?.mealCount) > 0 ? true : false
+    );
     let mealSetting = true;
     if (rally?.meal?.offered === false) {
         mealSetting = false;
@@ -72,6 +81,8 @@ export default function RallyMealForm({ rallyId }) {
                 startTime: mTime,
                 cost: mCost,
                 deadline: mDeadline,
+                mealCount: rally?.meal?.mealCount,
+                mealServed: rally?.meal?.mealsServed,
             },
         };
         dispatch(updateTmp(meal));
@@ -83,6 +94,52 @@ export default function RallyMealForm({ rallyId }) {
     // const dispatch = useDispatch();
     return (
         <View>
+            <Modal visible={showMealCountConfirm} animationStyle='slide'>
+                <Surface style={styles.modalSurface}>
+                    <View>
+                        <Text style={styles.modalTitle}>
+                            REGISTRATION WARNING
+                        </Text>
+                    </View>
+                    <View style={styles.modalMessageWrapper}>
+                        <Text style={styles.modalMessageText}>
+                            Some registrars have RSVP'd to the meal of this
+                            event. These commitments will be retained.
+                        </Text>
+                    </View>
+                    <View style={styles.modalMessageWrapper}>
+                        <Text style={styles.modalMessageText}>
+                            If you elect to eliminate the meal, it would be
+                            considrate to contact the registrars that did RSVP
+                            and inform them of your changes.
+                        </Text>
+                    </View>
+                    <View style={styles.modalMessageWrapper}>
+                        <Text style={styles.modalMessageText}>
+                            You can see who RSVP'd on the main serve page in the
+                            Registrations scroll box.
+                        </Text>
+                    </View>
+                    <View style={styles.modalButtonContainer}>
+                        <View style={styles.modalButtonWrapper}>
+                            <View style={styles.modalConfirmButton}>
+                                <CustomButton
+                                    title='OK'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: Colors.gray35,
+                                        color: 'black',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() =>
+                                        setShowMealCountConfirm(false)
+                                    }
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Surface>
+            </Modal>
             <ScrollView>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>
@@ -333,5 +390,32 @@ const styles = StyleSheet.create({
         borderColor: Colors.gray35,
         paddingHorizontal: 12,
         height: 45,
+    },
+    modalSurface: {
+        marginTop: 80,
+        marginHorizontal: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+    },
+    modalTitle: {
+        marginTop: 15,
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+    modalMessageWrapper: {
+        marginVertical: 15,
+        marginHorizontal: 15,
+    },
+    modalMessageText: {
+        fontSize: 18,
+        fontWeight: 'normal',
+    },
+    modalButtonContainer: {
+        marginVertical: 20,
+        flexDirection: 'row',
+    },
+    modalButtonWrapper: {
+        marginHorizontal: 10,
     },
 });
