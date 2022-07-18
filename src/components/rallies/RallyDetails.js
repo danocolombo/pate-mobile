@@ -6,10 +6,13 @@ import {
     Image,
     ImageBackground,
     ScrollView,
+    Modal,
 } from 'react-native';
 import { Card, ListItem, Button, Icon } from 'react-native-elements';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import { Surface } from 'react-native-paper';
+import CustomButton from '../ui/CustomButton';
 import CardDate from '../ui/RallyCardDate';
 import LoadingOverly from '../../components/ui/LoadingOverlay';
 import { Colors } from '../../constants/colors';
@@ -22,6 +25,8 @@ import {
 const RallyDetails = (rallyIn) => {
     // printObject('S.C.R.RD:23==>>>', rallyIn.rally);
     //always get the latest from allRallies
+    const [showNoProfileModal, setShowNoProfileModal] = useState(false);
+    const me = useSelector((state) => state.users.currentUser);
     let ral = useSelector((state) =>
         state.rallies.allRallies.filter((r) => r.uid === rallyIn.uid)
     );
@@ -35,9 +40,22 @@ const RallyDetails = (rallyIn) => {
     // let rally = ral[0];
     // printObject('rally', rally);
     const handleRegisterRequest = () => {
-        navigation.navigate('RallyRegister', {
-            rally: rally,
-        });
+        // if the user has their profile done, they can register,
+        // otherwise, we show modal informing them of profile requirement.
+        if (me.profile !== true) {
+            setShowNoProfileModal(true);
+            return;
+        } else {
+            navigation.navigate('RallyRegister', {
+                rally: rally,
+            });
+        }
+    };
+    const handleNoProfileClick = () => {
+        // close the dialog
+        setShowNoProfileModal(false);
+        // go to profile.
+        navigation.navigate('Profile');
     };
     //-----------------------------------
     // get long date and break apart to display better
@@ -55,6 +73,32 @@ const RallyDetails = (rallyIn) => {
                     source={require('../../components/images/background.png')}
                     style={styles.bgImageContainer}
                 >
+                    <Modal visible={showNoProfileModal} animationStyle='slide'>
+                        <Surface style={styles.modalSurface}>
+                            <View>
+                                <Text style={styles.modalTitle}>
+                                    You cannot register for an event prior to
+                                    completing your profile.
+                                </Text>
+                            </View>
+                            <View style={styles.modalButtonWrapper}>
+                                <View style={styles.modalButton}>
+                                    <CustomButton
+                                        title='OKAY'
+                                        graphic={null}
+                                        cbStyles={{
+                                            backgroundColor: Colors.gray35,
+                                            color: 'black',
+                                        }}
+                                        txtColor='white'
+                                        onPress={() =>
+                                            setShowNoProfileModal(false)
+                                        }
+                                    />
+                                </View>
+                            </View>
+                        </Surface>
+                    </Modal>
                     <ScrollView>
                         <View style={styles.cardContainer}>
                             <Card style={styles.rallyCard}>
@@ -142,6 +186,27 @@ const styles = StyleSheet.create({
     },
     pressed: {
         opacity: 0.75,
+    },
+    modalSurface: {
+        marginTop: 200,
+        marginHorizontal: 10,
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+    },
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    modalButtonContainer: {
+        marginVertical: 20,
+        flexDirection: 'row',
+    },
+    modalButtonWrapper: {
+        marginHorizontal: 10,
     },
     cardContainer: {
         marginTop: 30,

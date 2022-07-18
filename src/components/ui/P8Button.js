@@ -3,7 +3,7 @@ import React from 'react';
 import { printObject } from '../../utils/helpers';
 
 const P8Button = () => {
-    printObject('rotue', route);
+    // printObject('rotue', route);
     // const bgColor = route.params.bgColor;
     // const onPress = route.params.onPress;
     // const txtColor = route.params.txtColor;

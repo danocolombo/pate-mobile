@@ -35,10 +35,10 @@ const RallyRegistrars = ({ rally, onPress }) => {
             let api2use = process.env.AWS_API_ENDPOINT + '/registrations';
 
             axios.post(api2use, body, config).then((response) => {
-                printObject('RR:22 response', response);
+                // printObject('RR:22 response', response);
                 setRegs(response.data.body.Items);
             });
-            printObject('regs', regs);
+            // printObject('regs', regs);
         }
     }, []);
     const handleRegistrationRequest = (reg) => {

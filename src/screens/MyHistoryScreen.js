@@ -85,7 +85,7 @@ const MyHistoryScreen = () => {
         });
     }
     async function handleDeleteRequest(reg) {
-        printObject('MHS:86-->reg', reg);
+        // printObject('MHS:86-->reg', reg);
         //   1. deleteReduxUserRegistration
         dispatch(deleteReduxUserRegistration(reg));
         //   2. deleteDDBRegistration
@@ -166,11 +166,11 @@ const MyHistoryScreen = () => {
                                                             pressed &&
                                                             styles.pressed
                                                         }
-                                                        key={r.name}
+                                                        key={r.uid}
                                                     >
-                                                        <View key={r.name}>
+                                                        <View key={r.uid}>
                                                             <RegListCard
-                                                                key={r.name}
+                                                                key={r.uid}
                                                                 registration={r}
                                                                 onDeletePress={
                                                                     handleDeleteRequest
