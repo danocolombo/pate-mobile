@@ -166,11 +166,11 @@ const MyHistoryScreen = () => {
                                                             pressed &&
                                                             styles.pressed
                                                         }
-                                                        key={r.name}
+                                                        key={r.uid}
                                                     >
-                                                        <View key={r.name}>
+                                                        <View key={r.uid}>
                                                             <RegListCard
-                                                                key={r.name}
+                                                                key={r.uid}
                                                                 registration={r}
                                                                 onDeletePress={
                                                                     handleDeleteRequest

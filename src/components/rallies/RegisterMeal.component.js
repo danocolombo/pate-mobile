@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         borderColor: Colors.primary,
         marginVertical: 10,
-        backgroundColor: Colors.secondaryMedium,
+        backgroundColor: Colors.primary400,
     },
     regisrationCountText: {
         fontSize: 16,
