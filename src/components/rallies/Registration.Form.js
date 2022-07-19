@@ -145,7 +145,12 @@ const RallyRegister = (rally = null) => {
                                 {rally?.meal?.cost ? (
                                     <View style={styles.mealTextWrapper}>
                                         <Text style={styles.mealCostText}>
-                                            Cost: {rally.meal.cost}
+                                            Cost:{' '}
+                                            {(
+                                                Math.round(
+                                                    rally.meal.cost * 100
+                                                ) / 100
+                                            ).toFixed(2)}
                                         </Text>
                                         <Text style={styles.mealStartTime}>
                                             Meal starts at{' '}

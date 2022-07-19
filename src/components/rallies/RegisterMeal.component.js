@@ -13,7 +13,14 @@ const RegisterMeal = ({ ral, mealCount, onPress }) => {
                 <View>
                     <Text style={styles.mealCostText}>
                         Cost:{' '}
-                        {ral.meal.cost === 0 ? 'FREE' : ['$', ral.meal.cost]}
+                        {ral.meal.cost === 0
+                            ? 'FREE'
+                            : [
+                                  '$',
+                                  (
+                                      Math.round(ral.meal.cost * 100) / 100
+                                  ).toFixed(2),
+                              ]}
                     </Text>
                 </View>
                 <View>

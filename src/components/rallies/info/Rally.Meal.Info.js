@@ -17,7 +17,11 @@ const RallyMealInfo = ({ rally }) => {
                                     {convertPateTime(rally?.meal?.startTime)}
                                 </Text>
                                 <Text style={styles.costText}>
-                                    ${rally?.meal?.cost}
+                                    $
+                                    {(
+                                        Math.round(rally?.meal?.cost * 100) /
+                                        100
+                                    ).toFixed(2)}
                                 </Text>
                             </View>
                             {rally?.meal?.deadline ? (
