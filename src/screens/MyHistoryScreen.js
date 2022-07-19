@@ -27,7 +27,6 @@ const MyHistoryScreen = () => {
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const registrations = useSelector((state) => state.users.registrations);
-
     const [isLoading, setIsLoading] = useState(false);
     const [displayEvents, setDisplayEvents] = useState();
     const combineDetails = async () => {
@@ -149,61 +148,69 @@ const MyHistoryScreen = () => {
                                     ) : null}
                                 </View>
                                 {displayEvents ? (
-                                    displayEvents.map((r) => {
-                                        const enablePress =
-                                            !isDateDashBeforeToday(
-                                                dateNumToDateDash(r.eventDate)
-                                            );
+                                    displayEvents.length > 0 ? (
+                                        displayEvents.map((r) => {
+                                            const enablePress =
+                                                !isDateDashBeforeToday(
+                                                    dateNumToDateDash(
+                                                        r.eventDate
+                                                    )
+                                                );
 
-                                        if (enablePress) {
-                                            return (
-                                                <>
-                                                    <Pressable
-                                                        onPress={() =>
-                                                            regPressHandler(r)
-                                                        }
-                                                        style={({ pressed }) =>
-                                                            pressed &&
-                                                            styles.pressed
-                                                        }
-                                                        key={r.uid}
-                                                    >
-                                                        <View key={r.uid}>
-                                                            <RegListCard
-                                                                key={r.uid}
-                                                                registration={r}
-                                                                onDeletePress={
-                                                                    handleDeleteRequest
-                                                                }
-                                                            />
-                                                        </View>
-                                                    </Pressable>
-                                                </>
-                                            );
-                                        } else {
-                                            return (
-                                                <View key={r.uid}>
-                                                    <RegListCard
-                                                        key={r.uid}
-                                                        registration={r}
-                                                        oldStyle={{
-                                                            backgroundColor:
-                                                                Colors.secondary,
-                                                        }}
-                                                    />
-                                                </View>
-                                            );
-                                        }
-                                    })
-                                ) : (
-                                    <>
-                                        <View>
-                                            <Text>
-                                                No Historical Information
+                                            if (enablePress) {
+                                                return (
+                                                    <>
+                                                        <Pressable
+                                                            onPress={() =>
+                                                                regPressHandler(
+                                                                    r
+                                                                )
+                                                            }
+                                                            style={({
+                                                                pressed,
+                                                            }) =>
+                                                                pressed &&
+                                                                styles.pressed
+                                                            }
+                                                            key={r.uid}
+                                                        >
+                                                            <View key={r.uid}>
+                                                                <RegListCard
+                                                                    key={r.uid}
+                                                                    registration={
+                                                                        r
+                                                                    }
+                                                                    onDeletePress={
+                                                                        handleDeleteRequest
+                                                                    }
+                                                                />
+                                                            </View>
+                                                        </Pressable>
+                                                    </>
+                                                );
+                                            } else {
+                                                return (
+                                                    <View key={r.uid}>
+                                                        <RegListCard
+                                                            key={r.uid}
+                                                            registration={r}
+                                                            oldStyle={{
+                                                                backgroundColor:
+                                                                    Colors.secondary,
+                                                            }}
+                                                        />
+                                                    </View>
+                                                );
+                                            }
+                                        })
+                                    ) : (
+                                        <View style={styles.noHistoryContainer}>
+                                            <Text style={styles.noHistoryText}>
+                                                No Historical Informaton
                                             </Text>
                                         </View>
-                                    </>
-                                )}
+                                    )
+                                ) : null}
                             </View>
                         </ScrollView>
                     </Surface>
@@ -261,5 +268,13 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
         paddingVertical: 10,
+    },
+    noHistoryContainer: {
+        alignItems: 'center',
+        marginVertical: 30,
+    },
+    noHistoryText: {
+        fontWeight: '700',
+        fontSize: 18,
     },
 });
