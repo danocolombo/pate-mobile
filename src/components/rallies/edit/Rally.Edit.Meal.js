@@ -27,6 +27,7 @@ import {
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
 import { normalize } from 'react-native-elements';
+import { printObject } from '../../../utils/helpers';
 
 export default function RallyMealForm({ rallyId }) {
     const navigation = useNavigation();
@@ -52,18 +53,20 @@ export default function RallyMealForm({ rallyId }) {
     const [deadline, setDeadline] = useState(
         pateDateToSpinner(rally.eventDate)
     );
+    const [mealMessage, setMealMessage] = useState(rally?.meal?.message);
     const onMealTimeChange = (event, value) => {
         setMealTime(value);
     };
     const onDeadlineChange = (event, value) => {
         setDeadline(value);
     };
-    const handleNext = (values) => {
+    const handleNext = () => {
         let mealOffered = offerMeal;
         let theDateObject = '';
         let mTime = '';
         let mDeadline = '';
         let mCost = '';
+        let mMessage = mealMessage;
         if (mealOffered === true) {
             theDateObject = mealTime;
             let mt = Date.parse(theDateObject);
@@ -72,6 +75,7 @@ export default function RallyMealForm({ rallyId }) {
             let mealDeadline = Date.parse(theDateObject);
             mDeadline = getPateDate(mealDeadline);
             mCost = cost;
+            mMessage = mealMessage;
         }
 
         // build a meal object
@@ -83,8 +87,10 @@ export default function RallyMealForm({ rallyId }) {
                 deadline: mDeadline,
                 mealCount: rally?.meal?.mealCount,
                 mealServed: rally?.meal?.mealsServed,
+                message: mealMessage,
             },
         };
+        printObject('REM:93--> meal:', meal);
         dispatch(updateTmp(meal));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
@@ -230,40 +236,21 @@ export default function RallyMealForm({ rallyId }) {
                                     style={styles.datePicker}
                                 />
                             </View>
-                            <View style={styles.inputContainer}>
-                                <View>
-                                    {/* <TextInput
-                                        style={styles.input}
-                                        placeholder='Meal Deadline'
-                                        onChangeText={formikProps.handleChange(
-                                            'deadline'
-                                        )}
-                                        value={formikProps.values.deadline}
-                                        onBlur={formikProps.handleBlur(
-                                            'deadline'
-                                        )}
-                                    />
-                                    <Text style={styles.errorText}>
-                                        {formikProps.touched.deadline &&
-                                            formikProps.errors.deadline}
-                                    </Text>
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder='Meal Message'
-                                        onChangeText={formikProps.handleChange(
-                                            'message'
-                                        )}
-                                        value={formikProps.values.message}
-                                        onBlur={formikProps.handleBlur(
-                                            'message'
-                                        )}
-                                    />
-                                    <Text style={styles.errorText}>
-                                        {formikProps.touched.message &&
-                                            formikProps.errors.message}
-                                    </Text> */}
-                                </View>
+                            <View style={styles.messageWrapper}>
+                                <Text style={styles.mealMessageLabel}>
+                                    Meal message (max. 60 characters)
+                                </Text>
+                                <TextInput
+                                    style={styles.messageInput}
+                                    numberOfLines={2}
+                                    multiline
+                                    maxLength={60}
+                                    placeholder='Meal Message'
+                                    onChangeText={() => setMealMessage}
+                                    value={mealMessage}
+                                />
                             </View>
+
                             <View style={styles.buttonContainer}>
                                 <CustomNavButton
                                     title='Next'
@@ -335,7 +322,7 @@ const styles = StyleSheet.create({
     },
     datePickerLabel: {
         fontSize: 20,
-        fontWeight: '500',
+        fontWeight: '300',
         marginBottom: 10,
     },
     datePickerWrapper: {
@@ -366,7 +353,7 @@ const styles = StyleSheet.create({
     },
     costLabel: {
         fontSize: 20,
-        fontWeight: '500',
+        fontWeight: '300',
     },
     costInput: {
         marginVertical: 8,
@@ -390,6 +377,29 @@ const styles = StyleSheet.create({
         borderColor: Colors.gray35,
         paddingHorizontal: 12,
         height: 45,
+    },
+    messageWrapper: {
+        // flex: 1,
+        marginVertical: 10,
+        marginLeft: '10%',
+    },
+    mealMessageLabel: {
+        fontWeight: '300',
+        fontSize: 18,
+    },
+    messageInput: {
+        // flex: 1,
+        // flexWrap: 'wrap',
+        borderWidth: 1,
+        borderColor: 'grey',
+        padding: 10,
+        marginTop: 0,
+        fontSize: 18,
+        borderRadius: 6,
+        width: '90%',
+
+        height: 50,
+        justifyContent: 'flex-start',
     },
     modalSurface: {
         marginTop: 80,
