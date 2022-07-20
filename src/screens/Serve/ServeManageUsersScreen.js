@@ -1,19 +1,22 @@
-import { StyleSheet, Text, View, Button, Platform } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Button,
+    Platform,
+    ImageBackground,
+} from 'react-native';
 import React, { useState } from 'react';
+import UsersDisplay from '../../components/serve/UsersDisplay';
 
 // const ServeEventsHistoryScreen = () => {
 const ServeManageUsersScreen = () => {
-    // const onChange = (event, selectedDate) => {
-    //     const currentDate = selectedDate;
-    //     setShow(false);
-    //     setDate(currentDate);
-    // };
-
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
                 <Text style={styles.screenHeaderText}>Manage Users</Text>
             </View>
+            <UsersDisplay />
         </View>
     );
 };
@@ -21,6 +24,11 @@ const ServeManageUsersScreen = () => {
 export default ServeManageUsersScreen;
 
 const styles = StyleSheet.create({
+    bgImageContainer: {
+        flex: 1,
+        height: '100%',
+        width: '100%',
+    },
     rootContainer: {
         flex: 1,
     },
