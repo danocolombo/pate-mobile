@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, Button, Platform } from 'react-native';
 import React, { useState } from 'react';
 
-const ServeEventsHistoryScreen = () => {
+// const ServeEventsHistoryScreen = () => {
+const ServeManageUsersScreen = () => {
     // const onChange = (event, selectedDate) => {
     //     const currentDate = selectedDate;
     //     setShow(false);
@@ -11,13 +12,13 @@ const ServeEventsHistoryScreen = () => {
     return (
         <View style={styles.rootContainer}>
             <View style={styles.screenHeader}>
-                <Text style={styles.screenHeaderText}>Historical Events</Text>
+                <Text style={styles.screenHeaderText}>Manage Users</Text>
             </View>
         </View>
     );
 };
 
-export default ServeEventsHistoryScreen;
+export default ServeManageUsersScreen;
 
 const styles = StyleSheet.create({
     rootContainer: {

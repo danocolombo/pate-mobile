@@ -49,16 +49,22 @@ export default function RallyMealForm({ rallyId }) {
     const [mealTime, setMealTime] = useState(
         pateTimeToSpinner(rally.eventDate, rally.meal.startTime)
     );
-    const [cost, setCost] = useState(0);
+    const [cost, setCost] = useState(rally?.meal?.cost);
     const [deadline, setDeadline] = useState(
         pateDateToSpinner(rally.eventDate)
     );
-    const [mealMessage, setMealMessage] = useState(rally?.meal?.message);
+    const [mealMessage, setMealMessage] = useState(
+        rally?.meal?.message ? rally.meal.message : ''
+    );
     const onMealTimeChange = (event, value) => {
         setMealTime(value);
     };
     const onDeadlineChange = (event, value) => {
         setDeadline(value);
+    };
+    const onMessageChange = (e) => {
+        // printObject('REM:64-->e:', e);
+        setMealMessage(e);
     };
     const handleNext = () => {
         let mealOffered = offerMeal;
@@ -90,7 +96,7 @@ export default function RallyMealForm({ rallyId }) {
                 message: mealMessage,
             },
         };
-        printObject('REM:93--> meal:', meal);
+        // printObject('REM:93--> meal:', meal);
         dispatch(updateTmp(meal));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
@@ -246,7 +252,7 @@ export default function RallyMealForm({ rallyId }) {
                                     multiline
                                     maxLength={60}
                                     placeholder='Meal Message'
-                                    onChangeText={() => setMealMessage}
+                                    onChangeText={(e) => onMessageChange(e)}
                                     value={mealMessage}
                                 />
                             </View>
@@ -264,7 +270,7 @@ export default function RallyMealForm({ rallyId }) {
                                         color: 'white',
                                         width: '50%',
                                     }}
-                                    onPress={handleNext}
+                                    onPress={() => handleNext()}
                                 />
                             </View>
                         </ScrollView>
@@ -398,7 +404,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         width: '90%',
 
-        height: 50,
+        height: 60,
         justifyContent: 'flex-start',
     },
     modalSurface: {

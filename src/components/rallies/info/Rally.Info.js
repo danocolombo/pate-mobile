@@ -288,8 +288,8 @@ const RallyDetails = ({ rallyId }) => {
                     <RallyLocationInfo rally={rally} />
                     <RallyLogisticsInfo rally={rally} />
 
-                    <RallyMealInfo rally={rally} />
                     <RallyContactInfo rally={rally} />
+                    <RallyMealInfo rally={rally} />
                     {/* {rally.status !== 'pending' && rally.status !== 'draft' ? (
                         <RallyRegistrars
                             key={rally.uid}
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     buttonContainer: {
-        marginTop: 15,
+        marginTop: 5,
         alignItems: 'center',
     },
     modalContainer: {

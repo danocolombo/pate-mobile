@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
 import { Surface, Headline } from 'react-native-paper';
+import { Colors } from '../../../constants/colors';
 import { convertPateDate, convertPateTime } from '../../../utils/date';
 const RallyLogisticsInfo = ({ rally }) => {
     return (
@@ -8,7 +9,14 @@ const RallyLogisticsInfo = ({ rally }) => {
             <View style={styles.rootContainer}>
                 <Surface style={[styles.surface, { elevation: 5 }]}>
                     <View>
-                        <Headline>Logistics Information</Headline>
+                        <Headline
+                            style={{
+                                color: Colors.primary,
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Logistics Information
+                        </Headline>
                     </View>
                     <View style={styles.textWrapper}>
                         <Text style={styles.text}>

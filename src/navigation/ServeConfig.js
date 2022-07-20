@@ -6,7 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import ServeEventsMyScreen from '../screens/Serve/ServeEventsMyScreen';
 import ServeEventsStateScreen from '../screens/Serve/ServeEventsStateScreen';
-import ServeEventsHistoryScreen from '../screens/Serve/ServeEventsHistoryScreen';
+// import ServeEventsHistoryScreen from '../screens/Serve/ServeManageUsersScreen';
+import ServeManageUsersScreen from '../screens/Serve/ServeManageUsersScreen';
 const BottomTab = createBottomTabNavigator();
 const ServeConfig = () => {
     let user = useSelector((state) => state.users.currentUser);
@@ -40,7 +41,7 @@ const ServeConfig = () => {
             {user.role === 'lead' || user.role === 'superuser' ? (
                 <BottomTab.Screen
                     name='ServeHistory'
-                    component={ServeEventsHistoryScreen}
+                    component={ServeManageUsersScreen}
                     options={{
                         title: 'Serve: History',
                         tabBarLabel: 'ADMIN',

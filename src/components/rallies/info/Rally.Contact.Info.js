@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
+import { Colors } from '../../../constants/colors';
 import { getPhoneType, transformPatePhone } from '../../../utils/helpers';
 const RallyContactInfo = ({ rally }) => {
     let phoneValueToDisplay;
@@ -22,7 +23,14 @@ const RallyContactInfo = ({ rally }) => {
             <View style={styles.rootContainer}>
                 <Surface style={[styles.surface, { elevation: 5 }]}>
                     <View>
-                        <Headline>Contact Information</Headline>
+                        <Headline
+                            style={{
+                                color: Colors.primary,
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Contact Information
+                        </Headline>
                     </View>
                     <View style={styles.textWrapper}>
                         <Text style={styles.text}>{rally?.contact?.name}</Text>

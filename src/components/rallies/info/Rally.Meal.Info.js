@@ -2,13 +2,21 @@ import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
 import { convertPateDate, convertPateTime } from '../../../utils/date';
 import { Surface, Headline, Subheading } from 'react-native-paper';
+import { Colors } from '../../../constants/colors';
 const RallyMealInfo = ({ rally }) => {
     return (
         <>
             <View style={styles.rootContainer}>
                 <Surface style={[styles.surface, { elevation: 5 }]}>
                     <View>
-                        <Headline>Meal Information</Headline>
+                        <Headline
+                            style={{
+                                color: Colors.primary,
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Meal Information
+                        </Headline>
                     </View>
                     {rally?.meal?.offered ? (
                         <View style={styles.textWrapper}>
@@ -87,6 +95,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         paddingBottom: 10,
     },
-    messageWrapper: { marginVertical: 2 },
-    messageText: {},
+    messageWrapper: {
+        width: '75%',
+        marginVertical: 5,
+        //paddingBottom: ,
+        marginLeft: 20,
+        marginRight: 20,
+    },
+    messageText: {
+        textAlign: 'center',
+    },
 });
