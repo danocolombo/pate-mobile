@@ -1,8 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
+import { printObject } from '../../utils/helpers';
 
 const UserCard = (props) => {
     const user = props.user;
+    printObject('UC:07-->user', user);
     return (
         <View style={styles.userWrapper}>
             <View>

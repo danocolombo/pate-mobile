@@ -56,6 +56,7 @@ const UsersDisplay = () => {
             <ScrollView>
                 <UsersList
                     data={regionLeaders}
+                    key={1}
                     title='LEADERS'
                     customStyle={{
                         backgroundColor: Colors.primary,
@@ -67,6 +68,7 @@ const UsersDisplay = () => {
 
                 <UsersList
                     data={regionUsers}
+                    key={2}
                     title='USERS'
                     customStyle={{
                         backgroundColor: Colors.secondary,

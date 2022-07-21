@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     screenHeaderText: {
+        paddingVertical: 10,
         fontSize: 30,
         fontWeight: 'bold',
     },
