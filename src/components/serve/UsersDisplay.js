@@ -25,19 +25,15 @@ const UsersDisplay = () => {
         // printObject('PL:11-->allProfileData', allProfilesData);
         if (allProfilesData.statusCode === 200) {
             const region = 'us#test#south';
+            const allTheProfiles = allProfilesData.profiles;
             setAllProfiles(allProfilesData.profiles);
-            dispatch(loadProfiles(allProfilesData.profiles));
-            const leaders = allProfiles.filter((p) => p.stateRep === 'TT');
-            printObject('UD:31--> leaders', leaders);
-            const regionalUsers = allProfiles.filter(
+            dispatch(loadProfiles(allTheProfiles));
+            const leaders = allTheProfiles.filter((p) => p.stateRep === 'TT');
+            // printObject('UD:31--> leaders', leaders);
+            const regionalUsers = allTheProfiles.filter(
                 (p) => p.region === 'us#test#south#tt' && p.stateRep !== 'TT'
             );
-            // r.eventDate >= tDay && r.eventRegion === eventRegion;
-            // const leaders = allProfiles.map((u) => {
-            //     return u;
-            // });
-            // setRegionLeaders(leaders);
-            // setRegionUsers(regionalUsers);
+
             setRegionLeaders(leaders);
             setRegionUsers(regionalUsers);
         }
@@ -45,11 +41,8 @@ const UsersDisplay = () => {
     };
     useEffect(() => {
         setIsLoading(true);
-        const getTheData = async () => {
-            const response = await getProfileData();
-            return;
-        };
-        getTheData().then((resp) => {
+
+        getProfileData().then((resp) => {
             setIsLoading(false);
         });
     }, []);
@@ -61,23 +54,20 @@ const UsersDisplay = () => {
     return (
         <View>
             <ScrollView>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>LEADERS</Text>
-                </View>
                 <UsersList
                     data={regionLeaders}
+                    title='LEADERS'
                     customStyle={{
                         backgroundColor: Colors.primary,
                         borderTopStartRadius: 20,
                         borderTopEndRadius: 20,
-                        marginBottom: 20,
+                        marginBottom: 10,
                     }}
                 />
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>USERS</Text>
-                </View>
+
                 <UsersList
                     data={regionUsers}
+                    title='USERS'
                     customStyle={{
                         backgroundColor: Colors.secondary,
                         borderBottomStartRadius: 20,
@@ -85,24 +75,6 @@ const UsersDisplay = () => {
                     }}
                 />
             </ScrollView>
-            {/* {!!allProfiles ? (
-                allProfiles.map((p) => {
-                    if (
-                        p.region === 'us#test#south#tt' &&
-                        p.stateRep === 'TT'
-                    ) {
-                        return (
-                            <View>
-                                <Text>{p.firstName}</Text>
-                            </View>
-                        );
-                    }
-                })
-            ) : (
-                <View>
-                    <Text>No</Text>
-                </View>
-            )} */}
         </View>
     );
 };
@@ -112,9 +84,5 @@ export default UsersDisplay;
 const styles = StyleSheet.create({
     header: {
         alignItems: 'center',
-    },
-    headerText: {
-        fontSize: 26,
-        fontWeight: '500',
     },
 });
