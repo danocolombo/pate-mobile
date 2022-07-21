@@ -106,6 +106,7 @@ const UserDisplay = ({ profile }) => {
 
                     <View style={styles.customButton}>
                         <CustomButton
+                            key={profile.uid}
                             title='UPDATE'
                             graphic={null}
                             cbStyles={{
