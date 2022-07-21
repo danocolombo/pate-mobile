@@ -1,15 +1,18 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { printObject } from '../../utils/helpers';
 import UserCard from './UserCard';
+import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
 
 const UsersList = (props) => {
+    const navigation = useNavigation();
     const profiles = props.data;
     const listTitle = props.title;
     const cStyles = props.customStyle;
     // printObject('UL09--> cStyles', cStyles);
+    const handleUserRequest = (profile) => {};
     return (
         <>
             <Surface style={[styles.surface, cStyles]}>
@@ -19,7 +22,31 @@ const UsersList = (props) => {
                 <View style={styles.listContainer}>
                     {!!profiles
                         ? profiles.map((p) => {
-                              return <UserCard user={p} key={p.uid} />;
+                              return (
+                                  <View
+                                      style={{
+                                          width: '100%',
+                                          marginLeft: '20%',
+                                      }}
+                                  >
+                                      <Pressable
+                                          key={p.uid}
+                                          onPress={() =>
+                                              navigation.navigate(
+                                                  'UserProfile',
+                                                  {
+                                                      profile: p,
+                                                  }
+                                              )
+                                          }
+                                          style={({ pressed }) =>
+                                              pressed && styles.pressed
+                                          }
+                                      >
+                                          <UserCard user={p} key={p.uid} />
+                                      </Pressable>
+                                  </View>
+                              );
                           })
                         : null}
                 </View>
@@ -49,7 +76,9 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         alignItems: 'center',
-
         // marginTop: 10,
+    },
+    pressed: {
+        opacity: 0.7,
     },
 });

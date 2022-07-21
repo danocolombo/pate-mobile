@@ -25,6 +25,7 @@ import SignUpScreen from '../screens/Auth/SignUpScreen';
 import ConfirmEmailScreen from '../screens/Auth/ConfirmEmailScreen';
 import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
 import NewPasswordScreen from '../screens/Auth/NewPasswordScreen';
+import UserProfileScreen from '../screens/Serve/UserProfileScreen';
 import AuthDrawer from './AuthDrawer';
 import { Auth, Hub } from 'aws-amplify';
 
@@ -61,6 +62,16 @@ function PateStack() {
             <Stack.Screen
                 name='RallyInfo'
                 component={RallyInfoScreen}
+                options={({ navigation }) => ({
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
+            <Stack.Screen
+                name='UserProfile'
+                component={UserProfileScreen}
                 options={({ navigation }) => ({
                     headerStyle: {
                         backgroundColor: Colors.primary,
