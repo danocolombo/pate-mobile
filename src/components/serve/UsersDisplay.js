@@ -6,7 +6,7 @@ import {
     ScrollView,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import UsersList from './UsersList';
 import { getAllProfiles, getProfile } from '../../providers/users';
 import { loadProfiles } from '../../features/profiles/profilesSlice';
@@ -16,6 +16,7 @@ import { Headline } from 'react-native-paper';
 
 const UsersDisplay = () => {
     const dispatch = useDispatch();
+    const profilesData = useSelector((state) => state.profiles.allProfiles);
     const [allProfiles, setAllProfiles] = useState([]);
     const [regionLeaders, setRegionLeaders] = useState([]);
     const [regionUsers, setRegionUsers] = useState([]);
@@ -41,11 +42,24 @@ const UsersDisplay = () => {
     };
     useEffect(() => {
         setIsLoading(true);
-
+        // if (allProfiles.length < 0) {
+        // load the profiles
         getProfileData().then((resp) => {
             setIsLoading(false);
         });
+        // }
+        setIsLoading(false);
     }, []);
+    useEffect(() => {
+        // this reloads the leaders and guests based on profile value changes
+        const leaders = profilesData.filter((p) => p.stateRep === 'TT');
+        // printObject('UD:31--> leaders', leaders);
+        const regionalUsers = profilesData.filter(
+            (p) => p.region === 'us#test#south#tt' && p.stateRep !== 'TT'
+        );
+        setRegionLeaders(leaders);
+        setRegionUsers(regionalUsers);
+    }, [profilesData]);
     if (isLoading) {
         <View>
             <ActivityIndicator />

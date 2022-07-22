@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomButton from '../ui/CustomButton';
@@ -12,6 +13,7 @@ import { printObject } from '../../utils/helpers';
 
 const UserDisplay = ({ profile }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
     // printObject('UD:14--profile:', profile);
 
@@ -63,7 +65,7 @@ const UserDisplay = ({ profile }) => {
             '🚀 ~ file: UserDisplay.js ~ line 65 ~ handleStatusChange ~ newProfile',
             newProfile
         );
-        // if
+        navigate.goBack();
     };
 
     return (
