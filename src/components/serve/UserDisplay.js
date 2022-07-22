@@ -1,29 +1,71 @@
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Surface } from 'react-native-paper';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomButton from '../ui/CustomButton';
 import SelectDropdown from 'react-native-select-dropdown';
 import { transformPatePhone } from '../../utils/helpers';
+import { updateProfile } from '../../features/profiles/profilesSlice';
 import { Colors } from '../../constants/colors';
 import { printObject } from '../../utils/helpers';
 
 const UserDisplay = ({ profile }) => {
     const dispatch = useDispatch();
-    printObject('UD:09--profile:', profile);
-    const [isLoading, setIsLoading] = useState(false);
+    const user = useSelector((state) => state.users.currentUser);
+    // printObject('UD:14--profile:', profile);
+
     const [userStatus, setUserStatus] = useState(
         profile?.stateRep ? 'leader' : 'guest'
     );
     const [newStatus, setNewStatus] = useState();
     const statusValues = ['guest', 'leader'];
     useEffect(() => {}, []);
-    if (isLoading) {
-        <View>
-            <ActivityIndicator />
-        </View>;
-    }
+    const handleStatusChange = () => {
+        let newProfile = { ...profile };
+        if (newStatus !== userStatus) {
+            //change detected.
+            console.log(
+                '🚀 ~ file: UserDisplay.js ~ line 27 ~ handleStatusChange ~ user',
+                user
+            );
+
+            if (newStatus === 'leader') {
+                // ...insert stateRep value
+                console.log('LEADER');
+                newProfile = {
+                    ...profile,
+                    stateRep: user.stateLead,
+                    role: 'rep',
+                };
+                //   add stateRep to registration in REDUX
+                dispatch(updateProfile(newProfile));
+                //   update DDB p8Users with
+            } else {
+                // updating as GUEST
+                delete newProfile['stateRep'];
+                newProfile['role'] = 'guest';
+
+                //   remove stateRep from regisrations in REDUX
+                dispatch(updateProfile(newProfile));
+                //   update DDB by removing the stateRep info
+            }
+        }
+        console.log(
+            'Setting ',
+            profile.uid,
+            ' status to ',
+            newStatus,
+            ' was ',
+            userStatus
+        );
+        console.log(
+            '🚀 ~ file: UserDisplay.js ~ line 65 ~ handleStatusChange ~ newProfile',
+            newProfile
+        );
+        // if
+    };
+
     return (
         <>
             <Surface style={styles.userCardWrapper}>

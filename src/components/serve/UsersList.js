@@ -24,6 +24,7 @@ const UsersList = (props) => {
                         ? profiles.map((p) => {
                               return (
                                   <View
+                                      key={p.uid}
                                       style={{
                                           width: '100%',
                                           marginLeft: '20%',

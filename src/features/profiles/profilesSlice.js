@@ -15,10 +15,21 @@ export const profilesSlice = createSlice({
             state.allProfiles = action.payload;
             return state;
         },
+        updateProfile: (state, action) => {
+            const updates = state.allProfiles.map((pro) => {
+                if (pro.uid === action.payload.uid) {
+                    return action.payload;
+                } else {
+                    return pro;
+                }
+            });
+            state.allProfiles = updates;
+            return state;
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { loadProfiles } = profilesSlice.actions;
+export const { loadProfiles, updateProfile } = profilesSlice.actions;
 
 export default profilesSlice.reducer;
