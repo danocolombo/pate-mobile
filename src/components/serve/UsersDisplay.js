@@ -17,6 +17,7 @@ import { Headline } from 'react-native-paper';
 const UsersDisplay = () => {
     const dispatch = useDispatch();
     const profilesData = useSelector((state) => state.profiles.allProfiles);
+    const user = useSelector((state) => state.users.currentUser);
     const [allProfiles, setAllProfiles] = useState([]);
     const [regionLeaders, setRegionLeaders] = useState([]);
     const [regionUsers, setRegionUsers] = useState([]);
@@ -25,14 +26,15 @@ const UsersDisplay = () => {
         const allProfilesData = await getAllProfiles();
         // printObject('PL:11-->allProfileData', allProfilesData);
         if (allProfilesData.statusCode === 200) {
-            const region = 'us#test#south';
             const allTheProfiles = allProfilesData.profiles;
             setAllProfiles(allProfilesData.profiles);
             dispatch(loadProfiles(allTheProfiles));
-            const leaders = allTheProfiles.filter((p) => p.stateRep === 'TT');
+            const leaders = allTheProfiles.filter((p) => {
+                p.stateRep === user.stateLead && p.region === user.region;
+            });
             // printObject('UD:31--> leaders', leaders);
             const regionalUsers = allTheProfiles.filter(
-                (p) => p.region === 'us#test#south#tt' && p.stateRep !== 'TT'
+                (p) => p.region === user.region && p.stateRep !== user.stateLead
             );
 
             setRegionLeaders(leaders);
