@@ -26,10 +26,15 @@ export const profilesSlice = createSlice({
             state.allProfiles = updates;
             return state;
         },
+        logout: (state) => {
+            state.allProfiles = [];
+
+            return state;
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { loadProfiles, updateProfile } = profilesSlice.actions;
+export const { loadProfiles, updateProfile, logout } = profilesSlice.actions;
 
 export default profilesSlice.reducer;

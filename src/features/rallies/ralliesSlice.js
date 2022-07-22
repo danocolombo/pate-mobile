@@ -1,48 +1,11 @@
 import { createAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { printObject } from '../../utils/helpers';
-// export const loadUserRallies = createAsyncThunk(
-//     'rallies/loadUserRallies',
-//     async (userId, thunkAPI) => {
-//         try {
-//             let response;
-//             console.log('userId', userId);
-//             const fetchRepEvents = async (userId) => {
-//                 response = await fetch(
-//                     process.env.AWS_API_ENDPOINT + '/events',
-//                     {
-//                         method: 'POST',
-//                         body: JSON.stringify({
-//                             operation: 'getEventsForRep',
-//                             payload: {
-//                                 uid: userId,
-//                             },
-//                         }),
-//                         headers: {
-//                             'Content-type': 'application/json; charset=UTF-8',
-//                         },
-//                     }
-//                 );
-//             };
-//             await fetchRepEvents(userId);
-//             printObject('fetchResponse', response);
-//             //const resp = await axios(url);
-//             // printObject('meetings(1)', resp);
-//             console.log('before return');
-//             return response;
-//         } catch (error) {
-//             return thunkAPI.rejectWithValue('something went wrong');
-//         }
-//     }
-// );
+
 const initialState = {
-    value: 0,
-    // publicRallies: [],
     allRallies: [],
     userRallies: [],
     tmpRally: {},
-    ratchet: 0,
-    gagle: [],
 };
 
 export const ralliesSlice = createSlice({
@@ -201,38 +164,14 @@ export const ralliesSlice = createSlice({
             // then sorts desc (latest first, then oldest last)
             return state.allRallies;
         },
-        // loadUserRallies: (state, action) => {
-        //     state.userRallies = action.payload;
-        // },
-        increment: (state) => {
-            // Redux Toolkit allows us to write "mutating" logic in reducers. It
-            // doesn't actually mutate the state because it uses the Immer library,
-            // which detects changes to a "draft state" and produces a brand new
-            // immutable state based off those changes
-            state.value += 1;
-        },
-        decrement: (state) => {
-            state.value -= 1;
-        },
-        incrementByAmount: (state, action) => {
-            state.value += action.payload;
+
+        logout: (state) => {
+            state.allRallies = [];
+            state.userRallies = [];
+            state.tmpRally = {};
+            return state;
         },
     },
-    // extraReducers: {
-    //     [loadUserRallies.pending]: (state) => {
-    //         state.isLoading = true;
-    //     },
-    //     [loadUserRallies.fulfilled]: (state, action) => {
-    //         state.isLoading = false;
-    //         printObject('Extra action:', action);
-    //         // printObject('Extra state', state);
-    //         // state.userRallies = action.payload;
-    //     },
-    //     [loadUserRallies.rejected]: (state, action) => {
-    //         console.log('yep, we got rejected...');
-    //         state.isLoading = false;
-    //     },
-    // },
 });
 
 // Action creators are generated for each case reducer function
@@ -247,9 +186,7 @@ export const {
     createTmp,
     updateTmp,
     getStateRallies,
-    increment,
-    decrement,
-    incrementByAmount,
+    logout,
 } = ralliesSlice.actions;
 
 export default ralliesSlice.reducer;

@@ -30,35 +30,53 @@ const UsersDisplay = () => {
             setAllProfiles(allProfilesData.profiles);
             dispatch(loadProfiles(allTheProfiles));
             const leaders = allTheProfiles.filter((p) => {
-                p.stateRep === user.stateLead && p.region === user.region;
+                if (
+                    p.stateRep === user.stateLead &&
+                    p.region === user.region &&
+                    p.uid !== user.uid
+                ) {
+                    return p;
+                }
             });
-            // printObject('UD:31--> leaders', leaders);
-            const regionalUsers = allTheProfiles.filter(
-                (p) => p.region === user.region && p.stateRep !== user.stateLead
-            );
 
-            setRegionLeaders(leaders);
+            const regionalUsers = allTheProfiles.filter(
+                (p) =>
+                    p.region === user.region &&
+                    (p.stateRep !== user.stateLead) & (p.uid !== user.uid)
+            );
+            setRegionLeaders((prevState) => ({
+                ...prevState,
+                leaders,
+            }));
             setRegionUsers(regionalUsers);
         }
         return;
     };
     useEffect(() => {
         setIsLoading(true);
-        // if (allProfiles.length < 0) {
-        // load the profiles
+
         getProfileData().then((resp) => {
             setIsLoading(false);
         });
-        // }
+
         setIsLoading(false);
     }, []);
     useEffect(() => {
         // this reloads the leaders and guests based on profile value changes
-        const leaders = profilesData.filter((p) => p.stateRep === 'TT');
-        // printObject('UD:31--> leaders', leaders);
-        const regionalUsers = profilesData.filter(
-            (p) => p.region === 'us#test#south#tt' && p.stateRep !== 'TT'
+        const leaders = profilesData.filter(
+            (p) =>
+                p.stateRep === user.stateLead &&
+                p.region === user.region &&
+                p.uid !== user.uid
         );
+
+        const regionalUsers = profilesData.filter(
+            (p) =>
+                p.region === user.region &&
+                p.stateRep !== user.stateLead &&
+                p.uid !== user.uid
+        );
+
         setRegionLeaders(leaders);
         setRegionUsers(regionalUsers);
     }, [profilesData]);

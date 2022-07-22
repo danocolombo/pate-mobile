@@ -15,8 +15,8 @@ const UserDisplay = ({ profile }) => {
     const dispatch = useDispatch();
     const navigate = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
-    printObject('UD:18--user:', user);
-    printObject('UD:19--profile:', profile);
+    // printObject('UD:18--user:', user);
+    // printObject('UD:19--profile:', profile);
 
     const [userStatus, setUserStatus] = useState(
         profile?.stateRep ? 'leader' : 'guest'

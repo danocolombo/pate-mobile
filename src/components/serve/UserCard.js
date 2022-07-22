@@ -4,7 +4,7 @@ import { printObject } from '../../utils/helpers';
 
 const UserCard = (props) => {
     const user = props.user;
-    printObject('UC:07-->user', user);
+    // printObject('UC:07-->user', user);
     return (
         <View style={styles.userWrapper}>
             <View>
