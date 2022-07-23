@@ -41,7 +41,8 @@ const AuthDrawer = (navigation) => {
                 name='Main'
                 component={MainScreen}
                 options={({ navigation }) => ({
-                    title: 'Rallies',
+                    title: 'EOR',
+                    drawerLabel: 'Upcoming Events',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
@@ -58,7 +59,8 @@ const AuthDrawer = (navigation) => {
                     name='Serve'
                     component={ServeConfig}
                     options={({ navigation }) => ({
-                        title: 'Serve',
+                        title: 'EOR',
+                        drawerLabel: 'Serve',
                         headerStyle: {
                             backgroundColor: Colors.primary,
                         },
@@ -75,7 +77,8 @@ const AuthDrawer = (navigation) => {
                 name='MyHistory'
                 component={MyHistoryScreen}
                 options={({ navigation }) => ({
-                    title: 'My Registrations',
+                    title: 'EOR',
+                    drawerLabel: 'My Registrations',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
@@ -87,7 +90,23 @@ const AuthDrawer = (navigation) => {
                     tabBarActiveTintColor: 'white',
                 })}
             />
-            <Stack.Screen name='Profile' component={ProfileScreen} />
+            <Stack.Screen
+                name='Profile'
+                component={ProfileScreen}
+                options={({ navigation }) => ({
+                    title: 'EOR',
+                    drawerLabel: 'Profile',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+
+                    headerTintColor: 'white',
+                    tabBarStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    tabBarActiveTintColor: 'white',
+                })}
+            />
             <Stack.Screen name='Logout' component={PateSignOut} />
         </Drawer.Navigator>
     );

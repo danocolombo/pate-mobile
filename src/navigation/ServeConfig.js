@@ -20,7 +20,7 @@ const ServeConfig = () => {
                 name='ServeMy'
                 component={ServeEventsMyScreen}
                 options={{
-                    title: 'Serve: Personal Events',
+                    title: 'EOR',
                     tabBarLabel: 'MINE',
                     tabBarIcon: ({ color, size }) => (
                         <FontAwesome name='user' size={24} color='black' />
@@ -31,7 +31,7 @@ const ServeConfig = () => {
                 name='ServeState'
                 component={ServeEventsStateScreen}
                 options={{
-                    title: 'Serve: State Events',
+                    title: 'EOR',
                     tabBarLabel: 'STATE',
                     tabBarIcon: ({ color, size }) => (
                         <FontAwesome name='users' size={24} color='black' />
@@ -43,7 +43,7 @@ const ServeConfig = () => {
                     name='ServeHistory'
                     component={ServeManageUsersScreen}
                     options={{
-                        title: 'Serve: History',
+                        title: 'EOR',
                         tabBarLabel: 'ADMIN',
                         tabBarIcon: ({ color, size }) => (
                             <Ionicons

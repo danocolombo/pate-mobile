@@ -52,6 +52,7 @@ function PateStack() {
                 name='RallyDetail'
                 component={RallyDetailScreen}
                 options={({ navigation }) => ({
+                    title: 'EOR',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
@@ -63,6 +64,7 @@ function PateStack() {
                 name='RallyInfo'
                 component={RallyInfoScreen}
                 options={({ navigation }) => ({
+                    title: 'EOR',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
@@ -73,6 +75,7 @@ function PateStack() {
                 name='UserProfile'
                 component={UserProfileScreen}
                 options={({ navigation }) => ({
+                    title: 'EOR',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
@@ -84,6 +87,7 @@ function PateStack() {
                 name='RallyRegister'
                 component={RegisterScreen}
                 options={({ navigation }) => ({
+                    title: 'EOR',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
@@ -94,6 +98,7 @@ function PateStack() {
                 name='RegistrationDetails'
                 component={RegistrationScreen}
                 options={({ navigation }) => ({
+                    title: 'EOR',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
@@ -104,7 +109,8 @@ function PateStack() {
                 name='ServeRallyForm'
                 component={ServeRallyFormScreen}
                 options={({ navigation }) => ({
-                    title: 'Rally Form',
+                    title: 'EOR',
+                    headerBackTitle: 'Cancel',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
@@ -115,7 +121,8 @@ function PateStack() {
                 name='RallyEditFlow'
                 component={RallyEditFlowScreen}
                 options={({ navigation }) => ({
-                    title: 'Rally Form',
+                    title: 'EOR',
+                    headerBackTitle: 'Cancel',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
@@ -126,7 +133,7 @@ function PateStack() {
                 name='ErrorMsg'
                 component={ErrorScreen}
                 options={({ navigation }) => ({
-                    title: 'Error Experience',
+                    title: 'EOR',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
