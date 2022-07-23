@@ -8,6 +8,7 @@ import CustomButton from '../ui/CustomButton';
 import SelectDropdown from 'react-native-select-dropdown';
 import { transformPatePhone } from '../../utils/helpers';
 import { updateProfile } from '../../features/profiles/profilesSlice';
+import { updateProfile as DDBUpdateProfile } from '../../providers/users';
 import { Colors } from '../../constants/colors';
 import { printObject } from '../../utils/helpers';
 
@@ -44,6 +45,16 @@ const UserDisplay = ({ profile }) => {
                 //   add stateRep to registration in REDUX
                 dispatch(updateProfile(newProfile));
                 //   update DDB p8Users with
+                DDBUpdateProfile(newProfile)
+                    .then((response) => {
+                        console.log('DDBUpdateProfile successful');
+                    })
+                    .error((err) =>
+                        console.log(
+                            'Error trying to update profile in DDB\n',
+                            err
+                        )
+                    );
             } else {
                 // updating as GUEST
                 delete newProfile['stateRep'];
@@ -52,6 +63,16 @@ const UserDisplay = ({ profile }) => {
                 //   remove stateRep from regisrations in REDUX
                 dispatch(updateProfile(newProfile));
                 //   update DDB by removing the stateRep info
+                DDBUpdateProfile(newProfile)
+                    .then((response) => {
+                        console.log('DDBUpdateProfile successful');
+                    })
+                    .error((err) =>
+                        console.log(
+                            'Error trying to update profile in DDB\n',
+                            err
+                        )
+                    );
             }
         }
         console.log(

@@ -17,6 +17,7 @@ import { Colors } from '../../../constants/colors';
 
 import { printObject, getUniqueId } from '../../../utils/helpers';
 import { faCropSimple } from '@fortawesome/free-solid-svg-icons';
+import { Analytics } from 'aws-amplify';
 
 const RallyNewConfirmation = () => {
     const navigation = useNavigation();
@@ -142,11 +143,23 @@ const RallyNewConfirmation = () => {
                     .catch((err) => {
                         console.log('REC-106: error:', err);
                     });
+                Analytics.record({
+                    name: 'eventUpdated',
+                    attributes: { userId: user.uid, body: body },
+                    metrics: { eventUpdated: 1 },
+                });
             } else {
                 //todo: need DDB call
                 putRally(newRally, user).then((response) => {
                     console.log('submitted rally', newRally);
                     dispatch(addNewRally(response.Item));
+                });
+                Analytics.record({
+                    name: 'eventAdded',
+                    attributes: { userId: user.uid, body: newRally },
+                    metrics: {
+                        eventAdded: 1,
+                    },
                 });
             }
             navigation.navigate('Serve', null);
