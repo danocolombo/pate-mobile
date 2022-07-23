@@ -7,6 +7,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
+    ImageBackground,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 // import { Picker } from 'react-native-windows';
@@ -86,10 +87,13 @@ export default function RallyLogisticsForm({ rallyId }) {
 
     // printObject('1. tmpRally:', tmp);
     return (
-        <View>
-            <ScrollView>
+        <>
+            <ImageBackground
+                source={require('../../../components/images/background.png')}
+                style={styles.bgImageContainer}
+            >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
+                    <View style={styles.root}>
                         <ScrollView>
                             <View style={styles.formHeader}>
                                 <Text style={styles.titleText}>Logistics</Text>
@@ -163,30 +167,41 @@ export default function RallyLogisticsForm({ rallyId }) {
                                     </View>
                                 </View>
                             </View>
-                            <View style={styles.buttonContainer}>
-                                <CustomNavButton
-                                    title='Next'
-                                    graphic={{
-                                        name: 'forward',
-                                        color: 'white',
-                                        size: 10,
-                                    }}
-                                    cbStyles={{
-                                        backgroundColor: 'green',
-                                        color: 'white',
-                                        width: '50%',
-                                    }}
-                                    onPress={handleNext}
-                                />
-                            </View>
                         </ScrollView>
+                        <View style={styles.buttonContainer}>
+                            <CustomNavButton
+                                title='Next'
+                                graphic={{
+                                    name: 'forward',
+                                    color: 'white',
+                                    size: 10,
+                                }}
+                                cbStyles={{
+                                    backgroundColor: 'green',
+                                    color: 'white',
+                                    width: '50%',
+                                }}
+                                onPress={handleNext}
+                            />
+                        </View>
                     </View>
                 </TouchableWithoutFeedback>
-            </ScrollView>
-        </View>
+            </ImageBackground>
+        </>
     );
 }
 const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+    },
+    bgImageContainer: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
     formHeader: {
         marginVertical: 10,
         alignItems: 'center',
@@ -212,6 +227,7 @@ const styles = StyleSheet.create({
     },
     datePickerWrapper: {
         borderWidth: 4,
+        backgroundColor: 'white',
         borderColor: Colors.gray35,
         borderRadius: 10,
         marginBottom: 5,

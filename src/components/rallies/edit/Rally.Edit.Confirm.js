@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -167,29 +167,39 @@ const RallyNewConfirmation = () => {
     }
     return (
         <>
-            <RallyLocationInfo rally={newRally} />
-            <RallyLogisticsInfo rally={newRally} />
-            <RallyContactInfo rally={newRally} />
-            <RallyMealInfo rally={newRally} />
-            <View style={styles.buttonContainer}>
-                <CustomButton
-                    title='Confirm & Save'
-                    graphic={null}
-                    cbStyles={{
-                        backgroundColor: 'yellow',
-                        color: 'black',
-                        width: 200,
-                        textAlign: 'center',
-                    }}
-                    onPress={() => handleConfirmation(newRally)}
-                />
-            </View>
+            <ImageBackground
+                source={require('../../../components/images/background.png')}
+                style={styles.bgImageContainer}
+            >
+                <RallyLocationInfo rally={newRally} />
+                <RallyLogisticsInfo rally={newRally} />
+                <RallyContactInfo rally={newRally} />
+                <RallyMealInfo rally={newRally} />
+                <View style={styles.buttonContainer}>
+                    <CustomButton
+                        title='Confirm & Save'
+                        graphic={null}
+                        cbStyles={{
+                            backgroundColor: 'yellow',
+                            color: 'black',
+                            width: 200,
+                            textAlign: 'center',
+                        }}
+                        onPress={() => handleConfirmation(newRally)}
+                    />
+                </View>
+            </ImageBackground>
         </>
     );
 };
 
 export default RallyNewConfirmation;
 const styles = StyleSheet.create({
+    bgImageContainer: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
     buttonContainer: {
         marginTop: 15,
         alignItems: 'center',
