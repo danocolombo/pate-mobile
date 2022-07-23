@@ -12,7 +12,7 @@ import awsconfig from './src/aws-exports';
 Amplify.configure({
     ...awsconfig,
     Analytics: {
-        disabled: false,
+        disabled: true,
     },
 });
 import { Auth, Hub } from 'aws-amplify';
