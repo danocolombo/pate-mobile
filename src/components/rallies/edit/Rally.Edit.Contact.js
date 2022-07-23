@@ -70,22 +70,22 @@ export default function RallyContactForm({ rallyId }) {
         // build a contact object
         // printObject('values', values);
         let phoneToPass;
-        // if (contactPhone) {
-        //ensure that the phone is in expected format (xxx) xxx-xxxx
-        // 1. value needs to be either 0 or 14 characters.
-        let pType = getPhoneType(contactPhone);
-        switch (pType) {
-            case 'PATE':
-                phoneToPass = transformPatePhone(contactPhone);
-                break;
-            case 'MASKED':
-                phoneToPass = contactPhone;
-                break;
-            default:
-                phoneToPass = '';
-                break;
+        if (contactPhone) {
+            //ensure that the phone is in expected format (xxx) xxx-xxxx
+            // 1. value needs to be either 0 or 14 characters.
+            let pType = getPhoneType(contactPhone);
+            switch (pType) {
+                case 'PATE':
+                    phoneToPass = transformPatePhone(contactPhone);
+                    break;
+                case 'MASKED':
+                    phoneToPass = contactPhone;
+                    break;
+                default:
+                    phoneToPass = '';
+                    break;
+            }
         }
-        // }
         // console.log('handleNext contactPhone(after):', contactPhone);
         let contact = {
             contact: {
