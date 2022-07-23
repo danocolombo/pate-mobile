@@ -17,18 +17,19 @@ import { Colors } from '../../../constants/colors';
 
 import { printObject, getUniqueId } from '../../../utils/helpers';
 import { faCropSimple } from '@fortawesome/free-solid-svg-icons';
+import { Analytics } from 'aws-amplify';
 
 const RallyNewConfirmation = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
-    // const tmp = useSelector((state) => state.rallies.tmpRally);
-    let rally = useSelector((state) => state.rallies.tmpRally);
+    const tmp = useSelector((state) => state.rallies.tmpRally);
+    // let rally = useSelector((state) => state.rallies.tmpRally);
     // printObject('CONFIRMING rally ++++++++++++++++++++++++', rally);
     let rallyBasic = {};
     // printObject('REC:29 rally', rally);
     // need to determine if this is new or edit
-    if (!rally.uid) {
+    if (!tmp.uid) {
         // this is new entry
         rallyBasic.status = 'draft';
         rallyBasic.id = '';
@@ -43,30 +44,30 @@ const RallyNewConfirmation = () => {
     rallyBasic.coordinator = me;
 
     rallyBasic.region = process.env.REGION;
-    if (rally.stateProv === 'TT') {
+    if (tmp.stateProv === 'TT') {
         rallyBasic.eventRegion = 'test';
     } else {
         //EVENT_REGION
         rallyBasic.eventRegion = process.env.EVENT_REGION;
     }
     let strippedPhone;
-    // printObject('REC:52 rally:', rally);
-    // console.log('REC:53 rally?.contact?.phone', rally?.contact?.phone);
-    if (rally?.contact?.phone !== '') {
-        strippedPhone = createPatePhone(rally?.contact?.phone);
+    // printObject('REC:52 tmp:', tmp);
+    // console.log('REC:53 tmp?.contact?.phone', tmp?.contact?.phone);
+    if (tmp?.contact?.phone !== '') {
+        strippedPhone = createPatePhone(tmp?.contact?.phone);
     }
     // create new eventCompKey in case date changed
-    const yr = rally.eventDate.substr(0, 4);
-    const mo = rally.eventDate.substr(4, 6);
-    const da = rally.eventDate.substr(6);
+    const yr = tmp.eventDate.substr(0, 4);
+    const mo = tmp.eventDate.substr(4, 6);
+    const da = tmp.eventDate.substr(6);
     let keyToUse;
-    rally?.uid ? (keyToUse = rally.uid) : (keyToUse = 'TBD');
+    tmp?.uid ? (keyToUse = tmp.uid) : (keyToUse = 'TBD');
     let eventCompKey =
         yr +
         '#' +
         mo +
         '#' +
-        rally.stateProv +
+        tmp.stateProv +
         '#' +
         da +
         '#' +
@@ -75,7 +76,7 @@ const RallyNewConfirmation = () => {
         rallyBasic.coordinator.id;
     rallyBasic.eventCompKey = eventCompKey;
 
-    let newRally = { ...rally, ...rallyBasic };
+    let newRally = { ...tmp, ...rallyBasic };
     // printObject('CONFIRMING tmpRally:', rally);
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
@@ -86,7 +87,7 @@ const RallyNewConfirmation = () => {
             let pType = getPhoneType(newRally.contact.phone);
             switch (pType) {
                 case 'PATE':
-                    valueToUse = newRally.contact.phone;
+                    valueToUse = newRally?.contact?.phone;
                     break;
                 case 'MASKED':
                     // console.log(
@@ -142,11 +143,23 @@ const RallyNewConfirmation = () => {
                     .catch((err) => {
                         console.log('REC-106: error:', err);
                     });
+                Analytics.record({
+                    name: 'eventUpdated',
+                    attributes: { userId: user.uid, body: body },
+                    metrics: { eventUpdated: 1 },
+                });
             } else {
                 //todo: need DDB call
                 putRally(newRally, user).then((response) => {
                     console.log('submitted rally', newRally);
                     dispatch(addNewRally(response.Item));
+                });
+                Analytics.record({
+                    name: 'eventAdded',
+                    attributes: { userId: user.uid, body: newRally },
+                    metrics: {
+                        eventAdded: 1,
+                    },
                 });
             }
             navigation.navigate('Serve', null);

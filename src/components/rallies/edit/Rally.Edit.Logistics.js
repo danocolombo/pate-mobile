@@ -27,27 +27,24 @@ import {
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyLogisticsForm({ rallyId }) {
+    // messy
+    let dateNow = new Date(2022, 6, 23);
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
-    const rallyEntry = useSelector((state) =>
-        state.rallies.allRallies.filter((r) => r.uid === rallyId)
-    );
-    const rally = rallyEntry[0];
+
     const [date, setDate] = useState(
-        rally?.eventDate ? pateDateToSpinner(rally?.eventDate) : ''
+        tmp?.eventDate ? pateDateToSpinner(tmp?.eventDate) : dateNow
     );
     // const [date, setDate] = useState(new Date(Date.now()));
     const [startTime, setStartTime] = useState(
-        rally?.startTime
-            ? pateTimeToSpinner(rally?.eventDate, rally?.startTime)
-            : ''
+        tmp?.startTime
+            ? pateTimeToSpinner(tmp?.eventDate, tmp?.startTime)
+            : dateNow
     );
     // const [startTime, setStartTime] = useState(new Date(Date.now()));
     const [endTime, setEndTime] = useState(
-        rally?.endTime
-            ? pateTimeToSpinner(rally?.eventDate, rally?.endTime)
-            : ''
+        tmp?.endTime ? pateTimeToSpinner(tmp?.eventDate, tmp?.endTime) : dateNow
     );
     // const [endTime, setEndTime] = useState(new Date(Date.now()));
     const handleNext = () => {

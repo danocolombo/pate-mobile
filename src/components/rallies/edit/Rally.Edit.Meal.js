@@ -27,30 +27,33 @@ import {
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
 import { normalize } from 'react-native-elements';
+import { printObject } from '../../../utils/helpers';
 
 export default function RallyMealForm({ rallyId }) {
+    let dateNow = new Date(2022, 6, 23);
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const tmp = useSelector((state) => state.rallies.tmpRally);
 
-    const rallyEntry = useSelector((state) =>
-        state.rallies.allRallies.filter((r) => r.uid === rallyId)
-    );
-    // get the current rally information
-    const rally = rallyEntry[0];
     const [showMealCountConfirm, setShowMealCountConfirm] = useState(
-        parseInt(rally?.meal?.mealCount) > 0 ? true : false
+        parseInt(tmp?.meal?.mealCount) > 0 ? true : false
     );
     let mealSetting = true;
-    if (rally?.meal?.offered === false) {
+    if (tmp?.meal?.offered === false) {
         mealSetting = false;
     }
     const [offerMeal, setOfferMeal] = useState(mealSetting);
     const [mealTime, setMealTime] = useState(
-        pateTimeToSpinner(rally.eventDate, rally.meal.startTime)
+        tmp?.eventDate && tmp?.meal?.startTime
+            ? pateTimeToSpinner(tmp.eventDate, tmp.meal.startTime)
+            : dateNow
     );
-    const [cost, setCost] = useState(0);
+    const [cost, setCost] = useState(tmp?.meal?.cost);
     const [deadline, setDeadline] = useState(
-        pateDateToSpinner(rally.eventDate)
+        tmp?.eventDate ? pateDateToSpinner(tmp.eventDate) : dateNow
+    );
+    const [mealMessage, setMealMessage] = useState(
+        tmp?.meal?.message ? tmp.meal.message : ''
     );
     const onMealTimeChange = (event, value) => {
         setMealTime(value);
@@ -58,12 +61,17 @@ export default function RallyMealForm({ rallyId }) {
     const onDeadlineChange = (event, value) => {
         setDeadline(value);
     };
-    const handleNext = (values) => {
+    const onMessageChange = (e) => {
+        // printObject('REM:64-->e:', e);
+        setMealMessage(e);
+    };
+    const handleNext = () => {
         let mealOffered = offerMeal;
         let theDateObject = '';
         let mTime = '';
         let mDeadline = '';
         let mCost = '';
+        let mMessage = mealMessage;
         if (mealOffered === true) {
             theDateObject = mealTime;
             let mt = Date.parse(theDateObject);
@@ -72,6 +80,7 @@ export default function RallyMealForm({ rallyId }) {
             let mealDeadline = Date.parse(theDateObject);
             mDeadline = getPateDate(mealDeadline);
             mCost = cost;
+            mMessage = mealMessage;
         }
 
         // build a meal object
@@ -81,10 +90,12 @@ export default function RallyMealForm({ rallyId }) {
                 startTime: mTime,
                 cost: mCost,
                 deadline: mDeadline,
-                mealCount: rally?.meal?.mealCount,
-                mealServed: rally?.meal?.mealsServed,
+                mealCount: tmp?.meal?.mealCount,
+                mealServed: tmp?.meal?.mealsServed,
+                message: mealMessage,
             },
         };
+        // printObject('REM:93--> meal:', meal);
         dispatch(updateTmp(meal));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
@@ -216,7 +227,7 @@ export default function RallyMealForm({ rallyId }) {
                                     value={deadline}
                                     mode='date'
                                     maximumDate={pateDateToSpinner(
-                                        rally.eventDate
+                                        tmp.eventDate
                                     )}
                                     minuteInterval={15}
                                     disabled={!offerMeal}
@@ -230,40 +241,21 @@ export default function RallyMealForm({ rallyId }) {
                                     style={styles.datePicker}
                                 />
                             </View>
-                            <View style={styles.inputContainer}>
-                                <View>
-                                    {/* <TextInput
-                                        style={styles.input}
-                                        placeholder='Meal Deadline'
-                                        onChangeText={formikProps.handleChange(
-                                            'deadline'
-                                        )}
-                                        value={formikProps.values.deadline}
-                                        onBlur={formikProps.handleBlur(
-                                            'deadline'
-                                        )}
-                                    />
-                                    <Text style={styles.errorText}>
-                                        {formikProps.touched.deadline &&
-                                            formikProps.errors.deadline}
-                                    </Text>
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder='Meal Message'
-                                        onChangeText={formikProps.handleChange(
-                                            'message'
-                                        )}
-                                        value={formikProps.values.message}
-                                        onBlur={formikProps.handleBlur(
-                                            'message'
-                                        )}
-                                    />
-                                    <Text style={styles.errorText}>
-                                        {formikProps.touched.message &&
-                                            formikProps.errors.message}
-                                    </Text> */}
-                                </View>
+                            <View style={styles.messageWrapper}>
+                                <Text style={styles.mealMessageLabel}>
+                                    Meal message (max. 60 characters)
+                                </Text>
+                                <TextInput
+                                    style={styles.messageInput}
+                                    numberOfLines={2}
+                                    multiline
+                                    maxLength={60}
+                                    placeholder='Meal Message'
+                                    onChangeText={(e) => onMessageChange(e)}
+                                    value={mealMessage}
+                                />
                             </View>
+
                             <View style={styles.buttonContainer}>
                                 <CustomNavButton
                                     title='Next'
@@ -277,7 +269,7 @@ export default function RallyMealForm({ rallyId }) {
                                         color: 'white',
                                         width: '50%',
                                     }}
-                                    onPress={handleNext}
+                                    onPress={() => handleNext()}
                                 />
                             </View>
                         </ScrollView>
@@ -335,7 +327,7 @@ const styles = StyleSheet.create({
     },
     datePickerLabel: {
         fontSize: 20,
-        fontWeight: '500',
+        fontWeight: '300',
         marginBottom: 10,
     },
     datePickerWrapper: {
@@ -366,7 +358,7 @@ const styles = StyleSheet.create({
     },
     costLabel: {
         fontSize: 20,
-        fontWeight: '500',
+        fontWeight: '300',
     },
     costInput: {
         marginVertical: 8,
@@ -390,6 +382,29 @@ const styles = StyleSheet.create({
         borderColor: Colors.gray35,
         paddingHorizontal: 12,
         height: 45,
+    },
+    messageWrapper: {
+        // flex: 1,
+        marginVertical: 10,
+        marginLeft: '10%',
+    },
+    mealMessageLabel: {
+        fontWeight: '300',
+        fontSize: 18,
+    },
+    messageInput: {
+        // flex: 1,
+        // flexWrap: 'wrap',
+        borderWidth: 1,
+        borderColor: 'grey',
+        padding: 10,
+        marginTop: 0,
+        fontSize: 18,
+        borderRadius: 6,
+        width: '90%',
+
+        height: 60,
+        justifyContent: 'flex-start',
     },
     modalSurface: {
         marginTop: 80,

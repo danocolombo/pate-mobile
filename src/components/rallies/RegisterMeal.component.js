@@ -13,7 +13,14 @@ const RegisterMeal = ({ ral, mealCount, onPress }) => {
                 <View>
                     <Text style={styles.mealCostText}>
                         Cost:{' '}
-                        {ral.meal.cost === 0 ? 'FREE' : ['$', ral.meal.cost]}
+                        {ral.meal.cost === 0
+                            ? 'FREE'
+                            : [
+                                  '$',
+                                  (
+                                      Math.round(ral.meal.cost * 100) / 100
+                                  ).toFixed(2),
+                              ]}
                     </Text>
                 </View>
                 <View>
@@ -22,6 +29,16 @@ const RegisterMeal = ({ ral, mealCount, onPress }) => {
                         {dateNumToDisplayTime(ral.meal.startTime)}
                     </Text>
                 </View>
+                {ral?.meal?.message ? (
+                    <View style={styles.mealMessageContainer}>
+                        <View style={{ width: '90%' }}>
+                            <Text style={styles.mealMessageText}>
+                                {ral?.meal?.message}
+                            </Text>
+                        </View>
+                    </View>
+                ) : null}
+
                 <View>
                     <Text style={styles.mealCostText}>
                         Will any of your group like to attend?
@@ -62,5 +79,20 @@ const styles = StyleSheet.create({
     },
     registrationCountNumberContainer: {
         marginBottom: 10,
+    },
+    mealMessageContainer: {
+        marginHorizontal: 30,
+        marginBottom: 10,
+    },
+    mealMessageWrapper: {
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        marginBottom: 15,
+        width: '80%',
+    },
+    mealMessageText: {
+        textAlign: 'center',
     },
 });

@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
+import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 const RallyLocationInfo = ({ rally }) => {
     return (
@@ -8,7 +9,14 @@ const RallyLocationInfo = ({ rally }) => {
             <View style={styles.rootContainer}>
                 <Surface style={[styles.surface, { elevation: 5 }]}>
                     <View>
-                        <Headline>Rally Location Information</Headline>
+                        <Headline
+                            style={{
+                                color: Colors.primary,
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Rally Location Information
+                        </Headline>
                     </View>
                     <View style={styles.textWrapper}>
                         {rally?.name ? (
