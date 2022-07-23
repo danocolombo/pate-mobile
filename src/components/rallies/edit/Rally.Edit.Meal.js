@@ -30,31 +30,30 @@ import { normalize } from 'react-native-elements';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyMealForm({ rallyId }) {
+    let dateNow = new Date(2022, 6, 23);
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const tmp = useSelector((state) => state.rallies.tmpRally);
 
-    const rallyEntry = useSelector((state) =>
-        state.rallies.allRallies.filter((r) => r.uid === rallyId)
-    );
-    // get the current rally information
-    const rally = rallyEntry[0];
     const [showMealCountConfirm, setShowMealCountConfirm] = useState(
-        parseInt(rally?.meal?.mealCount) > 0 ? true : false
+        parseInt(tmp?.meal?.mealCount) > 0 ? true : false
     );
     let mealSetting = true;
-    if (rally?.meal?.offered === false) {
+    if (tmp?.meal?.offered === false) {
         mealSetting = false;
     }
     const [offerMeal, setOfferMeal] = useState(mealSetting);
     const [mealTime, setMealTime] = useState(
-        pateTimeToSpinner(rally.eventDate, rally.meal.startTime)
+        tmp?.eventDate && tmp?.meal?.startTime
+            ? pateTimeToSpinner(tmp.eventDate, tmp.meal.startTime)
+            : dateNow
     );
-    const [cost, setCost] = useState(rally?.meal?.cost);
+    const [cost, setCost] = useState(tmp?.meal?.cost);
     const [deadline, setDeadline] = useState(
-        pateDateToSpinner(rally.eventDate)
+        tmp?.eventDate ? pateDateToSpinner(tmp.eventDate) : dateNow
     );
     const [mealMessage, setMealMessage] = useState(
-        rally?.meal?.message ? rally.meal.message : ''
+        tmp?.meal?.message ? tmp.meal.message : ''
     );
     const onMealTimeChange = (event, value) => {
         setMealTime(value);
@@ -91,8 +90,8 @@ export default function RallyMealForm({ rallyId }) {
                 startTime: mTime,
                 cost: mCost,
                 deadline: mDeadline,
-                mealCount: rally?.meal?.mealCount,
-                mealServed: rally?.meal?.mealsServed,
+                mealCount: tmp?.meal?.mealCount,
+                mealServed: tmp?.meal?.mealsServed,
                 message: mealMessage,
             },
         };
@@ -228,7 +227,7 @@ export default function RallyMealForm({ rallyId }) {
                                     value={deadline}
                                     mode='date'
                                     maximumDate={pateDateToSpinner(
-                                        rally.eventDate
+                                        tmp.eventDate
                                     )}
                                     minuteInterval={15}
                                     disabled={!offerMeal}

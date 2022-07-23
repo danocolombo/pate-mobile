@@ -39,28 +39,27 @@ export default function RallyContactForm({ rallyId }) {
     const dispatch = useDispatch();
     const [showPhoneError, setShowPhoneError] = useState(false);
     const tmp = useSelector((state) => state.rallies.tmpRally);
-    const rallyEntry = useSelector((state) =>
-        state.rallies.allRallies.filter((r) => r.uid === rallyId)
-    );
-    const rally = rallyEntry[0];
+
     // phone control needs the value in numeric format. Check if we need to
     // alter to use
     let phoneDisplayValue;
-    if (rally?.contact?.phone) {
-        let phoneType = getPhoneType(rally?.contact?.phone);
+    if (tmp?.contact?.phone) {
+        let phoneType = getPhoneType(tmp?.contact?.phone);
 
         switch (phoneType) {
             case 'PATE':
-                phoneDisplayValue = rally.contact.phone;
+                phoneDisplayValue = tmp.contact.phone;
                 break;
             case 'MASKED':
-                // console.log('REC:57 rally.contact.phone', rally.contact.phone);
-                phoneDisplayValue = createPatePhone(rally.contact.phone);
+                // console.log('REC:57 tmp.contact.phone', tmp.contact.phone);
+                phoneDisplayValue = createPatePhone(tmp.contact.phone);
                 break;
             default:
                 phoneDisplayValue = '';
                 break;
         }
+    } else {
+        phoneDisplayValue = '';
     }
 
     const [contactPhone, setContactPhone] = useState(phoneDisplayValue);
@@ -85,6 +84,8 @@ export default function RallyContactForm({ rallyId }) {
                     phoneToPass = '';
                     break;
             }
+        } else {
+            phoneToPass = '';
         }
         // console.log('handleNext contactPhone(after):', contactPhone);
         let contact = {
@@ -110,11 +111,11 @@ export default function RallyContactForm({ rallyId }) {
                         <ScrollView>
                             <Formik
                                 initialValues={{
-                                    name: rally?.contact?.name
-                                        ? rally.contact.name
+                                    name: tmp?.contact?.name
+                                        ? tmp.contact.name
                                         : '',
-                                    email: rally?.contact?.email
-                                        ? rally.contact.email
+                                    email: tmp?.contact?.email
+                                        ? tmp.contact.email
                                         : '',
                                 }}
                                 validationSchema={rallyLocationSchema}
@@ -179,25 +180,6 @@ export default function RallyContactForm({ rallyId }) {
                                                         </Text>
                                                     ) : null}
                                                 </View>
-                                                {/* <TextInput
-                                                    style={styles.input}
-                                                    placeholder='Contact Phone'
-                                                    onChangeText={formikProps.handleChange(
-                                                        'phone'
-                                                    )}
-                                                    value={
-                                                        formikProps.values.phone
-                                                    }
-                                                    onBlur={formikProps.handleBlur(
-                                                        'phone'
-                                                    )}
-                                                />
-                                                <Text style={styles.errorText}>
-                                                    {formikProps.touched
-                                                        .phone &&
-                                                        formikProps.errors
-                                                            .phone}
-                                                </Text> */}
                                                 <TextInput
                                                     style={styles.input}
                                                     placeholder='Contact Email'
