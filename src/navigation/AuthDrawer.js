@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainScreen from '../screens/MainScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PateSignOut from '../screens/PateSignOut';
-import MyHistoryScreen from '../screens/MyHistoryScreen';
+import MyRegistrationsScreen from '../screens/MyRegistrationsScreen';
 import ServeConfig from './ServeConfig';
 import { Colors } from '../constants/colors';
 import { printObject } from '../utils/helpers';
@@ -74,8 +74,8 @@ const AuthDrawer = (navigation) => {
                 />
             ) : null}
             <Stack.Screen
-                name='MyHistory'
-                component={MyHistoryScreen}
+                name='MyRegistrations'
+                component={MyRegistrationsScreen}
                 options={({ navigation }) => ({
                     title: 'EOR',
                     drawerLabel: 'My Registrations',
