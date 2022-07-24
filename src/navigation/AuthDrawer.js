@@ -79,6 +79,7 @@ const AuthDrawer = (navigation) => {
                 options={({ navigation }) => ({
                     title: 'EOR',
                     drawerLabel: 'My Registrations',
+
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },

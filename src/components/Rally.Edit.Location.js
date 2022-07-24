@@ -92,9 +92,9 @@ export default function RallyLocationForm({ rallyId }) {
                                 {(formikProps) => (
                                     <>
                                         <View style={styles.formHeader}>
-                                            <Headline>
-                                                Rally Location Information
-                                            </Headline>
+                                            <Text style={styles.inputLabelText}>
+                                                Location Information
+                                            </Text>
                                         </View>
                                         <View style={styles.inputContainer}>
                                             <View>
@@ -298,6 +298,10 @@ const styles = StyleSheet.create({
     formHeader: {
         marginVertical: 10,
         alignItems: 'center',
+    },
+    titleText: {
+        fontSize: 28,
+        fontWeight: 'bold',
     },
     inputContainer: {
         marginLeft: '10%',

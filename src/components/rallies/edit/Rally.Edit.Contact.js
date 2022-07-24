@@ -128,9 +128,13 @@ export default function RallyContactForm({ rallyId }) {
                                     <View style={styles.root}>
                                         <View>
                                             <View style={styles.formHeader}>
-                                                <Headline>
-                                                    Rally Contact Information
-                                                </Headline>
+                                                <Text
+                                                    style={
+                                                        styles.inputLabelText
+                                                    }
+                                                >
+                                                    Contact Information
+                                                </Text>
                                             </View>
                                             <View style={styles.inputContainer}>
                                                 <View>
@@ -255,6 +259,10 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
+    },
+    titleText: {
+        fontSize: 28,
+        fontWeight: 'bold',
     },
     formHeader: {
         marginVertical: 10,
