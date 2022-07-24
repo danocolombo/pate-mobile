@@ -66,7 +66,7 @@ export default function RallyContactForm({ rallyId }) {
     const [contactPhone, setContactPhone] = useState(phoneDisplayValue);
 
     const handleNext = (values) => {
-        setShowPhoneError(false);
+        //setShowPhoneError(false);
         // build a contact object
         // printObject('values', values);
         let phoneToPass;
@@ -74,7 +74,11 @@ export default function RallyContactForm({ rallyId }) {
             //ensure that the phone is in expected format (xxx) xxx-xxxx
             // 1. value needs to be either 0 or 14 characters.
             let phoneValue = contactPhone;
-
+            console.log('REC:77-->phoneValue.length:', phoneValue.length);
+            if (phoneValue.length !== 0 || phoneValue.length !== 10) {
+                setShowPhoneError(true);
+                return;
+            }
             let pType = getPhoneType(contactPhone);
             switch (pType) {
                 case 'PATE':
@@ -287,7 +291,8 @@ const styles = StyleSheet.create({
     },
     phoneError: {
         color: 'red',
-        fontWeight: '500',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
     inputStateProv: {
         width: 75,
