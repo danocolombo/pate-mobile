@@ -29,7 +29,7 @@ import {
 import CustomNavButton from '../../ui/CustomNavButton';
 
 // create validation schema for yup to pass to formik
-const rallyLocationSchema = yup.object({
+const rallyContactSchema = yup.object({
     contactName: yup.string(),
     contactPhone: yup.string(),
     contactEmail: yup.string().email(),
@@ -73,6 +73,8 @@ export default function RallyContactForm({ rallyId }) {
         if (contactPhone) {
             //ensure that the phone is in expected format (xxx) xxx-xxxx
             // 1. value needs to be either 0 or 14 characters.
+            let phoneValue = contactPhone;
+
             let pType = getPhoneType(contactPhone);
             switch (pType) {
                 case 'PATE':
@@ -116,7 +118,7 @@ export default function RallyContactForm({ rallyId }) {
                             name: tmp?.contact?.name ? tmp.contact.name : '',
                             email: tmp?.contact?.email ? tmp.contact.email : '',
                         }}
-                        validationSchema={rallyLocationSchema}
+                        validationSchema={rallyContactSchema}
                         onSubmit={async (values, actions) => {
                             // printObject('onSubmit::values', values);
                             handleNext(values);
@@ -128,11 +130,7 @@ export default function RallyContactForm({ rallyId }) {
                                     <View style={styles.root}>
                                         <View>
                                             <View style={styles.formHeader}>
-                                                <Text
-                                                    style={
-                                                        styles.inputLabelText
-                                                    }
-                                                >
+                                                <Text style={styles.titleText}>
                                                     Contact Information
                                                 </Text>
                                             </View>

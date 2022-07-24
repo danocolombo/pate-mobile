@@ -101,11 +101,7 @@ export default function RallyLocationForm({ rallyId }) {
                                     <View style={styles.root}>
                                         <View>
                                             <View style={styles.formHeader}>
-                                                <Text
-                                                    style={
-                                                        styles.inputLabelText
-                                                    }
-                                                >
+                                                <Text style={styles.titleText}>
                                                     Location Information
                                                 </Text>
                                             </View>

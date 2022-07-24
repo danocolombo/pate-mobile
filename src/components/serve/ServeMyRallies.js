@@ -139,6 +139,7 @@ const ServeMyRallies = () => {
                                         rallyId: ral.uid,
                                     })
                                 }
+                                key={ral.uid}
                             >
                                 <EventListCard
                                     key={ral.uid}
