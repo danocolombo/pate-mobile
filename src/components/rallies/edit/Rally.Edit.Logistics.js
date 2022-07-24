@@ -8,15 +8,12 @@ import {
     Keyboard,
     ScrollView,
     ImageBackground,
+    Alert,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-// import { Picker } from 'react-native-windows';
 import { useNavigation } from '@react-navigation/native';
-import { Headline } from 'react-native-paper';
-import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
-// import { putRally } from '../../providers/rallies';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
 import {
@@ -25,6 +22,7 @@ import {
     pateDateToSpinner,
     pateTimeToSpinner,
 } from '../../../utils/date';
+import { compareAsc } from 'date-fns';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyLogisticsForm({ rallyId }) {
@@ -33,7 +31,7 @@ export default function RallyLogisticsForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
-
+    const [finishDateError, setFinishDateError] = useState(false);
     const [date, setDate] = useState(
         tmp?.eventDate ? pateDateToSpinner(tmp?.eventDate) : dateNow
     );
@@ -60,6 +58,15 @@ export default function RallyLogisticsForm({ rallyId }) {
         theDateObject = endTime;
         let et = Date.parse(theDateObject);
         let pEnd = getPateTime(et);
+
+        //make sure the Finish/End date/time is = or greater than start.
+        // 1 means et is less than st
+        const dateCompare = compareAsc(st, et);
+
+        if (dateCompare === 1) {
+            setFinishDateError(true);
+            return;
+        }
 
         // build object to save
         let values = {
@@ -163,6 +170,22 @@ export default function RallyLogisticsForm({ rallyId }) {
                                                     style={styles.datePicker}
                                                 />
                                             </View>
+                                            {finishDateError && (
+                                                <View
+                                                    style={
+                                                        styles.finishTimeErrorWrapper
+                                                    }
+                                                >
+                                                    <Text
+                                                        style={
+                                                            styles.finishTimeErrorText
+                                                        }
+                                                    >
+                                                        Finish Time cannot be
+                                                        before Start Time
+                                                    </Text>
+                                                </View>
+                                            )}
                                         </View>
                                     </View>
                                 </View>
@@ -181,7 +204,7 @@ export default function RallyLogisticsForm({ rallyId }) {
                                     color: 'white',
                                     width: '50%',
                                 }}
-                                onPress={handleNext}
+                                onPress={() => handleNext()}
                             />
                         </View>
                     </View>
@@ -243,5 +266,15 @@ const styles = StyleSheet.create({
         // borderWidth: 3,
         // borderStyle: 'double',
         borderColor: Colors.gray700,
+    },
+    finishTimeErrorWrapper: {
+        paddingHorizontal: 5,
+    },
+
+    finishTimeErrorText: {
+        fontSize: 24,
+        color: Colors.critical,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
 });
