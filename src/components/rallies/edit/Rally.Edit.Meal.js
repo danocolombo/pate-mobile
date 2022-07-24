@@ -402,6 +402,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 6,
         width: 100,
+        backgroundColor: 'color',
         color: Colors.gray35,
         marginHorizontal: 0,
         borderColor: Colors.gray35,
