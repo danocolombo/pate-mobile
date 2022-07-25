@@ -74,11 +74,22 @@ export default function RallyContactForm({ rallyId }) {
             //ensure that the phone is in expected format (xxx) xxx-xxxx
             // 1. value needs to be either 0 or 14 characters.
             let phoneValue = contactPhone;
-            console.log('REC:77-->phoneValue.length:', phoneValue.length);
-            if (phoneValue.length !== 0 || phoneValue.length !== 10) {
+            let phoneOkay = false;
+            console.log(') is located at ', phoneValue.indexOf(')'));
+            console.log('phoneValue length: ', phoneValue.length);
+            if (phoneValue.length === 10 && phoneValue.indexOf(')') === -1) {
+                phoneOkay = true;
+            } else if (
+                phoneValue.indexOf(')') === 4 &&
+                phoneValue.length === 14
+            ) {
+                phoneOkay = true;
+            }
+            if (phoneOkay === false) {
                 setShowPhoneError(true);
                 return;
             }
+
             let pType = getPhoneType(contactPhone);
             switch (pType) {
                 case 'PATE':
@@ -132,7 +143,7 @@ export default function RallyContactForm({ rallyId }) {
                             <>
                                 <ScrollView contentContainerStyle={styles.root}>
                                     <View style={styles.root}>
-                                        <View>
+                                        <View style={styles.infoWrapper}>
                                             <View style={styles.formHeader}>
                                                 <Text style={styles.titleText}>
                                                     Contact Information
@@ -261,6 +272,11 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
+    },
+    infoWrapper: {
+        backgroundColor: 'white',
+        margin: 20,
+        borderRadius: 20,
     },
     titleText: {
         fontSize: 28,

@@ -101,7 +101,7 @@ export default function RallyLogisticsForm({ rallyId }) {
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.root}>
-                        <ScrollView>
+                        <ScrollView style={styles.infoWrapper}>
                             <View style={styles.formHeader}>
                                 <Text style={styles.titleText}>Logistics</Text>
                             </View>
@@ -224,6 +224,11 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
+    },
+    infoWrapper: {
+        backgroundColor: 'white',
+        margin: 20,
+        borderRadius: 20,
     },
     formHeader: {
         marginVertical: 10,

@@ -99,7 +99,7 @@ export default function RallyLocationForm({ rallyId }) {
                             >
                                 {(formikProps) => (
                                     <View style={styles.root}>
-                                        <View>
+                                        <View style={styles.infoWrapper}>
                                             <View style={styles.formHeader}>
                                                 <Text style={styles.titleText}>
                                                     Location Information
@@ -327,6 +327,11 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
+    },
+    infoWrapper: {
+        backgroundColor: 'white',
+        margin: 20,
+        borderRadius: 20,
     },
     titleText: {
         fontSize: 28,
