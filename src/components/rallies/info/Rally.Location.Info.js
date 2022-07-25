@@ -4,19 +4,13 @@ import { Surface, Headline, Subheading } from 'react-native-paper';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 const RallyLocationInfo = ({ rally }) => {
+    printObject('RLI:07-->rally:', rally);
     return (
         <>
             <View style={styles.rootContainer}>
                 <Surface style={[styles.surface, { elevation: 5 }]}>
                     <View>
-                        <Headline
-                            style={{
-                                color: Colors.primary,
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Rally Location Information
-                        </Headline>
+                        <Text style={styles.titleText}>Event Information</Text>
                     </View>
                     <View style={styles.textWrapper}>
                         {rally?.name ? (
@@ -53,6 +47,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: 5,
+    },
+    titleText: {
+        fontSize: 28,
+        fontWeight: 'bold',
     },
     textWrapper: {
         alignItems: 'center',

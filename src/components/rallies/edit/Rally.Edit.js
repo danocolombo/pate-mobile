@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
+
 import RallyLocationForm from './Rally.Edit.Location';
 import RallyLogisticsForm from './Rally.Edit.Logistics';
 import RallyContactForm from './Rally.Edit.Contact';

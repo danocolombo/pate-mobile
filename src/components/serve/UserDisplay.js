@@ -49,7 +49,7 @@ const UserDisplay = ({ profile }) => {
                     .then((response) => {
                         console.log('DDBUpdateProfile successful');
                     })
-                    .error((err) =>
+                    .catch((err) =>
                         console.log(
                             'Error trying to update profile in DDB\n',
                             err
@@ -67,7 +67,7 @@ const UserDisplay = ({ profile }) => {
                     .then((response) => {
                         console.log('DDBUpdateProfile successful');
                     })
-                    .error((err) =>
+                    .catch((err) =>
                         console.log(
                             'Error trying to update profile in DDB\n',
                             err

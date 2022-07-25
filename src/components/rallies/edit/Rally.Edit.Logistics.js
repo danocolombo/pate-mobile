@@ -7,15 +7,13 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
+    ImageBackground,
+    Alert,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-// import { Picker } from 'react-native-windows';
 import { useNavigation } from '@react-navigation/native';
-import { Headline } from 'react-native-paper';
-import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
-// import { putRally } from '../../providers/rallies';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
 import {
@@ -24,6 +22,7 @@ import {
     pateDateToSpinner,
     pateTimeToSpinner,
 } from '../../../utils/date';
+import { compareAsc } from 'date-fns';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyLogisticsForm({ rallyId }) {
@@ -32,7 +31,7 @@ export default function RallyLogisticsForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
-
+    const [finishDateError, setFinishDateError] = useState(false);
     const [date, setDate] = useState(
         tmp?.eventDate ? pateDateToSpinner(tmp?.eventDate) : dateNow
     );
@@ -60,6 +59,15 @@ export default function RallyLogisticsForm({ rallyId }) {
         let et = Date.parse(theDateObject);
         let pEnd = getPateTime(et);
 
+        //make sure the Finish/End date/time is = or greater than start.
+        // 1 means et is less than st
+        const dateCompare = compareAsc(st, et);
+
+        if (dateCompare === 1) {
+            setFinishDateError(true);
+            return;
+        }
+
         // build object to save
         let values = {
             eventDate: pDate,
@@ -86,11 +94,14 @@ export default function RallyLogisticsForm({ rallyId }) {
 
     // printObject('1. tmpRally:', tmp);
     return (
-        <View>
-            <ScrollView>
+        <>
+            <ImageBackground
+                source={require('../../../components/images/background.png')}
+                style={styles.bgImageContainer}
+            >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
-                        <ScrollView>
+                    <View style={styles.root}>
+                        <ScrollView style={styles.infoWrapper}>
                             <View style={styles.formHeader}>
                                 <Text style={styles.titleText}>Logistics</Text>
                             </View>
@@ -159,34 +170,66 @@ export default function RallyLogisticsForm({ rallyId }) {
                                                     style={styles.datePicker}
                                                 />
                                             </View>
+                                            {finishDateError && (
+                                                <View
+                                                    style={
+                                                        styles.finishTimeErrorWrapper
+                                                    }
+                                                >
+                                                    <Text
+                                                        style={
+                                                            styles.finishTimeErrorText
+                                                        }
+                                                    >
+                                                        Finish Time cannot be
+                                                        before Start Time
+                                                    </Text>
+                                                </View>
+                                            )}
                                         </View>
                                     </View>
                                 </View>
                             </View>
-                            <View style={styles.buttonContainer}>
-                                <CustomNavButton
-                                    title='Next'
-                                    graphic={{
-                                        name: 'forward',
-                                        color: 'white',
-                                        size: 10,
-                                    }}
-                                    cbStyles={{
-                                        backgroundColor: 'green',
-                                        color: 'white',
-                                        width: '50%',
-                                    }}
-                                    onPress={handleNext}
-                                />
-                            </View>
                         </ScrollView>
+                        <View style={styles.buttonContainer}>
+                            <CustomNavButton
+                                title='Next'
+                                graphic={{
+                                    name: 'forward',
+                                    color: 'white',
+                                    size: 10,
+                                }}
+                                cbStyles={{
+                                    backgroundColor: 'green',
+                                    color: 'white',
+                                    width: '50%',
+                                }}
+                                onPress={() => handleNext()}
+                            />
+                        </View>
                     </View>
                 </TouchableWithoutFeedback>
-            </ScrollView>
-        </View>
+            </ImageBackground>
+        </>
     );
 }
 const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+    },
+    bgImageContainer: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+    infoWrapper: {
+        backgroundColor: 'white',
+        margin: 20,
+        borderRadius: 20,
+    },
     formHeader: {
         marginVertical: 10,
         alignItems: 'center',
@@ -212,6 +255,7 @@ const styles = StyleSheet.create({
     },
     datePickerWrapper: {
         borderWidth: 4,
+        backgroundColor: 'white',
         borderColor: Colors.gray35,
         borderRadius: 10,
         marginBottom: 5,
@@ -227,5 +271,15 @@ const styles = StyleSheet.create({
         // borderWidth: 3,
         // borderStyle: 'double',
         borderColor: Colors.gray700,
+    },
+    finishTimeErrorWrapper: {
+        paddingHorizontal: 5,
+    },
+
+    finishTimeErrorText: {
+        fontSize: 24,
+        color: Colors.critical,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
 });

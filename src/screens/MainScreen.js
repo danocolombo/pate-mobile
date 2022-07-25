@@ -79,15 +79,22 @@ export default function MainScreen() {
                 </Modal>
 
                 {displayData.length !== 0 ? (
-                    <View>
-                        <FlatList
-                            data={displayData}
-                            keyExtractor={(item) => item.uid}
-                            renderItem={({ item }) => (
-                                <RallyItem rally={item} />
-                            )}
-                        />
-                    </View>
+                    <>
+                        <View>
+                            <Text style={styles.titleText}>
+                                Upcoming Events
+                            </Text>
+                        </View>
+                        <View>
+                            <FlatList
+                                data={displayData}
+                                keyExtractor={(item) => item.uid}
+                                renderItem={({ item }) => (
+                                    <RallyItem rally={item} />
+                                )}
+                            />
+                        </View>
+                    </>
                 ) : (
                     <View style={styles.imageContainer}>
                         <Image
@@ -106,6 +113,12 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
+    },
+    titleText: {
+        padding: 20,
+        fontSize: 28,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
     infoText: {
         color: 'white',

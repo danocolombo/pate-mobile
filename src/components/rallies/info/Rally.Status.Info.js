@@ -9,7 +9,7 @@ const RallyStatusInfo = ({ rally, onPress }) => {
     // printObject('RSI:9 --> rally', rally);
     let tColor = 'gold';
     let bColor = 'blue';
-    // console.log('uid:', rally.uid);
+
     switch (rally.status) {
         case 'pending':
             tColor = 'black';

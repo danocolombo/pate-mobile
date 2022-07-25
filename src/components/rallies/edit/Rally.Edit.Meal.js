@@ -8,6 +8,7 @@ import {
     Keyboard,
     ScrollView,
     Modal,
+    ImageBackground,
 } from 'react-native';
 import { Headline } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -104,7 +105,7 @@ export default function RallyMealForm({ rallyId }) {
     };
     // const dispatch = useDispatch();
     return (
-        <View>
+        <>
             <Modal visible={showMealCountConfirm} animationStyle='slide'>
                 <Surface style={styles.modalSurface}>
                     <View>
@@ -151,12 +152,17 @@ export default function RallyMealForm({ rallyId }) {
                     </View>
                 </Surface>
             </Modal>
-            <ScrollView>
+            <ImageBackground
+                source={require('../../../components/images/background.png')}
+                style={styles.bgImageContainer}
+            >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
+                    <View style={styles.root}>
                         <ScrollView>
                             <View style={styles.formHeader}>
-                                <Headline>Rally Meal Information</Headline>
+                                <Text style={styles.titleText}>
+                                    Meal Information
+                                </Text>
                             </View>
                             <View style={styles.offerRow}>
                                 <View style={styles.offerTextWrapper}>
@@ -255,31 +261,45 @@ export default function RallyMealForm({ rallyId }) {
                                     value={mealMessage}
                                 />
                             </View>
-
-                            <View style={styles.buttonContainer}>
-                                <CustomNavButton
-                                    title='Next'
-                                    graphic={{
-                                        name: 'forward',
-                                        color: 'white',
-                                        size: 10,
-                                    }}
-                                    cbStyles={{
-                                        backgroundColor: 'green',
-                                        color: 'white',
-                                        width: '50%',
-                                    }}
-                                    onPress={() => handleNext()}
-                                />
-                            </View>
                         </ScrollView>
+                        <View style={styles.buttonContainer}>
+                            <CustomNavButton
+                                title='Next'
+                                graphic={{
+                                    name: 'forward',
+                                    color: 'white',
+                                    size: 10,
+                                }}
+                                cbStyles={{
+                                    backgroundColor: 'green',
+                                    color: 'white',
+                                    width: '50%',
+                                }}
+                                onPress={() => handleNext()}
+                            />
+                        </View>
                     </View>
                 </TouchableWithoutFeedback>
-            </ScrollView>
-        </View>
+            </ImageBackground>
+        </>
     );
 }
 const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+    },
+    bgImageContainer: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+    titleText: {
+        fontSize: 28,
+        fontWeight: 'bold',
+    },
     formHeader: {
         marginVertical: 10,
         alignItems: 'center',
@@ -288,13 +308,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 10,
+        marginBottom: 20,
     },
     offerTextWrapper: {
         marginRight: 10,
     },
     offerText: {
         fontSize: 20,
+        fontWeight: '600',
     },
     offerSwitchWrapper: {},
     offerSwitch: {},
@@ -327,8 +348,8 @@ const styles = StyleSheet.create({
     },
     datePickerLabel: {
         fontSize: 20,
-        fontWeight: '300',
-        marginBottom: 10,
+        fontWeight: '600',
+        marginBottom: 5,
     },
     datePickerWrapper: {
         // borderWidth: 4,
@@ -346,6 +367,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         margin: 0,
         padding: 0,
+        backgroundColor: 'white',
         borderWidth: 1,
         borderRadius: 6,
         // borderStyle: 'double',
@@ -355,18 +377,21 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         // marginLeft: 35,
         alignItems: 'center',
+        marginTop: 10,
+        marginBottom: 15,
     },
     costLabel: {
         fontSize: 20,
-        fontWeight: '300',
+        fontWeight: '600',
     },
     costInput: {
-        marginVertical: 8,
+        // marginVertical: 8,
         fontSize: 18,
         borderWidth: 1,
         borderRadius: 6,
         width: 100,
         marginHorizontal: 0,
+        backgroundColor: 'white',
         borderColor: Colors.gray35,
         paddingHorizontal: 12,
         height: 45,
@@ -377,6 +402,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 6,
         width: 100,
+        backgroundColor: 'color',
         color: Colors.gray35,
         marginHorizontal: 0,
         borderColor: Colors.gray35,
@@ -385,11 +411,12 @@ const styles = StyleSheet.create({
     },
     messageWrapper: {
         // flex: 1,
-        marginVertical: 10,
-        marginLeft: '10%',
+        marginTop: 20,
+        // marginLeft: '10%',
+        alignItems: 'center',
     },
     mealMessageLabel: {
-        fontWeight: '300',
+        fontWeight: '600',
         fontSize: 18,
     },
     messageInput: {
@@ -402,7 +429,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         borderRadius: 6,
         width: '90%',
-
+        backgroundColor: 'white',
         height: 60,
         justifyContent: 'flex-start',
     },

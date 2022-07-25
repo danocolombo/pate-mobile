@@ -7,6 +7,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
+    ImageBackground,
 } from 'react-native';
 import { Headline } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -28,7 +29,7 @@ import {
 import CustomNavButton from '../../ui/CustomNavButton';
 
 // create validation schema for yup to pass to formik
-const rallyLocationSchema = yup.object({
+const rallyContactSchema = yup.object({
     contactName: yup.string(),
     contactPhone: yup.string(),
     contactEmail: yup.string().email(),
@@ -65,13 +66,30 @@ export default function RallyContactForm({ rallyId }) {
     const [contactPhone, setContactPhone] = useState(phoneDisplayValue);
 
     const handleNext = (values) => {
-        setShowPhoneError(false);
+        //setShowPhoneError(false);
         // build a contact object
         // printObject('values', values);
         let phoneToPass;
         if (contactPhone) {
             //ensure that the phone is in expected format (xxx) xxx-xxxx
             // 1. value needs to be either 0 or 14 characters.
+            let phoneValue = contactPhone;
+            let phoneOkay = false;
+            console.log(') is located at ', phoneValue.indexOf(')'));
+            console.log('phoneValue length: ', phoneValue.length);
+            if (phoneValue.length === 10 && phoneValue.indexOf(')') === -1) {
+                phoneOkay = true;
+            } else if (
+                phoneValue.indexOf(')') === 4 &&
+                phoneValue.length === 14
+            ) {
+                phoneOkay = true;
+            }
+            if (phoneOkay === false) {
+                setShowPhoneError(true);
+                return;
+            }
+
             let pType = getPhoneType(contactPhone);
             switch (pType) {
                 case 'PATE':
@@ -104,103 +122,114 @@ export default function RallyContactForm({ rallyId }) {
     };
     // printObject('2. tmpRally:', tmp);
     return (
-        <View>
-            <ScrollView>
+        <>
+            <ImageBackground
+                source={require('../../../components/images/background.png')}
+                style={styles.bgImageContainer}
+            >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
-                        <ScrollView>
-                            <Formik
-                                initialValues={{
-                                    name: tmp?.contact?.name
-                                        ? tmp.contact.name
-                                        : '',
-                                    email: tmp?.contact?.email
-                                        ? tmp.contact.email
-                                        : '',
-                                }}
-                                validationSchema={rallyLocationSchema}
-                                onSubmit={async (values, actions) => {
-                                    // printObject('onSubmit::values', values);
-                                    handleNext(values);
-                                }}
-                            >
-                                {(formikProps) => (
-                                    <>
-                                        <View style={styles.formHeader}>
-                                            <Headline>
-                                                Rally Contact Information
-                                            </Headline>
-                                        </View>
-                                        <View style={styles.inputContainer}>
-                                            <View>
-                                                <TextInput
-                                                    style={styles.input}
-                                                    placeholder='Contact Name'
-                                                    onChangeText={formikProps.handleChange(
-                                                        'name'
-                                                    )}
-                                                    value={
-                                                        formikProps.values.name
-                                                    }
-                                                    onBlur={formikProps.handleBlur(
-                                                        'name'
-                                                    )}
-                                                />
-                                                <Text style={styles.errorText}>
-                                                    {formikProps.touched.name &&
-                                                        formikProps.errors.name}
+                    <Formik
+                        initialValues={{
+                            name: tmp?.contact?.name ? tmp.contact.name : '',
+                            email: tmp?.contact?.email ? tmp.contact.email : '',
+                        }}
+                        validationSchema={rallyContactSchema}
+                        onSubmit={async (values, actions) => {
+                            // printObject('onSubmit::values', values);
+                            handleNext(values);
+                        }}
+                    >
+                        {(formikProps) => (
+                            <>
+                                <ScrollView contentContainerStyle={styles.root}>
+                                    <View style={styles.root}>
+                                        <View style={styles.infoWrapper}>
+                                            <View style={styles.formHeader}>
+                                                <Text style={styles.titleText}>
+                                                    Contact Information
                                                 </Text>
-                                                <View
-                                                    style={
-                                                        showPhoneError
-                                                            ? styles.phoneWrapperError
-                                                            : styles.phoneWrapper
-                                                    }
-                                                >
-                                                    <PhoneInput
-                                                        overrideStyle={{
-                                                            borderColor:
-                                                                Colors.gray35,
-                                                            borderWidth: 2,
-                                                            borderRadius: 6,
-                                                        }}
-                                                        value={contactPhone}
-                                                        onChange={
-                                                            setContactPhone
+                                            </View>
+                                            <View style={styles.inputContainer}>
+                                                <View>
+                                                    <TextInput
+                                                        style={styles.input}
+                                                        placeholder='Contact Name'
+                                                        onChangeText={formikProps.handleChange(
+                                                            'name'
+                                                        )}
+                                                        value={
+                                                            formikProps.values
+                                                                .name
                                                         }
+                                                        onBlur={formikProps.handleBlur(
+                                                            'name'
+                                                        )}
                                                     />
-                                                    {showPhoneError ? (
-                                                        <Text
-                                                            style={
-                                                                styles.phoneError
+                                                    <Text
+                                                        style={styles.errorText}
+                                                    >
+                                                        {formikProps.touched
+                                                            .name &&
+                                                            formikProps.errors
+                                                                .name}
+                                                    </Text>
+                                                    <View
+                                                        style={
+                                                            showPhoneError
+                                                                ? styles.phoneWrapperError
+                                                                : styles.phoneWrapper
+                                                        }
+                                                    >
+                                                        <PhoneInput
+                                                            overrideStyle={{
+                                                                borderColor:
+                                                                    Colors.gray35,
+                                                                borderWidth: 2,
+                                                                borderRadius: 6,
+                                                                backgroundColor:
+                                                                    'white',
+                                                            }}
+                                                            value={contactPhone}
+                                                            onChange={
+                                                                setContactPhone
                                                             }
-                                                        >
-                                                            Please correct the
-                                                            phone number
-                                                        </Text>
-                                                    ) : null}
+                                                        />
+                                                        {showPhoneError ? (
+                                                            <Text
+                                                                style={
+                                                                    styles.phoneError
+                                                                }
+                                                            >
+                                                                Please correct
+                                                                the phone number
+                                                            </Text>
+                                                        ) : null}
+                                                    </View>
+                                                    <TextInput
+                                                        style={styles.input}
+                                                        placeholder='Contact Email'
+                                                        autocomplete='off'
+                                                        autoCapitalize='none'
+                                                        onChangeText={formikProps.handleChange(
+                                                            'email'
+                                                        )}
+                                                        value={
+                                                            formikProps.values
+                                                                .email
+                                                        }
+                                                        onBlur={formikProps.handleBlur(
+                                                            'email'
+                                                        )}
+                                                    />
+                                                    <Text
+                                                        style={styles.errorText}
+                                                    >
+                                                        {formikProps.touched
+                                                            .email &&
+                                                            formikProps.errors
+                                                                .email}
+                                                    </Text>
                                                 </View>
-                                                <TextInput
-                                                    style={styles.input}
-                                                    placeholder='Contact Email'
-                                                    autocomplete='off'
-                                                    autoCapitalize='none'
-                                                    onChangeText={formikProps.handleChange(
-                                                        'email'
-                                                    )}
-                                                    value={
-                                                        formikProps.values.email
-                                                    }
-                                                    onBlur={formikProps.handleBlur(
-                                                        'email'
-                                                    )}
-                                                />
-                                                <Text style={styles.errorText}>
-                                                    {formikProps.touched
-                                                        .email &&
-                                                        formikProps.errors
-                                                            .email}
-                                                </Text>
                                             </View>
                                         </View>
                                         <View style={styles.buttonContainer}>
@@ -221,18 +250,38 @@ export default function RallyContactForm({ rallyId }) {
                                                 }
                                             />
                                         </View>
-                                    </>
-                                )}
-                                {/* this ends the formik execution */}
-                            </Formik>
-                        </ScrollView>
-                    </View>
+                                    </View>
+                                </ScrollView>
+                            </>
+                        )}
+                        {/* this ends the formik execution */}
+                    </Formik>
                 </TouchableWithoutFeedback>
-            </ScrollView>
-        </View>
+            </ImageBackground>
+        </>
     );
 }
 const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+    },
+    bgImageContainer: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+    infoWrapper: {
+        backgroundColor: 'white',
+        margin: 20,
+        borderRadius: 20,
+    },
+    titleText: {
+        fontSize: 28,
+        fontWeight: 'bold',
+    },
     formHeader: {
         marginVertical: 10,
         alignItems: 'center',
@@ -246,6 +295,7 @@ const styles = StyleSheet.create({
         padding: 10,
         marginTop: 0,
         fontSize: 18,
+        backgroundColor: 'white',
         borderRadius: 6,
         width: '90%',
     },
@@ -257,7 +307,8 @@ const styles = StyleSheet.create({
     },
     phoneError: {
         color: 'red',
-        fontWeight: '500',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
     inputStateProv: {
         width: 75,

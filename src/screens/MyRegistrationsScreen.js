@@ -21,7 +21,7 @@ import { printObject } from '../utils/helpers';
 import { dateNumToDateDash, isDateDashBeforeToday } from '../utils/date';
 import { Colors } from '../constants/colors';
 
-const MyHistoryScreen = () => {
+const MyRegistrationsScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
@@ -220,7 +220,7 @@ const MyHistoryScreen = () => {
     }
 };
 
-export default MyHistoryScreen;
+export default MyRegistrationsScreen;
 
 const styles = StyleSheet.create({
     rootContainer: {

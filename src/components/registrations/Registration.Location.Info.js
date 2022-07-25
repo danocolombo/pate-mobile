@@ -9,7 +9,9 @@ const RegistrationLocation = ({ rally }) => {
             <View style={styles.rootContainer}>
                 <Surface style={[styles.surface, { elevation: 5 }]}>
                     <View>
-                        <Headline>Rally Location</Headline>
+                        <Text style={styles.inputLabelText}>
+                            Location Information
+                        </Text>
                     </View>
                     <View style={styles.textWrapper}>
                         {rally?.name ? (
@@ -44,6 +46,10 @@ export default RegistrationLocation;
 const styles = StyleSheet.create({
     rootContainer: {
         alignItems: 'center',
+    },
+    titleText: {
+        fontSize: 28,
+        fontWeight: 'bold',
     },
     surface: {
         marginTop: 24,
