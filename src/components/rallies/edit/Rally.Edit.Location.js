@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -8,12 +8,15 @@ import {
     Keyboard,
     ScrollView,
     ImageBackground,
+    Modal,
 } from 'react-native';
 import { Headline } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from '@react-native-material/core';
+import { Surface } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
+import CustomButton from '../../../components/ui/CustomButton';
 // import { putRally } from '../../providers/rallies';
 import { createTmp, updateTmp } from '../../../features/rallies/ralliesSlice';
 import { Formik } from 'formik';
@@ -38,6 +41,9 @@ const rallyLocationSchema = yup.object({
 export default function RallyLocationForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const [showEditWarningConfirm, setShowEditWarningConfirm] = useState(
+        !!rally?.registrations > 0
+    );
     let rallyEntry;
     if (rallyId !== 0) {
         rallyEntry = useSelector((state) =>
@@ -55,6 +61,12 @@ export default function RallyLocationForm({ rallyId }) {
             //save existing values to tmpEntry
             dispatch(createTmp(rally));
         }
+        if (parseInt(rally?.registrations) > 0) {
+            console.log('duck');
+            setShowEditWarningConfirm((prevState) => true);
+        } else {
+            console.log('goose');
+        }
     }, []);
 
     const handleNext = (values) => {
@@ -71,8 +83,57 @@ export default function RallyLocationForm({ rallyId }) {
         });
     };
     // const dispatch = useDispatch();
+    printObject('REL:76-->rally', rally);
+    console.log('rally.registrations:', rally?.registrations);
+
     return (
         <>
+            <Modal visible={showEditWarningConfirm} animationStyle='slide'>
+                <Surface style={styles.modalSurface}>
+                    <View>
+                        <Text style={styles.modalTitle}>
+                            REGISTRATION WARNING
+                        </Text>
+                    </View>
+                    <View style={styles.modalMessageWrapper}>
+                        <Text style={styles.modalMessageText}>
+                            Some registrations have been made.
+                        </Text>
+                    </View>
+                    <View style={styles.modalMessageWrapper}>
+                        <Text style={styles.modalMessageText}>
+                            If you make edits to this event, it could impact
+                            those already registered. Please be wise and
+                            determine if your changes need to be communicated to
+                            the registrars.
+                        </Text>
+                    </View>
+                    <View style={styles.modalMessageWrapper}>
+                        <Text style={styles.modalMessageText}>
+                            You can see who has registered on the main serve
+                            page in the Registrations scroll box.
+                        </Text>
+                    </View>
+                    <View style={styles.modalButtonContainer}>
+                        <View style={styles.modalButtonWrapper}>
+                            <View style={styles.modalConfirmButton}>
+                                <CustomButton
+                                    title='OK'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: Colors.gray35,
+                                        color: 'black',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() =>
+                                        setShowEditWarningConfirm(false)
+                                    }
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Surface>
+            </Modal>
             <ImageBackground
                 source={require('../../../components/images/background.png')}
                 style={styles.bgImageContainer}
@@ -409,5 +470,32 @@ const styles = StyleSheet.create({
     },
     submitButton: {
         width: '70%',
+    },
+    modalSurface: {
+        marginTop: 80,
+        marginHorizontal: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+    },
+    modalTitle: {
+        marginTop: 15,
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+    modalMessageWrapper: {
+        marginVertical: 15,
+        marginHorizontal: 15,
+    },
+    modalMessageText: {
+        fontSize: 18,
+        fontWeight: 'normal',
+    },
+    modalButtonContainer: {
+        marginVertical: 20,
+        flexDirection: 'row',
+    },
+    modalButtonWrapper: {
+        marginHorizontal: 10,
     },
 });
