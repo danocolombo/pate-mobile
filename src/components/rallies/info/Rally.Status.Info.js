@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import { Badge } from 'react-native-paper';
 //import for the animation of Collapse and Expand
 import * as Animatable from 'react-native-animatable';
@@ -11,6 +12,7 @@ import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 const RallyStatusInfo = ({ rally, onPress }) => {
     // printObject('RSI:9 --> rally', rally);
+    const user = useSelector((state) => state.users.currentUser);
     const [collapsed, setCollapsed] = useState(true); //collapsible
     let tColor = 'gold';
     let bColor = 'blue';
@@ -92,16 +94,27 @@ const RallyStatusInfo = ({ rally, onPress }) => {
                         <Surface style={[styles.surface, { elevation: 5 }]}>
                             <View style={styles.statusOutline}>
                                 <View style={styles.statusDataWrapper}>
-                                    <View style={styles.statusRow}>
-                                        <CustomSmallButton
-                                            title={rally?.status}
-                                            cbStyles={{
-                                                backgroundColor: bColor,
-                                                color: tColor,
-                                            }}
-                                            onPress={onPress}
-                                        />
-                                    </View>
+                                    {user?.stateLead ? (
+                                        <View style={styles.statusRow}>
+                                            <CustomSmallButton
+                                                title={rally?.status}
+                                                cbStyles={{
+                                                    backgroundColor: bColor,
+                                                    color: tColor,
+                                                    fontSize: 14,
+                                                }}
+                                                onPress={onPress}
+                                            />
+                                        </View>
+                                    ) : (
+                                        <View style={styles.statusRow}>
+                                            <View>
+                                                <Text style={{ fontSize: 18 }}>
+                                                    STATUS: {rally?.status}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    )}
                                     <View style={styles.statusRow}>
                                         <Text style={styles.textWrapper}>
                                             Region:
@@ -138,7 +151,7 @@ export default RallyStatusInfo;
 const styles = StyleSheet.create({
     rootContainer: {
         alignItems: 'center',
-        marginTop: 10,
+        marginTop: 15,
     },
     detailContainer: {
         alignItems: 'center',
@@ -154,12 +167,13 @@ const styles = StyleSheet.create({
     statusOutline: {
         borderWidth: 1,
         borderColor: Colors.primary,
-        padding: 10,
+        padding: 5,
         borderRadius: 15,
         width: '100%',
     },
     statusRow: {
         flexDirection: 'row',
+        justifyContent: 'center',
         paddingHorizontal: 5,
     },
     statusTitle: {
@@ -186,7 +200,7 @@ const styles = StyleSheet.create({
     collapsibleHeaderRow: {
         //backgroundColor: '#F5FCFF',
         flexDirection: 'row',
-        padding: 10,
+        marginTop: 5,
         alignItems: 'center',
     },
     collapsibleHeaderText: {

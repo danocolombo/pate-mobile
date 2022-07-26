@@ -30,6 +30,7 @@ import { printObject } from '../../../utils/helpers';
 import { updateRally } from '../../../features/rallies/ralliesSlice';
 import { getRegistrarsForEvent } from '../../../providers/registrations';
 import RallyRegistrars from './RallyRegistrars';
+import { blue } from '@material-ui/core/colors';
 const RallyDetails = ({ rallyId }) => {
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [showRegDetail, setShowRegDetail] = useState(false);
@@ -303,6 +304,7 @@ const RallyDetails = ({ rallyId }) => {
                     <View style={{ alignItems: 'center', height: 100 }}>
                         <Surface
                             style={{
+                                paddingTop: 10,
                                 width: '90%',
                                 //height: '100%',
                                 alignItems: 'center',
@@ -362,7 +364,7 @@ const RallyDetails = ({ rallyId }) => {
                         onPress={handleStatusPress}
                     />
                     <View style={styles.buttonContainer}></View>
-                    {user.uid === rally.coordinator.id ? (
+                    {user.uid === rally.coordinator.id || user?.stateLead ? (
                         <View>
                             <View style={styles.buttonContainer}>
                                 <CustomButton
@@ -408,7 +410,7 @@ const styles = StyleSheet.create({
     },
     modalSurface: {
         marginTop: 80,
-        marginHorizontal: 10,
+        marginHorizontal: 0,
         alignItems: 'center',
         justifyContent: 'center',
         elevation: 5,

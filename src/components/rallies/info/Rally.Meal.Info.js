@@ -40,11 +40,13 @@ const RallyMealInfo = ({ rally }) => {
                                     </Text>
                                 </View>
                             ) : null}
-                            <View style={styles.messageWrapper}>
-                                <Text style={styles.messageText}>
-                                    {rally?.meal?.message}
-                                </Text>
-                            </View>
+                            {rally?.meal?.message && (
+                                <View style={styles.messageWrapper}>
+                                    <Text style={styles.messageText}>
+                                        {rally?.meal?.message}
+                                    </Text>
+                                </View>
+                            )}
                         </View>
                     ) : (
                         <View style={styles.noMealWrapper}>
