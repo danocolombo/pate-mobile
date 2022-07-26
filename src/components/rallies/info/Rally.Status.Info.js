@@ -101,13 +101,6 @@ const RallyStatusInfo = ({ rally, onPress }) => {
                                             }}
                                             onPress={onPress}
                                         />
-
-                                        <Text style={styles.textWrapper}>
-                                            Approved:{' '}
-                                            {rally?.approved === true
-                                                ? 'Yes'
-                                                : 'No'}
-                                        </Text>
                                     </View>
                                     <View style={styles.statusRow}>
                                         <Text style={styles.textWrapper}>

@@ -124,12 +124,23 @@ const ServeMyRallies = () => {
             <View style={styles.screenHeader}>
                 <Text style={styles.screenHeaderText}>Your Events</Text>
             </View>
-            <View>
-                <View style={styles.infoArea}>
-                    <Text>Tap any event to see details.</Text>
+            {displayData.length > 0 && (
+                <View>
+                    <View style={styles.infoArea}>
+                        <Text>Tap any event to see details.</Text>
+                    </View>
                 </View>
-            </View>
+            )}
             <ScrollView>
+                {displayData.length < 1 && (
+                    <Surface style={styles.noEventsSurface}>
+                        <View>
+                            <Text style={styles.noEventsText}>
+                                No Historical Information
+                            </Text>
+                        </View>
+                    </Surface>
+                )}
                 <View>
                     {displayData.map((ral) => (
                         <View key={ral.uid} style={{ margin: 10 }}>
@@ -194,6 +205,22 @@ const styles = StyleSheet.create({
     },
     infoArea: {
         alignItems: 'center',
+    },
+    noEventsSurface: {
+        flex: 1,
+        flexDirection: 'column',
+        marginTop: 30,
+        marginHorizontal: 40,
+        padding: 8,
+        justifyContent: 'center',
+        height: 100,
+        alignItems: 'center',
+        borderRadius: 20,
+        elevation: 5,
+    },
+    noEventsText: {
+        fontSize: 20,
+        fontWeight: '500',
     },
     eventListSurface: {
         marginTop: 10,
