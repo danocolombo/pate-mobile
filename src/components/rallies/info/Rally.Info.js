@@ -58,6 +58,8 @@ const RallyDetails = ({ rallyId }) => {
                     // sort by last name
                     function asc_sort(a, b) {
                         // Use toUpperCase() to ignore character casing
+                        printObject('RI:61-->a:', a);
+                        printObject('RI:62-->b:', b);
                         const regA = a.registrar.lastName.toUpperCase();
                         const regB = b.registrar.lastName.toUpperCase();
 
