@@ -158,125 +158,129 @@ export default function RallyMealForm({ rallyId }) {
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.root}>
-                        <ScrollView>
-                            <View style={styles.formHeader}>
-                                <Text style={styles.titleText}>
-                                    Meal Information
-                                </Text>
-                            </View>
-                            <View style={styles.offerRow}>
-                                <View style={styles.offerTextWrapper}>
-                                    <Text style={styles.offerText}>
-                                        Offer a meal:
+                        <View style={styles.infoWrapper}>
+                            <ScrollView>
+                                <View style={styles.formHeader}>
+                                    <Text style={styles.titleText}>
+                                        Meal Information
                                     </Text>
                                 </View>
-                                <View style={styles.offerSwitchWrapper}>
-                                    <Switch
-                                        value={offerMeal}
-                                        onValueChange={() =>
-                                            setOfferMeal(!offerMeal)
+                                <View style={styles.offerRow}>
+                                    <View style={styles.offerTextWrapper}>
+                                        <Text style={styles.offerText}>
+                                            Offer a meal:
+                                        </Text>
+                                    </View>
+                                    <View style={styles.offerSwitchWrapper}>
+                                        <Switch
+                                            value={offerMeal}
+                                            onValueChange={() =>
+                                                setOfferMeal(!offerMeal)
+                                            }
+                                            style={styles.offerSwitch}
+                                        />
+                                    </View>
+                                </View>
+                                <View style={styles.datePickerWrapper}>
+                                    <View>
+                                        <Text style={styles.datePickerLabel}>
+                                            Meal Start Time
+                                        </Text>
+                                    </View>
+                                    <DateTimePicker
+                                        value={mealTime}
+                                        minuteInterval={15}
+                                        mode='time'
+                                        disabled={!offerMeal}
+                                        display={
+                                            Platform.OS === 'ios'
+                                                ? 'spinner'
+                                                : 'default'
                                         }
-                                        style={styles.offerSwitch}
+                                        is24Hour={true}
+                                        onChange={onMealTimeChange}
+                                        style={styles.datePicker}
                                     />
                                 </View>
-                            </View>
-                            <View style={styles.datePickerWrapper}>
-                                <View>
-                                    <Text style={styles.datePickerLabel}>
-                                        Meal Start Time
+                                <View style={styles.costWrapper}>
+                                    <Text style={styles.costLabel}>
+                                        Meal Cost
                                     </Text>
+
+                                    <CurrencyInput
+                                        value={cost}
+                                        onChangeValue={setCost}
+                                        prefix='$'
+                                        placeholder='cost'
+                                        minValue={0}
+                                        delimiter=','
+                                        separator='.'
+                                        precision={2}
+                                        editable={offerMeal}
+                                        style={
+                                            offerMeal
+                                                ? styles.costInput
+                                                : styles.costInputDisabled
+                                        }
+                                        // onChangeText={(formattedValue) => {
+                                        //     console.log(formattedValue); // $2,310.46
+                                        // }}
+                                    />
                                 </View>
-                                <DateTimePicker
-                                    value={mealTime}
-                                    minuteInterval={15}
-                                    mode='time'
-                                    disabled={!offerMeal}
-                                    display={
-                                        Platform.OS === 'ios'
-                                            ? 'spinner'
-                                            : 'default'
-                                    }
-                                    is24Hour={true}
-                                    onChange={onMealTimeChange}
-                                    style={styles.datePicker}
-                                />
-                            </View>
-                            <View style={styles.costWrapper}>
-                                <Text style={styles.costLabel}>Meal Cost</Text>
 
-                                <CurrencyInput
-                                    value={cost}
-                                    onChangeValue={setCost}
-                                    prefix='$'
-                                    placeholder='cost'
-                                    minValue={0}
-                                    delimiter=','
-                                    separator='.'
-                                    precision={2}
-                                    editable={offerMeal}
-                                    style={
-                                        offerMeal
-                                            ? styles.costInput
-                                            : styles.costInputDisabled
-                                    }
-                                    // onChangeText={(formattedValue) => {
-                                    //     console.log(formattedValue); // $2,310.46
-                                    // }}
+                                <View style={styles.datePickerWrapper}>
+                                    <Text style={styles.datePickerLabel}>
+                                        Deadline to signup for meal
+                                    </Text>
+                                    <DateTimePicker
+                                        value={deadline}
+                                        mode='date'
+                                        maximumDate={pateDateToSpinner(
+                                            tmp.eventDate
+                                        )}
+                                        minuteInterval={15}
+                                        disabled={!offerMeal}
+                                        display={
+                                            Platform.OS === 'ios'
+                                                ? 'spinner'
+                                                : 'default'
+                                        }
+                                        is24Hour={true}
+                                        onChange={onDeadlineChange}
+                                        style={styles.datePicker}
+                                    />
+                                </View>
+                                <View style={styles.messageWrapper}>
+                                    <Text style={styles.mealMessageLabel}>
+                                        Meal message (max. 60 characters)
+                                    </Text>
+                                    <TextInput
+                                        style={styles.messageInput}
+                                        numberOfLines={2}
+                                        multiline
+                                        maxLength={60}
+                                        placeholder='Meal Message'
+                                        onChangeText={(e) => onMessageChange(e)}
+                                        value={mealMessage}
+                                    />
+                                </View>
+                            </ScrollView>
+                            <View style={styles.buttonContainer}>
+                                <CustomNavButton
+                                    title='Next'
+                                    graphic={{
+                                        name: 'forward',
+                                        color: 'white',
+                                        size: 10,
+                                    }}
+                                    cbStyles={{
+                                        backgroundColor: 'green',
+                                        color: 'white',
+                                        width: '50%',
+                                    }}
+                                    onPress={() => handleNext()}
                                 />
                             </View>
-
-                            <View style={styles.datePickerWrapper}>
-                                <Text style={styles.datePickerLabel}>
-                                    Deadline to signup for meal
-                                </Text>
-                                <DateTimePicker
-                                    value={deadline}
-                                    mode='date'
-                                    maximumDate={pateDateToSpinner(
-                                        tmp.eventDate
-                                    )}
-                                    minuteInterval={15}
-                                    disabled={!offerMeal}
-                                    display={
-                                        Platform.OS === 'ios'
-                                            ? 'spinner'
-                                            : 'default'
-                                    }
-                                    is24Hour={true}
-                                    onChange={onDeadlineChange}
-                                    style={styles.datePicker}
-                                />
-                            </View>
-                            <View style={styles.messageWrapper}>
-                                <Text style={styles.mealMessageLabel}>
-                                    Meal message (max. 60 characters)
-                                </Text>
-                                <TextInput
-                                    style={styles.messageInput}
-                                    numberOfLines={2}
-                                    multiline
-                                    maxLength={60}
-                                    placeholder='Meal Message'
-                                    onChangeText={(e) => onMessageChange(e)}
-                                    value={mealMessage}
-                                />
-                            </View>
-                        </ScrollView>
-                        <View style={styles.buttonContainer}>
-                            <CustomNavButton
-                                title='Next'
-                                graphic={{
-                                    name: 'forward',
-                                    color: 'white',
-                                    size: 10,
-                                }}
-                                cbStyles={{
-                                    backgroundColor: 'green',
-                                    color: 'white',
-                                    width: '50%',
-                                }}
-                                onPress={() => handleNext()}
-                            />
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
@@ -295,6 +299,11 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
+    },
+    infoWrapper: {
+        backgroundColor: 'white',
+        margin: 20,
+        borderRadius: 20,
     },
     titleText: {
         fontSize: 28,

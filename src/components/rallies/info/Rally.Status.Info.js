@@ -68,28 +68,30 @@ const RallyStatusInfo = ({ rally, onPress }) => {
             <View style={styles.rootContainer}>
                 <ScrollView>
                     {/*Code for Single Collapsible Start*/}
-                    <TouchableOpacity onPress={toggleExpanded}>
-                        <View style={styles.collapsibleHeaderRow}>
-                            <Text style={styles.collapsibleHeaderText}>
-                                Event Details
-                            </Text>
-                            <View style={styles.collapsibleHeaderIcon}>
-                                {collapsed ? (
-                                    <AntDesign
-                                        name='caretright'
-                                        size={18}
-                                        color={Colors.gray60}
-                                    />
-                                ) : (
-                                    <AntDesign
-                                        name='caretdown'
-                                        size={18}
-                                        color={Colors.gray60}
-                                    />
-                                )}
+                    <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity onPress={toggleExpanded}>
+                            <View style={styles.collapsibleHeaderRow}>
+                                <Text style={styles.collapsibleHeaderText}>
+                                    Event Details
+                                </Text>
+                                <View style={styles.collapsibleHeaderIcon}>
+                                    {collapsed ? (
+                                        <AntDesign
+                                            name='caretright'
+                                            size={18}
+                                            color={Colors.gray60}
+                                        />
+                                    ) : (
+                                        <AntDesign
+                                            name='caretdown'
+                                            size={18}
+                                            color={Colors.gray60}
+                                        />
+                                    )}
+                                </View>
                             </View>
-                        </View>
-                    </TouchableOpacity>
+                        </TouchableOpacity>
+                    </View>
                     {/*Content of Single Collapsible*/}
                     <Collapsible collapsed={collapsed} align='center'>
                         <View style={styles.detailContainer}>
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
     },
     surface: {
         // margin: 24,
-        // height: 80
+        height: 80,
 
         width: '100%',
 
@@ -171,13 +173,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    statusOutline: {
-        borderWidth: 1,
-        borderColor: Colors.primary,
-        padding: 5,
-        borderRadius: 15,
-        width: '100%',
-    },
+    // statusOutline: {
+    //     // borderWidth: 1,
+    //     borderColor: Colors.primary,
+    //     padding: 5,
+    //     borderRadius: 15,
+    //     width: '100%',
+    // },
     statusRow: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -210,6 +212,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 5,
         alignItems: 'center',
+        textAlign: 'center',
     },
     collapsibleHeaderText: {
         textAlign: 'center',

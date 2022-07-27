@@ -40,13 +40,13 @@ const RallyMealInfo = ({ rally }) => {
                                     </Text>
                                 </View>
                             ) : null}
-                            {rally?.meal?.message && (
+                            {rally?.meal?.message ? (
                                 <View style={styles.messageWrapper}>
                                     <Text style={styles.messageText}>
                                         {rally?.meal?.message}
                                     </Text>
                                 </View>
-                            )}
+                            ) : null}
                         </View>
                     ) : (
                         <View style={styles.noMealWrapper}>
@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
     },
     textWrapper: {
         alignItems: 'center',
+        paddingBottom: 20,
     },
     timeCostWrapper: {
         flexDirection: 'row',
@@ -106,5 +107,6 @@ const styles = StyleSheet.create({
     },
     messageText: {
         textAlign: 'center',
+        marginBottom: 5,
     },
 });
