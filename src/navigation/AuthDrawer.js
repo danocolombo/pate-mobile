@@ -6,6 +6,7 @@ import MainScreen from '../screens/MainScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PateSignOut from '../screens/PateSignOut';
 import MyRegistrationsScreen from '../screens/MyRegistrationsScreen';
+import LegalScreen from '../screens/LegalScreen';
 import ServeConfig from './ServeConfig';
 import { Colors } from '../constants/colors';
 import { printObject } from '../utils/helpers';
@@ -97,6 +98,23 @@ const AuthDrawer = (navigation) => {
                 options={({ navigation }) => ({
                     title: 'EOR',
                     drawerLabel: 'Profile',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+
+                    headerTintColor: 'white',
+                    tabBarStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    tabBarActiveTintColor: 'white',
+                })}
+            />
+            <Stack.Screen
+                name='Legal'
+                component={LegalScreen}
+                options={({ navigation }) => ({
+                    title: 'EOR',
+                    drawerLabel: 'Legal',
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },
