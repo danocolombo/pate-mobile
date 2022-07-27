@@ -22,14 +22,16 @@ export default function MainScreen() {
     const navigation = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
+    const eventRegion = useSelector((state) => state.system.eventRegion);
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
     );
     const tDay = getPateDate(getToday());
-    const eventRegion = process.env.EVENT_REGION;
+    // const eventRegion = process.env.EVENT_REGION;
     function asc_sort(a, b) {
         return a.eventDate - b.eventDate;
     }
+    // console.log('MS:34--> eventRegion', eventRegion);
     const approved = allRallies.filter(
         (r) =>
             r.approved === true &&

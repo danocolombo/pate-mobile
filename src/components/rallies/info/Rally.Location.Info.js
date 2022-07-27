@@ -4,7 +4,7 @@ import { Surface, Headline, Subheading } from 'react-native-paper';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 const RallyLocationInfo = ({ rally }) => {
-    printObject('RLI:07-->rally:', rally);
+    // printObject('RLI:07-->rally:', rally);
     return (
         <>
             <View style={styles.rootContainer}>

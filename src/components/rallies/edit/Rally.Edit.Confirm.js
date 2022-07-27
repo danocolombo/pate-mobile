@@ -12,6 +12,7 @@ import {
     addNewRally,
     updateRally,
 } from '../../../features/rallies/ralliesSlice';
+import { systemm } from '../../../features/system/systemSlice';
 import { getPhoneType, CONFIG, createPatePhone } from '../../../utils/helpers';
 import { Colors } from '../../../constants/colors';
 
@@ -24,6 +25,7 @@ const RallyNewConfirmation = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
     const tmp = useSelector((state) => state.rallies.tmpRally);
+    const systemRegion = useSelector((state) => state.system.region);
     // let rally = useSelector((state) => state.rallies.tmpRally);
     // printObject('CONFIRMING rally ++++++++++++++++++++++++', rally);
     let rallyBasic = {};
@@ -43,12 +45,15 @@ const RallyNewConfirmation = () => {
     };
     rallyBasic.coordinator = me;
 
-    rallyBasic.region = process.env.REGION;
+    // rallyBasic.region = process.env.REGION;
+    rallyBasic.region = systemRegion;
     if (tmp.stateProv === 'TT') {
         rallyBasic.eventRegion = 'test';
     } else {
         //EVENT_REGION
-        rallyBasic.eventRegion = process.env.EVENT_REGION;
+        const parts = systemRegion.split('#');
+        //rallyBasic.eventRegion = process.env.EVENT_REGION;
+        rallyBasic.eventRegion = parts[1];
     }
     let strippedPhone;
     // printObject('REC:52 tmp:', tmp);

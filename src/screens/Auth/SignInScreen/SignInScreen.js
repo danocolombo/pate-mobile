@@ -21,7 +21,12 @@ import { updateCurrentUser } from '../../../features/users/usersSlice';
 import { getProfile } from '../../../providers/users';
 import { loadRallies } from '../../../features/rallies/ralliesSlice';
 import { loadRegistrations } from '../../../features/users/usersSlice';
+import {
+    setRegion,
+    setEventRegion,
+} from '../../../features/system/systemSlice';
 import { getToday, printObject } from '../../../utils/helpers';
+import { REGION } from '../../../constants/regions';
 import { getPateDate } from '../../../utils/date';
 const SignInScreen = () => {
     const [loading, setLoading] = useState(false);
@@ -136,6 +141,8 @@ const SignInScreen = () => {
         //   get user profile
         //   ########################
         let fullUserInfo = {};
+        let region = 'us#east#south#ga';
+        let eventRegion = 'east';
         await getProfile(theUser.uid).then((profileResponse) => {
             // console.log('profileResponse', profileResponse);
             switch (profileResponse.statusCode) {
@@ -159,13 +166,25 @@ const SignInScreen = () => {
                     break;
             }
             dispatch(updateCurrentUser(fullUserInfo));
+            //   get system.region and system.eventRegion
+            // default to GEORGIA
+
+            // printObject('SS:167-->fullUserInfo:', fullUserInfo);
+            if (fullUserInfo?.residence?.stateProv) {
+                // lookup region from value
+                region =
+                    REGION[fullUserInfo?.residence?.stateProv.toUpperCase()];
+                const regionParts = region.split('#');
+                eventRegion = regionParts[1];
+            }
+            dispatch(setRegion(region));
+            dispatch(setEventRegion(eventRegion));
         });
         // let's load redux with rallies.
         //   ====================================
         //   START RALLY LOADING
         //   ====================================
-        const eventRegion = process.env.EVENT_REGION;
-        // console.log('MS:54-->process.env.EVENT_REGION', eventRegion);
+
         if (process.env.ENV === 'DEV') {
             const fileRallies = ALL_EVENTS.body.Items;
             let response = {

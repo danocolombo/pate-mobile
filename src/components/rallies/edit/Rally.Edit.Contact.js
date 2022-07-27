@@ -75,8 +75,6 @@ export default function RallyContactForm({ rallyId }) {
             // 1. value needs to be either 0 or 14 characters.
             let phoneValue = contactPhone;
             let phoneOkay = false;
-            console.log(') is located at ', phoneValue.indexOf(')'));
-            console.log('phoneValue length: ', phoneValue.length);
             if (phoneValue.length === 10 && phoneValue.indexOf(')') === -1) {
                 phoneOkay = true;
             } else if (
