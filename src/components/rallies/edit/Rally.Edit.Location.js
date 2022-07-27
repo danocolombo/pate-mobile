@@ -83,8 +83,6 @@ export default function RallyLocationForm({ rallyId }) {
         });
     };
     // const dispatch = useDispatch();
-    printObject('REL:76-->rally', rally);
-    console.log('rally.registrations:', rally?.registrations);
 
     return (
         <>

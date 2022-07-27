@@ -10,6 +10,7 @@ import Collapsible from 'react-native-collapsible';
 import CustomSmallButton from '../../ui/CustomSmallButton';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
+import { ScrollView } from 'react-native-gesture-handler';
 const RallyStatusInfo = ({ rally, onPress }) => {
     // printObject('RSI:9 --> rally', rally);
     const user = useSelector((state) => state.users.currentUser);
@@ -65,82 +66,86 @@ const RallyStatusInfo = ({ rally, onPress }) => {
     return (
         <>
             <View style={styles.rootContainer}>
-                {/*Code for Single Collapsible Start*/}
-                <TouchableOpacity onPress={toggleExpanded}>
-                    <View style={styles.collapsibleHeaderRow}>
-                        <Text style={styles.collapsibleHeaderText}>
-                            Event Details
-                        </Text>
-                        <View style={styles.collapsibleHeaderIcon}>
-                            {collapsed ? (
-                                <AntDesign
-                                    name='caretright'
-                                    size={18}
-                                    color={Colors.gray60}
-                                />
-                            ) : (
-                                <AntDesign
-                                    name='caretdown'
-                                    size={18}
-                                    color={Colors.gray60}
-                                />
-                            )}
+                <ScrollView>
+                    {/*Code for Single Collapsible Start*/}
+                    <TouchableOpacity onPress={toggleExpanded}>
+                        <View style={styles.collapsibleHeaderRow}>
+                            <Text style={styles.collapsibleHeaderText}>
+                                Event Details
+                            </Text>
+                            <View style={styles.collapsibleHeaderIcon}>
+                                {collapsed ? (
+                                    <AntDesign
+                                        name='caretright'
+                                        size={18}
+                                        color={Colors.gray60}
+                                    />
+                                ) : (
+                                    <AntDesign
+                                        name='caretdown'
+                                        size={18}
+                                        color={Colors.gray60}
+                                    />
+                                )}
+                            </View>
                         </View>
-                    </View>
-                </TouchableOpacity>
-                {/*Content of Single Collapsible*/}
-                <Collapsible collapsed={collapsed} align='center'>
-                    <View style={styles.detailContainer}>
-                        <Surface style={[styles.surface, { elevation: 5 }]}>
-                            <View style={styles.statusOutline}>
-                                <View style={styles.statusDataWrapper}>
-                                    {user?.stateLead ? (
-                                        <View style={styles.statusRow}>
-                                            <CustomSmallButton
-                                                title={rally?.status}
-                                                cbStyles={{
-                                                    backgroundColor: bColor,
-                                                    color: tColor,
-                                                    fontSize: 14,
-                                                }}
-                                                onPress={onPress}
-                                            />
-                                        </View>
-                                    ) : (
-                                        <View style={styles.statusRow}>
-                                            <View>
-                                                <Text style={{ fontSize: 18 }}>
-                                                    STATUS: {rally?.status}
-                                                </Text>
+                    </TouchableOpacity>
+                    {/*Content of Single Collapsible*/}
+                    <Collapsible collapsed={collapsed} align='center'>
+                        <View style={styles.detailContainer}>
+                            <Surface style={[styles.surface, { elevation: 5 }]}>
+                                <View style={styles.statusOutline}>
+                                    <View style={styles.statusDataWrapper}>
+                                        {user?.stateLead ? (
+                                            <View style={styles.statusRow}>
+                                                <CustomSmallButton
+                                                    title={rally?.status}
+                                                    cbStyles={{
+                                                        backgroundColor: bColor,
+                                                        color: tColor,
+                                                        fontSize: 14,
+                                                    }}
+                                                    onPress={onPress}
+                                                />
                                             </View>
+                                        ) : (
+                                            <View style={styles.statusRow}>
+                                                <View>
+                                                    <Text
+                                                        style={{ fontSize: 18 }}
+                                                    >
+                                                        STATUS: {rally?.status}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        )}
+                                        <View style={styles.statusRow}>
+                                            <Text style={styles.textWrapper}>
+                                                Region:
+                                                {rally.region}
+                                            </Text>
+                                            <Text style={styles.textWrapper}>
+                                                EventRegion: {rally.eventRegion}
+                                            </Text>
                                         </View>
-                                    )}
-                                    <View style={styles.statusRow}>
-                                        <Text style={styles.textWrapper}>
-                                            Region:
-                                            {rally.region}
-                                        </Text>
-                                        <Text style={styles.textWrapper}>
-                                            EventRegion: {rally.eventRegion}
-                                        </Text>
-                                    </View>
-                                    <View style={styles.statusRow}>
-                                        <Text style={styles.textWrapper}>
-                                            UID: {rally.uid}
-                                        </Text>
-                                    </View>
-                                    <View style={styles.statusRow}>
-                                        <Text style={styles.textWrapper}>
-                                            Coordinator:{' '}
-                                            {rally?.coordinator?.name}
-                                        </Text>
+                                        <View style={styles.statusRow}>
+                                            <Text style={styles.textWrapper}>
+                                                UID: {rally.uid}
+                                            </Text>
+                                        </View>
+                                        <View style={styles.statusRow}>
+                                            <Text style={styles.textWrapper}>
+                                                Coordinator:{' '}
+                                                {rally?.coordinator?.name}
+                                            </Text>
+                                        </View>
                                     </View>
                                 </View>
-                            </View>
-                        </Surface>
-                    </View>
-                </Collapsible>
-                {/*Code for Single Collapsible Ends*/}
+                            </Surface>
+                        </View>
+                    </Collapsible>
+                    {/*Code for Single Collapsible Ends*/}
+                </ScrollView>
             </View>
         </>
     );
@@ -158,8 +163,10 @@ const styles = StyleSheet.create({
     },
     surface: {
         // margin: 24,
-        // height: 80,
+        // height: 80
+
         width: '100%',
+
         borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
@@ -195,6 +202,7 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: 20,
+
         // backgroundColor: '#fff',
     },
     collapsibleHeaderRow: {
