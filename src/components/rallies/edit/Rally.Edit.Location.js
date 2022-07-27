@@ -62,10 +62,7 @@ export default function RallyLocationForm({ rallyId }) {
             dispatch(createTmp(rally));
         }
         if (parseInt(rally?.registrations) > 0) {
-            console.log('duck');
             setShowEditWarningConfirm((prevState) => true);
-        } else {
-            console.log('goose');
         }
     }, []);
 

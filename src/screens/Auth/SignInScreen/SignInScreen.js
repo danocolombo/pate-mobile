@@ -169,14 +169,13 @@ const SignInScreen = () => {
             //   get system.region and system.eventRegion
             // default to GEORGIA
 
-            printObject('SS:167-->fullUserInfo:', fullUserInfo);
+            // printObject('SS:167-->fullUserInfo:', fullUserInfo);
             if (fullUserInfo?.residence?.stateProv) {
                 // lookup region from value
                 region =
                     REGION[fullUserInfo?.residence?.stateProv.toUpperCase()];
                 const regionParts = region.split('#');
                 eventRegion = regionParts[1];
-                printObject('SS:179-->eventRegion:', eventRegion);
             }
             dispatch(setRegion(region));
             dispatch(setEventRegion(eventRegion));
@@ -185,9 +184,7 @@ const SignInScreen = () => {
         //   ====================================
         //   START RALLY LOADING
         //   ====================================
-        // const eventRegion = process.env.EVENT_REGION;
-        //const eventRegion = region;
-        // console.log('MS:54-->process.env.EVENT_REGION', eventRegion);
+
         if (process.env.ENV === 'DEV') {
             const fileRallies = ALL_EVENTS.body.Items;
             let response = {

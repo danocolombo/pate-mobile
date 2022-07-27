@@ -31,7 +31,7 @@ export default function MainScreen() {
     function asc_sort(a, b) {
         return a.eventDate - b.eventDate;
     }
-    console.log('MS:34--> eventRegion', eventRegion);
+    // console.log('MS:34--> eventRegion', eventRegion);
     const approved = allRallies.filter(
         (r) =>
             r.approved === true &&

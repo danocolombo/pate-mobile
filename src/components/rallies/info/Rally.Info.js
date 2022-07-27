@@ -336,6 +336,10 @@ const RallyDetails = ({ rallyId }) => {
                                 >
                                     {registrations
                                         ? registrations.map((r) => {
+                                              printObject(
+                                                  'RI:339-->registration:',
+                                                  r
+                                              );
                                               return (
                                                   <Pressable
                                                       key={r.uid}
