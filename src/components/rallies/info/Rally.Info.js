@@ -53,9 +53,24 @@ const RallyDetails = ({ rallyId }) => {
         const fetchData = async () => {
             getRegistrarsForEvent(rallyId)
                 .then((regs) => {
-                    const justRegs = regs.data.body.Items;
+                    let justRegs = regs.data.body.Items;
                     // printObject('RI:69 --> justRegs', justRegs);
-                    setRegistrations(justRegs);
+                    // sort by last name
+                    function asc_sort(a, b) {
+                        // Use toUpperCase() to ignore character casing
+                        const regA = a.registrar.lastName.toUpperCase();
+                        const regB = b.registrar.lastName.toUpperCase();
+
+                        let comparison = 0;
+                        if (regA > regB) {
+                            comparison = 1;
+                        } else if (regA < regB) {
+                            comparison = -1;
+                        }
+                        return comparison;
+                    }
+                    let displayData = justRegs.sort(asc_sort);
+                    setRegistrations(displayData);
                 })
                 .catch((error) => {
                     console.log('BI:53 --> error getting registrations');
@@ -315,7 +330,10 @@ const RallyDetails = ({ rallyId }) => {
                                 <Text
                                     style={{ fontWeight: 'bold', fontSize: 14 }}
                                 >
-                                    Registrations
+                                    Registrations{' '}
+                                    {registrations
+                                        ? registrations.length
+                                        : null}
                                 </Text>
                             </View>
 
@@ -336,10 +354,10 @@ const RallyDetails = ({ rallyId }) => {
                                 >
                                     {registrations
                                         ? registrations.map((r) => {
-                                              printObject(
-                                                  'RI:339-->registration:',
-                                                  r
-                                              );
+                                              //   printObject(
+                                              //       'RI:339-->registration:',
+                                              //       r
+                                              //   );
                                               return (
                                                   <Pressable
                                                       key={r.uid}
