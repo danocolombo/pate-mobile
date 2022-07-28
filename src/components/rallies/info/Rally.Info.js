@@ -51,6 +51,7 @@ const RallyDetails = ({ rallyId }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            console.log('RI:54-->rallyId:', rallyId);
             getRegistrarsForEvent(rallyId)
                 .then((regs) => {
                     let justRegs = regs.data.body.Items;
@@ -356,10 +357,10 @@ const RallyDetails = ({ rallyId }) => {
                                 >
                                     {registrations
                                         ? registrations.map((r) => {
-                                              //   printObject(
-                                              //       'RI:339-->registration:',
-                                              //       r
-                                              //   );
+                                              printObject(
+                                                  'RI:339-->registration:',
+                                                  r
+                                              );
                                               return (
                                                   <Pressable
                                                       key={r.uid}
