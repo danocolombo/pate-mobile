@@ -2,17 +2,19 @@ import { StyleSheet, Text, View } from 'react-native';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Surface, Stack } from '@react-native-material/core';
 import { Button } from 'react-native-elements';
 import { Colors } from '../../constants/colors';
 import { CONFIG, printObject } from '../../utils/helpers';
+import { updateRegNumbers } from '../../features/rallies/ralliesSlice';
 import {
     dateNumsToLongDayLongMondayDay,
     dateNumToDisplayTime,
 } from '../../utils/date';
 import NumberInput from '../ui/NumberInput/NumberInput';
 const RallyRegister = (rally = null) => {
+    const dispatch = useDispatch();
     const navigation = useNavigation();
     const [registrarCount, setRegistrar] = useState(
         rally?.attendeeCount ? rally?.attendeeCount : 0
@@ -79,6 +81,12 @@ const RallyRegister = (rally = null) => {
             .post(api2use, body, CONFIG)
             .then((response) => {
                 console.log('registion added to ddb');
+                dispatch(
+                    updateRegNumbers({
+                        mealCount: mealCount,
+                        registrationCount: registrarCount,
+                    })
+                );
             })
             .catch((err) => {
                 console.log('RR-77: error:', err);

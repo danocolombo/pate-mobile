@@ -124,6 +124,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         }
         //   These number updates will be done on NEW or UPDATE
         //   1. update REDUX Rallies.allRallies numbers
+
         dispatch(
             updateREDUXRalliesNumbers({
                 uid: rallyId,
@@ -142,7 +143,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         if (reg?.uid) {
             // update we have reg, not ral
             // update attendeeCount and mealCount values
-
+            // console.log('RR:145-->SHOULD UPDATE REDUX & DDB p8Registrations');
             let updateReg = {
                 ...reg,
                 ...{ attendeeCount: registrarCount, mealCount: mealCount },
@@ -194,6 +195,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
             //     });
             navigation.navigate('Main', null);
         } else {
+            // console.log('RR:197--> NEW REG');
             //   --- NEW REGISTRATION ---
             // printObject('RR:192-->rally', rally);
             // printObject('RR:193-->user', user);

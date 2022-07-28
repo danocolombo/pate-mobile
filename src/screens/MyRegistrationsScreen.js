@@ -66,6 +66,7 @@ const MyRegistrationsScreen = () => {
 
     useEffect(() => {
         //we want to associate rally details with each registration
+        console.log('\nREGISTRATIONS RELOAD....\n');
         setIsLoading(true);
         combineDetails()
             .then((results) => {
@@ -159,34 +160,26 @@ const MyRegistrationsScreen = () => {
 
                                             if (enablePress) {
                                                 return (
-                                                    <>
-                                                        <Pressable
-                                                            onPress={() =>
-                                                                regPressHandler(
-                                                                    r
-                                                                )
-                                                            }
-                                                            style={({
-                                                                pressed,
-                                                            }) =>
-                                                                pressed &&
-                                                                styles.pressed
-                                                            }
-                                                            key={r.uid}
-                                                        >
-                                                            <View key={r.uid}>
-                                                                <RegListCard
-                                                                    key={r.uid}
-                                                                    registration={
-                                                                        r
-                                                                    }
-                                                                    onDeletePress={
-                                                                        handleDeleteRequest
-                                                                    }
-                                                                />
-                                                            </View>
-                                                        </Pressable>
-                                                    </>
+                                                    <Pressable
+                                                        onPress={() =>
+                                                            regPressHandler(r)
+                                                        }
+                                                        style={({ pressed }) =>
+                                                            pressed &&
+                                                            styles.pressed
+                                                        }
+                                                        key={r.uid}
+                                                    >
+                                                        <View key={r.uid}>
+                                                            <RegListCard
+                                                                key={r.uid}
+                                                                registration={r}
+                                                                onDeletePress={
+                                                                    handleDeleteRequest
+                                                                }
+                                                            />
+                                                        </View>
+                                                    </Pressable>
                                                 );
                                             } else {
                                                 return (

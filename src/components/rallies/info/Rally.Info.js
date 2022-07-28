@@ -54,7 +54,7 @@ const RallyDetails = ({ rallyId }) => {
             getRegistrarsForEvent(rallyId)
                 .then((regs) => {
                     let justRegs = regs.data.body.Items;
-                    // printObject('RI:69 --> justRegs', justRegs);
+                    printObject('RI:69 --> justRegs', justRegs);
                     // sort by last name
                     function asc_sort(a, b) {
                         // Use toUpperCase() to ignore character casing
