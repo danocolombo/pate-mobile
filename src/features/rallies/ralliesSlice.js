@@ -42,7 +42,7 @@ export const ralliesSlice = createSlice({
         updateRegNumbers: (state, action) => {
             let regMealCount = action.payload.mealCount;
             let regRegistrationsCount = action.payload.registrationCount;
-
+            printObject('RS:45-->action:', action);
             // console.log('regMealCount:', regMealCount);
             // console.log('regRegistrationsCount:', regRegistrationsCount);
             // console.log('HIT IT');
@@ -54,28 +54,37 @@ export const ralliesSlice = createSlice({
                     // printObject('BINGO:', ral);
                     //deal with mealCount
                     let newMealInfo = {};
+                    let newMealValue = 0;
+                    try {
+                        newMealValue =
+                            parseInt(ral.meal.mealCount) +
+                            parseInt(regMealCount);
+                    } catch (error) {
+                        newMealValue = 0;
+                    }
                     newMealInfo = {
                         startTime: ral.meal.startTime,
                         cost: ral.meal.cost,
                         deadline: ral.meal.deadline,
                         offered: true,
                         mealsServed: ral.meal.mealsServed,
-                        mealCount: ral?.meal?.mealCount
-                            ? parseInt(ral.meal.mealCount) +
-                              parseInt(regMealCount)
-                            : 0,
+                        mealCount: newMealValue,
                     };
                     let newRal = {};
                     newRal = { ...ral, meal: newMealInfo };
                     // deal with registrations
                     let regCount = 0;
-                    regCount = ral?.registrations
-                        ? parseInt(ral.registrations) +
-                          parseInt(regRegistrationsCount)
-                        : 0;
+                    try {
+                        regCount =
+                            parseInt(ral.registrations) +
+                            parseInt(regRegistrationsCount);
+                    } catch (error) {
+                        regCount = 0;
+                    }
 
+                    // console.log('rs:89-->regCount:', regCount);
                     newRal = { ...newRal, registrations: regCount };
-                    // printObject('newRal:', newRal);
+                    // printObject('RS:87-->newRal:', newRal);
 
                     return newRal;
                 } else {

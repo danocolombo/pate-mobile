@@ -51,13 +51,16 @@ const RallyDetails = ({ rallyId }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            console.log('RI:54-->rallyId:', rallyId);
             getRegistrarsForEvent(rallyId)
                 .then((regs) => {
                     let justRegs = regs.data.body.Items;
-                    // printObject('RI:69 --> justRegs', justRegs);
+                    printObject('RI:69 --> justRegs', justRegs);
                     // sort by last name
                     function asc_sort(a, b) {
                         // Use toUpperCase() to ignore character casing
+                        printObject('RI:61-->a:', a);
+                        printObject('RI:62-->b:', b);
                         const regA = a.registrar.lastName.toUpperCase();
                         const regB = b.registrar.lastName.toUpperCase();
 
@@ -354,10 +357,10 @@ const RallyDetails = ({ rallyId }) => {
                                 >
                                     {registrations
                                         ? registrations.map((r) => {
-                                              //   printObject(
-                                              //       'RI:339-->registration:',
-                                              //       r
-                                              //   );
+                                              printObject(
+                                                  'RI:339-->registration:',
+                                                  r
+                                              );
                                               return (
                                                   <Pressable
                                                       key={r.uid}

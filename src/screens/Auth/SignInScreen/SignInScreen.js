@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import React, { useState } from 'react';
-import Logo from '../../../../assets/images/P8-Logo150.png';
+import Logo from '../../../../assets/images/EOR-words.png';
 import CustomInput from '../../../components/ui/CustomInput';
 import CustomButton from '../../../components/ui/Auth/CustomButton/CustomButton';
 import SocialSignInButtons from '../../../components/ui/Auth/SocialSignInButtons';
@@ -302,11 +302,12 @@ const SignInScreen = () => {
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.root}>
-                <Image
+                {/* <Image
                     source={Logo}
-                    styles={[styles.logo, { height: height * 0.3 }]}
-                    resizeMode='stretch'
-                />
+                    // styles={[styles.logo, { height: height * 0.1 }]}
+                    // resizeMode='stretch'
+                /> */}
+                <Image style={styles.tinyLogo} source={Logo} />
                 <CustomInput
                     name='username'
                     rules={{
@@ -342,7 +343,7 @@ const SignInScreen = () => {
                     onPress={forgotPasswordPressed}
                     type='TERTIARY'
                 />
-                <SocialSignInButtons />
+                {/* <SocialSignInButtons /> */}
                 <CustomButton
                     text="Don't have an account? Create one"
                     onPress={onSignUpPressed}
@@ -364,8 +365,12 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
     },
     logo: {
-        width: '70%',
-        maxheight: 400,
-        maxWidth: 400,
+        width: '40%',
+        maxheight: 200,
+        maxWidth: 200,
+    },
+    tinyLogo: {
+        width: 350,
+        height: 350,
     },
 });
