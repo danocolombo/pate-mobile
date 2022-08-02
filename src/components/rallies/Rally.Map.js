@@ -8,11 +8,11 @@ import {
 import React, { useState, useEffect } from 'react';
 import MapView, { Callout, Marker, Circle } from 'react-native-maps';
 import { useWorkletCallback } from 'react-native-reanimated';
-
+import { dateNumToDateDash, dateNumToDisplayTime } from '../../utils/date';
 import { Colors } from '../../constants/colors';
 import { printObject } from '../../utils/helpers';
 
-const RallyMap = ({ rally }) => {
+const RallyMap = ({ rally, mapHeight, mapWidth }) => {
     const [theLocation, setTheLocation] = useState(null);
     //default coordinates: Atlanta, GA
     const [geoLat, setGeoLat] = useState(
@@ -56,12 +56,14 @@ const RallyMap = ({ rally }) => {
             console.log('RM:52-->lng', rally.geolocation.lng);
         }
     }, []);
-
+    const mHeight = Dimensions.get('window').height * mapHeight;
+    const mWidth = Dimensions.get('window').width * mapWidth;
     const { height, width } = useWindowDimensions();
     return (
         <View style={styles.container}>
             <MapView
-                style={styles.map}
+                provider='google'
+                style={{ ...styles.map, width: mWidth, height: mHeight }}
                 initialRegion={{
                     latitude: geoLat,
                     longitude: geoLng,
@@ -77,7 +79,11 @@ const RallyMap = ({ rally }) => {
                     pinColor={Colors.primary}
                 >
                     <Callout>
-                        <Text>HERE</Text>
+                        <Text>{dateNumToDateDash(rally.eventDate)}</Text>
+
+                        <Text style={{ textAlign: 'center' }}>
+                            {dateNumToDisplayTime(rally.startTime)}
+                        </Text>
                     </Callout>
                 </Marker>
                 <Circle
@@ -100,15 +106,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         // backgroundColor: '#fff',
-
+        // backgroundColor: 'lightgrey',
         alignItems: 'center',
         justifyContent: 'center',
     },
     map: {
-        width: Dimensions.get('window').width * 0.9,
-        height: Dimensions.get('window').height * 0.3,
-        marginVertical: 5,
-        borderWidth: 1,
+        // width: Dimensions.get('window').width * 0.9,
+        // height: Dimensions.get('window').height * hMultiplier,
+        borderWidth: 4,
+        paddingHorizontal: 5,
         borderColor: 'black',
     },
 });

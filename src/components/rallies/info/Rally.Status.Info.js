@@ -203,14 +203,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     content: {
-        padding: 20,
-
+        // padding: 20,
         // backgroundColor: '#fff',
     },
     collapsibleHeaderRow: {
         //backgroundColor: '#F5FCFF',
         flexDirection: 'row',
-        marginTop: 5,
+        // marginTop: 5,
         alignItems: 'center',
         textAlign: 'center',
     },

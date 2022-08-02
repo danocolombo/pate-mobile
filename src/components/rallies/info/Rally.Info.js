@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import axios from 'axios';
 import {
     View,
@@ -22,6 +22,7 @@ import RallyStatusInfo from './Rally.Status.Info';
 import CustomButton from '../../ui/CustomButton';
 import SelectDropdown from 'react-native-select-dropdown';
 import RegScrollItem from '../../serve/ServeRegistrationScrollItem';
+import BottomSheet from '@gorhom/bottom-sheet';
 import ServeRegDetailModal from '../../serve/ServeRegDetailModal';
 import { Colors } from '../../../constants/colors';
 import { CONFIG, transformPatePhone } from '../../../utils/helpers';
@@ -33,6 +34,8 @@ import RallyRegistrars from './RallyRegistrars';
 import { blue } from '@material-ui/core/colors';
 import RallyMap from '../Rally.Map';
 const RallyDetails = ({ rallyId }) => {
+    const bottomSheetRef = useRef(null);
+    const snapPoints = useMemo(() => ['8%', '75%'], []);
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [showRegDetail, setShowRegDetail] = useState(false);
     const [regInquiry, setRegInquiry] = useState({});
@@ -385,9 +388,7 @@ const RallyDetails = ({ rallyId }) => {
                             </View>
                         </Surface>
                     </View>
-                    <View style={styles.mapContainer}>
-                        <RallyMap rally={rally} />
-                    </View>
+
                     <RallyStatusInfo
                         rally={rally}
                         onPress={handleStatusPress}
@@ -417,6 +418,34 @@ const RallyDetails = ({ rallyId }) => {
                         </View>
                     ) : null}
                 </ScrollView>
+                <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints}>
+                    <View
+                        style={{
+                            alignItems: 'center',
+                            marginBottom: 0,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: 20,
+                                fontWeight: '600',
+                                letterSpacing: 0.5,
+                                paddingBottom: 5,
+                            }}
+                        >
+                            See Map Location
+                        </Text>
+                    </View>
+                    <View>
+                        <View style={styles.mapContainer}>
+                            <RallyMap
+                                rally={rally}
+                                mapHeight={0.5}
+                                mapWidth={0.9}
+                            />
+                        </View>
+                    </View>
+                </BottomSheet>
             </ImageBackground>
         </>
     );
@@ -488,7 +517,9 @@ const styles = StyleSheet.create({
     dropdown1RowTxtStyle: { color: '#444', textAlign: 'left' },
     mapContainer: {
         flexDirection: 'row',
-        // width: '80%',
+        // backgroundColor: 'lightgrey',
+        marginTop: 8,
+        // marginHorizontal: 10,
         alignItems: 'center',
     },
 });

@@ -159,8 +159,11 @@ const RallyDetails = (rallyIn) => {
                                 ) : null}
                                 <View style={styles.mapContainer}>
                                     <View style={styles.mapImage}>
-                                        <Text>WHOOP!!</Text>
-                                        <RallyMap rally={rally} />
+                                        <RallyMap
+                                            rally={rally}
+                                            mapHeight={0.35}
+                                            mapWidth={0.9}
+                                        />
                                     </View>
                                 </View>
                                 <View style={styles.registerButtonWrapper}>
@@ -277,6 +280,7 @@ const styles = StyleSheet.create({
     },
     mapContainer: {
         marginHorizontal: 20,
+        marginTop: 5,
 
         justifyContent: 'center',
         // paddingHorizontal: 20,
