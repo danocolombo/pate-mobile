@@ -17,6 +17,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import RallyLocationInfo from './Rally.Location.Info';
 import RallyLogisticsInfo from './Rally.Logistics.Info';
 import RallyContactInfo from './Rally.Contact.Info';
+import RallyGraphicInfo from './Rally.Graphic.Info';
 import RallyMealInfo from './Rally.Meal.Info';
 import RallyStatusInfo from './Rally.Status.Info';
 import CustomButton from '../../ui/CustomButton';
@@ -316,6 +317,11 @@ const RallyDetails = ({ rallyId }) => {
                             onPress={(reg) => handleRegistrarRequest(reg)}
                         />
                     ) : null} */}
+                    {/** ------------------------------ */}
+                    {/**  GRAPHICS SECTION         */}
+                    {/** ------------------------------ */}
+                    <RallyGraphicInfo rally={rally} />
+
                     {/** ------------------------------ */}
                     {/**  REGISTRATIONS SECTION         */}
                     {/** ------------------------------ */}
