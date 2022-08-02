@@ -31,6 +31,7 @@ import { updateRally } from '../../../features/rallies/ralliesSlice';
 import { getRegistrarsForEvent } from '../../../providers/registrations';
 import RallyRegistrars from './RallyRegistrars';
 import { blue } from '@material-ui/core/colors';
+import RallyMap from '../Rally.Map';
 const RallyDetails = ({ rallyId }) => {
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [showRegDetail, setShowRegDetail] = useState(false);
@@ -384,6 +385,9 @@ const RallyDetails = ({ rallyId }) => {
                             </View>
                         </Surface>
                     </View>
+                    <View style={styles.mapContainer}>
+                        <RallyMap rally={rally} />
+                    </View>
                     <RallyStatusInfo
                         rally={rally}
                         onPress={handleStatusPress}
@@ -482,4 +486,9 @@ const styles = StyleSheet.create({
         borderBottomColor: '#C5C5C5',
     },
     dropdown1RowTxtStyle: { color: '#444', textAlign: 'left' },
+    mapContainer: {
+        flexDirection: 'row',
+        // width: '80%',
+        alignItems: 'center',
+    },
 });

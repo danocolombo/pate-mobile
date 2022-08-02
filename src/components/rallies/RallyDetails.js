@@ -159,6 +159,7 @@ const RallyDetails = (rallyIn) => {
                                 ) : null}
                                 <View style={styles.mapContainer}>
                                     <View style={styles.mapImage}>
+                                        <Text>WHOOP!!</Text>
                                         <RallyMap rally={rally} />
                                     </View>
                                 </View>

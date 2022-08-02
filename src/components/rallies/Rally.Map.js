@@ -10,20 +10,26 @@ import MapView, { Callout, Marker, Circle } from 'react-native-maps';
 import { useWorkletCallback } from 'react-native-reanimated';
 
 import { Colors } from '../../constants/colors';
+import { printObject } from '../../utils/helpers';
 
 const RallyMap = ({ rally }) => {
     const [theLocation, setTheLocation] = useState(null);
     //default coordinates: Atlanta, GA
-    const [geoLat, setGeoLat] = useState(33.7676931);
-    const [geoLng, setGeoLng] = useState(-84.4906436);
+    const [geoLat, setGeoLat] = useState(
+        rally?.geolocation?.lat ? parseFloat(rally.geolocation.lat) : 33.7676931
+    );
+    const [geoLng, setGeoLng] = useState(
+        rally?.geolocation?.lng ? parseFloat(rally.geolocation.lng) : 33.7676931
+    );
     const [eventCoordinates, setEventCoordinates] = useState({
         latitude: parseFloat(geoLat),
         longitude: parseFloat(geoLng),
-        latitudeDelta: 0.3,
-        longitudeDelta: 0.3,
+        latitudeDelta: 0.08,
+        longitudeDelta: 0.08,
     });
     const GAK = process.env.GOOGLE_API_KEY;
     useEffect(() => {
+        printObject('RM:28-->rally:', rally);
         // if rally does not have lat and lng, get from address
         if (!rally?.geolocation?.lat || !rally?.geolocation.lng) {
             //build the address
@@ -46,6 +52,8 @@ const RallyMap = ({ rally }) => {
         } else {
             setGeoLat(parseFloat(rally.geolocation.lat));
             setGeoLng(parseFloat(rally.geolocation.lng));
+            console.log('RM:51-->lat', rally.geolocation.lat);
+            console.log('RM:52-->lng', rally.geolocation.lng);
         }
     }, []);
 
@@ -57,8 +65,8 @@ const RallyMap = ({ rally }) => {
                 initialRegion={{
                     latitude: geoLat,
                     longitude: geoLng,
-                    latitudeDelta: 0.3,
-                    longitudeDelta: 0.3,
+                    latitudeDelta: 0.08,
+                    longitudeDelta: 0.08,
                 }}
             >
                 <Marker
@@ -77,7 +85,7 @@ const RallyMap = ({ rally }) => {
                         latitude: geoLat,
                         longitude: geoLng,
                     }}
-                    radius={5000}
+                    radius={3000}
                     strokeWidth={3}
                     strokeColor={Colors.primary}
                 />
@@ -91,12 +99,16 @@ export default RallyMap;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
+
         alignItems: 'center',
         justifyContent: 'center',
     },
     map: {
         width: Dimensions.get('window').width * 0.9,
         height: Dimensions.get('window').height * 0.3,
+        marginVertical: 5,
+        borderWidth: 1,
+        borderColor: 'black',
     },
 });
