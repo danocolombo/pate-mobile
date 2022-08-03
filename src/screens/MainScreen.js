@@ -12,6 +12,7 @@ import {
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../components/ui/CustomButton';
+import NoEventsNotice from '../components/ui/NoEventsNotice.js';
 import { Surface } from 'react-native-paper';
 import RallyItem from '../components/rallies/RallyItem';
 
@@ -23,6 +24,7 @@ export default function MainScreen() {
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const eventRegion = useSelector((state) => state.system.eventRegion);
+
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
     );
@@ -99,10 +101,33 @@ export default function MainScreen() {
                     </>
                 ) : (
                     <View style={styles.imageContainer}>
-                        <Image
+                        <View style={{ borderRadius: 30 }}>
+                            <NoEventsNotice />
+                        </View>
+                        <View
+                            style={{
+                                marginTop: 5,
+                                marginHorizontal: 40,
+                                backgroundColor: 'white',
+                                borderRadius: 10,
+                                padding: 5,
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 12,
+                                    fontColor: 'lightgrey',
+                                    textAlign: 'center',
+                                }}
+                            >
+                                Events are managed and released periodically by
+                                regional event teams.
+                            </Text>
+                        </View>
+                        {/* <Image
                             source={require('../components/images/no-events-card.png')}
                             style={styles.image}
-                        />
+                        /> */}
                     </View>
                 )}
                 {/* </ScrollView> */}
