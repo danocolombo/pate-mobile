@@ -45,8 +45,8 @@ export default function RallyLocationConfirm({ rallyId }) {
     const [publishedLat, setPublishedLat] = useState(geoLat);
     const [publishedLng, setPublishedLng] = useState(geoLng);
     const [pin, setPin] = useState({
-        latitude: geoLat,
-        longitude: geoLng,
+        latitude: parseFloat(geoLat),
+        longitude: parseFloat(geoLng),
     });
     useEffect(() => {
         if (rally?.uid) {
@@ -58,17 +58,30 @@ export default function RallyLocationConfirm({ rallyId }) {
         }
     }, []);
 
-    const handleNext = (values) => {
+    const handleNext = () => {
         // gather data
         // console.log('in handleNext');
-        if (rally?.uid) {
-            dispatch(updateTmp(values));
-        } else {
-            dispatch(createTmp(values));
-        }
+        // build object to save
+
+        let latValue = pin.latitude;
+        let lngValue = pin.longitude;
+
+        let latStrValue = latValue.toString();
+        let lngStrValue = lngValue.toString();
+
+        let values = {
+            geolocation: {
+                lat: latValue,
+                lng: lngValue,
+            },
+        };
+
+        // printObject('handleNext::values', values);
+        dispatch(updateTmp(values));
+
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
-            stage: 2,
+            stage: 3,
         });
     };
     // const dispatch = useDispatch();
@@ -98,50 +111,55 @@ export default function RallyLocationConfirm({ rallyId }) {
                                         as needed.
                                     </Text>
                                 </View>
-                                <View style={styles.container}>
-                                    <MapView
-                                        provider='google'
-                                        style={{
-                                            ...styles.map,
-                                            width: mWidth,
-                                            height: mHeight,
-                                        }}
-                                        initialRegion={{
-                                            latitude: geoLat,
-                                            longitude: geoLng,
-                                            latitudeDelta: 0.08,
-                                            longitudeDelta: 0.08,
-                                        }}
-                                    >
-                                        <Marker
-                                            coordinate={pin}
-                                            pinColor={Colors.primary}
-                                            draggable={true}
-                                            onDragStart={(e) => {
-                                                console.log(
-                                                    'DRAG - START',
-                                                    e.nativeEvent.coordinates
-                                                );
+                                {pin && (
+                                    <View style={styles.container}>
+                                        <MapView
+                                            provider='google'
+                                            style={{
+                                                ...styles.map,
+                                                width: mWidth,
+                                                height: mHeight,
                                             }}
-                                            onDragEnd={(e) => {
-                                                setPin({
-                                                    latitude:
-                                                        e.nativeEvent.coordinate
-                                                            .latitude,
-                                                    longitude:
-                                                        e.nativeEvent.coordinate
-                                                            .longitude,
-                                                });
+                                            initialRegion={{
+                                                latitude: geoLat,
+                                                longitude: geoLng,
+                                                latitudeDelta: 0.08,
+                                                longitudeDelta: 0.08,
                                             }}
-                                        ></Marker>
-                                        <Circle
-                                            center={pin}
-                                            radius={3000}
-                                            strokeWidth={3}
-                                            strokeColor={Colors.primary}
-                                        />
-                                    </MapView>
-                                </View>
+                                        >
+                                            <Marker
+                                                coordinate={pin}
+                                                pinColor={Colors.primary}
+                                                draggable={true}
+                                                onDragStart={(e) => {
+                                                    console.log(
+                                                        'DRAG - START',
+                                                        e.nativeEvent
+                                                            .coordinates
+                                                    );
+                                                }}
+                                                onDragEnd={(e) => {
+                                                    setPin({
+                                                        latitude:
+                                                            e.nativeEvent
+                                                                .coordinate
+                                                                .latitude,
+                                                        longitude:
+                                                            e.nativeEvent
+                                                                .coordinate
+                                                                .longitude,
+                                                    });
+                                                }}
+                                            ></Marker>
+                                            <Circle
+                                                center={pin}
+                                                radius={3000}
+                                                strokeWidth={3}
+                                                strokeColor={Colors.primary}
+                                            />
+                                        </MapView>
+                                    </View>
+                                )}
                                 <View style={styles.geoLabelLatContainer}>
                                     <Text style={styles.geoLabelText}>
                                         Latitude: {pin.latitude}
