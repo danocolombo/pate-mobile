@@ -115,7 +115,7 @@ export default function RallyContactForm({ rallyId }) {
         dispatch(updateTmp(contact));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
-            stage: 4,
+            stage: 5,
         });
     };
     // printObject('2. tmpRally:', tmp);

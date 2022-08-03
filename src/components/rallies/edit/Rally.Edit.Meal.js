@@ -100,7 +100,7 @@ export default function RallyMealForm({ rallyId }) {
         dispatch(updateTmp(meal));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
-            stage: 5,
+            stage: 6,
         });
     };
     // const dispatch = useDispatch();
