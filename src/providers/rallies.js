@@ -134,6 +134,10 @@ export async function putRally(rally, user) {
                 ? rally.coordinator.email
                 : user.email,
         },
+        geolocation: {
+            lat: rally.geolocation.lat,
+            lng: rally.geolocation.lng,
+        },
         uid: rally?.uid ? rally.uid : '',
         name: rally?.name ? rally.name : '',
         registrations: rally?.registrations ? rally.registrations : 0,

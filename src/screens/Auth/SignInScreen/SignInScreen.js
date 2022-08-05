@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 80,
+        marginTop: 20,
         // width: '100%',
         marginHorizontal: 20,
     },

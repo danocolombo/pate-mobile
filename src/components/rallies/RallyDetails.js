@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
 import CustomButton from '../ui/CustomButton';
+import RallyMap from './Rally.Map';
 import CardDate from '../ui/RallyCardDate';
 import LoadingOverly from '../../components/ui/LoadingOverlay';
 import { Colors } from '../../constants/colors';
@@ -156,6 +157,15 @@ const RallyDetails = (rallyIn) => {
                                         </Text>
                                     </View>
                                 ) : null}
+                                <View style={styles.mapContainer}>
+                                    <View style={styles.mapImage}>
+                                        <RallyMap
+                                            rally={rally}
+                                            mapHeight={0.35}
+                                            mapWidth={0.9}
+                                        />
+                                    </View>
+                                </View>
                                 <View style={styles.registerButtonWrapper}>
                                     <Button
                                         // icon={<Icon name='code' color='#ffffff' />}
@@ -267,5 +277,20 @@ const styles = StyleSheet.create({
     },
     image: {
         // width: '85%',
+    },
+    mapContainer: {
+        marginHorizontal: 20,
+        marginTop: 5,
+
+        justifyContent: 'center',
+        // paddingHorizontal: 20,
+    },
+    mapImage: {
+        flexDirection: 'column',
+        // flex: 1,
+        // maxWidth: '80%',
+        // alignItems: 'center',
+        // alignContent: 'center',
+        // justifyContent: 'center',
     },
 });

@@ -79,7 +79,7 @@ export default function RallyLogisticsForm({ rallyId }) {
         dispatch(updateTmp(values));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
-            stage: 3,
+            stage: 4,
         });
     };
     const onDateChange = (event, value) => {
