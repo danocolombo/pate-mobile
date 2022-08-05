@@ -12,15 +12,11 @@ import {
     Dimensions,
     ActivityIndicator,
 } from 'react-native';
-import { Headline } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { Button } from '@react-native-material/core';
 import MapView, { Callout, Marker, Circle } from 'react-native-maps';
-import { Surface } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
-import CustomButton from '../../../components/ui/CustomButton';
-import { createTmp, updateTmp } from '../../../features/rallies/ralliesSlice';
+import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import { getGeoCode } from '../../../providers/google';
 import CustomNavButton from '../../ui/CustomNavButton';
 import { printObject } from '../../../utils/helpers';
@@ -30,34 +26,17 @@ export default function RallyLocationConfirm({ rallyId }) {
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
     const [locationDefined, setLocationDefined] = useState(false);
-    let rallyEntry;
-    if (rallyId !== 0) {
-        rallyEntry = useSelector((state) =>
-            state.rallies.allRallies.filter((r) => r.uid === rallyId)
-        );
-        setLocationDefined(true);
-    }
+    const [geoLat, setGeoLat] = useState('');
+    const [geoLng, setGeoLng] = useState('');
+    const [pin, setPin] = useState({});
+
     let rally;
-    if (rallyEntry) {
-        rally = rallyEntry[0];
-    }
-    // console.log('REL:50 rally.uid:', rally?.uid);
-    printObject('REL:51--> rally', rally);
-    const [geoLat, setGeoLat] = useState(rally?.geolocation?.lat);
-    const [geoLng, setGeoLng] = useState(rally?.geolocation?.lng);
-    const [publishedLat, setPublishedLat] = useState(geoLat);
-    const [publishedLng, setPublishedLng] = useState(geoLng);
-    const [pin, setPin] = useState({
-        latitude: parseFloat(geoLat),
-        longitude: parseFloat(geoLng),
-    });
+
     useEffect(() => {
-        // if (rally?.uid) {
-        //     //save existing values to tmpEntry
-        //     dispatch(createTmp(rally));
-        // }
-        if (!tmp?.geolocation?.lat || !tmp?.geolocation?.lng) {
-            // Alert.alert('NOTICE', 'NEED geo');
+        rally = tmp;
+
+        // need to make sure that geoLocation is defined
+        if (!rally?.geolocation?.lat || !rally?.geolocation?.lng) {
             //build address string
             let address =
                 tmp.street.replace(/ /g, '+') +
@@ -71,22 +50,24 @@ export default function RallyLocationConfirm({ rallyId }) {
                 .then((geoInfo) => {
                     setGeoLat(geoInfo.latitude);
                     setGeoLng(geoInfo.longitude);
-                    setPublishedLat(geoInfo.latitude);
-                    setPublishedLng(geoInfo.longitude);
                     setPin(geoInfo);
                     setLocationDefined(true);
                 })
                 .catch((err) => {
                     Alert.alert('ERROR', 'could not get geoInfo');
                 });
+        } else {
+            setGeoLat(parseFloat(rally.geolocation.lat));
+            setGeoLng(parseFloat(rally.geolocation.lng));
+            setPin({
+                latitude: parseFloat(rally.geolocation.lat),
+                longitude: parseFloat(rally.geolocation.lng),
+            });
+            setLocationDefined(true);
         }
     }, []);
 
     const handleNext = () => {
-        // gather data
-        // console.log('in handleNext');
-        // build object to save
-
         let latValue = pin.latitude;
         let lngValue = pin.longitude;
 
@@ -100,7 +81,6 @@ export default function RallyLocationConfirm({ rallyId }) {
             },
         };
 
-        // printObject('handleNext::values', values);
         dispatch(updateTmp(values));
 
         navigation.navigate('RallyEditFlow', {
@@ -108,9 +88,9 @@ export default function RallyLocationConfirm({ rallyId }) {
             stage: 3,
         });
     };
-    // const dispatch = useDispatch();
     const mHeight = Dimensions.get('window').height * 0.4;
     const mWidth = Dimensions.get('window').width * 0.9;
+
     if (!locationDefined) {
         return <ActivityIndicator />;
     }
@@ -210,7 +190,7 @@ export default function RallyLocationConfirm({ rallyId }) {
                                         color: 'white',
                                         width: '50%',
                                     }}
-                                    onPress={handleNext}
+                                    onPress={() => handleNext()}
                                 />
                             </View>
                         </ScrollView>

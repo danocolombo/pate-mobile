@@ -55,7 +55,7 @@ export default function RallyLocationForm({ rallyId }) {
         rally = rallyEntry[0];
     }
     // console.log('REL:50 rally.uid:', rally?.uid);
-    //printObject('REL:51--> rally', rally);
+    printObject('REL:51--> rally', rally);
     useEffect(() => {
         if (rally?.uid) {
             //save existing values to tmpEntry
@@ -260,11 +260,7 @@ export default function RallyLocationForm({ rallyId }) {
                                                                         onChangeText={formikProps.handleChange(
                                                                             'stateProv'
                                                                         )}
-                                                                        value={
-                                                                            formikProps
-                                                                                .values
-                                                                                .stateProv
-                                                                        }
+                                                                        value={formikProps.values.stateProv.toUpperCase()}
                                                                         onBlur={formikProps.handleBlur(
                                                                             'state'
                                                                         )}
