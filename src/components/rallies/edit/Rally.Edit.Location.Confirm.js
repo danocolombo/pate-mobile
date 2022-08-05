@@ -10,6 +10,7 @@ import {
     ScrollView,
     ImageBackground,
     Dimensions,
+    ActivityIndicator,
 } from 'react-native';
 import { Headline } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -20,26 +21,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
 import CustomButton from '../../../components/ui/CustomButton';
 import { createTmp, updateTmp } from '../../../features/rallies/ralliesSlice';
-
+import { getGeoCode } from '../../../providers/google';
 import CustomNavButton from '../../ui/CustomNavButton';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyLocationConfirm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-
+    const tmp = useSelector((state) => state.rallies.tmpRally);
+    const [locationDefined, setLocationDefined] = useState(false);
     let rallyEntry;
     if (rallyId !== 0) {
         rallyEntry = useSelector((state) =>
             state.rallies.allRallies.filter((r) => r.uid === rallyId)
         );
+        setLocationDefined(true);
     }
     let rally;
     if (rallyEntry) {
         rally = rallyEntry[0];
     }
     // console.log('REL:50 rally.uid:', rally?.uid);
-    //printObject('REL:51--> rally', rally);
+    printObject('REL:51--> rally', rally);
     const [geoLat, setGeoLat] = useState(rally?.geolocation?.lat);
     const [geoLng, setGeoLng] = useState(rally?.geolocation?.lng);
     const [publishedLat, setPublishedLat] = useState(geoLat);
@@ -49,12 +52,33 @@ export default function RallyLocationConfirm({ rallyId }) {
         longitude: parseFloat(geoLng),
     });
     useEffect(() => {
-        if (rally?.uid) {
-            //save existing values to tmpEntry
-            dispatch(createTmp(rally));
-        }
-        if (!rally?.geolocation?.lat || !rally?.geolocation?.lng) {
-            Alert.alert('NOTICE', 'NEED geo');
+        // if (rally?.uid) {
+        //     //save existing values to tmpEntry
+        //     dispatch(createTmp(rally));
+        // }
+        if (!tmp?.geolocation?.lat || !tmp?.geolocation?.lng) {
+            // Alert.alert('NOTICE', 'NEED geo');
+            //build address string
+            let address =
+                tmp.street.replace(/ /g, '+') +
+                ',+' +
+                tmp.city.replace(/ /g, '+') +
+                ',+' +
+                tmp.stateProv +
+                '+' +
+                tmp.postalCode;
+            getGeoCode(address)
+                .then((geoInfo) => {
+                    setGeoLat(geoInfo.latitude);
+                    setGeoLng(geoInfo.longitude);
+                    setPublishedLat(geoInfo.latitude);
+                    setPublishedLng(geoInfo.longitude);
+                    setPin(geoInfo);
+                    setLocationDefined(true);
+                })
+                .catch((err) => {
+                    Alert.alert('ERROR', 'could not get geoInfo');
+                });
         }
     }, []);
 
@@ -71,8 +95,8 @@ export default function RallyLocationConfirm({ rallyId }) {
 
         let values = {
             geolocation: {
-                lat: latValue,
-                lng: lngValue,
+                lat: latStrValue,
+                lng: lngStrValue,
             },
         };
 
@@ -87,7 +111,9 @@ export default function RallyLocationConfirm({ rallyId }) {
     // const dispatch = useDispatch();
     const mHeight = Dimensions.get('window').height * 0.4;
     const mWidth = Dimensions.get('window').width * 0.9;
-
+    if (!locationDefined) {
+        return <ActivityIndicator />;
+    }
     return (
         <>
             <ImageBackground

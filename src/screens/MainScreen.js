@@ -116,7 +116,7 @@ export default function MainScreen() {
                             <Text
                                 style={{
                                     fontSize: 12,
-                                    fontColor: 'lightgrey',
+                                    fontWeight: '200',
                                     textAlign: 'center',
                                 }}
                             >

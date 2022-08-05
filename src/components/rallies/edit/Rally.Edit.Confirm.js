@@ -85,7 +85,7 @@ const RallyNewConfirmation = () => {
     // printObject('CONFIRMING tmpRally:', rally);
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
-        // printObject('S.R.E.REC:82-->newRally', newRally);
+        printObject('S.R.E.REC:82-->newRally', newRally);
         if (newRally?.contact?.phone) {
             // need value either blank or pateDate
             let valueToUse;
