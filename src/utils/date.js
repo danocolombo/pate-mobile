@@ -1,5 +1,19 @@
 import { format } from 'date-fns';
 
+const SHORT_MONTH = {
+    1: 'Jan',
+    2: 'Feb',
+    3: 'Mar',
+    4: 'Apr',
+    5: 'May',
+    6: 'Jun',
+    7: 'Jul',
+    8: 'Aug',
+    9: 'Sep',
+    10: 'Oct',
+    11: 'Nov',
+    12: 'Dec',
+};
 export function getFormattedDate(date) {
     return date.toISOString().slice(0, 10);
 }
@@ -166,7 +180,14 @@ export function pateDateToSpinner(pDate) {
     let date = new Date(y, m - 1, d);
     return date;
 }
-
+export function pateDateToShortMonthDay(pDate) {
+    let y = pDate.substring(0, 4);
+    let m = pDate.substring(4, 6);
+    let d = pDate.substring(6);
+    let mo = SHORT_MONTH[parseInt(m)];
+    let returnDate = mo + ' ' + d;
+    return returnDate;
+}
 export function convertPateDate(pDate) {
     //break apart
     let y = pDate.substring(0, 4);
