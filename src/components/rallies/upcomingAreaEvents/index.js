@@ -47,32 +47,38 @@ const UpcomingAreaEvents = ({ locations, mapHeight, mapWidth }) => {
                     longitudeDelta: 3,
                 }}
             >
-                {locations.map((l) => (
-                    <Marker
-                        key={l.uid}
-                        coordinate={{
-                            latitude: parseFloat(l.geolocation.lat),
-                            longitude: parseFloat(l.geolocation.lng),
-                        }}
-                        pinColor={Colors.primary}
-                    >
-                        <Callout
-                            tooltip
-                            style={styles.callout}
-                            onPress={() => handleMarkerClick(l)}
-                        >
-                            <View>
-                                <Text style={styles.locationName}>
-                                    {l.name}
-                                </Text>
+                {locations.map(
+                    (l) =>
+                        l?.geolocation?.lat &&
+                        l?.geolocation?.lng && (
+                            <Marker
+                                key={l.uid}
+                                coordinate={{
+                                    latitude: parseFloat(l.geolocation.lat),
+                                    longitude: parseFloat(l.geolocation.lng),
+                                }}
+                                pinColor={Colors.primary}
+                            >
+                                <Callout
+                                    tooltip
+                                    style={styles.callout}
+                                    onPress={() => handleMarkerClick(l)}
+                                >
+                                    <View>
+                                        <Text style={styles.locationName}>
+                                            {l.name}
+                                        </Text>
 
-                                <Text style={styles.eventDate}>
-                                    {pateDateToShortMonthDay(l.eventDate)}
-                                </Text>
-                            </View>
-                        </Callout>
-                    </Marker>
-                ))}
+                                        <Text style={styles.eventDate}>
+                                            {pateDateToShortMonthDay(
+                                                l.eventDate
+                                            )}
+                                        </Text>
+                                    </View>
+                                </Callout>
+                            </Marker>
+                        )
+                )}
             </MapView>
         </View>
     );
