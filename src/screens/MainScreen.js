@@ -15,7 +15,7 @@ import CustomButton from '../components/ui/CustomButton';
 import NoEventsNotice from '../components/ui/NoEventsNotice.js';
 import { Surface } from 'react-native-paper';
 import RallyItem from '../components/rallies/RallyItem';
-
+import UpcomingAreaEvents from '../components/rallies/upcomingAreaEvents';
 import { getToday, printObject } from '../utils/helpers';
 import { getPateDate } from '../utils/date';
 
@@ -88,6 +88,9 @@ export default function MainScreen() {
                             <Text style={styles.titleText}>
                                 Upcoming Events
                             </Text>
+                        </View>
+                        <View style={{ alignItems: 'center' }}>
+                            <UpcomingAreaEvents />
                         </View>
                         <View>
                             <FlatList
