@@ -90,7 +90,11 @@ export default function MainScreen() {
                             </Text>
                         </View>
                         <View style={{ alignItems: 'center' }}>
-                            <UpcomingAreaEvents />
+                            <UpcomingAreaEvents
+                                locations={displayData}
+                                mapHeight={0.35}
+                                mapWidth={0.9}
+                            />
                         </View>
                         <View>
                             <FlatList
