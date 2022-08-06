@@ -64,15 +64,6 @@ export const PRIVACY_POLICY = {
                         >Expo</a
                     >
                 </li>
-                <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---->
-                <li>
-                    <a
-                        href="https://www.revenuecat.com/privacy"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        >RevenueCat</a
-                    >
-                </li>
             </ul>
         </div>
         <p><strong>Log Data</strong></p>
