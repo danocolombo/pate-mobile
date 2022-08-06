@@ -14,35 +14,53 @@ import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../components/ui/CustomButton';
 import NoEventsNotice from '../components/ui/NoEventsNotice.js';
 import { Surface } from 'react-native-paper';
+import { getAllRallies } from '../features/rallies/ralliesSlice';
 import RallyItem from '../components/rallies/RallyItem';
 import UpcomingAreaEvents from '../components/rallies/upcomingAreaEvents';
-import { getToday, printObject } from '../utils/helpers';
-import { getPateDate } from '../utils/date';
+import { printObject } from '../utils/helpers';
+import { getPateDate, getToday } from '../utils/date';
 
 export default function MainScreen() {
     const navigation = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const eventRegion = useSelector((state) => state.system.eventRegion);
-
+    const [displayData, setDisplayData] = useState([]);
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
     );
-    const tDay = getPateDate(getToday());
-    // const eventRegion = process.env.EVENT_REGION;
     function asc_sort(a, b) {
         return a.eventDate - b.eventDate;
     }
-    // console.log('MS:34--> eventRegion', eventRegion);
-    const approved = allRallies.filter(
-        (r) =>
-            r.approved === true &&
-            r.eventDate >= tDay &&
-            r.eventRegion === eventRegion
-    );
-    let displayData = approved.sort(asc_sort);
 
-    // }, [])
+    let getDateNow = new Promise((resolve, reject) => {
+        let taDay = getToday();
+        let filterDate = getPateDate(taDay);
+        if (filterDate.length === 8) {
+            const approved = allRallies.filter(
+                (r) =>
+                    r.approved === true &&
+                    r.eventDate >= filterDate &&
+                    r.eventRegion === eventRegion
+            );
+            let data = approved.sort(asc_sort);
+            resolve(approved);
+        } else {
+            reject(null);
+        }
+    });
+
+    useEffect(() => {
+        getDateNow
+            .then((dataToDisplay) => {
+                setDisplayData(dataToDisplay);
+            })
+            .catch((message) => {
+                console.log('CATCH');
+                console.log('no date, no events to display');
+            });
+    }, []);
+
     const handleProfileAcknowledge = () => {
         setShowProfileNeededModal(false);
         navigation.navigate('Profile');

@@ -33,26 +33,7 @@ const LegalScreen = (props) => {
         setPrivacyCollapsed(!privacyCollapsed);
         setTermsCollapsed(true);
     };
-    // const renderContent = (section, _, isActive) => {
-    //     //Accordion Content view
-    //     return (
-    //         <Animatable.View
-    //             duration={400}
-    //             style={[
-    //                 styles.content,
-    //                 isActive ? styles.active : styles.inactive,
-    //             ]}
-    //             transition='backgroundColor'
-    //         >
-    //             <Animatable.Text
-    //                 animation={isActive ? 'bounceIn' : undefined}
-    //                 style={{ textAlign: 'center' }}
-    //             >
-    //                 <ScrollView></ScrollView>
-    //             </Animatable.Text>
-    //         </Animatable.View>
-    //     );
-    // };
+
     return (
         <View style={styles.rootContainer}>
             <Surface style={styles.surfaceContainer}>
