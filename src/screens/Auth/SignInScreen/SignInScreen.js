@@ -16,7 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { Auth } from 'aws-amplify';
 import { useDispatch } from 'react-redux';
-import { ALL_EVENTS } from '../../../../data/getRegionalEvents';
+// import { ALL_EVENTS } from '../../../../data/getRegionalEvents';
 import { updateCurrentUser } from '../../../features/users/usersSlice';
 import { getProfile } from '../../../providers/users';
 import { loadRallies } from '../../../features/rallies/ralliesSlice';
@@ -186,18 +186,20 @@ const SignInScreen = () => {
         //   ====================================
 
         if (process.env.ENV === 'DEV') {
-            const fileRallies = ALL_EVENTS.body.Items;
-            let response = {
-                body: fileRallies,
-            };
-            dispatch(loadRallies(fileRallies));
+            console.log('DEV NOT SUPPORTED IN PROD');
+            return;
+            // const fileRallies = ALL_EVENTS.body.Items;
+            // let response = {
+            //     body: fileRallies,
+            // };
+            // dispatch(loadRallies(fileRallies));
 
-            const tDay = getToday();
-            const publicRallies = fileRallies.filter(
-                (r) => r.approved === true && r.eventDate >= tDay
-            );
-            setApprovedRallies(publicRallies);
-            // setIsLoading(false);
+            // const tDay = getToday();
+            // const publicRallies = fileRallies.filter(
+            //     (r) => r.approved === true && r.eventDate >= tDay
+            // );
+            // setApprovedRallies(publicRallies);
+            // // setIsLoading(false);
         } else {
             const tDay = getPateDate(getToday());
             const config = {
