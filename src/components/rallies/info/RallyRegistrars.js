@@ -7,7 +7,7 @@ import { Badge } from 'react-native-paper';
 import CustomSmallButton from '../../ui/CustomSmallButton';
 import RegistrarListItem from './Registrar.List.Item';
 import { Colors } from '../../../constants/colors';
-import { REGISTRARS } from '../../../../data/getRegistrationsForEventOrdered';
+//import { REGISTRARS } from '../../../../data/getRegistrationsForEventOrdered';
 import { printObject } from '../../../utils/helpers';
 import { getRegistrarsForEvent } from '../../../providers/registrations';
 const RallyRegistrars = ({ rally, onPress }) => {
@@ -15,7 +15,9 @@ const RallyRegistrars = ({ rally, onPress }) => {
     const [regs, setRegs] = useState();
     useEffect(() => {
         if (process.env.ENV === 'DEV') {
-            setRegs(REGISTRARS.body.Items);
+            console.log('DEV not supported in production');
+            return;
+            // setRegs(REGISTRARS.body.Items);
         } else {
             //get registrars from ddb
             const config = {
