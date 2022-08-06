@@ -62,15 +62,6 @@ export const TERMS_CONDITIONS = {
                         >Expo</a
                     >
                 </li>
-                <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---->
-                <li>
-                    <a
-                        href="https://www.revenuecat.com/terms"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        >RevenueCat</a
-                    >
-                </li>
             </ul>
         </div>
         <p>

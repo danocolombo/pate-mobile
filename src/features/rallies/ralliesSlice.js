@@ -7,7 +7,6 @@ const initialState = {
     userRallies: [],
     tmpRally: {},
 };
-
 export const ralliesSlice = createSlice({
     name: 'rallies',
     initialState,
@@ -180,6 +179,9 @@ export const ralliesSlice = createSlice({
             // then sorts desc (latest first, then oldest last)
             return state.allRallies;
         },
+        getAllRallies: (state, action) => {
+            return state.allRallies;
+        },
 
         logout: (state) => {
             state.allRallies = [];
@@ -202,6 +204,7 @@ export const {
     createTmp,
     updateTmp,
     getStateRallies,
+    getAllRallies,
     logout,
 } = ralliesSlice.actions;
 
