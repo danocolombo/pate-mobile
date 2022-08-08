@@ -13,7 +13,12 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import MapView, { Callout, Marker, Circle } from 'react-native-maps';
+import MapView, {
+    Callout,
+    Marker,
+    Circle,
+    PROVIDER_GOOGLE,
+} from 'react-native-maps';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
@@ -120,7 +125,7 @@ export default function RallyLocationConfirm({ rallyId }) {
                                 {pin && (
                                     <View style={styles.container}>
                                         <MapView
-                                            provider='google'
+                                            provider={PROVIDER_GOOGLE}
                                             style={{
                                                 ...styles.map,
                                                 width: mWidth,

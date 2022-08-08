@@ -6,7 +6,12 @@ import {
     Dimensions,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import MapView, { Callout, Marker, Circle } from 'react-native-maps';
+import MapView, {
+    Callout,
+    Marker,
+    Circle,
+    PROVIDER_GOOGLE,
+} from 'react-native-maps';
 import { useWorkletCallback } from 'react-native-reanimated';
 import { dateNumToDateDash, dateNumToDisplayTime } from '../../utils/date';
 import { Colors } from '../../constants/colors';
@@ -62,7 +67,7 @@ const RallyMap = ({ rally, mapHeight, mapWidth }) => {
     return (
         <View style={styles.container}>
             <MapView
-                provider='google'
+                provider={PROVIDER_GOOGLE}
                 style={{ ...styles.map, width: mWidth, height: mHeight }}
                 initialRegion={{
                     latitude: geoLat,

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Fortson Event Organizer",
+    "name": "FEO",
     "slug": "FortsonEventOrganizer",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -19,7 +19,16 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "guru.fortson.eor"
+      "bundleIdentifier": "guru.fortson.eor",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyDoimH5chN1RmbPB1wyFF0K0anGjZjqwmw"
+      }
     },
     "android": {
       "adaptiveIcon": {

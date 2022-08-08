@@ -9,7 +9,12 @@ import {
 } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import MapView, { Callout, Marker, Circle } from 'react-native-maps';
+import MapView, {
+    Callout,
+    Marker,
+    Circle,
+    PROVIDER_GOOGLE,
+} from 'react-native-maps';
 import { Colors } from '../../../constants/colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { StylesContext } from '@material-ui/styles';
@@ -37,7 +42,7 @@ const UpcomingAreaEvents = ({ locations, mapHeight, mapWidth }) => {
     return (
         <View style={styles.container}>
             <MapView
-                provider='google'
+                provider={PROVIDER_GOOGLE}
                 zoomEnabled={false}
                 style={{ ...styles.map, width: mWidth, height: mHeight }}
                 initialRegion={{
