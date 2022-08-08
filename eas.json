@@ -10,7 +10,14 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "env": {
+        "ENV": "QA",
+        "API_ENV_VALUES": "QA",
+        "REGION": "us#east",
+        "EVENT_REGION": "test"
+      }
+    }
   },
   "submit": {
     "production": {
