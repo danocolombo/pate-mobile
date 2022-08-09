@@ -25,6 +25,10 @@ export default function MainScreen() {
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const eventRegion = useSelector((state) => state.system.eventRegion);
+    const PATEDATE = useSelector((state) => state.system.today);
+    const AFFILIATE_HEADER = useSelector(
+        (state) => state.system.affiliateTitle
+    );
     const [displayData, setDisplayData] = useState([]);
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
@@ -40,7 +44,7 @@ export default function MainScreen() {
             const approved = allRallies.filter(
                 (r) =>
                     r.approved === true &&
-                    r.eventDate >= filterDate &&
+                    r.eventDate >= PATEDATE &&
                     r.eventRegion === eventRegion
             );
             let data = approved.sort(asc_sort);
@@ -51,6 +55,14 @@ export default function MainScreen() {
     });
 
     useEffect(() => {
+        //try 3 times to get the PATEDATE, delaying 1 sec between trys
+        let attempts = 20;
+        do {
+            if (PATEDATE.length === 8) {
+                attempts = 0;
+            }
+            attempts--;
+        } while (attempts > 0);
         getDateNow
             .then((dataToDisplay) => {
                 setDisplayData(dataToDisplay);
@@ -102,6 +114,11 @@ export default function MainScreen() {
 
                 {displayData.length !== 0 ? (
                     <>
+                        <View>
+                            <Text style={styles.affiliateHeader}>
+                                {AFFILIATE_HEADER}
+                            </Text>
+                        </View>
                         <View>
                             <Text style={styles.titleText}>
                                 Upcoming Events
@@ -166,8 +183,14 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
+    affiliateHeader: {
+        paddingTop: 20,
+        fontSize: 36,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
     titleText: {
-        padding: 20,
+        paddingBottom: 20,
         fontSize: 28,
         fontWeight: 'bold',
         textAlign: 'center',

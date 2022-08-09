@@ -1,9 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    region: '',
-    eventRegion: '',
-    stateProv: '',
+    region: 'us#east#test',
+    eventRegion: 'test',
+    stateProv: 'TT',
+    affiliateTitle: 'P8 Rally',
+    today: '2022-08-08',
+    affiliationEntity: 'Church',
+    affiliation: 'CelebrateRecoveryP8Rally',
 };
 
 export const systemSlice = createSlice({
@@ -16,6 +20,9 @@ export const systemSlice = createSlice({
         setEventRegion: (state, action) => {
             state.eventRegion = action.payload;
         },
+        setStateProv: (state, action) => {
+            state.stateProv = action.payload;
+        },
         logout: (state) => {
             state.region = '';
             state.eventRegion = '';
@@ -26,6 +33,7 @@ export const systemSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setRegion, setEventRegion, logout } = systemSlice.actions;
+export const { setRegion, setEventRegion, logout, setStateProv } =
+    systemSlice.actions;
 
 export default systemSlice.reducer;

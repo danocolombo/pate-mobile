@@ -45,6 +45,9 @@ export default function ProfileForm() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     let user = useSelector((state) => state.users.currentUser);
+    const AFFILIATION_ENTITY = useSelector(
+        (state) => state.system.affiliationEntity
+    );
     const [showPhoneError, setShowPhoneError] = useState(false);
     //printObject('PF:49-->user', user);
     let phoneDisplayValue;
@@ -611,7 +614,8 @@ export default function ProfileForm() {
                                                             styles.churchTitle
                                                         }
                                                     >
-                                                        Church Affiliation
+                                                        {AFFILIATION_ENTITY}{' '}
+                                                        Affiliation
                                                     </Text>
                                                 </View>
                                                 <View
@@ -622,7 +626,8 @@ export default function ProfileForm() {
                                                     <Text
                                                         style={styles.labelText}
                                                     >
-                                                        Church Name
+                                                        {AFFILIATION_ENTITY}{' '}
+                                                        Name
                                                     </Text>
                                                 </View>
                                                 <TextInput

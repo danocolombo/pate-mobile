@@ -1,7 +1,7 @@
 import { even } from '@react-native-material/core';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { printObject } from '../utils/helpers';
 const config = {
     headers: {
@@ -102,6 +102,8 @@ export async function putRally(rally, user) {
 
     //default rally with user info
     // printObject('rally=======in putRally', rally);
+    const EVENT_REGION = useSelector((state) => state.system.eventRegion);
+    const REGION = useSelector((state) => state.system.region);
     const readyEvent = {
         meal: {
             startTime: rally?.meal?.startTime ? rally.meal.startTime : '',
@@ -118,8 +120,8 @@ export async function putRally(rally, user) {
             email: rally?.contact?.email ? rally.contact.email : '',
         },
         status: rally?.status ? rally.status : 'draft',
-        eventRegion: rally?.eventRegion ? rally.eventRegion : 'test',
-        region: rally?.region ? rally.region : 'us#east',
+        eventRegion: rally?.eventRegion ? rally.eventRegion : EVENT_REGION,
+        region: rally?.region ? rally.region : REGION,
         message: rally?.eventMessage ? rally.eventMessage : '',
         stateProv: rally?.stateProv ? rally.stateProv : '',
         coordinator: {

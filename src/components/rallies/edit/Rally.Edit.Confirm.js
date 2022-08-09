@@ -23,6 +23,8 @@ import { Analytics } from 'aws-amplify';
 const RallyNewConfirmation = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const REGION = useSelector((state) => state.system.region);
+    const EVENT_REGION = useSelector((state) => state.system.eventRegion);
     const user = useSelector((state) => state.users.currentUser);
     const tmp = useSelector((state) => state.rallies.tmpRally);
     const systemRegion = useSelector((state) => state.system.region);
@@ -46,15 +48,9 @@ const RallyNewConfirmation = () => {
     rallyBasic.coordinator = me;
 
     // rallyBasic.region = process.env.REGION;
-    rallyBasic.region = systemRegion;
-    if (tmp.stateProv === 'TT') {
-        rallyBasic.eventRegion = 'test';
-    } else {
-        //EVENT_REGION
-        const parts = systemRegion.split('#');
-        //rallyBasic.eventRegion = process.env.EVENT_REGION;
-        rallyBasic.eventRegion = parts[1];
-    }
+    rallyBasic.region = REGION;
+    rallyBasic.eventRegion = EVENT_REGION;
+
     let strippedPhone;
     // printObject('REC:52 tmp:', tmp);
     // console.log('REC:53 tmp?.contact?.phone', tmp?.contact?.phone);
