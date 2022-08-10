@@ -42,7 +42,7 @@ const AuthDrawer = (navigation) => {
                 name='Main'
                 component={MainScreen}
                 options={({ navigation }) => ({
-                    title: 'EOR',
+                    title: 'FEO',
                     drawerLabel: 'Upcoming Events',
                     headerStyle: {
                         backgroundColor: Colors.primary,
@@ -60,7 +60,7 @@ const AuthDrawer = (navigation) => {
                     name='Serve'
                     component={ServeConfig}
                     options={({ navigation }) => ({
-                        title: 'EOR',
+                        title: 'FEO',
                         drawerLabel: 'Serve',
                         headerStyle: {
                             backgroundColor: Colors.primary,
@@ -78,7 +78,7 @@ const AuthDrawer = (navigation) => {
                 name='MyRegistrations'
                 component={MyRegistrationsScreen}
                 options={({ navigation }) => ({
-                    title: 'EOR',
+                    title: 'FEO',
                     drawerLabel: 'My Registrations',
 
                     headerStyle: {
@@ -96,7 +96,7 @@ const AuthDrawer = (navigation) => {
                 name='Profile'
                 component={ProfileScreen}
                 options={({ navigation }) => ({
-                    title: 'EOR',
+                    title: 'FEO',
                     drawerLabel: 'Profile',
                     headerStyle: {
                         backgroundColor: Colors.primary,
@@ -113,7 +113,7 @@ const AuthDrawer = (navigation) => {
                 name='Legal'
                 component={LegalScreen}
                 options={({ navigation }) => ({
-                    title: 'EOR',
+                    title: 'FEO',
                     drawerLabel: 'Legal',
                     headerStyle: {
                         backgroundColor: Colors.primary,

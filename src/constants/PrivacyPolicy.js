@@ -15,7 +15,7 @@ export const PRIVACY_POLICY = {
     <body>
         
         <p>
-            Fortson Guru built the EOR app as a Freemium app. This SERVICE
+            Fortson Guru built the FEO app as a Freemium app. This SERVICE
             is provided by Fortson Guru at no cost and is intended for use as
             is.
         </p>
@@ -33,7 +33,7 @@ export const PRIVACY_POLICY = {
         </p>
         <p>
             The terms used in this Privacy Policy have the same meanings as in
-            our Terms and Conditions, which are accessible at EOR unless
+            our Terms and Conditions, which are accessible at FEO unless
             otherwise defined in this Privacy Policy.
         </p>
         <p><strong>Information Collection and Use</strong></p>

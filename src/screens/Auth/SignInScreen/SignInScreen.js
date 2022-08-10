@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import React, { useState } from 'react';
-import Logo from '../../../../assets/images/EOR-words.png';
+import Logo from '../../../../assets/images/FEO-words.png';
 import CustomInput from '../../../components/ui/CustomInput';
 import CustomButton from '../../../components/ui/Auth/CustomButton/CustomButton';
 import SocialSignInButtons from '../../../components/ui/Auth/SocialSignInButtons';

@@ -33,14 +33,14 @@ export const TERMS_CONDITIONS = {
             without making it very clear to you exactly what you’re paying for.
         </p>
         <p>
-            The EOR app stores and processes personal data that you have
+            The FEO app stores and processes personal data that you have
             provided to us, to provide my Service. It’s your responsibility to
             keep your phone and access to the app secure. We therefore recommend
             that you do not jailbreak or root your phone, which is the process
             of removing software restrictions and limitations imposed by the
             official operating system of your device. It could make your phone
             vulnerable to malware/viruses/malicious programs, compromise your
-            phone’s security features and it could mean that the EOR app
+            phone’s security features and it could mean that the FEO app
             won’t work properly or at all.
         </p>
         <div>
