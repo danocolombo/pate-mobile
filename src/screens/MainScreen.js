@@ -9,7 +9,7 @@ import {
     FlatList,
     ScrollView,
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../components/ui/CustomButton';
 import NoEventsNotice from '../components/ui/NoEventsNotice.js';
@@ -19,11 +19,15 @@ import RallyItem from '../components/rallies/RallyItem';
 import UpcomingAreaEvents from '../components/rallies/upcomingAreaEvents';
 import { printObject } from '../utils/helpers';
 import { getPateDate, getToday } from '../utils/date';
+import { getAvailableEvents } from '../features/rallies/ralliesSlice';
 
 export default function MainScreen() {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
-    const displayRallies = useSelector((state) => state.rallies.displayRallies);
+    const { displayRallies, allRallies } = useSelector(
+        (state) => state.rallies
+    );
     const { affiliateHeader } = useSelector((state) => state.system);
     // const PATEDATE = useSelector((state) => state.system.today);
     // const AFFILIATE_HEADER = useSelector(
@@ -33,38 +37,9 @@ export default function MainScreen() {
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
     );
-    function asc_sort(a, b) {
-        return a.eventDate - b.eventDate;
-    }
-
-    // let getDataNow = new Promise((resolve, reject) => {
-    //     let taDay = pate.today;
-    //     let filterDate = getPateDate(taDay);
-    //     if (filterDate.length === 8) {
-    //         const approved = allRallies.filter(
-    //             (r) =>
-    //                 r.approved === true &&
-    //                 r.eventDate >= filterDate &&
-    //                 r.eventRegion === eventRegion
-    //         );
-    //         let data = approved.sort(asc_sort);
-    //         resolve(approved);
-    //     } else {
-    //         reject(null);
-    //     }
-    // });
-
-    // useEffect(() => {
-    //     getDataNow
-    //         .then((dataToDisplay) => {
-    //             console.log('MS-->60:', dataToDisplay);
-    //             setDisplayData(dataToDisplay);
-    //         })
-    //         .catch((message) => {
-    //             console.log('CATCH');
-    //             console.log('no date, no events to display');
-    //         });
-    // }, []);
+    useEffect(() => {
+        dispatch(getAvailableEvents());
+    }, [allRallies]);
 
     const handleProfileAcknowledge = () => {
         setShowProfileNeededModal(false);
@@ -76,7 +51,7 @@ export default function MainScreen() {
             style={styles.bgImageContainer}
         >
             <>
-                {displayRallies.length !== 0 ? (
+                {displayRallies ? (
                     <>
                         <View>
                             <Text style={styles.affiliateHeader}>

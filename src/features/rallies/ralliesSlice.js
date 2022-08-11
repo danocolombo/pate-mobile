@@ -1,13 +1,36 @@
 import { createAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { printObject } from '../../utils/helpers';
+import { printObject, getToday } from '../../utils/helpers';
+import { getPateDate } from '../../utils/date';
+//   this is url for all meetings
 
 const initialState = {
     allRallies: [],
     userRallies: [],
     displayRallies: [],
     tmpRally: {},
+    isLoading: false,
 };
+const url = 'https://course-api.com/react-useReducer-cart-project';
+export const getAvailableEvents = createAsyncThunk(
+    'rallies/getAvailableEvents',
+    async (name, thunkAPI) => {
+        try {
+            const getFilterDate = async () => {
+                return '20220811';
+            };
+
+            return getFilterDate()
+                .then((d) => d)
+                .catch((e) => console.error('oops'));
+
+            // const resp = await axios(url);
+            // return resp.data;
+        } catch (error) {
+            return thunkAPI.rejectWithValue('RS:36-->>> something went wrong');
+        }
+    }
+);
 export const ralliesSlice = createSlice({
     name: 'rallies',
     initialState,
@@ -192,6 +215,26 @@ export const ralliesSlice = createSlice({
             state.userRallies = [];
             state.tmpRally = {};
             return state;
+        },
+    },
+    extraReducers: {
+        [getAvailableEvents.pending]: (state) => {
+            state.isLoading = true;
+        },
+        [getAvailableEvents.fulfilled]: (state, action) => {
+            // console.log(action);
+            state.isLoading = false;
+            printObject('RS:223--> action', action);
+            state.displayRallies = state.allRallies.filter(
+                (r) =>
+                    r.eventDate >= action.payload &&
+                    r.eventRegion === 'test' &&
+                    r.approved === true
+            );
+        },
+        [getAvailableEvents.rejected]: (state, action) => {
+            console.log(action);
+            state.isLoading = false;
         },
     },
 });
