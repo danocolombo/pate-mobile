@@ -5,6 +5,7 @@ import { printObject } from '../../utils/helpers';
 const initialState = {
     allRallies: [],
     userRallies: [],
+    displayRallies: [],
     tmpRally: {},
 };
 export const ralliesSlice = createSlice({
@@ -30,6 +31,9 @@ export const ralliesSlice = createSlice({
             }
 
             return state;
+        },
+        loadDisplayRallies: (state, action) => {
+            state.displayRallies = action.payload;
         },
         // loadUserRallies: (state, action) => {
         //     state.userRallies = action.payload;
@@ -200,7 +204,7 @@ export const {
     updateRally,
     updateRegNumbers,
     deleteRally,
-    // loadUserRallies,
+    loadDisplayRallies,
     createTmp,
     updateTmp,
     getStateRallies,

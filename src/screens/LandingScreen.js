@@ -13,7 +13,7 @@ import CustomButton from '../components/ui/CustomButton';
 import { Colors } from '../constants/colors';
 import NoEventsNotice from '../components/ui/NoEventsNotice.js';
 import { Surface } from 'react-native-paper';
-import { setSystemDate } from '../features/system/systemSlice';
+import { loadDisplayRallies } from '../features/rallies/ralliesSlice';
 import { printObject } from '../utils/helpers';
 import { getPateDate, getToday } from '../utils/date';
 
@@ -21,25 +21,30 @@ export default function LandingScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
+
     const allRallies = useSelector((state) => state.rallies.allRallies);
-    const eventRegion = useSelector((state) => state.system.eventRegion);
-    const pate = useSelector((state) => state.system);
+
+    const { eventRegion, affiliateTitle, today } = useSelector(
+        (state) => state.system
+    );
 
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
     );
+
     function asc_sort(a, b) {
         return a.eventDate - b.eventDate;
     }
 
-    let getDateNow = new Promise((resolve, reject) => {
+    let getDataNow = new Promise((resolve, reject) => {
+        console.log('promise-start');
         let taDay = getToday();
         let filterDate = getPateDate(taDay);
         if (filterDate.length === 8) {
             const approved = allRallies.filter(
                 (r) =>
                     r.approved === true &&
-                    r.eventDate >= pate.today &&
+                    r.eventDate >= filterDate &&
                     r.eventRegion === eventRegion
             );
             let data = approved.sort(asc_sort);
@@ -47,20 +52,23 @@ export default function LandingScreen() {
         } else {
             reject(null);
         }
+        console.log('promise-end');
     });
 
     useEffect(() => {
         //   load the current date to system redux
-        dispatch(setSystemDate, '2020-08-10');
-        // getDateNow
-        //     .then((theDate) => {
-        //         console.log('LS:57--> theDate', theDate);
-        //         dispatch(setSystemDate, theDate);
-        //     })
-        //     .catch((message) => {
-        //         console.log('CATCH');
-        //         console.log('no date, no events to display');
-        //     });
+        // dispatch(setSystemDate('2020-09-10'));
+        // console.log(getDateNow());
+        getDataNow
+            .then((displayData) => {
+                console.log('LS:57--> displayData', displayData);
+                dispatch(loadDisplayRallies(displayData));
+                // dispatch(setSystemDate(theDate));
+            })
+            .catch((message) => {
+                console.log('CATCH');
+                console.log('no date, no events to display');
+            });
     }, []);
 
     const handleProfileAcknowledge = () => {
@@ -106,9 +114,7 @@ export default function LandingScreen() {
 
                 <View style={styles.graphicRoot}>
                     <View style={styles.mainTextContainer}>
-                        <Text style={styles.mainTitle}>
-                            {pate.affiliateTitle}
-                        </Text>
+                        <Text style={styles.mainTitle}>{affiliateTitle}</Text>
                     </View>
 
                     <View style={styles.heroImageContainer}>
@@ -139,7 +145,10 @@ export default function LandingScreen() {
                             Welcome {user.firstName} {user.lastName}
                         </Text>
                         <Text style={{ textAlign: 'center' }}>
-                            Region: {pate.eventRegion}
+                            Region: {eventRegion}
+                        </Text>
+                        <Text style={{ textAlign: 'center' }}>
+                            Today: {today}
                         </Text>
                     </View>
                 </View>

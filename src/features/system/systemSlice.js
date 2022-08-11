@@ -5,7 +5,7 @@ const initialState = {
     eventRegion: 'test',
     stateProv: 'TT',
     affiliateTitle: 'P8 Rally',
-    today: '2022-08-08',
+    today: '',
     affiliationEntity: 'Church',
     affiliation: 'CelebrateRecoveryP8Rally',
     isLoading: true,
@@ -23,6 +23,9 @@ export const systemSlice = createSlice({
         },
         setStateProv: (state, action) => {
             state.stateProv = action.payload;
+        },
+        clearToday: (state) => {
+            state.today = '';
         },
         setSystemDate: (state, action) => {
             state.today = action.payload;
@@ -46,6 +49,7 @@ export const {
     logout,
     setStateProv,
     setSystemDate,
+    clearToday,
 } = systemSlice.actions;
 
 export default systemSlice.reducer;

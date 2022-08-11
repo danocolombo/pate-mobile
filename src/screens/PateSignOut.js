@@ -5,12 +5,14 @@ import { Auth } from 'aws-amplify';
 import { logout } from '../features/users/usersSlice';
 import { logout as ralliesSignout } from '../features/rallies/ralliesSlice';
 import { logout as profilesLogout } from '../features/profiles/profilesSlice';
+import { logout as systemLogout } from '../features/system/systemSlice';
 const PateSignOut = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(logout());
         dispatch(ralliesSignout);
         dispatch(profilesLogout);
+        dispatch(systemLogout);
         Auth.signOut();
     }, []);
 

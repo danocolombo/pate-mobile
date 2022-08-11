@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../components/ui/CustomButton';
 import NoEventsNotice from '../components/ui/NoEventsNotice.js';
 import { Surface } from 'react-native-paper';
-import { getAllRallies } from '../features/rallies/ralliesSlice';
+// import { displayRallies } from '../features/rallies/ralliesSlice';
 import RallyItem from '../components/rallies/RallyItem';
 import UpcomingAreaEvents from '../components/rallies/upcomingAreaEvents';
 import { printObject } from '../utils/helpers';
@@ -23,8 +23,8 @@ import { getPateDate, getToday } from '../utils/date';
 export default function MainScreen() {
     const navigation = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
-    const allRallies = useSelector((state) => state.rallies.allRallies);
-    const pate = useSelector((state) => state.system);
+    const displayRallies = useSelector((state) => state.rallies.displayRallies);
+    const { affiliateHeader } = useSelector((state) => state.system);
     // const PATEDATE = useSelector((state) => state.system.today);
     // const AFFILIATE_HEADER = useSelector(
     //     (state) => state.system.affiliateTitle
@@ -37,33 +37,34 @@ export default function MainScreen() {
         return a.eventDate - b.eventDate;
     }
 
-    let getDataNow = new Promise((resolve, reject) => {
-        let taDay = pate.today;
-        let filterDate = getPateDate(taDay);
-        if (filterDate.length === 8) {
-            const approved = allRallies.filter(
-                (r) =>
-                    r.approved === true &&
-                    r.eventDate >= PATEDATE &&
-                    r.eventRegion === eventRegion
-            );
-            let data = approved.sort(asc_sort);
-            resolve(approved);
-        } else {
-            reject(null);
-        }
-    });
+    // let getDataNow = new Promise((resolve, reject) => {
+    //     let taDay = pate.today;
+    //     let filterDate = getPateDate(taDay);
+    //     if (filterDate.length === 8) {
+    //         const approved = allRallies.filter(
+    //             (r) =>
+    //                 r.approved === true &&
+    //                 r.eventDate >= filterDate &&
+    //                 r.eventRegion === eventRegion
+    //         );
+    //         let data = approved.sort(asc_sort);
+    //         resolve(approved);
+    //     } else {
+    //         reject(null);
+    //     }
+    // });
 
-    useEffect(() => {
-        getDataNow
-            .then((dataToDisplay) => {
-                setDisplayData(dataToDisplay);
-            })
-            .catch((message) => {
-                console.log('CATCH');
-                console.log('no date, no events to display');
-            });
-    }, []);
+    // useEffect(() => {
+    //     getDataNow
+    //         .then((dataToDisplay) => {
+    //             console.log('MS-->60:', dataToDisplay);
+    //             setDisplayData(dataToDisplay);
+    //         })
+    //         .catch((message) => {
+    //             console.log('CATCH');
+    //             console.log('no date, no events to display');
+    //         });
+    // }, []);
 
     const handleProfileAcknowledge = () => {
         setShowProfileNeededModal(false);
@@ -75,40 +76,11 @@ export default function MainScreen() {
             style={styles.bgImageContainer}
         >
             <>
-                {/* <ScrollView> */}
-                <Modal visible={showProfileNeededModal} animationStyle='slide'>
-                    <Surface style={styles.modalSurface}>
-                        <View style={styles.modalInfoWrapper}>
-                            <Text style={styles.modalTitle}>
-                                Please complete your profile.
-                            </Text>
-                        </View>
-                        <View style={styles.modalButtonContainer}>
-                            <View style={styles.modalButtonWrapper}>
-                                <View style={styles.modalCancelButton}>
-                                    <CustomButton
-                                        title='OK'
-                                        graphic={null}
-                                        cbStyles={{
-                                            backgroundColor: 'green',
-                                            color: 'white',
-                                        }}
-                                        txtColor='white'
-                                        onPress={() => {
-                                            handleProfileAcknowledge();
-                                        }}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                    </Surface>
-                </Modal>
-
-                {displayData.length !== 0 ? (
+                {displayRallies.length !== 0 ? (
                     <>
                         <View>
                             <Text style={styles.affiliateHeader}>
-                                {AFFILIATE_HEADER}
+                                {affiliateHeader}
                             </Text>
                         </View>
                         <View>
@@ -118,14 +90,14 @@ export default function MainScreen() {
                         </View>
                         <View style={{ alignItems: 'center' }}>
                             <UpcomingAreaEvents
-                                locations={displayData}
+                                locations={displayRallies}
                                 mapHeight={0.35}
                                 mapWidth={0.9}
                             />
                         </View>
                         <View>
                             <FlatList
-                                data={displayData}
+                                data={displayRallies}
                                 keyExtractor={(item) => item.uid}
                                 renderItem={({ item }) => (
                                     <RallyItem rally={item} />
