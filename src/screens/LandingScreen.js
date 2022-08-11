@@ -4,32 +4,27 @@ import {
     Text,
     ImageBackground,
     StyleSheet,
-    Image,
     Modal,
-    FlatList,
-    ScrollView,
+    Image,
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../components/ui/CustomButton';
+import { Colors } from '../constants/colors';
 import NoEventsNotice from '../components/ui/NoEventsNotice.js';
 import { Surface } from 'react-native-paper';
-import { getAllRallies } from '../features/rallies/ralliesSlice';
-import RallyItem from '../components/rallies/RallyItem';
-import UpcomingAreaEvents from '../components/rallies/upcomingAreaEvents';
+import { setSystemDate } from '../features/system/systemSlice';
 import { printObject } from '../utils/helpers';
 import { getPateDate, getToday } from '../utils/date';
 
-export default function MainScreen() {
+export default function LandingScreen() {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
+    const eventRegion = useSelector((state) => state.system.eventRegion);
     const pate = useSelector((state) => state.system);
-    // const PATEDATE = useSelector((state) => state.system.today);
-    // const AFFILIATE_HEADER = useSelector(
-    //     (state) => state.system.affiliateTitle
-    // );
-    const [displayData, setDisplayData] = useState([]);
+
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
     );
@@ -37,14 +32,14 @@ export default function MainScreen() {
         return a.eventDate - b.eventDate;
     }
 
-    let getDataNow = new Promise((resolve, reject) => {
-        let taDay = pate.today;
+    let getDateNow = new Promise((resolve, reject) => {
+        let taDay = getToday();
         let filterDate = getPateDate(taDay);
         if (filterDate.length === 8) {
             const approved = allRallies.filter(
                 (r) =>
                     r.approved === true &&
-                    r.eventDate >= PATEDATE &&
+                    r.eventDate >= pate.today &&
                     r.eventRegion === eventRegion
             );
             let data = approved.sort(asc_sort);
@@ -55,14 +50,17 @@ export default function MainScreen() {
     });
 
     useEffect(() => {
-        getDataNow
-            .then((dataToDisplay) => {
-                setDisplayData(dataToDisplay);
-            })
-            .catch((message) => {
-                console.log('CATCH');
-                console.log('no date, no events to display');
-            });
+        //   load the current date to system redux
+        dispatch(setSystemDate, '2020-08-10');
+        // getDateNow
+        //     .then((theDate) => {
+        //         console.log('LS:57--> theDate', theDate);
+        //         dispatch(setSystemDate, theDate);
+        //     })
+        //     .catch((message) => {
+        //         console.log('CATCH');
+        //         console.log('no date, no events to display');
+        //     });
     }, []);
 
     const handleProfileAcknowledge = () => {
@@ -103,68 +101,48 @@ export default function MainScreen() {
                         </View>
                     </Surface>
                 </Modal>
+                {/* <View style={styles.graphicRoot}>
+                    <View style={styles.imageContainer}> */}
 
-                {displayData.length !== 0 ? (
-                    <>
-                        <View>
-                            <Text style={styles.affiliateHeader}>
-                                {AFFILIATE_HEADER}
-                            </Text>
-                        </View>
-                        <View>
-                            <Text style={styles.titleText}>
-                                Upcoming Events
-                            </Text>
-                        </View>
-                        <View style={{ alignItems: 'center' }}>
-                            <UpcomingAreaEvents
-                                locations={displayData}
-                                mapHeight={0.35}
-                                mapWidth={0.9}
-                            />
-                        </View>
-                        <View>
-                            <FlatList
-                                data={displayData}
-                                keyExtractor={(item) => item.uid}
-                                renderItem={({ item }) => (
-                                    <RallyItem rally={item} />
-                                )}
-                            />
-                        </View>
-                    </>
-                ) : (
-                    <View style={styles.imageContainer}>
-                        <View style={{ borderRadius: 30 }}>
-                            <NoEventsNotice />
-                        </View>
-                        <View
+                <View style={styles.graphicRoot}>
+                    <View style={styles.mainTextContainer}>
+                        <Text style={styles.mainTitle}>
+                            {pate.affiliateTitle}
+                        </Text>
+                    </View>
+
+                    <View style={styles.heroImageContainer}>
+                        <Image
+                            source={require('../../assets/images/FEO.png')}
+                            style={{ resizeMode: 'cover' }}
+                            // style={styles.heroImageContainer}
+                        ></Image>
+                    </View>
+
+                    <View
+                        style={{
+                            marginTop: 15,
+                            marginHorizontal: 40,
+                            marginBottom: 20,
+                            backgroundColor: 'white',
+                            borderRadius: 10,
+                            padding: 5,
+                        }}
+                    >
+                        <Text
                             style={{
-                                marginTop: 5,
-                                marginHorizontal: 40,
-                                backgroundColor: 'white',
-                                borderRadius: 10,
-                                padding: 5,
+                                fontSize: 14,
+                                fontWeight: '600',
+                                textAlign: 'center',
                             }}
                         >
-                            <Text
-                                style={{
-                                    fontSize: 12,
-                                    fontWeight: '200',
-                                    textAlign: 'center',
-                                }}
-                            >
-                                Events are managed and released periodically by
-                                regional event teams.
-                            </Text>
-                        </View>
-                        {/* <Image
-                            source={require('../components/images/no-events-card.png')}
-                            style={styles.image}
-                        /> */}
+                            Welcome {user.firstName} {user.lastName}
+                        </Text>
+                        <Text style={{ textAlign: 'center' }}>
+                            Region: {pate.eventRegion}
+                        </Text>
                     </View>
-                )}
-                {/* </ScrollView> */}
+                </View>
             </>
         </ImageBackground>
     );
@@ -174,6 +152,48 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
+        alignItems: 'center',
+    },
+    graphicRoot: {
+        backgroundColor: Colors.secondary,
+        // flex: 0.8,
+        flexDirection: 'column',
+
+        paddingHorizontal: 10,
+        marginTop: 20,
+        borderRadius: 30,
+
+        width: '90%',
+    },
+    heroImageContainer: {
+        // flexDirection: 'column',
+        marginTop: 10,
+
+        justifyContent: 'center',
+        alignItems: 'center',
+        // height: '100%',
+    },
+    mainTextContainer: {
+        justifyContent: 'top',
+        marginTop: 20,
+        marginBottom: 10,
+        alignItems: 'center',
+    },
+    subTextContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    mainTitle: {
+        fontSize: 34,
+        letterSpacing: 0.5,
+        fontWeight: '600',
+        color: 'white',
+        textAlign: 'center',
+    },
+    subTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: 'white',
     },
     affiliateHeader: {
         paddingTop: 20,

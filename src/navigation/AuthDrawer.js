@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainScreen from '../screens/MainScreen';
+import LandingScreen from '../screens/LandingScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PateSignOut from '../screens/PateSignOut';
 import MyRegistrationsScreen from '../screens/MyRegistrationsScreen';
@@ -38,6 +39,23 @@ const AuthDrawer = (navigation) => {
                 tabBarActiveTintColor: 'white',
             })}
         >
+            <Drawer.Screen
+                name='Landing'
+                component={LandingScreen}
+                options={({ navigation }) => ({
+                    title: 'FEO',
+                    drawerLabel: 'Home',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+
+                    headerTintColor: 'white',
+                    tabBarStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    tabBarActiveTintColor: 'white',
+                })}
+            />
             <Drawer.Screen
                 name='Main'
                 component={MainScreen}
