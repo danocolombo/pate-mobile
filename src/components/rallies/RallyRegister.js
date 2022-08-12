@@ -36,7 +36,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
     let ral = rally;
     let reg = registration;
     // printObject('RR:35 -->ral', ral);
-    // printObject('RR:36 -->reg', reg);
+    printObject('RR:36 -->reg', reg);
     if (!ral?.uid && reg?.eid) {
         //need to get the rally from reg.eid
         let rallyArray = useSelector((state) =>
@@ -47,6 +47,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
 
     // const r = rally.rally;
     const navigation = useNavigation();
+    const [isOld, setIsOld] = useState(true);
     const [registrarCount, setRegistrar] = useState(
         reg?.attendeeCount ? reg?.attendeeCount : 0
     );

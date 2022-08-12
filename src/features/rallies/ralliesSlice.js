@@ -11,13 +11,12 @@ const initialState = {
     tmpRally: {},
     isLoading: false,
 };
-const url = 'https://course-api.com/react-useReducer-cart-project';
 export const getAvailableEvents = createAsyncThunk(
     'rallies/getAvailableEvents',
-    async (name, thunkAPI) => {
+    async ({ name, today }, thunkAPI) => {
         try {
             const getFilterDate = async () => {
-                return '20220811';
+                return today;
             };
 
             return getFilterDate()
@@ -212,6 +211,7 @@ export const ralliesSlice = createSlice({
 
         logout: (state) => {
             state.allRallies = [];
+            state.displayRallies = [];
             state.userRallies = [];
             state.tmpRally = {};
             return state;

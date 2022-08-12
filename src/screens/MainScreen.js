@@ -18,13 +18,13 @@ import { Surface } from 'react-native-paper';
 import RallyItem from '../components/rallies/RallyItem';
 import UpcomingAreaEvents from '../components/rallies/upcomingAreaEvents';
 import { printObject } from '../utils/helpers';
-import { getPateDate, getToday } from '../utils/date';
 import { getAvailableEvents } from '../features/rallies/ralliesSlice';
 
 export default function MainScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
+    const today = useSelector((state) => state.system.today);
     const { displayRallies, allRallies } = useSelector(
         (state) => state.rallies
     );
@@ -38,7 +38,7 @@ export default function MainScreen() {
         !user.profile
     );
     useEffect(() => {
-        dispatch(getAvailableEvents());
+        dispatch(getAvailableEvents({ name, today }));
     }, [allRallies]);
 
     const handleProfileAcknowledge = () => {

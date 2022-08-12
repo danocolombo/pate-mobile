@@ -41,11 +41,11 @@ export default function LandingScreen() {
         console.log('promise-start');
         let taDay = getToday();
         let filterDate = getPateDate(taDay);
-        if (filterDate.length === 8) {
+        if (today.length === 8) {
             const approved = allRallies.filter(
                 (r) =>
                     r.approved === true &&
-                    r.eventDate >= filterDate &&
+                    r.eventDate >= today &&
                     r.eventRegion === eventRegion
             );
             let data = approved.sort(asc_sort);

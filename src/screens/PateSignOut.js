@@ -10,9 +10,9 @@ const PateSignOut = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(logout());
-        dispatch(ralliesSignout);
-        dispatch(profilesLogout);
-        dispatch(systemLogout);
+        dispatch(ralliesSignout());
+        dispatch(profilesLogout());
+        dispatch(systemLogout());
         Auth.signOut();
     }, []);
 

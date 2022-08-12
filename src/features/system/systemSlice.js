@@ -1,13 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
+const makeToday = () => {
+    var d = new Date();
+    const dminusone = d.toLocaleString(); //  M/DD/YYYY, H:MM:SS PM
+    let datetime = dminusone.split(', '); // M/DD/YYYY
+    const dateparts = datetime[0].split('/');
+    const yr = dateparts[2];
+    const mn = dateparts[0] < 10 ? '0' + dateparts[0] : dateparts[0];
+    const da = dateparts[1] < 10 ? '0' + dateparts[1] : dateparts[1];
+    const target = yr + mn + da;
+    return target; // returns YYYYMMDD
+};
+let today = makeToday();
 
 const initialState = {
     region: 'us#east#test',
     eventRegion: 'test',
     stateProv: 'TT',
     affiliateTitle: 'P8 Rally',
-    today: '',
-    affiliationEntity: 'Church',
-    affiliation: 'CelebrateRecoveryP8Rally',
+    today: today,
+    affiliationEntity: '',
+    affiliation: 'FEO',
     isLoading: true,
 };
 
@@ -35,7 +47,8 @@ export const systemSlice = createSlice({
             state.eventRegion = '';
             state.stateProv = '';
             state.affiliateTitle = '';
-            state.today = '';
+            state.affiliationEntity = '';
+            // state.today = '';
             state.affiliation = '';
             return state;
         },

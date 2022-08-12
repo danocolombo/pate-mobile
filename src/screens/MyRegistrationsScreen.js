@@ -80,6 +80,7 @@ const MyRegistrationsScreen = () => {
 
     function regPressHandler(reg) {
         // printObject('MHS:64-->reg', reg);
+        //   go to RegisterScreen
         navigation.navigate('RallyRegister', {
             registration: reg,
         });
@@ -144,6 +145,10 @@ const MyRegistrationsScreen = () => {
                                                 >
                                                     Tap events for details.
                                                 </Text>
+                                                <Text style={styles.noteText}>
+                                                    (past events cannot be
+                                                    deleted)
+                                                </Text>
                                             </View>
                                         ) : null
                                     ) : null}
@@ -151,14 +156,14 @@ const MyRegistrationsScreen = () => {
                                 {displayEvents ? (
                                     displayEvents.length > 0 ? (
                                         displayEvents.map((r) => {
-                                            const enablePress =
+                                            const isOld =
                                                 !isDateDashBeforeToday(
                                                     dateNumToDateDash(
                                                         r.eventDate
                                                     )
                                                 );
 
-                                            if (enablePress) {
+                                            if (isOld) {
                                                 return (
                                                     <Pressable
                                                         onPress={() =>
@@ -183,16 +188,27 @@ const MyRegistrationsScreen = () => {
                                                 );
                                             } else {
                                                 return (
-                                                    <View key={r.uid}>
-                                                        <RegListCard
-                                                            key={r.uid}
-                                                            registration={r}
-                                                            oldStyle={{
-                                                                backgroundColor:
-                                                                    Colors.secondary,
-                                                            }}
-                                                        />
-                                                    </View>
+                                                    <Pressable
+                                                        onPress={() =>
+                                                            regPressHandler(r)
+                                                        }
+                                                        style={({ pressed }) =>
+                                                            pressed &&
+                                                            styles.pressed
+                                                        }
+                                                        key={r.uid}
+                                                    >
+                                                        <View key={r.uid}>
+                                                            <RegListCard
+                                                                key={r.uid}
+                                                                registration={r}
+                                                                oldStyle={{
+                                                                    backgroundColor:
+                                                                        Colors.secondaryDark,
+                                                                }}
+                                                            />
+                                                        </View>
+                                                    </Pressable>
                                                 );
                                             }
                                         })
@@ -257,6 +273,11 @@ const styles = StyleSheet.create({
     },
     taglineText: {
         fontSize: 16,
+        textAlign: 'center',
+    },
+    noteText: {
+        fontSize: 12,
+        textAlign: 'center',
     },
     text: {
         fontSize: 16,
