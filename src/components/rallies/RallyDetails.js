@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
     },
     cardContainer: {
-        marginTop: 30,
+        marginTop: 0,
     },
     rallyCard: {
         flex: 1,

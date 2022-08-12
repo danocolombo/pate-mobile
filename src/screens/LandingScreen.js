@@ -7,6 +7,7 @@ import {
     Modal,
     Image,
 } from 'react-native';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../components/ui/CustomButton';
@@ -112,7 +113,7 @@ export default function LandingScreen() {
                 {/* <View style={styles.graphicRoot}>
                     <View style={styles.imageContainer}> */}
 
-                <View style={styles.graphicRoot}>
+                <Surface style={styles.welcomeSurface}>
                     <View style={styles.mainTextContainer}>
                         <Text style={styles.mainTitle}>{affiliateTitle}</Text>
                     </View>
@@ -147,11 +148,8 @@ export default function LandingScreen() {
                         <Text style={{ textAlign: 'center' }}>
                             Region: {eventRegion}
                         </Text>
-                        <Text style={{ textAlign: 'center' }}>
-                            Today: {today}
-                        </Text>
                     </View>
-                </View>
+                </Surface>
             </>
         </ImageBackground>
     );
@@ -232,12 +230,30 @@ const styles = StyleSheet.create({
         marginTop: '200',
         // alignSelf: 'flex-end',
     },
+    welcomeSurface: {
+        padding: 12,
+        marginVertical: 8,
+        backgroundColor: Colors.primary500,
+        marginHorizontal: 20,
+        justifyContent: 'space-between',
+        borderRadius: 10,
+        elevation: 5,
+        shadowColor: Colors.primary500,
+        shadowRadius: 8,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.6,
+    },
     modalSurface: {
         marginTop: '50%',
         marginHorizontal: 10,
         alignItems: 'center',
         justifyContent: 'center',
         elevation: 5,
+        // elevation: 3,
+        shadowColor: Colors.primary500,
+        shadowRadius: 4,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.4,
     },
     modalInfoWrapper: {
         alignItems: 'center',

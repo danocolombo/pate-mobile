@@ -362,17 +362,17 @@ const styles = StyleSheet.create({
         // flex: 1,
         flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 40,
         // width: '100%',
         marginHorizontal: 20,
     },
     logo: {
         width: '40%',
-        maxheight: 200,
-        maxWidth: 200,
+        maxheight: 150,
+        maxWidth: 150,
     },
     tinyLogo: {
-        width: 350,
-        height: 350,
+        width: 225,
+        height: 225,
     },
 });
