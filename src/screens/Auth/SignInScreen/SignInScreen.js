@@ -165,6 +165,9 @@ const SignInScreen = () => {
                     fullUserInfo = theUser;
                     break;
             }
+            if (fullUserInfo?.affiliate?.length < 1) {
+                fullUserInfo = { ...fullUserInfo, affiliate: 'FEO' };
+            }
             dispatch(updateCurrentUser(fullUserInfo));
             //   get system.region and system.eventRegion
             // default to GEORGIA

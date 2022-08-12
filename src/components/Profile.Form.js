@@ -50,6 +50,7 @@ export default function ProfileForm() {
     );
     const [showPhoneError, setShowPhoneError] = useState(false);
     //printObject('PF:49-->user', user);
+
     let phoneDisplayValue;
     if (user.phone) {
         let phoneType = getPhoneType(user.phone);
@@ -90,6 +91,7 @@ export default function ProfileForm() {
                 phoneToPass = '';
                 break;
         }
+
         // gather data
         values.phone = phoneToPass;
         dispatch(updateCurrentUser(values));
@@ -129,6 +131,9 @@ export default function ProfileForm() {
         dbProfile = { ...dbProfile, role: user.role };
         dbProfile = { ...dbProfile, region: user.region };
         // printObject('PF:127-->dbProfile', dbProfile);
+        if (!user?.affiliate) {
+            dbProfile = { ...dbProfile, affiliate: 'FEO' };
+        }
         updateProfile(dbProfile).then((response) => {
             navigation.navigate('Main', null);
         });
