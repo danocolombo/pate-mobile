@@ -32,11 +32,13 @@ import { updateRegNumbers as updateREDUXRalliesNumbers } from '../../features/ra
 import NumberInput from '../ui/NumberInput/NumberInput';
 import RegisterMeal from './RegisterMeal.component';
 const RallyRegister = ({ rally = {}, registration = {} }) => {
+    const navigation = useNavigation();
     const dispatch = useDispatch();
     let ral = rally;
     let reg = registration;
+    const { today } = useSelector((state) => state.system);
     // printObject('RR:35 -->ral', ral);
-    printObject('RR:36 -->reg', reg);
+    // printObject('RR:36 -->reg', reg);
     if (!ral?.uid && reg?.eid) {
         //need to get the rally from reg.eid
         let rallyArray = useSelector((state) =>
@@ -46,8 +48,7 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
     }
 
     // const r = rally.rally;
-    const navigation = useNavigation();
-    const [isOld, setIsOld] = useState(true);
+
     const [registrarCount, setRegistrar] = useState(
         reg?.attendeeCount ? reg?.attendeeCount : 0
     );
@@ -55,6 +56,8 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
         reg?.mealCount ? reg?.mealCount : 0
     );
     const user = useSelector((state) => state.users.currentUser);
+    //   ------------ check if it is old
+    const [isOld, setIsOld] = useState(ral.eventDate < today ? true : false);
 
     const handleRegistarCountChange = (e) => {
         let x = parseInt(e);
@@ -333,41 +336,74 @@ const RallyRegister = ({ rally = {}, registration = {} }) => {
                                         </Text>
                                     </View>
                                 </View>
-
-                                <Surface>
-                                    <Text style={styles.regisrationCountText}>
-                                        How many will be attending with you?
-                                    </Text>
-                                    <View
-                                        style={
-                                            styles.registrationCountNumberContainer
-                                        }
-                                    >
-                                        <NumberInput
-                                            value={registrarCount}
-                                            onAction={handleRegistarCountChange}
-                                        />
+                                {!isOld ? (
+                                    <>
+                                        <Surface>
+                                            <Text
+                                                style={
+                                                    styles.regisrationCountText
+                                                }
+                                            >
+                                                How many will be attending with
+                                                you?
+                                            </Text>
+                                            <View
+                                                style={
+                                                    styles.registrationCountNumberContainer
+                                                }
+                                            >
+                                                <NumberInput
+                                                    value={registrarCount}
+                                                    onAction={
+                                                        handleRegistarCountChange
+                                                    }
+                                                />
+                                            </View>
+                                        </Surface>
+                                    </>
+                                ) : (
+                                    <View>
+                                        <Text
+                                            style={styles.regisrationCountText}
+                                        >
+                                            {registrarCount} registered
+                                        </Text>
                                     </View>
-                                </Surface>
+                                )}
                                 {ral?.meal?.offered ? (
-                                    <RegisterMeal
-                                        ral={ral}
-                                        mealCount={mealCount}
-                                        onPress={handleMealCountChange}
-                                    />
+                                    !isOld ? (
+                                        <RegisterMeal
+                                            ral={ral}
+                                            mealCount={mealCount}
+                                            onPress={handleMealCountChange}
+                                        />
+                                    ) : (
+                                        <View>
+                                            <Text
+                                                style={
+                                                    styles.regisrationCountText
+                                                }
+                                            >
+                                                {mealCount} attended meal
+                                            </Text>
+                                        </View>
+                                    )
                                 ) : null}
-                                <Button
-                                    // icon={<Icon name='code' color='#ffffff' />}
-                                    buttonStyle={{
-                                        borderRadius: 5,
-                                        marginLeft: 40,
-                                        marginRight: 40,
-                                        marginBottom: 0,
-                                    }}
-                                    title={reg.uid ? 'UPDATE' : 'REGISTER'}
-                                    onPress={handleRegistrationRequest}
-                                    disabled={registrarCount < 1}
-                                />
+
+                                {!isOld && (
+                                    <Button
+                                        // icon={<Icon name='code' color='#ffffff' />}
+                                        buttonStyle={{
+                                            borderRadius: 5,
+                                            marginLeft: 40,
+                                            marginRight: 40,
+                                            marginBottom: 0,
+                                        }}
+                                        title={reg.uid ? 'UPDATE' : 'REGISTER'}
+                                        onPress={handleRegistrationRequest}
+                                        disabled={registrarCount < 1}
+                                    />
+                                )}
                             </View>
                         </Surface>
                     </View>

@@ -224,7 +224,7 @@ export const ralliesSlice = createSlice({
         [getAvailableEvents.fulfilled]: (state, action) => {
             // console.log(action);
             state.isLoading = false;
-            printObject('RS:223--> action', action);
+            // printObject('RS:223--> action', action);
             state.displayRallies = state.allRallies.filter(
                 (r) =>
                     r.eventDate >= action.payload &&

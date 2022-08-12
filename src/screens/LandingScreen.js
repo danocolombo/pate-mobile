@@ -37,40 +37,40 @@ export default function LandingScreen() {
         return a.eventDate - b.eventDate;
     }
 
-    let getDataNow = new Promise((resolve, reject) => {
-        console.log('promise-start');
-        let taDay = getToday();
-        let filterDate = getPateDate(taDay);
-        if (today.length === 8) {
-            const approved = allRallies.filter(
-                (r) =>
-                    r.approved === true &&
-                    r.eventDate >= today &&
-                    r.eventRegion === eventRegion
-            );
-            let data = approved.sort(asc_sort);
-            resolve(approved);
-        } else {
-            reject(null);
-        }
-        console.log('promise-end');
-    });
+    // let getDataNow = new Promise((resolve, reject) => {
+    //     console.log('promise-start');
+    //     let taDay = getToday();
+    //     let filterDate = getPateDate(taDay);
+    //     if (today.length === 8) {
+    //         const approved = allRallies.filter(
+    //             (r) =>
+    //                 r.approved === true &&
+    //                 r.eventDate >= today &&
+    //                 r.eventRegion === eventRegion
+    //         );
+    //         let data = approved.sort(asc_sort);
+    //         resolve(approved);
+    //     } else {
+    //         reject(null);
+    //     }
+    //     console.log('promise-end');
+    // });
 
-    useEffect(() => {
-        //   load the current date to system redux
-        // dispatch(setSystemDate('2020-09-10'));
-        // console.log(getDateNow());
-        getDataNow
-            .then((displayData) => {
-                console.log('LS:57--> displayData', displayData);
-                dispatch(loadDisplayRallies(displayData));
-                // dispatch(setSystemDate(theDate));
-            })
-            .catch((message) => {
-                console.log('CATCH');
-                console.log('no date, no events to display');
-            });
-    }, []);
+    // useEffect(() => {
+    //   load the current date to system redux
+    // dispatch(setSystemDate('2020-09-10'));
+    // console.log(getDateNow());
+    // getDataNow
+    //     .then((displayData) => {
+    //         console.log('LS:57--> displayData', displayData);
+    //         dispatch(loadDisplayRallies(displayData));
+    //         // dispatch(setSystemDate(theDate));
+    //     })
+    //     .catch((message) => {
+    //         console.log('CATCH');
+    //         console.log('no date, no events to display');
+    //     });
+    // }, []);
 
     const handleProfileAcknowledge = () => {
         setShowProfileNeededModal(false);

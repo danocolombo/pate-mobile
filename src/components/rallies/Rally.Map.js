@@ -34,7 +34,7 @@ const RallyMap = ({ rally, mapHeight, mapWidth }) => {
     });
     const GAK = process.env.GOOGLE_API_KEY;
     useEffect(() => {
-        printObject('RM:28-->rally:', rally);
+        //printObject('RM:28-->rally:', rally);
         // if rally does not have lat and lng, get from address
         if (!rally?.geolocation?.lat || !rally?.geolocation.lng) {
             //build the address
@@ -57,8 +57,8 @@ const RallyMap = ({ rally, mapHeight, mapWidth }) => {
         } else {
             setGeoLat(parseFloat(rally.geolocation.lat));
             setGeoLng(parseFloat(rally.geolocation.lng));
-            console.log('RM:51-->lat', rally.geolocation.lat);
-            console.log('RM:52-->lng', rally.geolocation.lng);
+            // console.log('RM:51-->lat', rally.geolocation.lat);
+            // console.log('RM:52-->lng', rally.geolocation.lng);
         }
     }, []);
     const mHeight = Dimensions.get('window').height * mapHeight;

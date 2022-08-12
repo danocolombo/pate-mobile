@@ -66,7 +66,6 @@ const MyRegistrationsScreen = () => {
 
     useEffect(() => {
         //we want to associate rally details with each registration
-        console.log('\nREGISTRATIONS RELOAD....\n');
         setIsLoading(true);
         combineDetails()
             .then((results) => {
