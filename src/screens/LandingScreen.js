@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import CustomButton from '../components/ui/CustomButton';
 import { Colors } from '../constants/colors';
 import NoEventsNotice from '../components/ui/NoEventsNotice.js';
@@ -19,8 +19,9 @@ import { printObject } from '../utils/helpers';
 import { getPateDate, getToday } from '../utils/date';
 import { getAvailableEvents } from '../features/rallies/ralliesSlice';
 
-export default function LandingScreen() {
+export default function LandingScreen(props) {
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
@@ -34,8 +35,8 @@ export default function LandingScreen() {
     );
 
     useEffect(() => {
-        dispatch(getAvailableEvents({ name, today }));
-    }, []);
+        dispatch(getAvailableEvents({ name, today: today }));
+    }, [props, isFocused]);
 
     const handleProfileAcknowledge = () => {
         setShowProfileNeededModal(false);

@@ -10,7 +10,7 @@ import {
     ScrollView,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import CustomButton from '../components/ui/CustomButton';
 import NoEventsNotice from '../components/ui/NoEventsNotice.js';
 import { Surface } from 'react-native-paper';
@@ -20,8 +20,9 @@ import UpcomingAreaEvents from '../components/rallies/upcomingAreaEvents';
 import { printObject } from '../utils/helpers';
 import { getAvailableEvents } from '../features/rallies/ralliesSlice';
 
-export default function MainScreen() {
+export default function MainScreen(props) {
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
     const { today } = useSelector((state) => state.system);
@@ -31,8 +32,8 @@ export default function MainScreen() {
     const { affiliateHeader } = useSelector((state) => state.system);
 
     useEffect(() => {
-        dispatch(getAvailableEvents({ name, today }));
-    }, [allRallies]);
+        dispatch(getAvailableEvents({ name, today: today }));
+    }, [allRallies, props, isFocused]);
 
     return (
         <ImageBackground
