@@ -24,27 +24,16 @@ export default function MainScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
-    const today = useSelector((state) => state.system.today);
+    const { today } = useSelector((state) => state.system);
     const { displayRallies, allRallies } = useSelector(
         (state) => state.rallies
     );
     const { affiliateHeader } = useSelector((state) => state.system);
-    // const PATEDATE = useSelector((state) => state.system.today);
-    // const AFFILIATE_HEADER = useSelector(
-    //     (state) => state.system.affiliateTitle
-    // );
-    const [displayData, setDisplayData] = useState([]);
-    const [showProfileNeededModal, setShowProfileNeededModal] = useState(
-        !user.profile
-    );
+
     useEffect(() => {
         dispatch(getAvailableEvents({ name, today }));
     }, [allRallies]);
 
-    const handleProfileAcknowledge = () => {
-        setShowProfileNeededModal(false);
-        navigation.navigate('Profile');
-    };
     return (
         <ImageBackground
             source={require('../components/images/background.png')}
