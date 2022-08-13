@@ -23,6 +23,7 @@ export default function LandingScreen(props) {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
+
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
 
@@ -34,9 +35,9 @@ export default function LandingScreen(props) {
         !user.profile
     );
 
-    useEffect(() => {
-        dispatch(getAvailableEvents({ name, today: today }));
-    }, [props, isFocused]);
+    // useEffect(() => {
+    //     dispatch(getAvailableEvents({ name, today: today }));
+    // }, [props, isFocused]);
 
     const handleProfileAcknowledge = () => {
         setShowProfileNeededModal(false);
@@ -114,6 +115,9 @@ export default function LandingScreen(props) {
                         <Text style={{ textAlign: 'center' }}>
                             Region: {eventRegion}
                         </Text>
+                        <View>
+                            <Text>today: -- {today} --</Text>
+                        </View>
                     </View>
                 </Surface>
             </>

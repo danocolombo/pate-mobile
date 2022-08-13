@@ -32,7 +32,7 @@ export default function MainScreen(props) {
     const { affiliateHeader } = useSelector((state) => state.system);
 
     useEffect(() => {
-        dispatch(getAvailableEvents({ name, today: today }));
+        dispatch(getAvailableEvents({ name, today: '20220813' }));
     }, [allRallies, props, isFocused]);
 
     return (
@@ -52,6 +52,9 @@ export default function MainScreen(props) {
                             <Text style={styles.titleText}>
                                 Upcoming Events
                             </Text>
+                        </View>
+                        <View>
+                            <Text>today: -- {today} --</Text>
                         </View>
                         <View style={{ alignItems: 'center' }}>
                             <UpcomingAreaEvents
