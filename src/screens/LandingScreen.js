@@ -22,7 +22,6 @@ export default function LandingScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.users.currentUser);
-
     const allRallies = useSelector((state) => state.rallies.allRallies);
 
     const { eventRegion, affiliateTitle, today } = useSelector(
@@ -33,44 +32,9 @@ export default function LandingScreen() {
         !user.profile
     );
 
-    function asc_sort(a, b) {
-        return a.eventDate - b.eventDate;
-    }
-
-    // let getDataNow = new Promise((resolve, reject) => {
-    //     console.log('promise-start');
-    //     let taDay = getToday();
-    //     let filterDate = getPateDate(taDay);
-    //     if (today.length === 8) {
-    //         const approved = allRallies.filter(
-    //             (r) =>
-    //                 r.approved === true &&
-    //                 r.eventDate >= today &&
-    //                 r.eventRegion === eventRegion
-    //         );
-    //         let data = approved.sort(asc_sort);
-    //         resolve(approved);
-    //     } else {
-    //         reject(null);
-    //     }
-    //     console.log('promise-end');
-    // });
-
-    // useEffect(() => {
-    //   load the current date to system redux
-    // dispatch(setSystemDate('2020-09-10'));
-    // console.log(getDateNow());
-    // getDataNow
-    //     .then((displayData) => {
-    //         console.log('LS:57--> displayData', displayData);
-    //         dispatch(loadDisplayRallies(displayData));
-    //         // dispatch(setSystemDate(theDate));
-    //     })
-    //     .catch((message) => {
-    //         console.log('CATCH');
-    //         console.log('no date, no events to display');
-    //     });
-    // }, []);
+    useEffect(() => {
+        dispatch(getAvailableEvents({ name, today }));
+    }, []);
 
     const handleProfileAcknowledge = () => {
         setShowProfileNeededModal(false);
