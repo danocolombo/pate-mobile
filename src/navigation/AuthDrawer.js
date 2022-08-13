@@ -2,7 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MainScreen from '../screens/MainScreen';
+// import MainScreen from '../screens/MainScreen';
+import UpcomingEventsScreen from '../screens/UpcomingEvents';
 import LandingScreen from '../screens/LandingScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PateSignOut from '../screens/PateSignOut';
@@ -58,7 +59,7 @@ const AuthDrawer = (navigation) => {
             />
             <Drawer.Screen
                 name='Main'
-                component={MainScreen}
+                component={UpcomingEventsScreen}
                 options={({ navigation }) => ({
                     title: 'FEO',
                     drawerLabel: 'Upcoming Events',
