@@ -17,6 +17,7 @@ import { Surface } from 'react-native-paper';
 import { loadDisplayRallies } from '../features/rallies/ralliesSlice';
 import { printObject } from '../utils/helpers';
 import { getPateDate, getToday } from '../utils/date';
+import { getAvailableEvents } from '../features/rallies/ralliesSlice';
 
 export default function LandingScreen() {
     const navigation = useNavigation();
