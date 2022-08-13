@@ -9,8 +9,6 @@ import {
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-import CustomButton from '../components/ui/CustomButton';
-import { Colors } from '../constants/colors';
 import UpcomingAreaEvents from '../components/rallies/upcomingAreaEvents';
 import RallyItem from '../components/rallies/RallyItem';
 import NoEventsNotice from '../components/ui/NoEventsNotice.js';
@@ -133,10 +131,6 @@ const styles = StyleSheet.create({
     mapContainer: {
         alignItems: 'center',
         marginBottom: 10,
-    },
-    infoText: {
-        color: 'white',
-        fontSize: 24,
     },
     imageContainer: {
         justifyContent: 'center',
