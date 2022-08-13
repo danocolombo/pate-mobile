@@ -62,10 +62,8 @@ export default function UpcomingEventsScreen(props) {
                                 Upcoming Events
                             </Text>
                         </View>
-                        <View>
-                            <Text>today: -- {today} --</Text>
-                        </View>
-                        <View style={{ alignItems: 'center' }}>
+
+                        <View style={styles.mapContainer}>
                             <UpcomingAreaEvents
                                 locations={displayRallies}
                                 mapHeight={0.35}
@@ -119,48 +117,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
-        alignItems: 'center',
-    },
-    graphicRoot: {
-        backgroundColor: Colors.secondary,
-        // flex: 0.8,
-        flexDirection: 'column',
-
-        paddingHorizontal: 10,
-        marginTop: 20,
-        borderRadius: 30,
-
-        width: '90%',
-    },
-    heroImageContainer: {
-        // flexDirection: 'column',
-        marginTop: 10,
-
-        justifyContent: 'center',
-        alignItems: 'center',
-        // height: '100%',
-    },
-    mainTextContainer: {
-        justifyContent: 'top',
-        marginTop: 20,
-        marginBottom: 10,
-        alignItems: 'center',
-    },
-    subTextContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    mainTitle: {
-        fontSize: 34,
-        letterSpacing: 0.5,
-        fontWeight: '600',
-        color: 'white',
-        textAlign: 'center',
-    },
-    subTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: 'white',
     },
     affiliateHeader: {
         paddingTop: 20,
@@ -174,6 +130,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
+    mapContainer: {
+        alignItems: 'center',
+        marginBottom: 10,
+    },
     infoText: {
         color: 'white',
         fontSize: 24,
@@ -185,49 +145,5 @@ const styles = StyleSheet.create({
     image: {
         width: '85%',
         height: '65%',
-    },
-    modalContainer: {
-        marginTop: '200',
-        // alignSelf: 'flex-end',
-    },
-    welcomeSurface: {
-        padding: 12,
-        marginVertical: 8,
-        backgroundColor: Colors.primary500,
-        marginHorizontal: 20,
-        justifyContent: 'space-between',
-        borderRadius: 10,
-        elevation: 5,
-        shadowColor: Colors.primary500,
-        shadowRadius: 8,
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.6,
-    },
-    modalSurface: {
-        marginTop: '50%',
-        marginHorizontal: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        elevation: 5,
-        // elevation: 3,
-        shadowColor: Colors.primary500,
-        shadowRadius: 4,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.4,
-    },
-    modalInfoWrapper: {
-        alignItems: 'center',
-    },
-    modalTitle: {
-        marginTop: 15,
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    modalButtonContainer: {
-        marginVertical: 20,
-        flexDirection: 'row',
-    },
-    modalButtonWrapper: {
-        marginHorizontal: 10,
     },
 });
