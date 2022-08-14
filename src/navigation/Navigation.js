@@ -22,6 +22,7 @@ import RegistrationScreen from '../screens/RegistrationScreen';
 import ErrorScreen from '../screens/ErrorScreen';
 import SignInScreen from '../screens/Auth/SignInScreen';
 import SignUpScreen from '../screens/Auth/SignUpScreen';
+import PersonalEdits from '../screens/PersonalEdits';
 import ConfirmEmailScreen from '../screens/Auth/ConfirmEmailScreen';
 import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
 import NewPasswordScreen from '../screens/Auth/NewPasswordScreen';
@@ -51,6 +52,17 @@ function PateStack() {
             <Stack.Screen
                 name='RallyDetail'
                 component={RallyDetailScreen}
+                options={({ navigation }) => ({
+                    title: 'FEO',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
+            <Stack.Screen
+                name='PersonalEdits'
+                component={PersonalEdits}
                 options={({ navigation }) => ({
                     title: 'FEO',
                     headerStyle: {

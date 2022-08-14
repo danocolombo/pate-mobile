@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import CardDate from '../components/ui/RallyCardDate';
 import ProfileForm from '../components/Profile.Form';
 import Personal from '../components/profile/personal';
-function ProfileScreen() {
+function PersonalEdits() {
     let user = useSelector((state) => state.users.currentUser);
     return (
         <>
@@ -14,14 +14,13 @@ function ProfileScreen() {
                 style={styles.bgImageContainer}
             >
                 <View style={{ marginHorizontal: 20, marginTop: 20 }}>
-                    <Personal user={user} />
-                    <ProfileForm />
+                    <Text>Personal</Text>
                 </View>
             </ImageBackground>
         </>
     );
 }
-export default ProfileScreen;
+export default PersonalEdits;
 const styles = StyleSheet.create({
     bgImageContainer: {
         flex: 1,

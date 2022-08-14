@@ -31,7 +31,10 @@ export const Colors = {
     darkBackground: '#49274A',
     mediumBackground: '#94618E',
     lightBackground: '#F4DECB',
-    success: "green",
-    warning: "yellow",
-    critical: "red"
+    SWITCH_ON: '#9C26B0',
+    SWITCH_OFF: '#D4D9DD',
+    CAPTION: '#4A4A4A',
+    success: 'green',
+    warning: 'yellow',
+    critical: 'red',
 };
