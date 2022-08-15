@@ -1,16 +1,23 @@
 import React from 'react';
 import { View, Text, ImageBackground, StyleSheet } from 'react-native';
-import { List, Badge } from 'react-native-paper';
-import CardDate from '../components/ui/RallyCardDate';
-import ProfileForm from '../components/Profile.Form';
+import { useSelector } from 'react-redux';
+import ProfileForm from '../components/profile/Profile.Form';
+import PersonalDetails from '../components/profile/Profile';
+import PersonalHeader from '../components/profile/personalHeader';
+import AffiliateForm from '../components/profile/Affiliate.Form';
+import { printObject } from '../utils/helpers';
 function ProfileScreen() {
+    let user = useSelector((state) => state.users.currentUser);
+
     return (
         <>
             <ImageBackground
                 source={require('../components/images/background.png')}
                 style={styles.bgImageContainer}
             >
-                <ProfileForm />
+                <PersonalHeader user={user} />
+                <PersonalDetails user={user} />
+                {/* <AffiliateForm /> */}
             </ImageBackground>
         </>
     );

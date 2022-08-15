@@ -113,11 +113,11 @@ export default function LandingScreen(props) {
                             Welcome {user.firstName} {user.lastName}
                         </Text>
                         <Text style={{ textAlign: 'center' }}>
-                            Region: {eventRegion}
+                            Affiliation: {user?.affiliations?.active}
                         </Text>
-                        <View>
-                            <Text>today: -- {today} --</Text>
-                        </View>
+                        <Text style={{ textAlign: 'center' }}>
+                            Region: {user?.region}
+                        </Text>
                     </View>
                 </Surface>
             </>

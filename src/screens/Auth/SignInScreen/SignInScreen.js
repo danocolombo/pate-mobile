@@ -28,6 +28,7 @@ import {
 import { getToday, printObject } from '../../../utils/helpers';
 import { REGION } from '../../../constants/regions';
 import { getPateDate } from '../../../utils/date';
+import { PricingButton } from 'react-native-elements/dist/pricing/PricingCard';
 const SignInScreen = () => {
     const [loading, setLoading] = useState(false);
     const { height } = useWindowDimensions();
@@ -165,8 +166,19 @@ const SignInScreen = () => {
                     fullUserInfo = theUser;
                     break;
             }
-            if (fullUserInfo?.affiliate?.length < 1) {
+            if (fullUserInfo?.affiliations?.active.length < 1) {
                 fullUserInfo = { ...fullUserInfo, affiliate: 'FEO' };
+                //todo: do we need to set default affilate groups as well?
+                console.log('affiliated defaulted to FEO');
+            } else {
+                fullUserInfo = {
+                    ...fullUserInfo,
+                    affiliate: fullUserInfo?.affiliations?.active,
+                };
+                console.log(
+                    'affilate set to ',
+                    fullUserInfo?.affiliations?.active
+                );
             }
             dispatch(updateCurrentUser(fullUserInfo));
             //   get system.region and system.eventRegion
@@ -222,7 +234,14 @@ const SignInScreen = () => {
                 .post(api2use, body, config)
                 .then((response) => {
                     //   SAVE ALL RALLIES TO REDUX
-                    dispatch(loadRallies(response.data.body.Items));
+                    let allEvents = response.data.body.Items;
+                    console.log('affiliate_filter:', fullUserInfo?.affiliate);
+
+                    let affiliatedEvents = allEvents.filter(
+                        (e) => e.affiliate === fullUserInfo?.affiliate
+                    );
+
+                    dispatch(loadRallies(affiliatedEvents));
 
                     //saveAllRallies(response.data.body.Items);
                     // console.log('MS:81-->events', response.data.body.Items);
