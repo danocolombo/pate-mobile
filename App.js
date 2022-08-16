@@ -27,6 +27,7 @@ const feoTheme = {
         primary: '#1656A3',
         secondary: '#A8C7ED',
         accent: '#A8C7ED',
+        lightBlack: '#696969',
     },
 };
 function App() {

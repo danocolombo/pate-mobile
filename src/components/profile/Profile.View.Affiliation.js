@@ -1,20 +1,22 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Pressable } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Surface, Text, List, TextInput, Button } from 'react-native-paper';
 import { withTheme } from 'react-native-paper';
-
+import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { printObject } from '../../utils/helpers';
 
 const ProfileViewAffiliation = (props) => {
     const user = props.user;
     const { colors } = props.theme;
-
+    const navigation = useNavigation();
     const [affilation, setAffiliation] = useState(user?.affiliations?.active);
     const [affiliationList, setAffiliationList] = useState(
         user?.affiliations?.options
     );
-
+    const handleEditRequest = () => {
+        navigation.navigate('ProfileEditAffiliation');
+    };
     return (
         <View>
             <List.Section>
@@ -42,8 +44,18 @@ const ProfileViewAffiliation = (props) => {
                         />
                     )}
                 >
-                    <View style={{ alignItems: 'flex-end' }}>
-                        <Ionicons name={'pencil'} color={'black'} size={24} />
+                    <View style={{ alignItems: 'flex-end', paddingRight: 15 }}>
+                        <Pressable
+                            key={user.uid}
+                            onPress={() => handleEditRequest()}
+                            style={({ pressed }) => pressed && styles.pressed}
+                        >
+                            <Ionicons
+                                name={'pencil'}
+                                color={colors.lightBlack}
+                                size={24}
+                            />
+                        </Pressable>
                     </View>
                     <View style={{ marginHorizontal: 5 }}>
                         <TextInput

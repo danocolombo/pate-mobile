@@ -3,26 +3,25 @@ import React, { useState, useEffect } from 'react';
 import { Surface, Text, List, TextInput, Button } from 'react-native-paper';
 import { withTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import ProfileViewInfo from './Profile.View.Info';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { printObject } from '../../utils/helpers';
 
-const ProfileViewResidence = (props) => {
+const ProfileViewAffiliates = (props) => {
     const user = props.user;
     const { colors } = props.theme;
     const navigation = useNavigation();
-    const [street, setStreet] = useState(user?.residence?.street);
-    const [city, setCity] = useState(user?.residence?.city);
-    const [stateProv, setStateProv] = useState(user?.residence.stateProv);
-    const [postalCode, setPostalCode] = useState(user?.residence.postalCode);
+    const [affilation, setAffiliation] = useState(user?.affiliations?.active);
+    const [affiliationList, setAffiliationList] = useState(
+        user?.affiliations?.options
+    );
     const handleEditRequest = () => {
-        navigation.navigate('ProfileEditResidence');
+        navigation.navigate('ProfileEditAffiliation');
     };
     return (
         <View>
             <List.Section>
                 <List.Accordion
-                    title='Residential Information'
+                    title='Affiliate Information'
                     style={{ backgroundColor: colors.secondary }}
                     expanded={props.isOpen}
                     titleStyle={{
@@ -60,38 +59,11 @@ const ProfileViewResidence = (props) => {
                     </View>
                     <View style={{ marginHorizontal: 5 }}>
                         <TextInput
-                            label='Street'
-                            value={street}
+                            label='Affiliation'
+                            value={affilation}
                             mode='flat'
                             style={styles.textInput}
                             disabled
-                        />
-                    </View>
-                    <View style={{ marginHorizontal: 5 }}>
-                        <TextInput
-                            label='City'
-                            disabled
-                            style={styles.textInput}
-                            value={city}
-                            mode='flat'
-                        />
-                    </View>
-                    <View style={{ marginHorizontal: 5 }}>
-                        <TextInput
-                            label='State / Providence'
-                            style={styles.textInput}
-                            disabled
-                            value={stateProv}
-                            mode='flat'
-                        />
-                    </View>
-                    <View style={{ marginHorizontal: 5 }}>
-                        <TextInput
-                            label='Postal Code'
-                            style={styles.textInput}
-                            disabled
-                            value={postalCode}
-                            mode='flat'
                         />
                     </View>
                 </List.Accordion>
@@ -100,7 +72,7 @@ const ProfileViewResidence = (props) => {
     );
 };
 
-export default withTheme(ProfileViewResidence);
+export default withTheme(ProfileViewAffiliates);
 
 const styles = StyleSheet.create({
     textInput: {

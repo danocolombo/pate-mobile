@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 // import { ALL_EVENTS } from '../../../../data/getRegionalEvents';
 import { updateCurrentUser } from '../../../features/users/usersSlice';
 import { getProfile } from '../../../providers/users';
+import { getRegionByAffiliateStateProv } from '../../../providers/system';
 import { loadRallies } from '../../../features/rallies/ralliesSlice';
 import { loadRegistrations } from '../../../features/users/usersSlice';
 import {
@@ -186,11 +187,25 @@ const SignInScreen = () => {
 
             // printObject('SS:167-->fullUserInfo:', fullUserInfo);
             if (fullUserInfo?.residence?.stateProv) {
+                // get the region information based on te users stateProv.
+                getRegionByAffiliateStateProv(
+                    fullUserInfo.affiliations.active,
+                    fullUserInfo.residence.stateProv
+                ).then((response) => {
+                    if (response.statusCode === 200) {
+                        region = response.body.region;
+                        //todo -- if system region != user.region, should we update provide with system value??
+                    } else {
+                        // default to the profile value
+                        region =
+                            REGION[
+                                fullUserInfo?.residence?.stateProv.toUpperCase()
+                            ];
+                    }
+                    const regionParts = region.split('#');
+                    eventRegion = regionParts[1];
+                });
                 // lookup region from value
-                region =
-                    REGION[fullUserInfo?.residence?.stateProv.toUpperCase()];
-                const regionParts = region.split('#');
-                eventRegion = regionParts[1];
             }
             dispatch(setRegion(region));
             dispatch(setEventRegion(eventRegion));
