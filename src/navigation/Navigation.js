@@ -29,6 +29,7 @@ import UserProfileScreen from '../screens/Serve/UserProfileScreen';
 import ProfileEditInfo from '../components/profile/Profile.Edit.Info';
 import ProfileEditResidence from '../components/profile/Profile.Edit.Residence';
 import ProfileEditAffiliation from '../components/profile/Profile.Edit.Affiliation';
+import ProfileEditAffiliations from '../components/profile/Profile.Edit.Affiliations';
 import AuthDrawer from './AuthDrawer';
 import { Auth, Hub } from 'aws-amplify';
 
@@ -117,7 +118,17 @@ function PateStack() {
                     headerTintColor: 'white',
                 })}
             />
-
+            <Stack.Screen
+                name='ProfileEditAffiliations'
+                component={ProfileEditAffiliations}
+                options={({ navigation }) => ({
+                    title: 'FEO',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
             <Stack.Screen
                 name='RallyRegister'
                 component={RegisterScreen}

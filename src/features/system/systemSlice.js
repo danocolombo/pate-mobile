@@ -11,6 +11,17 @@ const makeToday = () => {
     return target; // returns YYYYMMDD
 };
 let today = makeToday();
+let AFF = {
+    ownerEmail: 'danocolombo@gmail.com',
+    code: 'FES',
+    ownerContact: 'Dano Colombo',
+    label: 'department',
+    status: 'active',
+    category: 'development',
+    description: 'FES System Testing Affiliate',
+    ownerPhone: '7066042494',
+    title: 'FES Testing',
+};
 
 const initialState = {
     region: 'us#east#test',
@@ -21,6 +32,7 @@ const initialState = {
     affiliationEntity: '',
     affiliation: 'FEO',
     isLoading: true,
+    affiliate: AFF,
 };
 
 export const systemSlice = createSlice({

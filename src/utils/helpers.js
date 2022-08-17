@@ -142,6 +142,15 @@ export function createMtgCompKey(client, meetingDate) {
         meetingDate.substring(8, 10);
     return mtgCompKey;
 }
+export function capitalize(textString) {
+    const word = textString;
+    const lower = word.toLowerCase();
+    const first = word.charAt(0);
+    const upper = first.toUpperCase();
+    const remainder = lower.slice(1);
+    const returnValue = upper + remainder;
+    return returnValue;
+}
 export function createGrpCompKey(client, meetingId) {
     let grpCompKey = client + '#' + meetingId;
     return grpCompKey;

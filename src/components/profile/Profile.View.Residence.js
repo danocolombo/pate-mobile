@@ -15,6 +15,9 @@ const ProfileViewResidence = (props) => {
     const [city, setCity] = useState(user?.residence?.city);
     const [stateProv, setStateProv] = useState(user?.residence.stateProv);
     const [postalCode, setPostalCode] = useState(user?.residence.postalCode);
+    const [residenceAccordionOpen, setResidenceAccordionOpen] = useState(false);
+    const handlePress = () =>
+        setResidenceAccordionOpen(!residenceAccordionOpen);
     const handleEditRequest = () => {
         navigation.navigate('ProfileEditResidence');
     };
@@ -22,21 +25,21 @@ const ProfileViewResidence = (props) => {
         <View>
             <List.Section>
                 <List.Accordion
-                    title='Residential Information'
+                    title='Residence Information'
                     style={{ backgroundColor: colors.secondary }}
-                    expanded={props.isOpen}
+                    expanded={residenceAccordionOpen}
                     titleStyle={{
                         color: colors.primary,
                         fontSize: 24,
                         fontWeight: '600',
                         letterSpacing: 0.5,
                     }}
-                    onPress={props.toggle}
+                    onPress={handlePress}
                     right={(props) => (
                         // <List.Icon {...props} icon='chevron' />
                         <Ionicons
                             name={
-                                props.isOpen
+                                residenceAccordionOpen
                                     ? 'chevron-down-sharp'
                                     : 'chevron-up-sharp'
                             }

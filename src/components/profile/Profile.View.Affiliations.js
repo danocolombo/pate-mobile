@@ -14,8 +14,13 @@ const ProfileViewAffiliates = (props) => {
     const [affiliationList, setAffiliationList] = useState(
         user?.affiliations?.options
     );
+    const [affiliationsAccordionOpen, setAffiliationsAccordionOpen] =
+        useState(false);
+    const handlePress = () =>
+        setAffiliationsAccordionOpen(!affiliationsAccordionOpen);
+
     const handleEditRequest = () => {
-        navigation.navigate('ProfileEditAffiliation');
+        navigation.navigate('ProfileEditAffiliations');
     };
     return (
         <View>
@@ -23,19 +28,19 @@ const ProfileViewAffiliates = (props) => {
                 <List.Accordion
                     title='Affiliate Information'
                     style={{ backgroundColor: colors.secondary }}
-                    expanded={props.isOpen}
+                    expanded={affiliationsAccordionOpen}
                     titleStyle={{
                         color: colors.primary,
                         fontSize: 24,
                         fontWeight: '600',
                         letterSpacing: 0.5,
                     }}
-                    onPress={props.toggle}
+                    onPress={handlePress}
                     right={(props) => (
                         // <List.Icon {...props} icon='chevron' />
                         <Ionicons
                             name={
-                                props.isOpen
+                                affiliationsAccordionOpen
                                     ? 'chevron-down-sharp'
                                     : 'chevron-up-sharp'
                             }

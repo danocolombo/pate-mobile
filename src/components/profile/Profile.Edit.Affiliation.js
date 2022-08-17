@@ -25,6 +25,7 @@ import {
     printObject,
     getPhoneType,
     createPatePhone,
+    capitalize,
 } from '../../utils/helpers';
 
 // create validation schema for yup to pass to formik
@@ -39,18 +40,17 @@ const profileSchema = yup.object({
     // .test('is-postalCode-numeric', 'required (10000 - 99999)', (val) => {
     //     return parseInt(val) > 9999 && parseInt(val) < 100000;
     // }),
-    churchName: yup.string().min(2),
-    churchCity: yup.string().min(2),
-    churchStateProv: yup.string().min(2).max(2),
+    affiliateName: yup.string().min(2),
+    affiliateCity: yup.string().min(2),
+    affiliateStateProv: yup.string().min(2).max(2),
 });
 
 export default function ProfileEditAffiliation() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     let user = useSelector((state) => state.users.currentUser);
-    const AFFILIATION_ENTITY = useSelector(
-        (state) => state.system.affiliationEntity
-    );
+    let { affiliate } = useSelector((state) => state.system);
+
     const [showPhoneError, setShowPhoneError] = useState(false);
     //printObject('PF:49-->user', user);
 
@@ -111,12 +111,11 @@ export default function ProfileEditAffiliation() {
                 stateProv: values?.stateProv ? values.stateProv : '',
                 postalCode: values?.postalCode ? values.postalCode : '',
             },
-            church: {
-                name: values?.churchName ? values.churchName : '',
-                //street: values?.churchStreet ? values.churchStreet : '',
-                city: values?.churchCity ? values.churchCity : '',
-                stateProv: values?.churchStateProv
-                    ? values.churchStateProv
+            affiliate: {
+                name: values?.affiliateName ? values.affiliateName : '',
+                city: values?.affiliateCity ? values.affiliateCity : '',
+                stateProv: values?.affiliateStateProv
+                    ? values.affiliateStateProv
                     : '',
             },
             isLoggedIn: true,
@@ -163,13 +162,15 @@ export default function ProfileEditAffiliation() {
                         postalCode: user?.residence?.postalCode
                             ? user.residence.postalCode
                             : '',
-                        churchName: user?.church?.name ? user.church.name : '',
-                        // churchStreet: user?.churchStreet
-                        //     ? user.churchStreet
-                        //     : '',
-                        churchCity: user?.church?.city ? user.church.city : '',
-                        churchStateProv: user?.church?.stateProv
-                            ? user.church.stateProv
+                        affiliateName: user?.affiliate?.name
+                            ? user.affiliate.name
+                            : '',
+
+                        affiliateCity: user?.affiliate?.city
+                            ? user.affiliate.city
+                            : '',
+                        affiliateStateProv: user?.affiliate?.stateProv
+                            ? user.affiliate.stateProv
                             : '',
                     }}
                     validationSchema={profileSchema}
@@ -181,37 +182,32 @@ export default function ProfileEditAffiliation() {
                         <Surface style={styles.personalSurface}>
                             <View style={styles.heading}>
                                 <Text style={styles.headerText}>
-                                    Edit Contact Info
+                                    Edit {capitalize(affiliate.label)} Info
                                 </Text>
                             </View>
 
                             <View style={styles.inputContainer}>
-                                <View>
-                                    <Text style={styles.churchTitle}>
-                                        {AFFILIATION_ENTITY} Affiliation
-                                    </Text>
-                                </View>
                                 <View style={styles.labelContainer}>
                                     <Text style={styles.labelText}>
-                                        {AFFILIATION_ENTITY} Name
+                                        {capitalize(affiliate.label)} Name
                                     </Text>
                                 </View>
                                 <TextInput
                                     style={styles.input}
-                                    placeholder='Church Name'
+                                    placeholder='Name'
                                     onChangeText={formikProps.handleChange(
-                                        'churchName'
+                                        'affiliateName'
                                     )}
-                                    value={formikProps.values.churchName}
+                                    value={formikProps.values.affiliateName}
                                     onBlur={formikProps.handleBlur(
-                                        'churchName'
+                                        'affiliateName'
                                     )}
                                 />
-                                {formikProps.errors.churchName &&
-                                formikProps.touched.churchName ? (
+                                {formikProps.errors.affiliateName &&
+                                formikProps.touched.affiliateName ? (
                                     <Text style={styles.errorText}>
-                                        {formikProps.touched.churchName &&
-                                            formikProps.errors.churchName}
+                                        {formikProps.touched.affiliateName &&
+                                            formikProps.errors.affiliateName}
                                     </Text>
                                 ) : null}
                                 <View style={styles.labelContainer}>
@@ -221,18 +217,18 @@ export default function ProfileEditAffiliation() {
                                     style={styles.input}
                                     placeholder='City'
                                     onChangeText={formikProps.handleChange(
-                                        'churchCity'
+                                        'affiliateCity'
                                     )}
-                                    value={formikProps.values.churchCity}
+                                    value={formikProps.values.affiliateCity}
                                     onBlur={formikProps.handleBlur(
-                                        'churchCity'
+                                        'affiliateCity'
                                     )}
                                 />
-                                {formikProps.errors.churchCity &&
-                                formikProps.touched.churchCity ? (
+                                {formikProps.errors.affiliateCity &&
+                                formikProps.touched.affiliateCity ? (
                                     <Text style={styles.errorText}>
-                                        {formikProps.touched.churchCity &&
-                                            formikProps.errors.churchCity}
+                                        {formikProps.touched.affiliateCity &&
+                                            formikProps.errors.affiliateCity}
                                     </Text>
                                 ) : null}
                                 <View style={styles.labelContainer}>
@@ -245,19 +241,23 @@ export default function ProfileEditAffiliation() {
                                     ]}
                                     placeholder='State'
                                     onChangeText={formikProps.handleChange(
-                                        'churchStateProv'
+                                        'affiliateStateProv'
                                     )}
-                                    value={formikProps.values.churchStateProv}
+                                    value={
+                                        formikProps.values.affiliateStateProv
+                                    }
                                     onBlur={formikProps.handleBlur(
-                                        'churchStateProv'
+                                        'affiliateStateProv'
                                     )}
                                 />
 
-                                {formikProps.errors.churchStateProv &&
-                                formikProps.touched.churchStateProv ? (
+                                {formikProps.errors.affiliateStateProv &&
+                                formikProps.touched.affiliateStateProv ? (
                                     <Text style={styles.errorText}>
-                                        {formikProps.touched.churchStateProv &&
-                                            formikProps.errors.churchStateProv}
+                                        {formikProps.touched
+                                            .affiliateStateProv &&
+                                            formikProps.errors
+                                                .affiliateStateProv}
                                     </Text>
                                 ) : null}
                             </View>
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
         borderColor: 'black',
     },
     postalCodeContainer: {},
-    churchSurfaceContainter: {
+    affiliateSurfaceContainter: {
         padding: 5,
         marginHorizontal: 20,
         paddingVertical: 10,
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
     },
-    churchTitle: {
+    affiliateTitle: {
         textAlign: 'center',
         fontSize: 24,
     },

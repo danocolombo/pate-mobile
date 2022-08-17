@@ -4,38 +4,41 @@ import { Surface, Text, List, TextInput, Button } from 'react-native-paper';
 import { withTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { printObject } from '../../utils/helpers';
+import { printObject, capitalize } from '../../utils/helpers';
+import { useSelector } from 'react-redux';
 
 const ProfileViewAffiliation = (props) => {
     const user = props.user;
+    const { affiliate } = useSelector((state) => state.system);
     const { colors } = props.theme;
     const navigation = useNavigation();
-    const [affilation, setAffiliation] = useState(user?.affiliations?.active);
-    const [affiliationList, setAffiliationList] = useState(
-        user?.affiliations?.options
-    );
+    const [affiliationAccordionOpen, setAffiliationAccordionOpen] =
+        useState(false);
+    const handlePress = () =>
+        setAffiliationAccordionOpen(!affiliationAccordionOpen);
     const handleEditRequest = () => {
         navigation.navigate('ProfileEditAffiliation');
     };
+    const accordionTitle = capitalize(affiliate.label) + ' Information';
     return (
         <View>
             <List.Section>
                 <List.Accordion
-                    title='Affiliation Information'
+                    title={accordionTitle}
                     style={{ backgroundColor: colors.secondary }}
-                    expanded={props.isOpen}
+                    expanded={affiliationAccordionOpen}
                     titleStyle={{
                         color: colors.primary,
                         fontSize: 24,
                         fontWeight: '600',
                         letterSpacing: 0.5,
                     }}
-                    onPress={props.toggle}
+                    onPress={handlePress}
                     right={(props) => (
                         // <List.Icon {...props} icon='chevron' />
                         <Ionicons
                             name={
-                                props.isOpen
+                                affiliationAccordionOpen
                                     ? 'chevron-down-sharp'
                                     : 'chevron-up-sharp'
                             }
@@ -59,11 +62,29 @@ const ProfileViewAffiliation = (props) => {
                     </View>
                     <View style={{ marginHorizontal: 5 }}>
                         <TextInput
-                            label='Affiliation'
-                            value={affilation}
+                            label='Name'
+                            value={user?.affiliate?.name}
                             mode='flat'
                             style={styles.textInput}
                             disabled
+                        />
+                    </View>
+                    <View style={{ marginHorizontal: 5 }}>
+                        <TextInput
+                            label='City'
+                            disabled
+                            style={styles.textInput}
+                            value={user?.affiliate?.city}
+                            mode='flat'
+                        />
+                    </View>
+                    <View style={{ marginHorizontal: 5 }}>
+                        <TextInput
+                            label='State / Providence'
+                            style={styles.textInput}
+                            disabled
+                            value={user?.affiliate?.stateProv}
+                            mode='flat'
                         />
                     </View>
                 </List.Accordion>

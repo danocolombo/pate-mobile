@@ -151,8 +151,11 @@ const SignInScreen = () => {
                 case 200:
                     // profile found
                     let profileInfo = profileResponse.userProfile;
-                    fullUserInfo = { ...theUser, ...profileInfo };
+                    // printObject('SIS:154-->theUser:', theUser);
+                    // printObject('SIS:155-->profileInfo', profileInfo);
+                    fullUserInfo = { ...profileInfo, ...theUser };
                     fullUserInfo.profile = true;
+                    // printObject('FIS:158-->fullUserInfo[1]:', fullUserInfo);
                     break;
                 case 404:
                     // no profile for uid
@@ -167,20 +170,26 @@ const SignInScreen = () => {
                     fullUserInfo = theUser;
                     break;
             }
-            if (fullUserInfo?.affiliations?.active.length < 1) {
-                fullUserInfo = { ...fullUserInfo, affiliate: 'FEO' };
-                //todo: do we need to set default affilate groups as well?
-                console.log('affiliated defaulted to FEO');
-            } else {
+            if (fullUserInfo?.affiliations?.active?.length < 1) {
+                let defaultAffiliations = {
+                    options: ['FEO'],
+                    active: 'FEO',
+                };
                 fullUserInfo = {
                     ...fullUserInfo,
-                    affiliate: fullUserInfo?.affiliations?.active,
+                    affiliations: defaultAffiliations,
                 };
-                console.log(
-                    'affilate set to ',
-                    fullUserInfo?.affiliations?.active
-                );
+            } else {
+                // fullUserInfo = {
+                //     ...fullUserInfo,
+                //     affiliate: fullUserInfo?.affiliations?.active,
+                // };
+                // console.log(
+                //     'affilate set to ',
+                //     fullUserInfo?.affiliations?.active
+                // );
             }
+            printObject('SIS:186-->fullUserInfo:', fullUserInfo);
             dispatch(updateCurrentUser(fullUserInfo));
             //   get system.region and system.eventRegion
             // default to GEORGIA

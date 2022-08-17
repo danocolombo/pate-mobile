@@ -12,7 +12,7 @@ const ProfileViewInfo = (props) => {
     const handleToggle = props.toggle;
     const { colors } = props.theme;
     const navigation = useNavigation();
-    const [contactAccordionOpen, setContactAccordionOpen] = useState(true);
+    const [contactAccordionOpen, setContactAccordionOpen] = useState(false);
 
     const [firstName, setFirstName] = useState(user?.firstName);
     const [lastName, setLastName] = useState(user?.lastName);

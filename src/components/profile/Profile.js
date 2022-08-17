@@ -5,7 +5,7 @@ import { withTheme } from 'react-native-paper';
 import ProfileViewInfo from './Profile.View.Info';
 import ProfileViewResidence from './Profile.View.Residence';
 import ProfileViewAffiliation from './Profile.View.Affiliation';
-import ProfileViewAffiliates from './Profile.View.Affiliates';
+import ProfileViewAffiliations from './Profile.View.Affiliations';
 
 import { printObject } from '../../utils/helpers';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -18,28 +18,29 @@ const PersonalDetails = (props) => {
     const [residenceAccordionOpen, setResidenceAccordionOpen] = useState(false);
     const [affiliationAccordionOpen, setAffiliationAccordionOpen] =
         useState(false);
-    const [affiliateAccordionOpen, setAffiliateAccordionOpen] = useState(false);
+    const [affiliationsAccordionOpen, setAffiliationsAccordionOpen] =
+        useState(false);
     printObject('user', user);
     const handleContactToggle = () => {
         setContactAccordionOpen(!contactAccordionOpen);
-        setAffiliateAccordionOpen(false);
+        setAffiliationsAccordionOpen(false);
         setResidenceAccordionOpen(false);
         setAffiliationAccordionOpen(false);
     };
     const handleResidenceToggle = () => {
         setResidenceAccordionOpen(!residenceAccordionOpen);
-        setAffiliateAccordionOpen(false);
+        setAffiliationsAccordionOpen(false);
         setContactAccordionOpen(false);
         setAffiliationAccordionOpen(false);
     };
     const handleAffiliationToggle = () => {
         setAffiliationAccordionOpen(!affiliationAccordionOpen);
-        setAffiliateAccordionOpen(false);
+        setAffiliationsAccordionOpen(false);
         setContactAccordionOpen(false);
         setResidenceAccordionOpen(false);
     };
-    const handleAffiliateToggle = () => {
-        setAffiliateAccordionOpen(!affiliateAccordionOpen);
+    const handleAffiliationsToggle = () => {
+        setAffiliationsAccordionOpen(!affiliateAccordionOpen);
         setAffiliationAccordionOpen(false);
         setContactAccordionOpen(false);
         setResidenceAccordionOpen(false);
@@ -69,10 +70,10 @@ const PersonalDetails = (props) => {
                     />
                 </View>
                 <View>
-                    <ProfileViewAffiliates
+                    <ProfileViewAffiliations
                         user={user}
-                        isOpen={affiliateAccordionOpen}
-                        toggle={() => handleAffiliateToggle()}
+                        isOpen={affiliationsAccordionOpen}
+                        toggle={() => handleAffiliationsToggle()}
                     />
                 </View>
             </ScrollView>
