@@ -9,18 +9,12 @@ import {
 } from 'react-native';
 import { Surface, List, Text, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
-import PhoneInput from '../ui/PhoneInput';
-// import { Colors } from '../../../constants/colors';
-// import { putRally } from '../../providers/rallies';
-// import { createTmp, updateTmp } from '../../../features/rallies/ralliesSlice';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import CustomButton from '../ui/CustomButton';
 import { updateCurrentUser } from '../../features/users/usersSlice';
 import { updateProfile } from '../../providers/users';
-import { Colors } from '../../constants/colors';
 import {
     printObject,
     getPhoneType,
@@ -77,28 +71,11 @@ export default function ProfileEditResidence() {
     let rally;
 
     const handleSubmit = (values) => {
-        // printObject('PF:73-->values', values);
-        // printObject('PF:74-->user', user);
-        //ensure that the phone is in expected format 1234567890
-        // 1. value needs to be either 0 or 14 characters.
-        let pType = getPhoneType(userPhone);
-        let phoneToPass;
-        switch (pType) {
-            case 'PATE':
-                phoneToPass = userPhone;
-                break;
-            case 'MASKED':
-                phoneToPass = createPatePhone(userPhone);
-                break;
-            default:
-                phoneToPass = '';
-                break;
-        }
+        //   send updates to redux
+        //    first format the phone number
 
-        // gather data
-        values.phone = phoneToPass;
         dispatch(updateCurrentUser(values));
-        // need to create residence structure
+        //   create whole profile with updates and send to DDB
         let dbProfile = {
             uid: user.uid,
             firstName: values?.firstName ? values.firstName : '',
@@ -112,6 +89,15 @@ export default function ProfileEditResidence() {
                 postalCode: values?.postalCode ? values.postalCode : '',
             },
             church: {
+                name: values?.churchName ? values.churchName : '',
+                //street: values?.churchStreet ? values.churchStreet : '',
+                city: values?.churchCity ? values.churchCity : '',
+                stateProv: values?.churchStateProv
+                    ? values.churchStateProv
+                    : '',
+            },
+            affiliations: values?.affiliations,
+            affiliate: {
                 name: values?.churchName ? values.churchName : '',
                 //street: values?.churchStreet ? values.churchStreet : '',
                 city: values?.churchCity ? values.churchCity : '',
@@ -138,7 +124,7 @@ export default function ProfileEditResidence() {
             dbProfile = { ...dbProfile, affiliate: 'FEO' };
         }
         updateProfile(dbProfile).then((response) => {
-            navigation.navigate('Main', null);
+            navigation.navigate('UserProfile', null);
         });
     };
     const [isOpened, setIsOpened] = useState(true);

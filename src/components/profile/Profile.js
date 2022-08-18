@@ -69,13 +69,15 @@ const PersonalDetails = (props) => {
                         toggle={() => handleAffiliationToggle()}
                     />
                 </View>
-                <View>
-                    <ProfileViewAffiliations
-                        user={user}
-                        isOpen={affiliationsAccordionOpen}
-                        toggle={() => handleAffiliationsToggle()}
-                    />
-                </View>
+                {user?.affiliations?.active === 'FEO' ? (
+                    <View>
+                        <ProfileViewAffiliations
+                            user={user}
+                            isOpen={affiliationsAccordionOpen}
+                            toggle={() => handleAffiliationsToggle()}
+                        />
+                    </View>
+                ) : null}
             </ScrollView>
         </Surface>
     );

@@ -170,7 +170,8 @@ const SignInScreen = () => {
                     fullUserInfo = theUser;
                     break;
             }
-            if (fullUserInfo?.affiliations?.active?.length < 1) {
+            if (!fullUserInfo?.affiliations?.active?.length) {
+                console.log('SETTING DEFAULT');
                 let defaultAffiliations = {
                     options: ['FEO'],
                     active: 'FEO',
@@ -180,6 +181,7 @@ const SignInScreen = () => {
                     affiliations: defaultAffiliations,
                 };
             } else {
+                console.log('NOT SETTING DEFAUL');
                 // fullUserInfo = {
                 //     ...fullUserInfo,
                 //     affiliate: fullUserInfo?.affiliations?.active,
@@ -189,7 +191,7 @@ const SignInScreen = () => {
                 //     fullUserInfo?.affiliations?.active
                 // );
             }
-            printObject('SIS:186-->fullUserInfo:', fullUserInfo);
+            // printObject('SIS:186-->fullUserInfo:', fullUserInfo);
             dispatch(updateCurrentUser(fullUserInfo));
             //   get system.region and system.eventRegion
             // default to GEORGIA
@@ -198,11 +200,11 @@ const SignInScreen = () => {
             if (fullUserInfo?.residence?.stateProv) {
                 // get the region information based on te users stateProv.
                 getRegionByAffiliateStateProv(
-                    fullUserInfo.affiliations.active,
-                    fullUserInfo.residence.stateProv
+                    fullUserInfo?.affiliations?.active,
+                    fullUserInfo?.residence?.stateProv
                 ).then((response) => {
                     if (response.statusCode === 200) {
-                        region = response.body.region;
+                        region = response?.body?.region;
                         //todo -- if system region != user.region, should we update provide with system value??
                     } else {
                         // default to the profile value
@@ -211,8 +213,12 @@ const SignInScreen = () => {
                                 fullUserInfo?.residence?.stateProv.toUpperCase()
                             ];
                     }
-                    const regionParts = region.split('#');
-                    eventRegion = regionParts[1];
+                    if (region) {
+                        const regionParts = region.split('#');
+                        eventRegion = regionParts[1];
+                    } else {
+                        eventRegion = 'test';
+                    }
                 });
                 // lookup region from value
             }
@@ -259,7 +265,7 @@ const SignInScreen = () => {
                 .then((response) => {
                     //   SAVE ALL RALLIES TO REDUX
                     let allEvents = response.data.body.Items;
-                    console.log('affiliate_filter:', fullUserInfo?.affiliate);
+                    // console.log('affiliate_filter:', fullUserInfo?.affiliate);
 
                     let affiliatedEvents = allEvents.filter(
                         (e) => e.affiliate === fullUserInfo?.affiliate

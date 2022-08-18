@@ -6,6 +6,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
+    ActivityIndicator,
 } from 'react-native';
 import { Surface, List, Text, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -71,16 +72,15 @@ export default function ProfileEditInfo() {
                 break;
         }
     }
-
+    const [busy, setBusy] = useState(false);
     const [userPhone, setUserPhone] = useState(phoneDisplayValue);
 
     let rally;
 
     const handleSubmit = (values) => {
-        // printObject('PF:73-->values', values);
-        // printObject('PF:74-->user', user);
-        //ensure that the phone is in expected format 1234567890
-        // 1. value needs to be either 0 or 14 characters.
+        setBusy(true);
+        //   send updates to redux
+        //    first format the phone number
         let pType = getPhoneType(userPhone);
         let phoneToPass;
         switch (pType) {
@@ -94,11 +94,9 @@ export default function ProfileEditInfo() {
                 phoneToPass = '';
                 break;
         }
-
-        // gather data
         values.phone = phoneToPass;
         dispatch(updateCurrentUser(values));
-        // need to create residence structure
+        //   create whole profile with updates and send to DDB
         let dbProfile = {
             uid: user.uid,
             firstName: values?.firstName ? values.firstName : '',
@@ -112,6 +110,15 @@ export default function ProfileEditInfo() {
                 postalCode: values?.postalCode ? values.postalCode : '',
             },
             church: {
+                name: values?.churchName ? values.churchName : '',
+                //street: values?.churchStreet ? values.churchStreet : '',
+                city: values?.churchCity ? values.churchCity : '',
+                stateProv: values?.churchStateProv
+                    ? values.churchStateProv
+                    : '',
+            },
+            affiliations: values?.affiliations,
+            affiliate: {
                 name: values?.churchName ? values.churchName : '',
                 //street: values?.churchStreet ? values.churchStreet : '',
                 city: values?.churchCity ? values.churchCity : '',
@@ -137,12 +144,16 @@ export default function ProfileEditInfo() {
         if (!user?.affiliate) {
             dbProfile = { ...dbProfile, affiliate: 'FEO' };
         }
+        setBusy(false);
         updateProfile(dbProfile).then((response) => {
-            navigation.navigate('Main', null);
+            navigation.navigate('UserProfile', null);
         });
     };
     const [isOpened, setIsOpened] = useState(true);
     const handlePress = () => setIsOpened(!isOpened);
+    if (busy) {
+        return <ActivityIndicator />;
+    }
     // const dispatch = useDispatch();
     return (
         <ScrollView>
