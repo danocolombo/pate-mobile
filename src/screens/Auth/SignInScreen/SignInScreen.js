@@ -202,24 +202,32 @@ const SignInScreen = () => {
                 getRegionByAffiliateStateProv(
                     fullUserInfo?.affiliations?.active,
                     fullUserInfo?.residence?.stateProv
-                ).then((response) => {
-                    if (response.statusCode === 200) {
-                        region = response?.body?.region;
-                        //todo -- if system region != user.region, should we update provide with system value??
-                    } else {
-                        // default to the profile value
-                        region =
-                            REGION[
-                                fullUserInfo?.residence?.stateProv.toUpperCase()
-                            ];
-                    }
-                    if (region) {
-                        const regionParts = region.split('#');
-                        eventRegion = regionParts[1];
-                    } else {
-                        eventRegion = 'test';
-                    }
-                });
+                )
+                    .then((response) => {
+                        if (response.statusCode === 200) {
+                            region = response?.body?.region;
+                            //todo -- if system region != user.region, should we update provide with system value??
+                        } else {
+                            // default to the profile value
+                            region =
+                                REGION[
+                                    fullUserInfo?.residence?.stateProv.toUpperCase()
+                                ];
+                        }
+                        if (region) {
+                            const regionParts = region.split('#');
+                            eventRegion = regionParts[1];
+                        } else {
+                            eventRegion = 'test';
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(
+                            'SIS:223-->ERROR getRegionByAffiliateStateProv\n',
+                            err
+                        );
+                        return;
+                    });
                 // lookup region from value
             }
             dispatch(setRegion(region));
