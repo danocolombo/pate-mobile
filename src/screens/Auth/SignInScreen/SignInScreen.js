@@ -170,6 +170,7 @@ const SignInScreen = () => {
                     fullUserInfo = theUser;
                     break;
             }
+            printObject('SIS:173-->fullUserInfo:', fullUserInfo);
             if (!fullUserInfo?.affiliations?.active?.length) {
                 console.log('SETTING DEFAULT');
                 let defaultAffiliations = {
