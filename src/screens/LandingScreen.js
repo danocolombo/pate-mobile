@@ -26,7 +26,7 @@ export default function LandingScreen(props) {
 
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
-
+    printObject('LS:29-->user:', user);
     const { eventRegion, affiliate, today } = useSelector(
         (state) => state.system
     );
@@ -54,7 +54,12 @@ export default function LandingScreen(props) {
                     <Surface style={styles.modalSurface}>
                         <View style={styles.modalInfoWrapper}>
                             <Text style={styles.modalTitle}>
-                                Please complete your profile.
+                                The system provides area events based on
+                                location.{' '}
+                            </Text>
+                            <Text style={styles.modalTitle}>
+                                For best experience, please complete your
+                                profile.
                             </Text>
                         </View>
                         <View style={styles.modalButtonContainer}>
@@ -227,11 +232,13 @@ const styles = StyleSheet.create({
     },
     modalInfoWrapper: {
         alignItems: 'center',
+        marginHorizontal: 20,
     },
     modalTitle: {
         marginTop: 15,
         fontSize: 20,
         fontWeight: 'bold',
+        textAlign: 'center',
     },
     modalButtonContainer: {
         marginVertical: 20,

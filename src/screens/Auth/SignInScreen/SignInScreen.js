@@ -19,7 +19,6 @@ import { useDispatch } from 'react-redux';
 // import { ALL_EVENTS } from '../../../../data/getRegionalEvents';
 import { updateCurrentUser } from '../../../features/users/usersSlice';
 import { getProfile } from '../../../providers/users';
-import { getRegionByAffiliateStateProv } from '../../../providers/system';
 import { loadRallies } from '../../../features/rallies/ralliesSlice';
 import { loadRegistrations } from '../../../features/users/usersSlice';
 import {
@@ -29,7 +28,6 @@ import {
 import { getToday, printObject } from '../../../utils/helpers';
 import { REGION } from '../../../constants/regions';
 import { getPateDate } from '../../../utils/date';
-import { PricingButton } from 'react-native-elements/dist/pricing/PricingCard';
 const SignInScreen = () => {
     const [loading, setLoading] = useState(false);
     const { height } = useWindowDimensions();
@@ -151,11 +149,8 @@ const SignInScreen = () => {
                 case 200:
                     // profile found
                     let profileInfo = profileResponse.userProfile;
-                    // printObject('SIS:154-->theUser:', theUser);
-                    // printObject('SIS:155-->profileInfo', profileInfo);
-                    fullUserInfo = { ...profileInfo, ...theUser };
+                    fullUserInfo = { ...theUser, ...profileInfo };
                     fullUserInfo.profile = true;
-                    // printObject('FIS:158-->fullUserInfo[1]:', fullUserInfo);
                     break;
                 case 404:
                     // no profile for uid
@@ -170,187 +165,124 @@ const SignInScreen = () => {
                     fullUserInfo = theUser;
                     break;
             }
-            printObject('SIS:173-->fullUserInfo:', fullUserInfo);
-            if (!fullUserInfo?.affiliations?.active?.length) {
-                console.log('SETTING DEFAULT');
-                let defaultAffiliations = {
+            if (!fullUserInfo?.affiliation) {
+                let defaultAff = {
                     options: ['FEO'],
                     active: 'FEO',
                 };
-                fullUserInfo = {
-                    ...fullUserInfo,
-                    affiliations: defaultAffiliations,
-                };
-            } else {
-                console.log('NOT SETTING DEFAUL');
-                // fullUserInfo = {
-                //     ...fullUserInfo,
-                //     affiliate: fullUserInfo?.affiliations?.active,
-                // };
-                // console.log(
-                //     'affilate set to ',
-                //     fullUserInfo?.affiliations?.active
-                // );
+                fullUserInfo = { ...fullUserInfo, affiliations: defaultAff };
+                //fullUserInfo = { ...fullUserInfo, affiliate: 'FEO' };
             }
-            // printObject('SIS:186-->fullUserInfo:', fullUserInfo);
             dispatch(updateCurrentUser(fullUserInfo));
             //   get system.region and system.eventRegion
             // default to GEORGIA
 
             // printObject('SS:167-->fullUserInfo:', fullUserInfo);
             if (fullUserInfo?.residence?.stateProv) {
-                // get the region information based on te users stateProv.
-                getRegionByAffiliateStateProv(
-                    fullUserInfo?.affiliations?.active,
-                    fullUserInfo?.residence?.stateProv
-                )
-                    .then((response) => {
-                        if (response.statusCode === 200) {
-                            region = response?.body?.region;
-                            //todo -- if system region != user.region, should we update provide with system value??
-                        } else {
-                            // default to the profile value
-                            region =
-                                REGION[
-                                    fullUserInfo?.residence?.stateProv.toUpperCase()
-                                ];
-                        }
-                        if (region) {
-                            const regionParts = region.split('#');
-                            eventRegion = regionParts[1];
-                        } else {
-                            eventRegion = 'test';
-                        }
-                    })
-                    .catch((err) => {
-                        console.log(
-                            'SIS:223-->ERROR getRegionByAffiliateStateProv\n',
-                            err
-                        );
-                        return;
-                    });
                 // lookup region from value
+                region =
+                    REGION[fullUserInfo?.residence?.stateProv.toUpperCase()];
+                const regionParts = region.split('#');
+                eventRegion = regionParts[1];
             }
             dispatch(setRegion(region));
             dispatch(setEventRegion(eventRegion));
         });
         // let's load redux with rallies.
+
         //   ====================================
         //   START RALLY LOADING
         //   ====================================
+        const tDay = getPateDate(getToday());
+        const config = {
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        };
+        let obj = {
+            operation: 'getAllEvents',
+        };
+        let body = JSON.stringify(obj);
 
-        if (process.env.ENV === 'DEV') {
-            console.log('DEV NOT SUPPORTED IN PROD');
-            return;
-            // const fileRallies = ALL_EVENTS.body.Items;
-            // let response = {
-            //     body: fileRallies,
-            // };
-            // dispatch(loadRallies(fileRallies));
+        let api2use = process.env.AWS_API_ENDPOINT + '/events';
+        //let dbRallies = await axios.post(api2use, body, config);
 
-            // const tDay = getToday();
-            // const publicRallies = fileRallies.filter(
-            //     (r) => r.approved === true && r.eventDate >= tDay
-            // );
-            // setApprovedRallies(publicRallies);
-            // // setIsLoading(false);
-        } else {
-            const tDay = getPateDate(getToday());
-            const config = {
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
-            };
-            let obj = {
-                operation: 'getAllEvents',
-            };
-            let body = JSON.stringify(obj);
+        axios
+            .post(api2use, body, config)
+            .then((response) => {
+                // printObject('SIS:208-->response:', response);
+                //   SAVE ALL RALLIES TO REDUX
+                dispatch(loadRallies(response.data.body.Items));
 
-            let api2use = process.env.AWS_API_ENDPOINT + '/events';
-            //let dbRallies = await axios.post(api2use, body, config);
+                //saveAllRallies(response.data.body.Items);
+                // console.log('MS:81-->events', response.data.body.Items);
 
+                // let dbRallies = response.data.body.Items;
+                // const publicRallies = dbRallies.filter((r) => {
+                //     return (
+                //         r.approved === true &&
+                //         r.eventDate >= tDay &&
+                //         r.eventRegion === eventRegion
+                //     );
+                // console.log('==============================');
+                // console.log('r.name:', r.name);
+                // console.log('r.approved:', r.approved);
+                // console.log('r.eventDate', r.eventDate);
+                // console.log('tDay:', tDay);
+                // console.log('r.eventRegion:', r.eventRegion);
+                // console.log('EVENT_REGION:', eventRegion);
+                // });
+                // printObject('MS:112->publicRallies', publicRallies);
+                // setApprovedRallies(publicRallies);
+            })
+            .catch((err) => {
+                console.log('MS-60: error:', err);
+                navigation.navigate('ErrorMsg', {
+                    id: 'MS-60',
+                    message:
+                        'Cannot connect to server. Please check internet connection and try again.',
+                });
+            });
+        //   ================================================
+        //    now get all the registrations for the user
+        //   ================================================
+        // printObject('MS:128--> entireRallyList', entireRallyList);
+        obj = {
+            operation: 'getAllUserRegistrations',
+            payload: {
+                rid: theUser.uid,
+            },
+        };
+        body = JSON.stringify(obj);
+
+        api2use = process.env.AWS_API_ENDPOINT + '/registrations';
+        //let dbRallies = await axios.post(api2use, body, config);
+        try {
             axios
                 .post(api2use, body, config)
                 .then((response) => {
-                    //   SAVE ALL RALLIES TO REDUX
-                    let allEvents = response.data.body.Items;
-                    // console.log('affiliate_filter:', fullUserInfo?.affiliate);
+                    //printObject('SIS:258-->response', response.data);
+                    let respData = response.data.body;
+                    if (respData) {
+                        function asc_sort(a, b) {
+                            return b.eventDate - a.eventDate;
+                        }
+                        let newRegList = respData.sort(asc_sort);
+                        // printObject('SIS:256-->regList', newRegList);
 
-                    let affiliatedEvents = allEvents.filter(
-                        (e) => e.affiliate === fullUserInfo?.affiliate
-                    );
-
-                    dispatch(loadRallies(affiliatedEvents));
-
-                    //saveAllRallies(response.data.body.Items);
-                    // console.log('MS:81-->events', response.data.body.Items);
-
-                    // let dbRallies = response.data.body.Items;
-                    // const publicRallies = dbRallies.filter((r) => {
-                    //     return (
-                    //         r.approved === true &&
-                    //         r.eventDate >= tDay &&
-                    //         r.eventRegion === eventRegion
-                    //     );
-                    // console.log('==============================');
-                    // console.log('r.name:', r.name);
-                    // console.log('r.approved:', r.approved);
-                    // console.log('r.eventDate', r.eventDate);
-                    // console.log('tDay:', tDay);
-                    // console.log('r.eventRegion:', r.eventRegion);
-                    // console.log('EVENT_REGION:', eventRegion);
-                    // });
-                    // printObject('MS:112->publicRallies', publicRallies);
-                    // setApprovedRallies(publicRallies);
+                        dispatch(loadRegistrations(newRegList));
+                    }
                 })
                 .catch((err) => {
-                    console.log('MS-60: error:', err);
+                    console.log('SIS:255: error:', err);
                     navigation.navigate('ErrorMsg', {
-                        id: 'MS-60',
+                        id: 'SIS-257',
                         message:
                             'Cannot connect to server. Please check internet connection and try again.',
                     });
                 });
-            //   ================================================
-            //    now get all the registrations for the user
-            //   ================================================
-            // printObject('MS:128--> entireRallyList', entireRallyList);
-            obj = {
-                operation: 'getAllUserRegistrations',
-                payload: {
-                    rid: theUser.uid,
-                },
-            };
-            body = JSON.stringify(obj);
-
-            api2use = process.env.AWS_API_ENDPOINT + '/registrations';
-            //let dbRallies = await axios.post(api2use, body, config);
-            try {
-                axios
-                    .post(api2use, body, config)
-                    .then((response) => {
-                        let respData = response.data.body;
-                        if (respData) {
-                            function asc_sort(a, b) {
-                                return b.eventDate - a.eventDate;
-                            }
-                            let newRegList = respData.sort(asc_sort);
-                            // printObject('SIS:256-->regList', newRegList);
-
-                            dispatch(loadRegistrations(newRegList));
-                        }
-                    })
-                    .catch((err) => {
-                        console.log('SIS:255: error:', err);
-                        navigation.navigate('ErrorMsg', {
-                            id: 'SIS-257',
-                            message:
-                                'Cannot connect to server. Please check internet connection and try again.',
-                        });
-                    });
-            } catch (error) {
-                console.log('SIS:265-->Axios errror.');
-            }
+        } catch (error) {
+            console.log('SIS:265-->Axios errror.');
         }
 
         setLoading(false);

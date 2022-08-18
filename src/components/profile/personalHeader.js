@@ -7,10 +7,14 @@ const PersonalHeader = ({ user }) => {
     const [initials, setInitials] = useState('');
 
     useEffect(() => {
-        let fn = user.firstName + ' ' + user.lastName;
-        let first = user.firstName;
-        let last = user.lastName;
-        setInitials(first.substring(0, 1) + last.substring(0, 1));
+        let fn = user?.firstName + ' ' + user?.lastName;
+        let first = user?.firstName ? user?.firstName : '';
+        let last = user?.lastName ? user?.lastName : '';
+        if (first.length > 1 && last.length > 1) {
+            setInitials(first.substring(0, 1) + last.substring(0, 1));
+        } else {
+            setInitials('');
+        }
         setFullName(fn);
     }, []);
 

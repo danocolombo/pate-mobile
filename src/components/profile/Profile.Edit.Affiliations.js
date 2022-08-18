@@ -4,6 +4,7 @@ import {
     View,
     TextInput,
     TouchableWithoutFeedback,
+    ActivityIndicator,
     Keyboard,
     ScrollView,
 } from 'react-native';
@@ -12,19 +13,12 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import DropDown from 'react-native-paper-dropdown';
-import { Formik } from 'formik';
-import * as yup from 'yup';
 import CustomButton from '../ui/CustomButton';
 import { updateCurrentUser } from '../../features/users/usersSlice';
-import { updateProfile } from '../../providers/users';
-import {
-    printObject,
-    getPhoneType,
-    createPatePhone,
-    capitalize,
-} from '../../utils/helpers';
+import { getActivePublicAffiliates } from '../../providers/system';
+import { printObject, capitalize } from '../../utils/helpers';
 
-export default function ProfileEditAffiliation() {
+export default function ProfileEditAffiliations() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     let user = useSelector((state) => state.users.currentUser);
@@ -34,7 +28,30 @@ export default function ProfileEditAffiliation() {
     const [showMultiSelectDropDown, setShowMultiSelectDropDown] =
         useState(false);
     const [affiliationsSelected, setAffiliationsSelected] = useState('');
+    const [affiliationsList, setAffiliationsList] = useState([]);
     const [showDropDown, setShowDropDown] = useState(false);
+    const [isLoading, setIsLoading] = useState();
+    async function getAvailableAffiliations() {
+        const affiliates = await getActivePublicAffiliates();
+        if (affiliates.statusCode === 200) {
+            return affiliates.body;
+        } else {
+            return [];
+        }
+    }
+    useEffect(() => {
+        setIsLoading(true);
+        getAvailableAffiliations()
+            .then((a) => {
+                setAffiliationsList(a);
+                setIsLoading(false);
+            })
+            .catch((err) => {
+                console.log('error getting affiliates\n', err);
+                setIsLoading(false);
+            });
+    }, []);
+
     const affiliationList = [
         {
             label: 'FEO',
@@ -46,7 +63,7 @@ export default function ProfileEditAffiliation() {
         },
     ];
 
-    const affiliationsList = [
+    const affiliationsList2 = [
         {
             label: 'Pickleball',
             value: 'PBAL',
@@ -65,7 +82,9 @@ export default function ProfileEditAffiliation() {
         },
     ];
     const handleSubmit = (values) => {};
-
+    if (isLoading) {
+        return <ActivityIndicator />;
+    }
     return (
         <ScrollView>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

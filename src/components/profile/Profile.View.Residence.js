@@ -11,10 +11,18 @@ const ProfileViewResidence = (props) => {
     const user = props.user;
     const { colors } = props.theme;
     const navigation = useNavigation();
-    const [street, setStreet] = useState(user?.residence?.street);
-    const [city, setCity] = useState(user?.residence?.city);
-    const [stateProv, setStateProv] = useState(user?.residence.stateProv);
-    const [postalCode, setPostalCode] = useState(user?.residence.postalCode);
+    const [street, setStreet] = useState(
+        user?.residence?.street ? user?.residence?.street : ''
+    );
+    const [city, setCity] = useState(
+        user?.residence?.city ? user?.residence?.city : ''
+    );
+    const [stateProv, setStateProv] = useState(
+        user?.residence?.stateProv ? user?.resideence?.stateProv : ''
+    );
+    const [postalCode, setPostalCode] = useState(
+        user?.residence?.postalCode ? user?.residence?.postalCode : ''
+    );
     const [residenceAccordionOpen, setResidenceAccordionOpen] = useState(false);
     const handlePress = () =>
         setResidenceAccordionOpen(!residenceAccordionOpen);
