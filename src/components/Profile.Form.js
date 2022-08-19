@@ -8,7 +8,8 @@ import {
     Keyboard,
     ScrollView,
 } from 'react-native';
-import { Headline, Surface } from 'react-native-paper';
+import { Surface, List } from 'react-native-paper';
+import { withTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 // import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,6 +23,7 @@ import CustomButton from './ui/CustomButton';
 import { updateCurrentUser } from '../features/users/usersSlice';
 import { updateProfile } from '../providers/users';
 import { Colors } from '../constants/colors';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { printObject, getPhoneType, createPatePhone } from '../utils/helpers';
 
 // create validation schema for yup to pass to formik
@@ -41,9 +43,10 @@ const profileSchema = yup.object({
     churchStateProv: yup.string().min(2).max(2),
 });
 
-export default function ProfileForm() {
+export default function ProfileForm(props) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const { colors } = props.theme;
     let user = useSelector((state) => state.users.currentUser);
     const AFFILIATION_ENTITY = useSelector(
         (state) => state.system.affiliationEntity
@@ -195,180 +198,235 @@ export default function ProfileForm() {
                                         <Surface style={styles.personalSurface}>
                                             <View style={styles.inputContainer}>
                                                 <View>
-                                                    <View
-                                                        style={
-                                                            styles.labelContainer
-                                                        }
-                                                    >
-                                                        <Text
-                                                            style={
-                                                                styles.labelText
+                                                    <List.Section>
+                                                        <List.Accordion
+                                                            title='Contact Information'
+                                                            expanded={
+                                                                contactAccordionOpen
                                                             }
-                                                        >
-                                                            First Name
-                                                        </Text>
-                                                    </View>
-                                                    <TextInput
-                                                        style={styles.input}
-                                                        placeholder='First Name'
-                                                        autocomplete='off'
-                                                        onChangeText={formikProps.handleChange(
-                                                            'firstName'
-                                                        )}
-                                                        value={
-                                                            formikProps.values
-                                                                .firstName
-                                                        }
-                                                        onBlur={formikProps.handleBlur(
-                                                            'firstName'
-                                                        )}
-                                                    />
-                                                    {formikProps.errors
-                                                        .firstName &&
-                                                    formikProps.touched
-                                                        .firstName ? (
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .firstName &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .firstName}
-                                                        </Text>
-                                                    ) : null}
-                                                    <View
-                                                        style={
-                                                            styles.labelContainer
-                                                        }
-                                                    >
-                                                        <Text
-                                                            style={
-                                                                styles.labelText
-                                                            }
-                                                        >
-                                                            Last Name
-                                                        </Text>
-                                                    </View>
-                                                    <TextInput
-                                                        style={styles.input}
-                                                        placeholder='Last Name'
-                                                        autocomplete='off'
-                                                        onChangeText={formikProps.handleChange(
-                                                            'lastName'
-                                                        )}
-                                                        value={
-                                                            formikProps.values
-                                                                .lastName
-                                                        }
-                                                        onBlur={formikProps.handleBlur(
-                                                            'lastName'
-                                                        )}
-                                                    />
-                                                    {formikProps.errors
-                                                        .lastName &&
-                                                    formikProps.touched
-                                                        .lastName ? (
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .lastName &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .lastName}
-                                                        </Text>
-                                                    ) : null}
-                                                    <View
-                                                        style={
-                                                            styles.labelContainer
-                                                        }
-                                                    >
-                                                        <Text
-                                                            style={
-                                                                styles.labelText
-                                                            }
-                                                        >
-                                                            Email
-                                                        </Text>
-                                                    </View>
-                                                    <TextInput
-                                                        style={styles.input}
-                                                        placeholder='Email'
-                                                        autocomplete='off'
-                                                        onChangeText={formikProps.handleChange(
-                                                            'email'
-                                                        )}
-                                                        value={
-                                                            formikProps.values
-                                                                .email
-                                                        }
-                                                        onBlur={formikProps.handleBlur(
-                                                            'email'
-                                                        )}
-                                                    />
-                                                    {formikProps.errors.email &&
-                                                    formikProps.touched
-                                                        .email ? (
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .email &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .email}
-                                                        </Text>
-                                                    ) : null}
-                                                    <View
-                                                        style={
-                                                            styles.labelContainer
-                                                        }
-                                                    >
-                                                        <Text
-                                                            style={
-                                                                styles.labelText
-                                                            }
-                                                        >
-                                                            Phone
-                                                        </Text>
-                                                    </View>
-                                                    <View
-                                                        style={
-                                                            showPhoneError
-                                                                ? styles.phoneWrapperError
-                                                                : styles.phoneWrapper
-                                                        }
-                                                    >
-                                                        <PhoneInput
-                                                            overrideStyle={{
-                                                                borderColor:
-                                                                    Colors.gray20,
-                                                                borderWidth: 2,
-                                                                borderRadius: 6,
+                                                            style={{
+                                                                backgroundColor:
+                                                                    colors.secondary,
                                                             }}
-                                                            value={userPhone}
-                                                            onChange={
-                                                                setUserPhone
+                                                            titleStyle={{
+                                                                color: colors.primary,
+                                                                fontSize: 24,
+                                                                fontWeight:
+                                                                    '600',
+                                                                letterSpacing: 0.5,
+                                                            }}
+                                                            onPress={
+                                                                handlePress
                                                             }
-                                                        />
-                                                        {showPhoneError ? (
-                                                            <Text
+                                                            right={(props) => (
+                                                                // <List.Icon {...props} icon='chevron' />
+                                                                <Ionicons
+                                                                    name={
+                                                                        contactAccordionOpen
+                                                                            ? 'chevron-down-sharp'
+                                                                            : 'chevron-up-sharp'
+                                                                    }
+                                                                    color={
+                                                                        'black'
+                                                                    }
+                                                                    size={24}
+                                                                />
+                                                            )}
+                                                        >
+                                                            <View
                                                                 style={
-                                                                    styles.phoneError
+                                                                    styles.labelContainer
                                                                 }
                                                             >
-                                                                Please correct
-                                                                the phone number
-                                                            </Text>
-                                                        ) : null}
-                                                    </View>
+                                                                <Text
+                                                                    style={
+                                                                        styles.labelText
+                                                                    }
+                                                                >
+                                                                    First Name
+                                                                </Text>
+                                                            </View>
+                                                            <TextInput
+                                                                style={
+                                                                    styles.input
+                                                                }
+                                                                placeholder='First Name'
+                                                                autocomplete='off'
+                                                                onChangeText={formikProps.handleChange(
+                                                                    'firstName'
+                                                                )}
+                                                                value={
+                                                                    formikProps
+                                                                        .values
+                                                                        .firstName
+                                                                }
+                                                                onBlur={formikProps.handleBlur(
+                                                                    'firstName'
+                                                                )}
+                                                            />
+                                                            {formikProps.errors
+                                                                .firstName &&
+                                                            formikProps.touched
+                                                                .firstName ? (
+                                                                <Text
+                                                                    style={
+                                                                        styles.errorText
+                                                                    }
+                                                                >
+                                                                    {formikProps
+                                                                        .touched
+                                                                        .firstName &&
+                                                                        formikProps
+                                                                            .errors
+                                                                            .firstName}
+                                                                </Text>
+                                                            ) : null}
+                                                            <View
+                                                                style={
+                                                                    styles.labelContainer
+                                                                }
+                                                            >
+                                                                <Text
+                                                                    style={
+                                                                        styles.labelText
+                                                                    }
+                                                                >
+                                                                    Last Name
+                                                                </Text>
+                                                            </View>
+                                                            <TextInput
+                                                                style={
+                                                                    styles.input
+                                                                }
+                                                                placeholder='Last Name'
+                                                                autocomplete='off'
+                                                                onChangeText={formikProps.handleChange(
+                                                                    'lastName'
+                                                                )}
+                                                                value={
+                                                                    formikProps
+                                                                        .values
+                                                                        .lastName
+                                                                }
+                                                                onBlur={formikProps.handleBlur(
+                                                                    'lastName'
+                                                                )}
+                                                            />
+                                                            {formikProps.errors
+                                                                .lastName &&
+                                                            formikProps.touched
+                                                                .lastName ? (
+                                                                <Text
+                                                                    style={
+                                                                        styles.errorText
+                                                                    }
+                                                                >
+                                                                    {formikProps
+                                                                        .touched
+                                                                        .lastName &&
+                                                                        formikProps
+                                                                            .errors
+                                                                            .lastName}
+                                                                </Text>
+                                                            ) : null}
+                                                            <View
+                                                                style={
+                                                                    styles.labelContainer
+                                                                }
+                                                            >
+                                                                <Text
+                                                                    style={
+                                                                        styles.labelText
+                                                                    }
+                                                                >
+                                                                    Email
+                                                                </Text>
+                                                            </View>
+                                                            <TextInput
+                                                                style={
+                                                                    styles.input
+                                                                }
+                                                                placeholder='Email'
+                                                                autocomplete='off'
+                                                                onChangeText={formikProps.handleChange(
+                                                                    'email'
+                                                                )}
+                                                                value={
+                                                                    formikProps
+                                                                        .values
+                                                                        .email
+                                                                }
+                                                                onBlur={formikProps.handleBlur(
+                                                                    'email'
+                                                                )}
+                                                            />
+                                                            {formikProps.errors
+                                                                .email &&
+                                                            formikProps.touched
+                                                                .email ? (
+                                                                <Text
+                                                                    style={
+                                                                        styles.errorText
+                                                                    }
+                                                                >
+                                                                    {formikProps
+                                                                        .touched
+                                                                        .email &&
+                                                                        formikProps
+                                                                            .errors
+                                                                            .email}
+                                                                </Text>
+                                                            ) : null}
+                                                            <View
+                                                                style={
+                                                                    styles.labelContainer
+                                                                }
+                                                            >
+                                                                <Text
+                                                                    style={
+                                                                        styles.labelText
+                                                                    }
+                                                                >
+                                                                    Phone
+                                                                </Text>
+                                                            </View>
+                                                            <View
+                                                                style={
+                                                                    showPhoneError
+                                                                        ? styles.phoneWrapperError
+                                                                        : styles.phoneWrapper
+                                                                }
+                                                            >
+                                                                <PhoneInput
+                                                                    overrideStyle={{
+                                                                        borderColor:
+                                                                            Colors.gray20,
+                                                                        borderWidth: 2,
+                                                                        borderRadius: 6,
+                                                                    }}
+                                                                    value={
+                                                                        userPhone
+                                                                    }
+                                                                    onChange={
+                                                                        setUserPhone
+                                                                    }
+                                                                />
+                                                                {showPhoneError ? (
+                                                                    <Text
+                                                                        style={
+                                                                            styles.phoneError
+                                                                        }
+                                                                    >
+                                                                        Please
+                                                                        correct
+                                                                        the
+                                                                        phone
+                                                                        number
+                                                                    </Text>
+                                                                ) : null}
+                                                            </View>
+                                                        </List.Accordion>
+                                                    </List.Section>
                                                     <View
                                                         style={
                                                             styles.labelContainer

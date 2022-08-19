@@ -2,7 +2,7 @@ import { StyleSheet, View, Pressable } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Surface, Text, List, TextInput, Button } from 'react-native-paper';
 import { withTheme } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import ProfileViewInfo from './Profile.View.Info';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { printObject } from '../../utils/helpers';
@@ -11,6 +11,7 @@ const ProfileViewResidence = (props) => {
     const user = props.user;
     const { colors } = props.theme;
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
     const [street, setStreet] = useState(
         user?.residence?.street ? user?.residence?.street : ''
     );
@@ -18,7 +19,7 @@ const ProfileViewResidence = (props) => {
         user?.residence?.city ? user?.residence?.city : ''
     );
     const [stateProv, setStateProv] = useState(
-        user?.residence?.stateProv ? user?.resideence?.stateProv : ''
+        user?.residence?.stateProv ? user?.residence?.stateProv : ''
     );
     const [postalCode, setPostalCode] = useState(
         user?.residence?.postalCode ? user?.residence?.postalCode : ''
@@ -29,6 +30,13 @@ const ProfileViewResidence = (props) => {
     const handleEditRequest = () => {
         navigation.navigate('ProfileEditResidence');
     };
+    useEffect(() => {
+        setStreet(user?.residence?.street);
+        setCity(user?.residence?.city);
+        setStateProv(user?.residence?.stateProv);
+        setPostalCode(user?.residence?.postalCode);
+    }, [props, isFocused]);
+
     return (
         <View>
             <List.Section>
