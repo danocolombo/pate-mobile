@@ -48,7 +48,7 @@ export default function UpcomingEventsScreen(props) {
             style={styles.bgImageContainer}
         >
             <>
-                {displayRallies ? (
+                {displayRallies.length > 0 ? (
                     <>
                         <View>
                             <Text style={styles.affiliateHeader}>

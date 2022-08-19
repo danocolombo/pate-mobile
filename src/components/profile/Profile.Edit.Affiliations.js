@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import DropDown from 'react-native-paper-dropdown';
+import DropDownPicker from 'react-native-dropdown-picker';
 import CustomButton from '../ui/CustomButton';
 import { updateCurrentUser } from '../../features/users/usersSlice';
 import { getActivePublicAffiliates } from '../../providers/system';
@@ -31,6 +32,20 @@ export default function ProfileEditAffiliations() {
     const [affiliationsList, setAffiliationsList] = useState([]);
     const [showDropDown, setShowDropDown] = useState(false);
     const [isLoading, setIsLoading] = useState();
+
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(['CRP8', 'FEO']);
+    const [items, setItems] = useState([
+        { label: 'CR P8 Rallies', value: 'CRP8' },
+        { label: 'Pickel Ball Tournaments', value: 'PCKL' },
+        { label: 'FEO Testing', value: 'FEO' },
+        { label: '5K Runs', value: '5KS' },
+        { label: 'Farmers Market', value: 'FARM' },
+        { label: 'Pig Wrestling', value: 'PIGW' },
+        { label: 'Submarine Races', value: 'SUBS' },
+        { label: 'Fishing Tournaments', value: 'FISH' },
+    ]);
+
     async function getAvailableAffiliations() {
         const affiliates = await getActivePublicAffiliates();
         if (affiliates.statusCode === 200) {
@@ -86,67 +101,80 @@ export default function ProfileEditAffiliations() {
         return <ActivityIndicator />;
     }
     return (
-        <ScrollView>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <Surface style={styles.personalSurface}>
-                    <View style={styles.heading}>
-                        <Text style={styles.headerText}>
-                            Edit Affiliation Definition
-                        </Text>
-                    </View>
-                    <View style={styles.instructionWrapper}>
-                        <Text style={styles.instructionText}>
-                            Select one of your affilates.
-                        </Text>
-                    </View>
-                    <View style={styles.dropdownContainer}>
-                        <DropDown
-                            label={'Affiation'}
-                            mode={'outlined'}
-                            visible={showDropDown}
-                            showDropDown={() => setShowDropDown(true)}
-                            onDismiss={() => setShowDropDown(false)}
-                            value={affiliationSelected}
-                            setValue={setAffiliationSelected}
-                            list={affiliationList}
-                        />
-                    </View>
-                    <View style={styles.offerWrapper}>
-                        <Text style={styles.offerText}>
-                            You can request access to one of the follow
-                            affilations
-                        </Text>
-                    </View>
-                    <View style={styles.dropdownContainer}>
-                        <DropDown
-                            label={'Available Affiliations'}
-                            mode={'outlined'}
-                            visible={showMultiSelectDropDown}
-                            showDropDown={() =>
-                                setShowMultiSelectDropDown(true)
-                            }
-                            onDismiss={() => setShowMultiSelectDropDown(false)}
-                            value={affiliationsSelected}
-                            setValue={setAffiliationsSelected}
-                            list={affiliationsList}
-                            multiSelect
-                        />
-                    </View>
-                    <View style={styles.buttonContainer}>
-                        <CustomButton
-                            title='Update'
-                            graphic=''
-                            cbStyles={{
-                                backgroundColor: 'green',
-                                color: 'white',
-                                width: '50%',
-                            }}
-                            onPress={() => {}}
-                        />
-                    </View>
-                </Surface>
-            </TouchableWithoutFeedback>
-        </ScrollView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <Surface style={styles.personalSurface}>
+                <View style={styles.heading}>
+                    <Text style={styles.headerText}>
+                        Edit Affiliation Definition
+                    </Text>
+                </View>
+                <View style={styles.instructionWrapper}>
+                    <Text style={styles.instructionText}>
+                        Select one of your affilates.
+                    </Text>
+                </View>
+                <View style={styles.dropdownContainer}>
+                    <DropDown
+                        label={'Affiation'}
+                        mode={'outlined'}
+                        visible={showDropDown}
+                        showDropDown={() => setShowDropDown(true)}
+                        onDismiss={() => setShowDropDown(false)}
+                        value={affiliationSelected}
+                        setValue={setAffiliationSelected}
+                        list={affiliationList}
+                    />
+                </View>
+                <View style={styles.offerWrapper}>
+                    <Text style={styles.offerText}>
+                        You can request access to one of the follow affilations
+                    </Text>
+                </View>
+
+                <View
+                    style={{
+                        // backgroundColor: '#171717',
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingHorizontal: 15,
+                    }}
+                >
+                    <DropDownPicker
+                        open={open}
+                        value={value}
+                        items={items}
+                        setOpen={setOpen}
+                        setValue={setValue}
+                        setItems={setItems}
+                        theme='LIGHT'
+                        multiple={true}
+                        mode='BADGE'
+                        badgeDotColors={[
+                            '#e76f51',
+                            '#00b4d8',
+                            '#e9c46a',
+                            '#e76f51',
+                            '#8ac926',
+                            '#00b4d8',
+                            '#e9c46a',
+                        ]}
+                    />
+                </View>
+                <View style={styles.buttonContainer}>
+                    <CustomButton
+                        title='Update'
+                        graphic=''
+                        cbStyles={{
+                            backgroundColor: 'green',
+                            color: 'white',
+                            width: '50%',
+                        }}
+                        onPress={() => {}}
+                    />
+                </View>
+            </Surface>
+        </TouchableWithoutFeedback>
     );
 }
 const styles = StyleSheet.create({
