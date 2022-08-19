@@ -19,19 +19,22 @@ import { Auth, Hub } from 'aws-amplify';
 // require('dotenv').config();
 // console.log(process.env); // remove this after you've confirmed it working
 const queryClient = new QueryClient();
-const theme = {
+const feoTheme = {
     ...DefaultTheme,
+    dark: false,
     colors: {
         ...DefaultTheme.colors,
-        primary: 'tomato',
-        accent: 'yellow',
+        primary: '#1656A3',
+        secondary: '#A8C7ED',
+        accent: '#A8C7ED',
+        lightBlack: '#696969',
     },
 };
 function App() {
     return (
         <Provider store={store}>
             <QueryClientProvider client={queryClient}>
-                <PaperProvider theme={theme}>
+                <PaperProvider theme={feoTheme}>
                     <SafeAreaView style={styles.container}>
                         <Navigation />
                     </SafeAreaView>
