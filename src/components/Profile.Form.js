@@ -20,9 +20,13 @@ import { updateCurrentUser } from '../features/users/usersSlice';
 import PersonalHeader from './profile/personalHeader';
 import { updateProfile } from '../providers/users';
 import { Colors } from '../constants/colors';
-import { printObject, getPhoneType, createPatePhone } from '../utils/helpers';
+import {
+    printObject,
+    capitalize,
+    getPhoneType,
+    createPatePhone,
+} from '../utils/helpers';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@emotion/react';
 
 // create validation schema for yup to pass to formik
 const profileSchema = yup.object({
@@ -50,6 +54,7 @@ const ProfileForm = (props) => {
     const { colors } = props.theme;
     const dispatch = useDispatch();
     let user = useSelector((state) => state.users.currentUser);
+    let feo = useSelector((state) => state.system);
     const AFFILIATION_ENTITY = useSelector(
         (state) => state.system.affiliationEntity
     );
@@ -211,7 +216,7 @@ const ProfileForm = (props) => {
                                             </Headline>
                                         </View> */}
                                             <Surface
-                                                style={styles.personalSurface}
+                                                style={{ marginHorizontal: 0 }}
                                             >
                                                 <List.Section>
                                                     <List.Accordion
@@ -219,10 +224,13 @@ const ProfileForm = (props) => {
                                                         expanded={
                                                             contactAccordionIsOpen
                                                         }
-                                                        style={{
-                                                            backgroundColor:
-                                                                colors.secondary,
-                                                        }}
+                                                        style={[
+                                                            styles.accordionHeader,
+                                                            {
+                                                                backgroundColor:
+                                                                    colors.secondary,
+                                                            },
+                                                        ]}
                                                         titleStyle={{
                                                             color: colors.primary,
                                                             fontSize: 24,
@@ -711,14 +719,19 @@ const ProfileForm = (props) => {
                                                 </List.Section>
                                                 <List.Section>
                                                     <List.Accordion
-                                                        title='Affiliation Information'
+                                                        title={`${capitalize(
+                                                            feo.affiliate.label
+                                                        )} Information`}
                                                         expanded={
                                                             affiliationAccordionIsOpen
                                                         }
-                                                        style={{
-                                                            backgroundColor:
-                                                                colors.secondary,
-                                                        }}
+                                                        style={[
+                                                            styles.accordionHeader,
+                                                            {
+                                                                backgroundColor:
+                                                                    colors.secondary,
+                                                            },
+                                                        ]}
                                                         titleStyle={{
                                                             color: colors.primary,
                                                             fontSize: 24,
@@ -750,18 +763,6 @@ const ProfileForm = (props) => {
                                                                     styles.inputContainer
                                                                 }
                                                             >
-                                                                <View>
-                                                                    <Text
-                                                                        style={
-                                                                            styles.churchTitle
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            AFFILIATION_ENTITY
-                                                                        }{' '}
-                                                                        Affiliation
-                                                                    </Text>
-                                                                </View>
                                                                 <View
                                                                     style={
                                                                         styles.labelContainer
@@ -772,9 +773,11 @@ const ProfileForm = (props) => {
                                                                             styles.labelText
                                                                         }
                                                                     >
-                                                                        {
-                                                                            AFFILIATION_ENTITY
-                                                                        }{' '}
+                                                                        {capitalize(
+                                                                            feo
+                                                                                .affiliate
+                                                                                .label
+                                                                        ) + ' '}
                                                                         Name
                                                                     </Text>
                                                                 </View>
@@ -782,7 +785,11 @@ const ProfileForm = (props) => {
                                                                     style={
                                                                         styles.input
                                                                     }
-                                                                    placeholder='Church Name'
+                                                                    placeholder={`${capitalize(
+                                                                        feo
+                                                                            .affiliate
+                                                                            .label
+                                                                    )} Name`}
                                                                     onChangeText={formikProps.handleChange(
                                                                         'churchName'
                                                                     )}
@@ -971,13 +978,17 @@ const styles = StyleSheet.create({
     },
     personalSurface: {
         padding: 5,
-        marginHorizontal: 20,
+        marginHorizontal: 10,
         paddingVertical: 10,
         marginBottom: 10,
         marginTop: 10,
 
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
+    },
+    accordionHeader: {
+        borderRadius: 10,
+        marginHorizontal: 5,
     },
     inputContainer: {
         marginLeft: '10%',
