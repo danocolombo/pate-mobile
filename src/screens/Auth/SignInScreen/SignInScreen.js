@@ -19,15 +19,18 @@ import { useDispatch } from 'react-redux';
 // import { ALL_EVENTS } from '../../../../data/getRegionalEvents';
 import { updateCurrentUser } from '../../../features/users/usersSlice';
 import { getProfile } from '../../../providers/users';
+import { getAffiliate } from '../../../providers/system';
 import { loadRallies } from '../../../features/rallies/ralliesSlice';
 import { loadRegistrations } from '../../../features/users/usersSlice';
 import {
     setRegion,
     setEventRegion,
+    updateAffiliate,
 } from '../../../features/system/systemSlice';
 import { getToday, printObject } from '../../../utils/helpers';
 import { REGION } from '../../../constants/regions';
 import { getPateDate } from '../../../utils/date';
+import { faCropSimple } from '@fortawesome/free-solid-svg-icons';
 const SignInScreen = () => {
     const [loading, setLoading] = useState(false);
     const { height } = useWindowDimensions();
@@ -165,7 +168,8 @@ const SignInScreen = () => {
                     fullUserInfo = theUser;
                     break;
             }
-            if (!fullUserInfo?.affiliation) {
+            printObject('SIS:168:--fullUserInfo:', fullUserInfo);
+            if (!fullUserInfo?.affiliations) {
                 let defaultAff = {
                     options: ['FEO'],
                     active: 'FEO',
@@ -175,6 +179,20 @@ const SignInScreen = () => {
             }
             dispatch(updateCurrentUser(fullUserInfo));
             //   get system.region and system.eventRegion
+            getAffiliate(fullUserInfo.affiliations.active)
+                .then((response) => {
+                    if (response.statusCode === 200) {
+                        dispatch(updateAffiliate(response.body[0]));
+                    } else {
+                        console.log(
+                            'response.statusCode:',
+                            response.statusCode
+                        );
+                    }
+                })
+                .catch((err) => {
+                    console.log('OH SNAP\n', err);
+                });
             // default to GEORGIA
 
             // printObject('SS:167-->fullUserInfo:', fullUserInfo);

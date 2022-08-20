@@ -12,22 +12,22 @@ const makeToday = () => {
 };
 let today = makeToday();
 let AFF = {
-    ownerEmail: 'danocolombo@gmail.com',
-    code: 'FES',
-    ownerContact: 'Dano Colombo',
+    ownerEmail: 'owner@feo.com',
+    code: 'FEO',
+    ownerContact: 'Affiliate Owner',
     label: 'department',
     status: 'active',
     category: 'development',
-    description: 'FES System Testing Affiliate',
-    ownerPhone: '7066042494',
-    title: 'FES Testing',
+    description: 'FEO System Testing Affiliate',
+    ownerPhone: '1234567890',
+    title: 'FEO Testing',
 };
 
 const initialState = {
     region: 'us#east#test',
     eventRegion: 'test',
     stateProv: 'TT',
-    affiliateTitle: 'P8 Rally',
+    affiliateTitle: 'FEO title',
     today: today,
     affiliationEntity: '',
     affiliation: 'FEO',
@@ -47,6 +47,9 @@ export const systemSlice = createSlice({
         },
         setStateProv: (state, action) => {
             state.stateProv = action.payload;
+        },
+        updateAffiliate: (state, action) => {
+            state.affiliate = action.payload;
         },
         clearToday: (state) => {
             state.today = '';
@@ -74,6 +77,7 @@ export const {
     logout,
     setStateProv,
     setSystemDate,
+    updateAffiliate,
     clearToday,
 } = systemSlice.actions;
 
