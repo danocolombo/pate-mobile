@@ -27,9 +27,7 @@ export default function LandingScreen(props) {
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     printObject('LS:29-->user:', user);
-    const { eventRegion, affiliate, today } = useSelector(
-        (state) => state.system
-    );
+    const feo = useSelector((state) => state.system);
 
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
@@ -87,7 +85,9 @@ export default function LandingScreen(props) {
 
                 <Surface style={styles.welcomeSurface}>
                     <View style={styles.mainTextContainer}>
-                        <Text style={styles.mainTitle}>{affiliate.title}</Text>
+                        <Text style={styles.mainTitle}>
+                            {feo.affiliate.title}
+                        </Text>
                     </View>
 
                     <View style={styles.heroImageContainer}>
