@@ -1,388 +1,75 @@
-import React, { useEffect, useState } from 'react';
-import {
-    StyleSheet,
-    View,
-    TextInput,
-    TouchableWithoutFeedback,
-    Keyboard,
-    ScrollView,
-} from 'react-native';
-import { Surface, List, Text, Button } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { Formik } from 'formik';
-import * as yup from 'yup';
+import { StyleSheet, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Surface, Text, List, TextInput, Button } from 'react-native-paper';
 import CustomButton from '../ui/CustomButton';
-import { updateCurrentUser } from '../../features/users/usersSlice';
-import { updateProfile } from '../../providers/users';
-import {
-    printObject,
-    getPhoneType,
-    createPatePhone,
-} from '../../utils/helpers';
-
-// create validation schema for yup to pass to formik
-const profileSchema = yup.object({
-    firstName: yup.string().required('first name is required').min(2),
-    lastName: yup.string().required('last name is required'),
-    email: yup.string().email(),
-    street: yup.string(),
-    city: yup.string().min(2),
-    stateProv: yup.string().min(2).max(2),
-    postalCode: yup.string(),
-    // .test('is-postalCode-numeric', 'required (10000 - 99999)', (val) => {
-    //     return parseInt(val) > 9999 && parseInt(val) < 100000;
-    // }),
-    churchName: yup.string().min(2),
-    churchCity: yup.string().min(2),
-    churchStateProv: yup.string().min(2).max(2),
-});
-
-export default function ProfileEditResidence() {
-    const navigation = useNavigation();
-    const dispatch = useDispatch();
-    let user = useSelector((state) => state.users.currentUser);
-    const AFFILIATION_ENTITY = useSelector(
-        (state) => state.system.affiliationEntity
-    );
-    const [showPhoneError, setShowPhoneError] = useState(false);
-    //printObject('PF:49-->user', user);
-
-    let phoneDisplayValue;
-    if (user.phone) {
-        let phoneType = getPhoneType(user.phone);
-
-        switch (phoneType) {
-            case 'PATE':
-                phoneDisplayValue = user.phone;
-                break;
-            case 'MASKED':
-                // console.log('PF:60 user.phone', user.phone);
-                phoneDisplayValue = createPatePhone(user.phone);
-                break;
-            default:
-                phoneDisplayValue = '';
-                break;
-        }
-    }
-
-    const [userPhone, setUserPhone] = useState(phoneDisplayValue);
-
-    let rally;
-
-    const handleSubmit = (values) => {
-        //   send updates to redux
-        //    first format the phone number
-
-        dispatch(updateCurrentUser(values));
-        //   create whole profile with updates and send to DDB
-        let dbProfile = {
-            uid: user.uid,
-            firstName: values?.firstName ? values.firstName : '',
-            lastName: values?.lastName ? values.lastName : '',
-            email: values?.email ? values.email : '',
-            phone: userPhone,
-            residence: {
-                street: values?.street ? values.street : '',
-                city: values?.city ? values.city : '',
-                stateProv: values?.stateProv ? values.stateProv : '',
-                postalCode: values?.postalCode ? values.postalCode : '',
-            },
-            church: {
-                name: values?.churchName ? values.churchName : '',
-                //street: values?.churchStreet ? values.churchStreet : '',
-                city: values?.churchCity ? values.churchCity : '',
-                stateProv: values?.churchStateProv
-                    ? values.churchStateProv
-                    : '',
-            },
-            affiliations: values?.affiliations,
-            affiliate: {
-                name: values?.churchName ? values.churchName : '',
-                //street: values?.churchStreet ? values.churchStreet : '',
-                city: values?.churchCity ? values.churchCity : '',
-                stateProv: values?.churchStateProv
-                    ? values.churchStateProv
-                    : '',
-            },
-            isLoggedIn: true,
-        };
-        // now conditionally add the rep and lead info if applicable
-        if (user?.stateRep) {
-            dbProfile = { ...dbProfile, stateRep: user.stateRep };
-            dbProfile = { ...dbProfile, profile: user.profile };
-        }
-        if (user?.stateLead) {
-            dbProfile = { ...dbProfile, stateLead: user.stateLead };
-            dbProfile = { ...dbProfile, profile: user.profile };
-        }
-        dbProfile = { ...dbProfile, username: user.username };
-        dbProfile = { ...dbProfile, role: user.role };
-        dbProfile = { ...dbProfile, region: user.region };
-        // printObject('PF:127-->dbProfile', dbProfile);
-        if (!user?.affiliate) {
-            dbProfile = { ...dbProfile, affiliate: 'FEO' };
-        }
-        updateProfile(dbProfile).then((response) => {
-            navigation.navigate('UserProfile', null);
-        });
-    };
-    const [isOpened, setIsOpened] = useState(true);
-    const handlePress = () => setIsOpened(!isOpened);
-    // const dispatch = useDispatch();
+const ProfileEditResidence = () => {
+    const [street, setStreet] = useState();
+    const [city, setCity] = useState();
+    const [stateProv, setStateProv] = useState();
+    const [postalCode, setPostalCode] = useState();
     return (
-        <ScrollView>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <Formik
-                    initialValues={{
-                        firstName: user?.firstName ? user.firstName : '',
-                        lastName: user?.lastName ? user.lastName : '',
-                        phone: user?.phone ? user.phone : '',
-                        email: user?.email ? user.email : '',
-                        street: user?.residence?.street
-                            ? user.residence.street
-                            : '',
-                        city: user?.residence?.city ? user.residence.city : '',
-                        stateProv: user?.residence?.stateProv
-                            ? user.residence.stateProv
-                            : '',
-                        postalCode: user?.residence?.postalCode
-                            ? user.residence.postalCode
-                            : '',
-                        churchName: user?.church?.name ? user.church.name : '',
-                        // churchStreet: user?.churchStreet
-                        //     ? user.churchStreet
-                        //     : '',
-                        churchCity: user?.church?.city ? user.church.city : '',
-                        churchStateProv: user?.church?.stateProv
-                            ? user.church.stateProv
-                            : '',
-                    }}
-                    validationSchema={profileSchema}
-                    onSubmit={async (values, actions) => {
-                        handleSubmit(values);
-                    }}
-                >
-                    {(formikProps) => (
-                        <Surface style={styles.personalSurface}>
-                            <View style={styles.heading}>
-                                <Text style={styles.headerText}>
-                                    Edit Residence Info
-                                </Text>
-                            </View>
-                            <View style={styles.inputContainer}>
-                                <View>
-                                    <View style={styles.labelContainer}>
-                                        <Text style={styles.labelText}>
-                                            Address
-                                        </Text>
-                                    </View>
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder='Street'
-                                        onChangeText={formikProps.handleChange(
-                                            'street'
-                                        )}
-                                        value={formikProps.values.street}
-                                        onBlur={formikProps.handleBlur(
-                                            'street'
-                                        )}
-                                    />
-                                    {formikProps.errors.street &&
-                                    formikProps.touched.street ? (
-                                        <Text style={styles.errorText}>
-                                            {formikProps.touched.street &&
-                                                formikProps.errors.street}
-                                        </Text>
-                                    ) : null}
-                                    <View style={styles.labelContainer}>
-                                        <Text style={styles.labelText}>
-                                            City
-                                        </Text>
-                                    </View>
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder='City'
-                                        onChangeText={formikProps.handleChange(
-                                            'city'
-                                        )}
-                                        value={formikProps.values.city}
-                                        onBlur={formikProps.handleBlur('city')}
-                                    />
-                                    {formikProps.errors.city &&
-                                    formikProps.touched.city ? (
-                                        <Text style={styles.errorText}>
-                                            {formikProps.touched.city &&
-                                                formikProps.errors.city}
-                                        </Text>
-                                    ) : null}
+        <Surface style={styles.surface}>
+            <View style={styles.heading}>
+                <Text style={styles.headerText}>Edit Residence Info</Text>
+            </View>
+            <View style={styles.inputContainer}>
+                <TextInput label='Address' mode='outlined' value={street} />
+            </View>
 
-                                    <View
-                                        style={
-                                            styles.stateProvPostalCodeContainerRow
-                                        }
-                                    >
-                                        <View
-                                            style={
-                                                styles.stateProvPostalCodeContainer
-                                            }
-                                        >
-                                            <View
-                                                style={
-                                                    styles.stateProvSectionContainer
-                                                }
-                                            >
-                                                <View
-                                                    style={
-                                                        styles.stateProvInputContainer
-                                                    }
-                                                >
-                                                    <View
-                                                        style={
-                                                            styles.labelContainer
-                                                        }
-                                                    >
-                                                        <Text
-                                                            style={
-                                                                styles.labelText
-                                                            }
-                                                        >
-                                                            State
-                                                        </Text>
-                                                    </View>
-                                                    <TextInput
-                                                        style={[
-                                                            styles.input,
-                                                            styles.inputStateProv,
-                                                        ]}
-                                                        placeholder='State'
-                                                        onChangeText={formikProps.handleChange(
-                                                            'stateProv'
-                                                        )}
-                                                        value={
-                                                            formikProps.values
-                                                                .stateProv
-                                                        }
-                                                        onBlur={formikProps.handleBlur(
-                                                            'stateProv'
-                                                        )}
-                                                    />
-                                                </View>
-                                                <View
-                                                    style={
-                                                        styles.stateProvErrorContainer
-                                                    }
-                                                >
-                                                    {formikProps.errors
-                                                        .stateProv &&
-                                                    formikProps.touched
-                                                        .stateProv ? (
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .stateProv &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .stateProv}
-                                                        </Text>
-                                                    ) : null}
-                                                </View>
-                                            </View>
-                                            <View
-                                                style={
-                                                    styles.postalCodeSectionContainer
-                                                }
-                                            >
-                                                <View
-                                                    style={
-                                                        styles.postalCodeInputContainer
-                                                    }
-                                                >
-                                                    <View
-                                                        style={
-                                                            styles.labelContainer
-                                                        }
-                                                    >
-                                                        <Text
-                                                            style={
-                                                                styles.labelText
-                                                            }
-                                                        >
-                                                            Postal Code
-                                                        </Text>
-                                                    </View>
-                                                    <TextInput
-                                                        style={[
-                                                            styles.input,
-                                                            styles.inputPostalCode,
-                                                        ]}
-                                                        placeholder='Postal Code'
-                                                        onChangeText={formikProps.handleChange(
-                                                            'postalCode'
-                                                        )}
-                                                        keyboardType='numeric'
-                                                        value={
-                                                            formikProps.values
-                                                                .postalCode
-                                                        }
-                                                        onBlur={formikProps.handleBlur(
-                                                            'postalCode'
-                                                        )}
-                                                    />
-                                                </View>
-                                                <View
-                                                    style={
-                                                        styles.postalCodeErrorContainer
-                                                    }
-                                                >
-                                                    {formikProps.errors
-                                                        .postalCode &&
-                                                    formikProps.touched
-                                                        .postalCode ? (
-                                                        <Text
-                                                            style={
-                                                                styles.errorText
-                                                            }
-                                                        >
-                                                            {formikProps.touched
-                                                                .postalCode &&
-                                                                formikProps
-                                                                    .errors
-                                                                    .postalCode}
-                                                        </Text>
-                                                    ) : null}
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
+            <View style={styles.inputContainer}>
+                <TextInput label='City' mode='outlined' value={city} />
+            </View>
 
-                            <View style={styles.buttonContainer}>
-                                <CustomButton
-                                    title='Update'
-                                    graphic=''
-                                    cbStyles={{
-                                        backgroundColor: 'green',
-                                        color: 'white',
-                                        width: '50%',
-                                    }}
-                                    onPress={formikProps.handleSubmit}
-                                />
-                            </View>
-                        </Surface>
-                    )}
-                    {/* this ends the formik execution */}
-                </Formik>
-            </TouchableWithoutFeedback>
-        </ScrollView>
+            <View style={styles.stateProvPostalCodeContainerRow}>
+                <View style={styles.stateProvPostalCodeContainer}>
+                    <View style={styles.stateProvSectionContainer}>
+                        <View style={styles.stateProvInputContainer}>
+                            <TextInput
+                                label='State'
+                                style={[styles.input, styles.inputStateProv]}
+                                placeholder='State'
+                                mode='outlined'
+                                onChangeText={(x) => setStateProv(x)}
+                                value={stateProv}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.postalCodeSectionContainer}>
+                        <View style={styles.postalCodeInputContainer}>
+                            <TextInput
+                                style={[styles.input, styles.inputPostalCode]}
+                                label='Postal Code'
+                                placeholder='Postal Code'
+                                mode='outlined'
+                                onChangeText={(x) => setPostalCode(x)}
+                                keyboardType='numeric'
+                                value={postalCode}
+                            />
+                        </View>
+                    </View>
+                </View>
+            </View>
+            <View>
+                <View style={styles.buttonContainer}>
+                    <CustomButton
+                        title='Update'
+                        graphic=''
+                        cbStyles={{
+                            backgroundColor: 'green',
+                            color: 'white',
+                            width: '50%',
+                        }}
+                        onPress={() => {}}
+                    />
+                </View>
+            </View>
+        </Surface>
     );
-}
+};
+export default ProfileEditResidence;
+
 const styles = StyleSheet.create({
-    personalSurface: {
+    surface: {
         marginHorizontal: 10,
         paddingVertical: 0,
         marginTop: 10,
@@ -397,21 +84,13 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold',
     },
-    inputContainer: {
-        marginLeft: '10%',
-        backgroundColor: 'white',
-    },
-    labelContainer: {
-        marginTop: 3,
-    },
-    labelText: {
-        fontSize: 14,
-    },
+    inputContainer: { marginHorizontal: 10, backgroundColor: 'white' },
+    inputText: {},
     input: {
         borderWidth: 1,
-        borderColor: 'grey',
-        padding: 5,
-        marginTop: 2,
+        borderColor: 'white',
+        padding: 0,
+        marginTop: 0,
         fontSize: 18,
         borderRadius: 6,
         width: '90%',
@@ -422,25 +101,8 @@ const styles = StyleSheet.create({
     inputPostalCode: {
         width: 125,
     },
-    errorText: {
-        color: 'crimson',
-        fontWeight: 'bold',
-        marginBottom: 10,
-        marginTop: 5,
-        // textAlign: 'center',
-    },
-    phoneWrapper: {
-        marginTop: 5,
-        marginBottom: 3,
-    },
-    phoneWrapperError: {
-        marginBottom: 10,
-    },
-    phoneError: {
-        color: 'red',
-        fontWeight: '500',
-    },
     stateProvPostalCodeContainerRow: {
+        marginHorizontal: 10,
         // borderWidth: 1,
         // borderColor: 'black',
     },
@@ -475,24 +137,5 @@ const styles = StyleSheet.create({
         borderColor: 'black',
     },
     postalCodeContainer: {},
-    churchSurfaceContainter: {
-        padding: 5,
-        marginHorizontal: 20,
-        paddingVertical: 10,
-        marginBottom: 0,
-        borderBottomLeftRadius: 10,
-        borderBottomRightRadius: 10,
-    },
-    churchTitle: {
-        textAlign: 'center',
-        fontSize: 24,
-    },
-    buttonContainer: {
-        alignItems: 'center',
-        marginTop: 10,
-        marginBottom: 20,
-    },
-    submitButton: {
-        width: '70%',
-    },
+    buttonContainer: { alignItems: 'center', marginTop: 20, marginBottom: 20 },
 });
