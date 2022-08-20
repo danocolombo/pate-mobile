@@ -20,31 +20,38 @@ const PersonalDetails = (props) => {
         useState(false);
     const [affiliationsAccordionOpen, setAffiliationsAccordionOpen] =
         useState(false);
-    printObject('user', user);
-    const handleContactToggle = () => {
-        setContactAccordionOpen(!contactAccordionOpen);
-        setAffiliationsAccordionOpen(false);
-        setResidenceAccordionOpen(false);
-        setAffiliationAccordionOpen(false);
+
+    const [contactInfo, setContactInfo] = useState();
+
+    const processInfoChange = (values) => {
+        printObject('P:27-->values:', values);
     };
-    const handleResidenceToggle = () => {
-        setResidenceAccordionOpen(!residenceAccordionOpen);
-        setAffiliationsAccordionOpen(false);
-        setContactAccordionOpen(false);
-        setAffiliationAccordionOpen(false);
-    };
-    const handleAffiliationToggle = () => {
-        setAffiliationAccordionOpen(!affiliationAccordionOpen);
-        setAffiliationsAccordionOpen(false);
-        setContactAccordionOpen(false);
-        setResidenceAccordionOpen(false);
-    };
-    const handleAffiliationsToggle = () => {
-        setAffiliationsAccordionOpen(!affiliateAccordionOpen);
-        setAffiliationAccordionOpen(false);
-        setContactAccordionOpen(false);
-        setResidenceAccordionOpen(false);
-    };
+
+    // printObject('user', user);
+    // const handleContactToggle = () => {
+    //     setContactAccordionOpen(!contactAccordionOpen);
+    //     setAffiliationsAccordionOpen(false);
+    //     setResidenceAccordionOpen(false);
+    //     setAffiliationAccordionOpen(false);
+    // };
+    // const handleResidenceToggle = () => {
+    //     setResidenceAccordionOpen(!residenceAccordionOpen);
+    //     setAffiliationsAccordionOpen(false);
+    //     setContactAccordionOpen(false);
+    //     setAffiliationAccordionOpen(false);
+    // };
+    // const handleAffiliationToggle = () => {
+    //     setAffiliationAccordionOpen(!affiliationAccordionOpen);
+    //     setAffiliationsAccordionOpen(false);
+    //     setContactAccordionOpen(false);
+    //     setResidenceAccordionOpen(false);
+    // };
+    // const handleAffiliationsToggle = () => {
+    //     setAffiliationsAccordionOpen(!affiliateAccordionOpen);
+    //     setAffiliationAccordionOpen(false);
+    //     setContactAccordionOpen(false);
+    //     setResidenceAccordionOpen(false);
+    // };
     return (
         <Surface>
             <ScrollView>
@@ -52,21 +59,21 @@ const PersonalDetails = (props) => {
                     <ProfileViewInfo
                         user={user}
                         isOpen={contactAccordionOpen}
-                        toggle={() => handleContactToggle()}
+                        // toggle={() => handleContactToggle()}
                     />
                 </View>
                 <View>
                     <ProfileViewResidence
                         user={user}
                         isOpen={residenceAccordionOpen}
-                        toggle={() => handleResidenceToggle()}
+                        // toggle={() => handleResidenceToggle()}
                     />
                 </View>
                 <View>
                     <ProfileViewAffiliation
                         user={user}
                         isOpen={affiliationAccordionOpen}
-                        toggle={() => handleAffiliationToggle()}
+                        // toggle={() => handleAffiliationToggle()}
                     />
                 </View>
                 {user?.affiliations?.active === 'FEO' ? (
@@ -74,7 +81,7 @@ const PersonalDetails = (props) => {
                         <ProfileViewAffiliations
                             user={user}
                             isOpen={affiliationsAccordionOpen}
-                            toggle={() => handleAffiliationsToggle()}
+                            // toggle={() => handleAffiliationsToggle()}
                         />
                     </View>
                 ) : null}

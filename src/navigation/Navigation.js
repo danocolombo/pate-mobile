@@ -83,6 +83,7 @@ function PateStack() {
                         backgroundColor: Colors.primary,
                     },
                     headerTintColor: 'white',
+                    headerBackTitle: 'Back',
                 })}
             />
             <Stack.Screen
@@ -94,6 +95,7 @@ function PateStack() {
                         backgroundColor: Colors.primary,
                     },
                     headerTintColor: 'white',
+                    headerBackVisible: false,
                 })}
             />
             <Stack.Screen

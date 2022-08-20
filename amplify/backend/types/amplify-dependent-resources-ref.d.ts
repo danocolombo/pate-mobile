@@ -5,5 +5,11 @@ export type AmplifyDependentResourcesAttributes = {
             "Id": "string",
             "appName": "string"
         }
+    },
+    "storage": {
+        "s3eorimages2022": {
+            "BucketName": "string",
+            "Region": "string"
+        }
     }
 }

@@ -76,7 +76,9 @@ export default function ProfileEditInfo() {
     const [userPhone, setUserPhone] = useState(phoneDisplayValue);
 
     let rally;
-
+    const handleCancel = () => {
+        navigation.goBack();
+    };
     const handleSubmit = (values) => {
         setBusy(true);
         //   send updates to redux
@@ -145,8 +147,11 @@ export default function ProfileEditInfo() {
             dbProfile = { ...dbProfile, affiliate: 'FEO' };
         }
         setBusy(false);
+
         updateProfile(dbProfile).then((response) => {
-            navigation.navigate('UserProfile', null);
+            // navigation.navigate('UserProfile', null);
+            navigation.goBack();
+            // navigation.navigate('UserProfile', null);
         });
     };
     const [isOpened, setIsOpened] = useState(true);
@@ -299,12 +304,24 @@ export default function ProfileEditInfo() {
 
                             <View style={styles.buttonContainer}>
                                 <CustomButton
+                                    title='Cancel'
+                                    graphic=''
+                                    cbStyles={{
+                                        backgroundColor: 'grey',
+                                        color: 'white',
+                                        marginHorizontal: 5,
+                                        // width: '40%',
+                                    }}
+                                    onPress={handleCancel}
+                                />
+                                <CustomButton
                                     title='Update'
                                     graphic=''
                                     cbStyles={{
                                         backgroundColor: 'green',
                                         color: 'white',
-                                        width: '50%',
+                                        marginHorizontal: 5,
+                                        // width: '40%',
                                     }}
                                     onPress={formikProps.handleSubmit}
                                 />
@@ -424,11 +441,14 @@ const styles = StyleSheet.create({
         fontSize: 24,
     },
     buttonContainer: {
+        flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         marginTop: 10,
+
         marginBottom: 20,
     },
     submitButton: {
-        width: '70%',
+        width: '40%',
     },
 });
