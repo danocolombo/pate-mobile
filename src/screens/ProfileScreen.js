@@ -15,7 +15,6 @@ function ProfileScreen() {
                 source={require('../components/images/background.png')}
                 style={styles.bgImageContainer}
             >
-                <PersonalHeader user={user} />
                 <PersonalDetails user={user} />
                 {/* <AffiliateForm /> */}
             </ImageBackground>

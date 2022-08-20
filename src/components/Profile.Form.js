@@ -8,7 +8,7 @@ import {
     Keyboard,
     ScrollView,
 } from 'react-native';
-import { List, Surface, withTheme } from 'react-native-paper';
+import { List, Surface, withTheme, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 // import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import CustomButton from './ui/CustomButton';
 import { updateCurrentUser } from '../features/users/usersSlice';
+import PersonalHeader from './profile/personalHeader';
 import { updateProfile } from '../providers/users';
 import { Colors } from '../constants/colors';
 import { printObject, getPhoneType, createPatePhone } from '../utils/helpers';
@@ -42,7 +43,8 @@ const profileSchema = yup.object({
 
 const ProfileForm = (props) => {
     const navigation = useNavigation();
-    const [contactAccordionIsOpen, setContactAccordionIsOpen] = useState(true);
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
+    const [contactAccordionIsOpen, setContactAccordionIsOpen] = useState(false);
     const [affiliationAccordionIsOpen, setAffiliationAccordionIsOpen] =
         useState(false);
     const { colors } = props.theme;
@@ -51,6 +53,9 @@ const ProfileForm = (props) => {
     const AFFILIATION_ENTITY = useSelector(
         (state) => state.system.affiliationEntity
     );
+    const onToggleSnackBar = () => setSnackbarVisible(!snackbarVisible);
+
+    const onDismissSnackBar = () => setSnackbarVisible(false);
     const [showPhoneError, setShowPhoneError] = useState(false);
     //printObject('PF:49-->user', user);
 
@@ -144,304 +149,618 @@ const ProfileForm = (props) => {
         if (!user?.affiliate) {
             dbProfile = { ...dbProfile, affiliate: 'FEO' };
         }
-        updateProfile(dbProfile).then((response) => {
-            navigation.navigate('Main', null);
-        });
+        setSnackbarVisible(true);
+        // updateProfile(dbProfile).then((response) => {
+        //     navigation.navigate('Main', null);
+        // });
     };
     // const dispatch = useDispatch();
     return (
-        <View>
-            <ScrollView>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
-                        <ScrollView>
-                            <Formik
-                                initialValues={{
-                                    firstName: user?.firstName
-                                        ? user.firstName
-                                        : '',
-                                    lastName: user?.lastName
-                                        ? user.lastName
-                                        : '',
-                                    phone: user?.phone ? user.phone : '',
-                                    email: user?.email ? user.email : '',
-                                    street: user?.residence?.street
-                                        ? user.residence.street
-                                        : '',
-                                    city: user?.residence?.city
-                                        ? user.residence.city
-                                        : '',
-                                    stateProv: user?.residence?.stateProv
-                                        ? user.residence.stateProv
-                                        : '',
-                                    postalCode: user?.residence?.postalCode
-                                        ? user.residence.postalCode
-                                        : '',
-                                    churchName: user?.church?.name
-                                        ? user.church.name
-                                        : '',
-                                    // churchStreet: user?.churchStreet
-                                    //     ? user.churchStreet
-                                    //     : '',
-                                    churchCity: user?.church?.city
-                                        ? user.church.city
-                                        : '',
-                                    churchStateProv: user?.church?.stateProv
-                                        ? user.church.stateProv
-                                        : '',
-                                }}
-                                validationSchema={profileSchema}
-                                onSubmit={async (values, actions) => {
-                                    handleSubmit(values);
-                                }}
-                            >
-                                {(formikProps) => (
-                                    <>
-                                        {/* <View style={styles.formHeader}>
+        <>
+            <PersonalHeader user={user} />
+            <View>
+                <ScrollView>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View>
+                            <ScrollView>
+                                <Formik
+                                    initialValues={{
+                                        firstName: user?.firstName
+                                            ? user.firstName
+                                            : '',
+                                        lastName: user?.lastName
+                                            ? user.lastName
+                                            : '',
+                                        phone: user?.phone ? user.phone : '',
+                                        email: user?.email ? user.email : '',
+                                        street: user?.residence?.street
+                                            ? user.residence.street
+                                            : '',
+                                        city: user?.residence?.city
+                                            ? user.residence.city
+                                            : '',
+                                        stateProv: user?.residence?.stateProv
+                                            ? user.residence.stateProv
+                                            : '',
+                                        postalCode: user?.residence?.postalCode
+                                            ? user.residence.postalCode
+                                            : '',
+                                        churchName: user?.church?.name
+                                            ? user.church.name
+                                            : '',
+                                        // churchStreet: user?.churchStreet
+                                        //     ? user.churchStreet
+                                        //     : '',
+                                        churchCity: user?.church?.city
+                                            ? user.church.city
+                                            : '',
+                                        churchStateProv: user?.church?.stateProv
+                                            ? user.church.stateProv
+                                            : '',
+                                    }}
+                                    validationSchema={profileSchema}
+                                    onSubmit={async (values, actions) => {
+                                        handleSubmit(values);
+                                    }}
+                                >
+                                    {(formikProps) => (
+                                        <>
+                                            {/* <View style={styles.formHeader}>
                                             <Headline>
                                                 Your Profile Information
                                             </Headline>
                                         </View> */}
-                                        <Surface style={styles.personalSurface}>
-                                            <List.Section>
-                                                <List.Accordion
-                                                    title='Contact Information'
-                                                    expanded={
-                                                        contactAccordionIsOpen
-                                                    }
-                                                    style={{
-                                                        backgroundColor:
-                                                            colors.secondary,
-                                                    }}
-                                                    titleStyle={{
-                                                        color: colors.primary,
-                                                        fontSize: 24,
-                                                        fontWeight: '600',
-                                                        letterSpacing: 0.5,
-                                                    }}
-                                                    onPress={handleAccordPress}
-                                                    right={(props) => (
-                                                        <Ionicons
-                                                            name={
-                                                                contactAccordionIsOpen
-                                                                    ? 'chevron-down-sharp'
-                                                                    : 'chevron-up-sharp'
-                                                            }
-                                                            color={'black'}
-                                                            size={24}
-                                                        />
-                                                    )}
-                                                >
-                                                    <Surface
-                                                        style={
-                                                            styles.personalSurface
+                                            <Surface
+                                                style={styles.personalSurface}
+                                            >
+                                                <List.Section>
+                                                    <List.Accordion
+                                                        title='Contact Information'
+                                                        expanded={
+                                                            contactAccordionIsOpen
                                                         }
+                                                        style={{
+                                                            backgroundColor:
+                                                                colors.secondary,
+                                                        }}
+                                                        titleStyle={{
+                                                            color: colors.primary,
+                                                            fontSize: 24,
+                                                            fontWeight: '600',
+                                                            letterSpacing: 0.5,
+                                                        }}
+                                                        onPress={
+                                                            handleAccordPress
+                                                        }
+                                                        right={(props) => (
+                                                            <Ionicons
+                                                                name={
+                                                                    contactAccordionIsOpen
+                                                                        ? 'chevron-down-sharp'
+                                                                        : 'chevron-up-sharp'
+                                                                }
+                                                                color={'black'}
+                                                                size={24}
+                                                            />
+                                                        )}
                                                     >
-                                                        <View
+                                                        <Surface
                                                             style={
-                                                                styles.inputContainer
+                                                                styles.personalSurface
                                                             }
                                                         >
-                                                            <View>
-                                                                <View
-                                                                    style={
-                                                                        styles.labelContainer
-                                                                    }
-                                                                >
-                                                                    <Text
+                                                            <View
+                                                                style={
+                                                                    styles.inputContainer
+                                                                }
+                                                            >
+                                                                <View>
+                                                                    <View
                                                                         style={
-                                                                            styles.labelText
+                                                                            styles.labelContainer
                                                                         }
                                                                     >
-                                                                        First
-                                                                        Name
-                                                                    </Text>
-                                                                </View>
-                                                                <TextInput
-                                                                    style={
-                                                                        styles.input
-                                                                    }
-                                                                    placeholder='First Name'
-                                                                    autocomplete='off'
-                                                                    onChangeText={formikProps.handleChange(
-                                                                        'firstName'
-                                                                    )}
-                                                                    value={
-                                                                        formikProps
-                                                                            .values
-                                                                            .firstName
-                                                                    }
-                                                                    onBlur={formikProps.handleBlur(
-                                                                        'firstName'
-                                                                    )}
-                                                                />
-                                                                {formikProps
-                                                                    .errors
-                                                                    .firstName &&
-                                                                formikProps
-                                                                    .touched
-                                                                    .firstName ? (
-                                                                    <Text
-                                                                        style={
-                                                                            styles.errorText
-                                                                        }
-                                                                    >
-                                                                        {formikProps
-                                                                            .touched
-                                                                            .firstName &&
-                                                                            formikProps
-                                                                                .errors
-                                                                                .firstName}
-                                                                    </Text>
-                                                                ) : null}
-                                                                <View
-                                                                    style={
-                                                                        styles.labelContainer
-                                                                    }
-                                                                >
-                                                                    <Text
-                                                                        style={
-                                                                            styles.labelText
-                                                                        }
-                                                                    >
-                                                                        Last
-                                                                        Name
-                                                                    </Text>
-                                                                </View>
-                                                                <TextInput
-                                                                    style={
-                                                                        styles.input
-                                                                    }
-                                                                    placeholder='Last Name'
-                                                                    autocomplete='off'
-                                                                    onChangeText={formikProps.handleChange(
-                                                                        'lastName'
-                                                                    )}
-                                                                    value={
-                                                                        formikProps
-                                                                            .values
-                                                                            .lastName
-                                                                    }
-                                                                    onBlur={formikProps.handleBlur(
-                                                                        'lastName'
-                                                                    )}
-                                                                />
-                                                                {formikProps
-                                                                    .errors
-                                                                    .lastName &&
-                                                                formikProps
-                                                                    .touched
-                                                                    .lastName ? (
-                                                                    <Text
-                                                                        style={
-                                                                            styles.errorText
-                                                                        }
-                                                                    >
-                                                                        {formikProps
-                                                                            .touched
-                                                                            .lastName &&
-                                                                            formikProps
-                                                                                .errors
-                                                                                .lastName}
-                                                                    </Text>
-                                                                ) : null}
-                                                                <View
-                                                                    style={
-                                                                        styles.labelContainer
-                                                                    }
-                                                                >
-                                                                    <Text
-                                                                        style={
-                                                                            styles.labelText
-                                                                        }
-                                                                    >
-                                                                        Email
-                                                                    </Text>
-                                                                </View>
-                                                                <TextInput
-                                                                    style={
-                                                                        styles.input
-                                                                    }
-                                                                    placeholder='Email'
-                                                                    autocomplete='off'
-                                                                    onChangeText={formikProps.handleChange(
-                                                                        'email'
-                                                                    )}
-                                                                    value={
-                                                                        formikProps
-                                                                            .values
-                                                                            .email
-                                                                    }
-                                                                    onBlur={formikProps.handleBlur(
-                                                                        'email'
-                                                                    )}
-                                                                />
-                                                                {formikProps
-                                                                    .errors
-                                                                    .email &&
-                                                                formikProps
-                                                                    .touched
-                                                                    .email ? (
-                                                                    <Text
-                                                                        style={
-                                                                            styles.errorText
-                                                                        }
-                                                                    >
-                                                                        {formikProps
-                                                                            .touched
-                                                                            .email &&
-                                                                            formikProps
-                                                                                .errors
-                                                                                .email}
-                                                                    </Text>
-                                                                ) : null}
-                                                                <View
-                                                                    style={
-                                                                        styles.labelContainer
-                                                                    }
-                                                                >
-                                                                    <Text
-                                                                        style={
-                                                                            styles.labelText
-                                                                        }
-                                                                    >
-                                                                        Phone
-                                                                    </Text>
-                                                                </View>
-                                                                <View
-                                                                    style={
-                                                                        showPhoneError
-                                                                            ? styles.phoneWrapperError
-                                                                            : styles.phoneWrapper
-                                                                    }
-                                                                >
-                                                                    <PhoneInput
-                                                                        overrideStyle={{
-                                                                            borderColor:
-                                                                                Colors.gray20,
-                                                                            borderWidth: 2,
-                                                                            borderRadius: 6,
-                                                                        }}
-                                                                        value={
-                                                                            userPhone
-                                                                        }
-                                                                        onChange={
-                                                                            setUserPhone
-                                                                        }
-                                                                    />
-                                                                    {showPhoneError ? (
                                                                         <Text
                                                                             style={
-                                                                                styles.phoneError
+                                                                                styles.labelText
                                                                             }
                                                                         >
-                                                                            Please
-                                                                            correct
-                                                                            the
-                                                                            phone
-                                                                            number
+                                                                            First
+                                                                            Name
+                                                                        </Text>
+                                                                    </View>
+                                                                    <TextInput
+                                                                        style={
+                                                                            styles.input
+                                                                        }
+                                                                        placeholder='First Name'
+                                                                        autocomplete='off'
+                                                                        onChangeText={formikProps.handleChange(
+                                                                            'firstName'
+                                                                        )}
+                                                                        value={
+                                                                            formikProps
+                                                                                .values
+                                                                                .firstName
+                                                                        }
+                                                                        onBlur={formikProps.handleBlur(
+                                                                            'firstName'
+                                                                        )}
+                                                                    />
+                                                                    {formikProps
+                                                                        .errors
+                                                                        .firstName &&
+                                                                    formikProps
+                                                                        .touched
+                                                                        .firstName ? (
+                                                                        <Text
+                                                                            style={
+                                                                                styles.errorText
+                                                                            }
+                                                                        >
+                                                                            {formikProps
+                                                                                .touched
+                                                                                .firstName &&
+                                                                                formikProps
+                                                                                    .errors
+                                                                                    .firstName}
                                                                         </Text>
                                                                     ) : null}
+                                                                    <View
+                                                                        style={
+                                                                            styles.labelContainer
+                                                                        }
+                                                                    >
+                                                                        <Text
+                                                                            style={
+                                                                                styles.labelText
+                                                                            }
+                                                                        >
+                                                                            Last
+                                                                            Name
+                                                                        </Text>
+                                                                    </View>
+                                                                    <TextInput
+                                                                        style={
+                                                                            styles.input
+                                                                        }
+                                                                        placeholder='Last Name'
+                                                                        autocomplete='off'
+                                                                        onChangeText={formikProps.handleChange(
+                                                                            'lastName'
+                                                                        )}
+                                                                        value={
+                                                                            formikProps
+                                                                                .values
+                                                                                .lastName
+                                                                        }
+                                                                        onBlur={formikProps.handleBlur(
+                                                                            'lastName'
+                                                                        )}
+                                                                    />
+                                                                    {formikProps
+                                                                        .errors
+                                                                        .lastName &&
+                                                                    formikProps
+                                                                        .touched
+                                                                        .lastName ? (
+                                                                        <Text
+                                                                            style={
+                                                                                styles.errorText
+                                                                            }
+                                                                        >
+                                                                            {formikProps
+                                                                                .touched
+                                                                                .lastName &&
+                                                                                formikProps
+                                                                                    .errors
+                                                                                    .lastName}
+                                                                        </Text>
+                                                                    ) : null}
+                                                                    <View
+                                                                        style={
+                                                                            styles.labelContainer
+                                                                        }
+                                                                    >
+                                                                        <Text
+                                                                            style={
+                                                                                styles.labelText
+                                                                            }
+                                                                        >
+                                                                            Email
+                                                                        </Text>
+                                                                    </View>
+                                                                    <TextInput
+                                                                        style={
+                                                                            styles.input
+                                                                        }
+                                                                        placeholder='Email'
+                                                                        autocomplete='off'
+                                                                        onChangeText={formikProps.handleChange(
+                                                                            'email'
+                                                                        )}
+                                                                        value={
+                                                                            formikProps
+                                                                                .values
+                                                                                .email
+                                                                        }
+                                                                        onBlur={formikProps.handleBlur(
+                                                                            'email'
+                                                                        )}
+                                                                    />
+                                                                    {formikProps
+                                                                        .errors
+                                                                        .email &&
+                                                                    formikProps
+                                                                        .touched
+                                                                        .email ? (
+                                                                        <Text
+                                                                            style={
+                                                                                styles.errorText
+                                                                            }
+                                                                        >
+                                                                            {formikProps
+                                                                                .touched
+                                                                                .email &&
+                                                                                formikProps
+                                                                                    .errors
+                                                                                    .email}
+                                                                        </Text>
+                                                                    ) : null}
+                                                                    <View
+                                                                        style={
+                                                                            styles.labelContainer
+                                                                        }
+                                                                    >
+                                                                        <Text
+                                                                            style={
+                                                                                styles.labelText
+                                                                            }
+                                                                        >
+                                                                            Phone
+                                                                        </Text>
+                                                                    </View>
+                                                                    <View
+                                                                        style={
+                                                                            showPhoneError
+                                                                                ? styles.phoneWrapperError
+                                                                                : styles.phoneWrapper
+                                                                        }
+                                                                    >
+                                                                        <PhoneInput
+                                                                            overrideStyle={{
+                                                                                borderColor:
+                                                                                    Colors.gray20,
+                                                                                borderWidth: 2,
+                                                                                borderRadius: 6,
+                                                                            }}
+                                                                            value={
+                                                                                userPhone
+                                                                            }
+                                                                            onChange={
+                                                                                setUserPhone
+                                                                            }
+                                                                        />
+                                                                        {showPhoneError ? (
+                                                                            <Text
+                                                                                style={
+                                                                                    styles.phoneError
+                                                                                }
+                                                                            >
+                                                                                Please
+                                                                                correct
+                                                                                the
+                                                                                phone
+                                                                                number
+                                                                            </Text>
+                                                                        ) : null}
+                                                                    </View>
+                                                                    <View
+                                                                        style={
+                                                                            styles.labelContainer
+                                                                        }
+                                                                    >
+                                                                        <Text
+                                                                            style={
+                                                                                styles.labelText
+                                                                            }
+                                                                        >
+                                                                            Address
+                                                                        </Text>
+                                                                    </View>
+                                                                    <TextInput
+                                                                        style={
+                                                                            styles.input
+                                                                        }
+                                                                        placeholder='Street'
+                                                                        onChangeText={formikProps.handleChange(
+                                                                            'street'
+                                                                        )}
+                                                                        value={
+                                                                            formikProps
+                                                                                .values
+                                                                                .street
+                                                                        }
+                                                                        onBlur={formikProps.handleBlur(
+                                                                            'street'
+                                                                        )}
+                                                                    />
+                                                                    {formikProps
+                                                                        .errors
+                                                                        .street &&
+                                                                    formikProps
+                                                                        .touched
+                                                                        .street ? (
+                                                                        <Text
+                                                                            style={
+                                                                                styles.errorText
+                                                                            }
+                                                                        >
+                                                                            {formikProps
+                                                                                .touched
+                                                                                .street &&
+                                                                                formikProps
+                                                                                    .errors
+                                                                                    .street}
+                                                                        </Text>
+                                                                    ) : null}
+                                                                    <View
+                                                                        style={
+                                                                            styles.labelContainer
+                                                                        }
+                                                                    >
+                                                                        <Text
+                                                                            style={
+                                                                                styles.labelText
+                                                                            }
+                                                                        >
+                                                                            City
+                                                                        </Text>
+                                                                    </View>
+                                                                    <TextInput
+                                                                        style={
+                                                                            styles.input
+                                                                        }
+                                                                        placeholder='City'
+                                                                        onChangeText={formikProps.handleChange(
+                                                                            'city'
+                                                                        )}
+                                                                        value={
+                                                                            formikProps
+                                                                                .values
+                                                                                .city
+                                                                        }
+                                                                        onBlur={formikProps.handleBlur(
+                                                                            'city'
+                                                                        )}
+                                                                    />
+                                                                    {formikProps
+                                                                        .errors
+                                                                        .city &&
+                                                                    formikProps
+                                                                        .touched
+                                                                        .city ? (
+                                                                        <Text
+                                                                            style={
+                                                                                styles.errorText
+                                                                            }
+                                                                        >
+                                                                            {formikProps
+                                                                                .touched
+                                                                                .city &&
+                                                                                formikProps
+                                                                                    .errors
+                                                                                    .city}
+                                                                        </Text>
+                                                                    ) : null}
+
+                                                                    <View
+                                                                        style={
+                                                                            styles.stateProvPostalCodeContainerRow
+                                                                        }
+                                                                    >
+                                                                        <View
+                                                                            style={
+                                                                                styles.stateProvPostalCodeContainer
+                                                                            }
+                                                                        >
+                                                                            <View
+                                                                                style={
+                                                                                    styles.stateProvSectionContainer
+                                                                                }
+                                                                            >
+                                                                                <View
+                                                                                    style={
+                                                                                        styles.stateProvInputContainer
+                                                                                    }
+                                                                                >
+                                                                                    <View
+                                                                                        style={
+                                                                                            styles.labelContainer
+                                                                                        }
+                                                                                    >
+                                                                                        <Text
+                                                                                            style={
+                                                                                                styles.labelText
+                                                                                            }
+                                                                                        >
+                                                                                            State
+                                                                                        </Text>
+                                                                                    </View>
+                                                                                    <TextInput
+                                                                                        style={[
+                                                                                            styles.input,
+                                                                                            styles.inputStateProv,
+                                                                                        ]}
+                                                                                        placeholder='State'
+                                                                                        onChangeText={formikProps.handleChange(
+                                                                                            'stateProv'
+                                                                                        )}
+                                                                                        value={
+                                                                                            formikProps
+                                                                                                .values
+                                                                                                .stateProv
+                                                                                        }
+                                                                                        onBlur={formikProps.handleBlur(
+                                                                                            'stateProv'
+                                                                                        )}
+                                                                                    />
+                                                                                </View>
+                                                                                <View
+                                                                                    style={
+                                                                                        styles.stateProvErrorContainer
+                                                                                    }
+                                                                                >
+                                                                                    {formikProps
+                                                                                        .errors
+                                                                                        .stateProv &&
+                                                                                    formikProps
+                                                                                        .touched
+                                                                                        .stateProv ? (
+                                                                                        <Text
+                                                                                            style={
+                                                                                                styles.errorText
+                                                                                            }
+                                                                                        >
+                                                                                            {formikProps
+                                                                                                .touched
+                                                                                                .stateProv &&
+                                                                                                formikProps
+                                                                                                    .errors
+                                                                                                    .stateProv}
+                                                                                        </Text>
+                                                                                    ) : null}
+                                                                                </View>
+                                                                            </View>
+                                                                            <View
+                                                                                style={
+                                                                                    styles.postalCodeSectionContainer
+                                                                                }
+                                                                            >
+                                                                                <View
+                                                                                    style={
+                                                                                        styles.postalCodeInputContainer
+                                                                                    }
+                                                                                >
+                                                                                    <View
+                                                                                        style={
+                                                                                            styles.labelContainer
+                                                                                        }
+                                                                                    >
+                                                                                        <Text
+                                                                                            style={
+                                                                                                styles.labelText
+                                                                                            }
+                                                                                        >
+                                                                                            Postal
+                                                                                            Code
+                                                                                        </Text>
+                                                                                    </View>
+                                                                                    <TextInput
+                                                                                        style={[
+                                                                                            styles.input,
+                                                                                            styles.inputPostalCode,
+                                                                                        ]}
+                                                                                        placeholder='Postal Code'
+                                                                                        onChangeText={formikProps.handleChange(
+                                                                                            'postalCode'
+                                                                                        )}
+                                                                                        keyboardType='numeric'
+                                                                                        value={
+                                                                                            formikProps
+                                                                                                .values
+                                                                                                .postalCode
+                                                                                        }
+                                                                                        onBlur={formikProps.handleBlur(
+                                                                                            'postalCode'
+                                                                                        )}
+                                                                                    />
+                                                                                </View>
+                                                                                <View
+                                                                                    style={
+                                                                                        styles.postalCodeErrorContainer
+                                                                                    }
+                                                                                >
+                                                                                    {formikProps
+                                                                                        .errors
+                                                                                        .postalCode &&
+                                                                                    formikProps
+                                                                                        .touched
+                                                                                        .postalCode ? (
+                                                                                        <Text
+                                                                                            style={
+                                                                                                styles.errorText
+                                                                                            }
+                                                                                        >
+                                                                                            {formikProps
+                                                                                                .touched
+                                                                                                .postalCode &&
+                                                                                                formikProps
+                                                                                                    .errors
+                                                                                                    .postalCode}
+                                                                                        </Text>
+                                                                                    ) : null}
+                                                                                </View>
+                                                                            </View>
+                                                                        </View>
+                                                                    </View>
+                                                                </View>
+                                                            </View>
+                                                        </Surface>
+                                                    </List.Accordion>
+                                                </List.Section>
+                                                <List.Section>
+                                                    <List.Accordion
+                                                        title='Affiliation Information'
+                                                        expanded={
+                                                            affiliationAccordionIsOpen
+                                                        }
+                                                        style={{
+                                                            backgroundColor:
+                                                                colors.secondary,
+                                                        }}
+                                                        titleStyle={{
+                                                            color: colors.primary,
+                                                            fontSize: 24,
+                                                            fontWeight: '600',
+                                                            letterSpacing: 0.5,
+                                                        }}
+                                                        onPress={
+                                                            handleAffiliationPress
+                                                        }
+                                                        right={(props) => (
+                                                            <Ionicons
+                                                                name={
+                                                                    affiliationAccordionIsOpen
+                                                                        ? 'chevron-down-sharp'
+                                                                        : 'chevron-up-sharp'
+                                                                }
+                                                                color={'black'}
+                                                                size={24}
+                                                            />
+                                                        )}
+                                                    >
+                                                        <Surface
+                                                            style={
+                                                                styles.churchSurfaceContainter
+                                                            }
+                                                        >
+                                                            <View
+                                                                style={
+                                                                    styles.inputContainer
+                                                                }
+                                                            >
+                                                                <View>
+                                                                    <Text
+                                                                        style={
+                                                                            styles.churchTitle
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            AFFILIATION_ENTITY
+                                                                        }{' '}
+                                                                        Affiliation
+                                                                    </Text>
                                                                 </View>
                                                                 <View
                                                                     style={
@@ -453,32 +772,35 @@ const ProfileForm = (props) => {
                                                                             styles.labelText
                                                                         }
                                                                     >
-                                                                        Address
+                                                                        {
+                                                                            AFFILIATION_ENTITY
+                                                                        }{' '}
+                                                                        Name
                                                                     </Text>
                                                                 </View>
                                                                 <TextInput
                                                                     style={
                                                                         styles.input
                                                                     }
-                                                                    placeholder='Street'
+                                                                    placeholder='Church Name'
                                                                     onChangeText={formikProps.handleChange(
-                                                                        'street'
+                                                                        'churchName'
                                                                     )}
                                                                     value={
                                                                         formikProps
                                                                             .values
-                                                                            .street
+                                                                            .churchName
                                                                     }
                                                                     onBlur={formikProps.handleBlur(
-                                                                        'street'
+                                                                        'churchName'
                                                                     )}
                                                                 />
                                                                 {formikProps
                                                                     .errors
-                                                                    .street &&
+                                                                    .churchName &&
                                                                 formikProps
                                                                     .touched
-                                                                    .street ? (
+                                                                    .churchName ? (
                                                                     <Text
                                                                         style={
                                                                             styles.errorText
@@ -486,10 +808,10 @@ const ProfileForm = (props) => {
                                                                     >
                                                                         {formikProps
                                                                             .touched
-                                                                            .street &&
+                                                                            .churchName &&
                                                                             formikProps
                                                                                 .errors
-                                                                                .street}
+                                                                                .churchName}
                                                                     </Text>
                                                                 ) : null}
                                                                 <View
@@ -511,23 +833,23 @@ const ProfileForm = (props) => {
                                                                     }
                                                                     placeholder='City'
                                                                     onChangeText={formikProps.handleChange(
-                                                                        'city'
+                                                                        'churchCity'
                                                                     )}
                                                                     value={
                                                                         formikProps
                                                                             .values
-                                                                            .city
+                                                                            .churchCity
                                                                     }
                                                                     onBlur={formikProps.handleBlur(
-                                                                        'city'
+                                                                        'churchCity'
                                                                     )}
                                                                 />
                                                                 {formikProps
                                                                     .errors
-                                                                    .city &&
+                                                                    .churchCity &&
                                                                 formikProps
                                                                     .touched
-                                                                    .city ? (
+                                                                    .churchCity ? (
                                                                     <Text
                                                                         style={
                                                                             styles.errorText
@@ -535,398 +857,110 @@ const ProfileForm = (props) => {
                                                                     >
                                                                         {formikProps
                                                                             .touched
-                                                                            .city &&
+                                                                            .churchCity &&
                                                                             formikProps
                                                                                 .errors
-                                                                                .city}
+                                                                                .churchCity}
                                                                     </Text>
                                                                 ) : null}
-
                                                                 <View
                                                                     style={
-                                                                        styles.stateProvPostalCodeContainerRow
+                                                                        styles.labelContainer
                                                                     }
                                                                 >
-                                                                    <View
+                                                                    <Text
                                                                         style={
-                                                                            styles.stateProvPostalCodeContainer
+                                                                            styles.labelText
                                                                         }
                                                                     >
-                                                                        <View
-                                                                            style={
-                                                                                styles.stateProvSectionContainer
-                                                                            }
-                                                                        >
-                                                                            <View
-                                                                                style={
-                                                                                    styles.stateProvInputContainer
-                                                                                }
-                                                                            >
-                                                                                <View
-                                                                                    style={
-                                                                                        styles.labelContainer
-                                                                                    }
-                                                                                >
-                                                                                    <Text
-                                                                                        style={
-                                                                                            styles.labelText
-                                                                                        }
-                                                                                    >
-                                                                                        State
-                                                                                    </Text>
-                                                                                </View>
-                                                                                <TextInput
-                                                                                    style={[
-                                                                                        styles.input,
-                                                                                        styles.inputStateProv,
-                                                                                    ]}
-                                                                                    placeholder='State'
-                                                                                    onChangeText={formikProps.handleChange(
-                                                                                        'stateProv'
-                                                                                    )}
-                                                                                    value={
-                                                                                        formikProps
-                                                                                            .values
-                                                                                            .stateProv
-                                                                                    }
-                                                                                    onBlur={formikProps.handleBlur(
-                                                                                        'stateProv'
-                                                                                    )}
-                                                                                />
-                                                                            </View>
-                                                                            <View
-                                                                                style={
-                                                                                    styles.stateProvErrorContainer
-                                                                                }
-                                                                            >
-                                                                                {formikProps
-                                                                                    .errors
-                                                                                    .stateProv &&
-                                                                                formikProps
-                                                                                    .touched
-                                                                                    .stateProv ? (
-                                                                                    <Text
-                                                                                        style={
-                                                                                            styles.errorText
-                                                                                        }
-                                                                                    >
-                                                                                        {formikProps
-                                                                                            .touched
-                                                                                            .stateProv &&
-                                                                                            formikProps
-                                                                                                .errors
-                                                                                                .stateProv}
-                                                                                    </Text>
-                                                                                ) : null}
-                                                                            </View>
-                                                                        </View>
-                                                                        <View
-                                                                            style={
-                                                                                styles.postalCodeSectionContainer
-                                                                            }
-                                                                        >
-                                                                            <View
-                                                                                style={
-                                                                                    styles.postalCodeInputContainer
-                                                                                }
-                                                                            >
-                                                                                <View
-                                                                                    style={
-                                                                                        styles.labelContainer
-                                                                                    }
-                                                                                >
-                                                                                    <Text
-                                                                                        style={
-                                                                                            styles.labelText
-                                                                                        }
-                                                                                    >
-                                                                                        Postal
-                                                                                        Code
-                                                                                    </Text>
-                                                                                </View>
-                                                                                <TextInput
-                                                                                    style={[
-                                                                                        styles.input,
-                                                                                        styles.inputPostalCode,
-                                                                                    ]}
-                                                                                    placeholder='Postal Code'
-                                                                                    onChangeText={formikProps.handleChange(
-                                                                                        'postalCode'
-                                                                                    )}
-                                                                                    keyboardType='numeric'
-                                                                                    value={
-                                                                                        formikProps
-                                                                                            .values
-                                                                                            .postalCode
-                                                                                    }
-                                                                                    onBlur={formikProps.handleBlur(
-                                                                                        'postalCode'
-                                                                                    )}
-                                                                                />
-                                                                            </View>
-                                                                            <View
-                                                                                style={
-                                                                                    styles.postalCodeErrorContainer
-                                                                                }
-                                                                            >
-                                                                                {formikProps
-                                                                                    .errors
-                                                                                    .postalCode &&
-                                                                                formikProps
-                                                                                    .touched
-                                                                                    .postalCode ? (
-                                                                                    <Text
-                                                                                        style={
-                                                                                            styles.errorText
-                                                                                        }
-                                                                                    >
-                                                                                        {formikProps
-                                                                                            .touched
-                                                                                            .postalCode &&
-                                                                                            formikProps
-                                                                                                .errors
-                                                                                                .postalCode}
-                                                                                    </Text>
-                                                                                ) : null}
-                                                                            </View>
-                                                                        </View>
-                                                                    </View>
+                                                                        State
+                                                                    </Text>
                                                                 </View>
-                                                            </View>
-                                                        </View>
-                                                    </Surface>
-                                                </List.Accordion>
-                                            </List.Section>
-                                            <List.Section>
-                                                <List.Accordion
-                                                    title='Affiliation Information'
-                                                    expanded={
-                                                        affiliationAccordionIsOpen
-                                                    }
-                                                    style={{
-                                                        backgroundColor:
-                                                            colors.secondary,
-                                                    }}
-                                                    titleStyle={{
-                                                        color: colors.primary,
-                                                        fontSize: 24,
-                                                        fontWeight: '600',
-                                                        letterSpacing: 0.5,
-                                                    }}
-                                                    onPress={
-                                                        handleAffiliationPress
-                                                    }
-                                                    right={(props) => (
-                                                        <Ionicons
-                                                            name={
-                                                                affiliationAccordionIsOpen
-                                                                    ? 'chevron-down-sharp'
-                                                                    : 'chevron-up-sharp'
-                                                            }
-                                                            color={'black'}
-                                                            size={24}
-                                                        />
-                                                    )}
-                                                >
-                                                    <Surface
-                                                        style={
-                                                            styles.churchSurfaceContainter
-                                                        }
-                                                    >
-                                                        <View
-                                                            style={
-                                                                styles.inputContainer
-                                                            }
-                                                        >
-                                                            <View>
-                                                                <Text
-                                                                    style={
-                                                                        styles.churchTitle
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        AFFILIATION_ENTITY
-                                                                    }{' '}
-                                                                    Affiliation
-                                                                </Text>
-                                                            </View>
-                                                            <View
-                                                                style={
-                                                                    styles.labelContainer
-                                                                }
-                                                            >
-                                                                <Text
-                                                                    style={
-                                                                        styles.labelText
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        AFFILIATION_ENTITY
-                                                                    }{' '}
-                                                                    Name
-                                                                </Text>
-                                                            </View>
-                                                            <TextInput
-                                                                style={
-                                                                    styles.input
-                                                                }
-                                                                placeholder='Church Name'
-                                                                onChangeText={formikProps.handleChange(
-                                                                    'churchName'
-                                                                )}
-                                                                value={
-                                                                    formikProps
-                                                                        .values
-                                                                        .churchName
-                                                                }
-                                                                onBlur={formikProps.handleBlur(
-                                                                    'churchName'
-                                                                )}
-                                                            />
-                                                            {formikProps.errors
-                                                                .churchName &&
-                                                            formikProps.touched
-                                                                .churchName ? (
-                                                                <Text
-                                                                    style={
-                                                                        styles.errorText
-                                                                    }
-                                                                >
-                                                                    {formikProps
-                                                                        .touched
-                                                                        .churchName &&
+                                                                <TextInput
+                                                                    style={[
+                                                                        styles.input,
+                                                                        styles.inputStateProv,
+                                                                    ]}
+                                                                    placeholder='State'
+                                                                    onChangeText={formikProps.handleChange(
+                                                                        'churchStateProv'
+                                                                    )}
+                                                                    value={
                                                                         formikProps
-                                                                            .errors
-                                                                            .churchName}
-                                                                </Text>
-                                                            ) : null}
-                                                            <View
-                                                                style={
-                                                                    styles.labelContainer
-                                                                }
-                                                            >
-                                                                <Text
-                                                                    style={
-                                                                        styles.labelText
+                                                                            .values
+                                                                            .churchStateProv
                                                                     }
-                                                                >
-                                                                    City
-                                                                </Text>
-                                                            </View>
-                                                            <TextInput
-                                                                style={
-                                                                    styles.input
-                                                                }
-                                                                placeholder='City'
-                                                                onChangeText={formikProps.handleChange(
-                                                                    'churchCity'
-                                                                )}
-                                                                value={
-                                                                    formikProps
-                                                                        .values
-                                                                        .churchCity
-                                                                }
-                                                                onBlur={formikProps.handleBlur(
-                                                                    'churchCity'
-                                                                )}
-                                                            />
-                                                            {formikProps.errors
-                                                                .churchCity &&
-                                                            formikProps.touched
-                                                                .churchCity ? (
-                                                                <Text
-                                                                    style={
-                                                                        styles.errorText
-                                                                    }
-                                                                >
-                                                                    {formikProps
-                                                                        .touched
-                                                                        .churchCity &&
-                                                                        formikProps
-                                                                            .errors
-                                                                            .churchCity}
-                                                                </Text>
-                                                            ) : null}
-                                                            <View
-                                                                style={
-                                                                    styles.labelContainer
-                                                                }
-                                                            >
-                                                                <Text
-                                                                    style={
-                                                                        styles.labelText
-                                                                    }
-                                                                >
-                                                                    State
-                                                                </Text>
-                                                            </View>
-                                                            <TextInput
-                                                                style={[
-                                                                    styles.input,
-                                                                    styles.inputStateProv,
-                                                                ]}
-                                                                placeholder='State'
-                                                                onChangeText={formikProps.handleChange(
-                                                                    'churchStateProv'
-                                                                )}
-                                                                value={
-                                                                    formikProps
-                                                                        .values
-                                                                        .churchStateProv
-                                                                }
-                                                                onBlur={formikProps.handleBlur(
-                                                                    'churchStateProv'
-                                                                )}
-                                                            />
+                                                                    onBlur={formikProps.handleBlur(
+                                                                        'churchStateProv'
+                                                                    )}
+                                                                />
 
-                                                            {formikProps.errors
-                                                                .churchStateProv &&
-                                                            formikProps.touched
-                                                                .churchStateProv ? (
-                                                                <Text
-                                                                    style={
-                                                                        styles.errorText
-                                                                    }
-                                                                >
-                                                                    {formikProps
-                                                                        .touched
-                                                                        .churchStateProv &&
-                                                                        formikProps
-                                                                            .errors
-                                                                            .churchStateProv}
-                                                                </Text>
-                                                            ) : null}
-                                                        </View>
-                                                    </Surface>
-                                                </List.Accordion>
-                                            </List.Section>
-                                            <View
-                                                style={styles.buttonContainer}
-                                            >
-                                                <CustomButton
-                                                    title='Update'
-                                                    graphic=''
-                                                    cbStyles={{
-                                                        backgroundColor:
-                                                            'green',
-                                                        color: 'white',
-                                                        width: '50%',
-                                                    }}
-                                                    onPress={
-                                                        formikProps.handleSubmit
+                                                                {formikProps
+                                                                    .errors
+                                                                    .churchStateProv &&
+                                                                formikProps
+                                                                    .touched
+                                                                    .churchStateProv ? (
+                                                                    <Text
+                                                                        style={
+                                                                            styles.errorText
+                                                                        }
+                                                                    >
+                                                                        {formikProps
+                                                                            .touched
+                                                                            .churchStateProv &&
+                                                                            formikProps
+                                                                                .errors
+                                                                                .churchStateProv}
+                                                                    </Text>
+                                                                ) : null}
+                                                            </View>
+                                                        </Surface>
+                                                    </List.Accordion>
+                                                </List.Section>
+                                                <View
+                                                    style={
+                                                        styles.buttonContainer
                                                     }
-                                                />
-                                            </View>
-                                        </Surface>
-                                    </>
-                                )}
-                                {/* this ends the formik execution */}
-                            </Formik>
-                        </ScrollView>
-                    </View>
-                </TouchableWithoutFeedback>
-            </ScrollView>
-        </View>
+                                                >
+                                                    <CustomButton
+                                                        title='Update'
+                                                        graphic=''
+                                                        cbStyles={{
+                                                            backgroundColor:
+                                                                'green',
+                                                            color: 'white',
+                                                            width: '50%',
+                                                        }}
+                                                        onPress={
+                                                            formikProps.handleSubmit
+                                                        }
+                                                    />
+                                                </View>
+                                            </Surface>
+                                        </>
+                                    )}
+                                    {/* this ends the formik execution */}
+                                </Formik>
+                            </ScrollView>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </ScrollView>
+            </View>
+            <Snackbar
+                visible={snackbarVisible}
+                onDismiss={onDismissSnackBar}
+                style={{ backgroundColor: 'green' }}
+                action={{
+                    label: 'OK',
+                    onPress: () => {
+                        // Do something
+                    },
+                }}
+            >
+                Profile information saved.
+            </Snackbar>
+        </>
     );
 };
 export default withTheme(ProfileForm);
@@ -941,6 +975,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         marginBottom: 10,
         marginTop: 10,
+
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
     },
