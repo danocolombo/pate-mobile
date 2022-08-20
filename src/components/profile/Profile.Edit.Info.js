@@ -149,14 +149,7 @@ export default function ProfileEditInfo() {
         setBusy(false);
 
         updateProfile(dbProfile).then((response) => {
-<<<<<<< HEAD
-            // navigation.navigate('UserProfile', null);
             navigation.goBack();
-            // navigation.navigate('UserProfile', null);
-=======
-            //navigation.navigate('UserProfile', null);
-            navigation.goBack();
->>>>>>> d593a2af42c683cc238fc7e63fafe8918e7622ca
         });
     };
     const [isOpened, setIsOpened] = useState(true);
