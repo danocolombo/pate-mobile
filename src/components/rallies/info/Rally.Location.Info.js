@@ -9,7 +9,7 @@ const RallyLocationInfo = ({ rally }) => {
         <>
             <View style={styles.rootContainer}>
                 <Surface style={[styles.surface, { elevation: 5 }]}>
-                    <View style={{ marginHorizontal: 20 }}>
+                    <View style={{ marginHorizontal: 5 }}>
                         <Text style={styles.titleText}>Event Information</Text>
                     </View>
                     <View style={styles.textWrapper}>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         // paddingHorizontal: 5,
     },
     titleText: {
-        fontSize: 28,
+        fontSize: 26,
         fontWeight: 'bold',
     },
     textWrapper: {

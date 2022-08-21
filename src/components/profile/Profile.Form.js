@@ -241,8 +241,8 @@ const ProfileForm = (props) => {
                                                         ]}
                                                         titleStyle={{
                                                             color: colors.primary,
-                                                            fontSize: 24,
-                                                            fontWeight: '600',
+                                                            fontSize: 18,
+                                                            fontWeight: '400',
                                                             letterSpacing: 0.5,
                                                         }}
                                                         onPress={
@@ -449,6 +449,9 @@ const ProfileForm = (props) => {
                                                                                     Colors.gray20,
                                                                                 borderWidth: 2,
                                                                                 borderRadius: 6,
+                                                                                width: 280,
+                                                                                alignItems:
+                                                                                    'left',
                                                                             }}
                                                                             value={
                                                                                 userPhone
@@ -742,8 +745,8 @@ const ProfileForm = (props) => {
                                                         ]}
                                                         titleStyle={{
                                                             color: colors.primary,
-                                                            fontSize: 24,
-                                                            fontWeight: '600',
+                                                            fontSize: 18,
+                                                            fontWeight: '400',
                                                             letterSpacing: 0.5,
                                                         }}
                                                         onPress={

@@ -1,10 +1,16 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, {
+    useState,
+    useEffect,
+    useRef,
+    useMemo,
+    useLayoutEffect,
+} from 'react';
 import axios from 'axios';
 import {
     View,
     Text,
     StyleSheet,
-    Image,
+    Button,
     Modal,
     ScrollView,
     ImageBackground,
@@ -52,7 +58,23 @@ const RallyDetails = ({ rallyId }) => {
     //modal stuff
     const statusValues = ['draft', 'pending', 'approved'];
     const [registrations, setRegistrations] = useState([]);
-
+    // create the Edit button in upper right navigation
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <Button
+                    onPress={() =>
+                        navigation.navigate('RallyEditFlow', {
+                            rallyId: rally.uid,
+                            stage: 1,
+                        })
+                    }
+                    color='white'
+                    title='Edit'
+                />
+            ),
+        });
+    }, [navigation]);
     useEffect(() => {
         const fetchData = async () => {
             // console.log('RI:54-->rallyId:', rallyId);
@@ -393,30 +415,6 @@ const RallyDetails = ({ rallyId }) => {
                         rally={rally}
                         onPress={handleStatusPress}
                     />
-                    <View style={styles.buttonContainer}></View>
-                    {user.uid === rally.coordinator.id || user?.stateLead ? (
-                        <View>
-                            <View style={styles.buttonContainer}>
-                                <CustomButton
-                                    title='Edit This Event'
-                                    graphic={null}
-                                    cbStyles={{
-                                        backgroundColor: 'green',
-                                        color: 'white',
-                                        width: 200,
-                                        textAlign: 'center',
-                                    }}
-                                    txtColor='white'
-                                    onPress={() =>
-                                        navigation.navigate('RallyEditFlow', {
-                                            rallyId: rally.uid,
-                                            stage: 1,
-                                        })
-                                    }
-                                />
-                            </View>
-                        </View>
-                    ) : null}
                 </ScrollView>
                 <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints}>
                     <View
