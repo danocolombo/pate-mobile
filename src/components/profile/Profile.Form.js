@@ -10,9 +10,8 @@ import {
 } from 'react-native';
 import { List, Surface, withTheme, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-// import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
-import ProfileViewAffiliations from './Profile.View.Affiliations';
+import DropDown from 'react-native-paper-dropdown';
 import PhoneInput from '../ui/PhoneInput';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -59,14 +58,23 @@ const ProfileForm = (props) => {
     const dispatch = useDispatch();
     const originalUser = useSelector((state) => state.users.currentUser);
     let user = useSelector((state) => state.users.currentUser);
-    let feo = useSelector((state) => state.system);
-    const AFFILIATION_ENTITY = useSelector(
-        (state) => state.system.affiliationEntity
+    const [affiliationSelected, setAffiliationSelected] = useState(
+        user?.affiliations?.active
     );
-    const onToggleSnackBar = () => setSnackbarVisible(!snackbarVisible);
+    //-------------------------------------------
+    // need to create affiliate dropdown data
+    //-------------------------------------------
+    const definedAffiliationList = user?.affiliations?.options.map((a) => {
+        return {
+            label: a,
+            value: a,
+        };
+    });
+    let feo = useSelector((state) => state.system);
 
     const onDismissSnackBar = () => setSnackbarVisible(false);
     const [showPhoneError, setShowPhoneError] = useState(false);
+    const [showDropDown, setShowDropDown] = useState(false);
     //printObject('PF:49-->user', user);
 
     let phoneDisplayValue;
@@ -987,10 +995,57 @@ const ProfileForm = (props) => {
                                                                     styles.affiliatesSurfaceContainer
                                                                 }
                                                             >
-                                                                <View>
-                                                                    <Text>
-                                                                        Yep
+                                                                <View
+                                                                    style={
+                                                                        styles.instructionWrapper
+                                                                    }
+                                                                >
+                                                                    <Text
+                                                                        style={
+                                                                            styles.instructionText
+                                                                        }
+                                                                    >
+                                                                        Select
+                                                                        one of
+                                                                        your
+                                                                        affilates.
                                                                     </Text>
+                                                                </View>
+                                                                <View
+                                                                    style={
+                                                                        styles.dropdownContainer
+                                                                    }
+                                                                >
+                                                                    <DropDown
+                                                                        label={
+                                                                            'Affiliation'
+                                                                        }
+                                                                        mode={
+                                                                            'outlined'
+                                                                        }
+                                                                        visible={
+                                                                            showDropDown
+                                                                        }
+                                                                        showDropDown={() =>
+                                                                            setShowDropDown(
+                                                                                true
+                                                                            )
+                                                                        }
+                                                                        onDismiss={() =>
+                                                                            setShowDropDown(
+                                                                                false
+                                                                            )
+                                                                        }
+                                                                        value={
+                                                                            affiliationSelected
+                                                                        }
+                                                                        setValue={
+                                                                            setAffiliationSelected
+                                                                        }
+                                                                        list={
+                                                                            definedAffiliationList
+                                                                        }
+                                                                    />
                                                                 </View>
                                                             </Surface>
                                                         </List.Accordion>
@@ -1157,6 +1212,13 @@ const styles = StyleSheet.create({
     affiliateTitle: {
         textAlign: 'center',
         fontSize: 24,
+    },
+    instructionWrapper: {
+        marginVertical: 10,
+    },
+    instructionText: {
+        fontSize: 18,
+        textAlign: 'center',
     },
     buttonContainer: {
         alignItems: 'center',
