@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ImageBackground, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import ProfileForm from '../components/profile/Profile.Form';
-import PersonalDetails from '../components/Profile.Form';
+// import PersonalDetails from '../components/Profile.Form';
 import PersonalHeader from '../components/profile/personalHeader';
 import AffiliateForm from '../components/profile/Affiliate.Form';
 import { printObject } from '../utils/helpers';
@@ -15,7 +15,7 @@ function ProfileScreen() {
                 source={require('../components/images/background.png')}
                 style={styles.bgImageContainer}
             >
-                <PersonalDetails user={user} />
+                <ProfileForm user={user} />
                 {/* <AffiliateForm /> */}
             </ImageBackground>
         </>
