@@ -53,7 +53,7 @@ const ProfileForm = (props) => {
     const [contactAccordionIsOpen, setContactAccordionIsOpen] = useState(false);
     const [affiliationAccordionIsOpen, setAffiliationAccordionIsOpen] =
         useState(false);
-    const [affiliationsAccordionOpen, setAffiliationsAccordionOpen] =
+    const [affiliationsAccordionIsOpen, setAffiliationsAccordionIsOpen] =
         useState(false);
     const { colors } = props.theme;
     const dispatch = useDispatch();
@@ -93,10 +93,17 @@ const ProfileForm = (props) => {
     const handleAccordPress = () => {
         setContactAccordionIsOpen(!contactAccordionIsOpen);
         setAffiliationAccordionIsOpen(false);
+        setAffiliationsAccordionIsOpen(false);
     };
     const handleAffiliationPress = () => {
         setAffiliationAccordionIsOpen(!affiliationAccordionIsOpen);
         setContactAccordionIsOpen(false);
+        setAffiliationsAccordionIsOpen(false);
+    };
+    const handleAffiliationsPress = () => {
+        setAffiliationsAccordionIsOpen(!affiliationsAccordionIsOpen);
+        setContactAccordionIsOpen(false);
+        setAffiliationAccordionIsOpen(false);
     };
     const handleSubmit = (values) => {
         // printObject('PF:73-->values', values);
@@ -766,7 +773,7 @@ const ProfileForm = (props) => {
                                                     >
                                                         <Surface
                                                             style={
-                                                                styles.affiliateSurfaceContainter
+                                                                styles.affiliateSurfaceContainer
                                                             }
                                                         >
                                                             <View
@@ -937,15 +944,58 @@ const ProfileForm = (props) => {
                                                     </List.Accordion>
                                                 </List.Section>
                                                 {user?.affiliations?.active ===
-                                                'FEO' ? (
-                                                    <View>
-                                                        <ProfileViewAffiliations
-                                                            user={user}
-                                                            // isOpen={affiliationsAccordionOpen}
-                                                            // toggle={() => handleAffiliationsToggle()}
-                                                        />
-                                                    </View>
-                                                ) : null}
+                                                    'FEO' && (
+                                                    <List.Section>
+                                                        <List.Accordion
+                                                            title='Affiliation Information'
+                                                            expanded={
+                                                                affiliationsAccordionIsOpen
+                                                            }
+                                                            style={[
+                                                                styles.accordionHeader,
+                                                                {
+                                                                    backgroundColor:
+                                                                        colors.secondary,
+                                                                },
+                                                            ]}
+                                                            titleStyle={{
+                                                                color: colors.primary,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    '400',
+                                                                letterSpacing: 0.5,
+                                                            }}
+                                                            onPress={
+                                                                handleAffiliationsPress
+                                                            }
+                                                            right={(props) => (
+                                                                <Ionicons
+                                                                    name={
+                                                                        affiliationsAccordionIsOpen
+                                                                            ? 'chevron-down-sharp'
+                                                                            : 'chevron-up-sharp'
+                                                                    }
+                                                                    color={
+                                                                        'black'
+                                                                    }
+                                                                    size={24}
+                                                                />
+                                                            )}
+                                                        >
+                                                            <Surface
+                                                                style={
+                                                                    styles.affiliatesSurfaceContainer
+                                                                }
+                                                            >
+                                                                <View>
+                                                                    <Text>
+                                                                        Yep
+                                                                    </Text>
+                                                                </View>
+                                                            </Surface>
+                                                        </List.Accordion>
+                                                    </List.Section>
+                                                )}
                                                 <View
                                                     style={
                                                         styles.buttonContainer
@@ -1088,7 +1138,15 @@ const styles = StyleSheet.create({
         borderColor: 'black',
     },
     postalCodeContainer: {},
-    affiliateSurfaceContainter: {
+    affiliateSurfaceContainer: {
+        padding: 5,
+        marginHorizontal: 20,
+        paddingVertical: 10,
+        marginBottom: 0,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+    },
+    affiliatesSurfaceContainer: {
         padding: 5,
         marginHorizontal: 20,
         paddingVertical: 10,
