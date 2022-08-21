@@ -65,6 +65,7 @@ export const systemSlice = createSlice({
             state.affiliationEntity = '';
             // state.today = '';
             state.affiliation = '';
+            state.affiliate = {};
             return state;
         },
     },

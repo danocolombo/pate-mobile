@@ -30,7 +30,7 @@ import {
 import { getToday, printObject } from '../../../utils/helpers';
 import { REGION } from '../../../constants/regions';
 import { getPateDate } from '../../../utils/date';
-import { faCropSimple } from '@fortawesome/free-solid-svg-icons';
+
 const SignInScreen = () => {
     const [loading, setLoading] = useState(false);
     const { height } = useWindowDimensions();
@@ -131,21 +131,23 @@ const SignInScreen = () => {
         let u = currentSession?.idToken?.payload['cognito:username'];
         let e = currentSession?.idToken?.payload?.email;
         let j = currentSession?.idToken?.jwtToken;
-        let g = currentSession?.idToken?.payload['cognito:groups'];
+        let g = currentSession?.idToken?.payload['cognito:groups']; //todo: necessary?
         let theUser = {};
 
         theUser.uid = i;
         theUser.username = u;
         theUser.email = e;
         theUser.jwtToken = j;
-        theUser.groups = g;
+        theUser.groups = g; //todo: necessary?
 
         //   ########################
         //   get user profile
         //   ########################
         let fullUserInfo = {};
-        let region = 'us#east#south#ga';
-        let eventRegion = 'east';
+        // let region = 'us#east#south#ga';
+        let region = '';
+        //let eventRegion = 'east'; //todo: necessary?
+        let eventRegion = ''; //todo: necessary?
         await getProfile(theUser.uid).then((profileResponse) => {
             // console.log('profileResponse', profileResponse);
             switch (profileResponse.statusCode) {
@@ -159,6 +161,7 @@ const SignInScreen = () => {
                     // no profile for uid
                     fullUserInfo = theUser;
                     fullUserInfo.profile = false;
+                    break;
                 default:
                     // we should get the error code, message and error
                     console.log('StatusCode: ', profileResponse.statusCode);
@@ -166,9 +169,11 @@ const SignInScreen = () => {
                     console.log('Error:', profileResponse.error);
                     // Alert.alert('Error getting the profile information');
                     fullUserInfo = theUser;
+                    fullUserInfo.profile = false;
                     break;
             }
             printObject('SIS:168:--fullUserInfo:', fullUserInfo);
+            // if profile does not have affiliations, set default to FEO
             if (!fullUserInfo?.affiliations) {
                 let defaultAff = {
                     options: ['FEO'],

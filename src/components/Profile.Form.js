@@ -27,6 +27,7 @@ import {
     createPatePhone,
 } from '../utils/helpers';
 import { Ionicons } from '@expo/vector-icons';
+import { or } from 'react-native-reanimated';
 
 // create validation schema for yup to pass to formik
 const profileSchema = yup.object({
@@ -40,9 +41,9 @@ const profileSchema = yup.object({
     // .test('is-postalCode-numeric', 'required (10000 - 99999)', (val) => {
     //     return parseInt(val) > 9999 && parseInt(val) < 100000;
     // }),
-    churchName: yup.string().min(2),
-    churchCity: yup.string().min(2),
-    churchStateProv: yup.string().min(2).max(2),
+    affiliateName: yup.string().min(2),
+    affiliateity: yup.string().min(2),
+    affiliateStateProv: yup.string().min(2).max(2),
 });
 
 const ProfileForm = (props) => {
@@ -53,6 +54,7 @@ const ProfileForm = (props) => {
         useState(false);
     const { colors } = props.theme;
     const dispatch = useDispatch();
+    const originalUser = useSelector((state) => state.users.currentUser);
     let user = useSelector((state) => state.users.currentUser);
     let feo = useSelector((state) => state.system);
     const AFFILIATION_ENTITY = useSelector(
@@ -128,36 +130,40 @@ const ProfileForm = (props) => {
                 stateProv: values?.stateProv ? values.stateProv : '',
                 postalCode: values?.postalCode ? values.postalCode : '',
             },
-            church: {
-                name: values?.churchName ? values.churchName : '',
-                //street: values?.churchStreet ? values.churchStreet : '',
-                city: values?.churchCity ? values.churchCity : '',
-                stateProv: values?.churchStateProv
-                    ? values.churchStateProv
+            affiliate: {
+                name: values?.affiliateName ? values.affiliateName : '',
+                city: values?.affiliateCity ? values.affiliateCity : '',
+                stateProv: values?.affiliateStateProv
+                    ? values.affiliateStateProv
                     : '',
             },
+            affiliations: originalUser.affiliations,
+
             isLoggedIn: true,
         };
         // now conditionally add the rep and lead info if applicable
-        if (user?.stateRep) {
-            dbProfile = { ...dbProfile, stateRep: user.stateRep };
-            dbProfile = { ...dbProfile, profile: user.profile };
+        if (originalUser?.stateRep) {
+            dbProfile = { ...dbProfile, stateRep: originalUser.stateRep };
+            dbProfile = { ...dbProfile, profile: originalUser.profile };
         }
-        if (user?.stateLead) {
-            dbProfile = { ...dbProfile, stateLead: user.stateLead };
-            dbProfile = { ...dbProfile, profile: user.profile };
+        if (originalUser?.stateLead) {
+            dbProfile = { ...dbProfile, stateLead: originalUser.stateLead };
+            dbProfile = { ...dbProfile, profile: originalUser.profile };
         }
-        dbProfile = { ...dbProfile, username: user.username };
-        dbProfile = { ...dbProfile, role: user.role };
-        dbProfile = { ...dbProfile, region: user.region };
-        // printObject('PF:127-->dbProfile', dbProfile);
-        if (!user?.affiliate) {
-            dbProfile = { ...dbProfile, affiliate: 'FEO' };
-        }
-        setSnackbarVisible(true);
-        // updateProfile(dbProfile).then((response) => {
-        //     navigation.navigate('Main', null);
-        // });
+        dbProfile = { ...dbProfile, username: originalUser.username };
+        dbProfile = { ...dbProfile, role: originalUser.role };
+        dbProfile = { ...dbProfile, region: originalUser.region };
+        printObject('PF:156-->originalUser', originalUser);
+        printObject('PF:157-->dbProfile', dbProfile);
+
+        updateProfile(dbProfile)
+            .then((response) => {
+                setSnackbarVisible(true);
+            })
+            .catch((err) =>
+                console.log('error saving profile to database\n', err)
+            );
+        return;
     };
     // const dispatch = useDispatch();
     return (
@@ -190,17 +196,16 @@ const ProfileForm = (props) => {
                                         postalCode: user?.residence?.postalCode
                                             ? user.residence.postalCode
                                             : '',
-                                        churchName: user?.church?.name
-                                            ? user.church.name
+                                        affiliateName: user?.affiliate?.name
+                                            ? user.affiliate.name
                                             : '',
-                                        // churchStreet: user?.churchStreet
-                                        //     ? user.churchStreet
-                                        //     : '',
-                                        churchCity: user?.church?.city
-                                            ? user.church.city
+
+                                        affiliateCity: user?.affiliate?.city
+                                            ? user.affiliate.city
                                             : '',
-                                        churchStateProv: user?.church?.stateProv
-                                            ? user.church.stateProv
+                                        affiliateStateProv: user?.affiliate
+                                            ?.stateProv
+                                            ? user.affiliate.stateProv
                                             : '',
                                     }}
                                     validationSchema={profileSchema}
@@ -755,7 +760,7 @@ const ProfileForm = (props) => {
                                                     >
                                                         <Surface
                                                             style={
-                                                                styles.churchSurfaceContainter
+                                                                styles.affiliateSurfaceContainter
                                                             }
                                                         >
                                                             <View
@@ -791,23 +796,23 @@ const ProfileForm = (props) => {
                                                                             .label
                                                                     )} Name`}
                                                                     onChangeText={formikProps.handleChange(
-                                                                        'churchName'
+                                                                        'affiliateName'
                                                                     )}
                                                                     value={
                                                                         formikProps
                                                                             .values
-                                                                            .churchName
+                                                                            .affiliateName
                                                                     }
                                                                     onBlur={formikProps.handleBlur(
-                                                                        'churchName'
+                                                                        'affiliateName'
                                                                     )}
                                                                 />
                                                                 {formikProps
                                                                     .errors
-                                                                    .churchName &&
+                                                                    .affiliateName &&
                                                                 formikProps
                                                                     .touched
-                                                                    .churchName ? (
+                                                                    .affiliateName ? (
                                                                     <Text
                                                                         style={
                                                                             styles.errorText
@@ -815,10 +820,10 @@ const ProfileForm = (props) => {
                                                                     >
                                                                         {formikProps
                                                                             .touched
-                                                                            .churchName &&
+                                                                            .affiliateName &&
                                                                             formikProps
                                                                                 .errors
-                                                                                .churchName}
+                                                                                .affiliateName}
                                                                     </Text>
                                                                 ) : null}
                                                                 <View
@@ -840,23 +845,23 @@ const ProfileForm = (props) => {
                                                                     }
                                                                     placeholder='City'
                                                                     onChangeText={formikProps.handleChange(
-                                                                        'churchCity'
+                                                                        'affiliateCity'
                                                                     )}
                                                                     value={
                                                                         formikProps
                                                                             .values
-                                                                            .churchCity
+                                                                            .affiliateCity
                                                                     }
                                                                     onBlur={formikProps.handleBlur(
-                                                                        'churchCity'
+                                                                        'affiliateCity'
                                                                     )}
                                                                 />
                                                                 {formikProps
                                                                     .errors
-                                                                    .churchCity &&
+                                                                    .affiliateCity &&
                                                                 formikProps
                                                                     .touched
-                                                                    .churchCity ? (
+                                                                    .affiliateCity ? (
                                                                     <Text
                                                                         style={
                                                                             styles.errorText
@@ -864,10 +869,10 @@ const ProfileForm = (props) => {
                                                                     >
                                                                         {formikProps
                                                                             .touched
-                                                                            .churchCity &&
+                                                                            .affiliateCity &&
                                                                             formikProps
                                                                                 .errors
-                                                                                .churchCity}
+                                                                                .affiliateCity}
                                                                     </Text>
                                                                 ) : null}
                                                                 <View
@@ -890,24 +895,24 @@ const ProfileForm = (props) => {
                                                                     ]}
                                                                     placeholder='State'
                                                                     onChangeText={formikProps.handleChange(
-                                                                        'churchStateProv'
+                                                                        'affiliateStateProv'
                                                                     )}
                                                                     value={
                                                                         formikProps
                                                                             .values
-                                                                            .churchStateProv
+                                                                            .affiliateStateProv
                                                                     }
                                                                     onBlur={formikProps.handleBlur(
-                                                                        'churchStateProv'
+                                                                        'affiliateStateProv'
                                                                     )}
                                                                 />
 
                                                                 {formikProps
                                                                     .errors
-                                                                    .churchStateProv &&
+                                                                    .affiliateStateProv &&
                                                                 formikProps
                                                                     .touched
-                                                                    .churchStateProv ? (
+                                                                    .affiliateStateProv ? (
                                                                     <Text
                                                                         style={
                                                                             styles.errorText
@@ -915,10 +920,10 @@ const ProfileForm = (props) => {
                                                                     >
                                                                         {formikProps
                                                                             .touched
-                                                                            .churchStateProv &&
+                                                                            .affiliateStateProv &&
                                                                             formikProps
                                                                                 .errors
-                                                                                .churchStateProv}
+                                                                                .affiliateStateProv}
                                                                     </Text>
                                                                 ) : null}
                                                             </View>
@@ -1067,7 +1072,7 @@ const styles = StyleSheet.create({
         borderColor: 'black',
     },
     postalCodeContainer: {},
-    churchSurfaceContainter: {
+    affiliateSurfaceContainter: {
         padding: 5,
         marginHorizontal: 20,
         paddingVertical: 10,
@@ -1075,7 +1080,7 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
     },
-    churchTitle: {
+    affiliateTitle: {
         textAlign: 'center',
         fontSize: 24,
     },
