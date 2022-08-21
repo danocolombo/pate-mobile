@@ -27,7 +27,10 @@ const ProfileViewAffiliates = (props) => {
             <List.Section>
                 <List.Accordion
                     title='Affiliate Information'
-                    style={{ backgroundColor: colors.secondary }}
+                    style={[
+                        styles.accordionHeader,
+                        { backgroundColor: colors.secondary },
+                    ]}
                     expanded={affiliationsAccordionOpen}
                     titleStyle={{
                         color: colors.primary,
@@ -83,5 +86,9 @@ const styles = StyleSheet.create({
     textInput: {
         fontSize: 18,
         backgroundColor: 'white',
+    },
+    accordionHeader: {
+        borderRadius: 10,
+        marginHorizontal: 5,
     },
 });

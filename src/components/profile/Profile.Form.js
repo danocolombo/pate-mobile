@@ -12,6 +12,7 @@ import { List, Surface, withTheme, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 // import { Button } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
+import ProfileViewAffiliations from './Profile.View.Affiliations';
 import PhoneInput from '../ui/PhoneInput';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -51,6 +52,8 @@ const ProfileForm = (props) => {
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [contactAccordionIsOpen, setContactAccordionIsOpen] = useState(false);
     const [affiliationAccordionIsOpen, setAffiliationAccordionIsOpen] =
+        useState(false);
+    const [affiliationsAccordionOpen, setAffiliationsAccordionOpen] =
         useState(false);
     const { colors } = props.theme;
     const dispatch = useDispatch();
@@ -930,6 +933,16 @@ const ProfileForm = (props) => {
                                                         </Surface>
                                                     </List.Accordion>
                                                 </List.Section>
+                                                {user?.affiliations?.active ===
+                                                'FEO' ? (
+                                                    <View>
+                                                        <ProfileViewAffiliations
+                                                            user={user}
+                                                            // isOpen={affiliationsAccordionOpen}
+                                                            // toggle={() => handleAffiliationsToggle()}
+                                                        />
+                                                    </View>
+                                                ) : null}
                                                 <View
                                                     style={
                                                         styles.buttonContainer
