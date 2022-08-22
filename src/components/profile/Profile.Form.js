@@ -17,8 +17,17 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import CustomButton from '../ui/CustomButton';
 import { updateCurrentUser } from '../../features/users/usersSlice';
+import {
+    updateRegion,
+    updateEventRegion,
+    updateAffiliate,
+    updateAffiliateTitle,
+    updateStateProv,
+    updateAffiliation,
+} from '../../features/system/systemSlice';
 import PersonalHeader from './personalHeader';
 import { updateProfile } from '../../providers/users';
+import { getAffiliate } from '../../providers/system';
 import { Colors } from '../../constants/colors';
 import {
     printObject,
@@ -27,7 +36,7 @@ import {
     createPatePhone,
 } from '../../utils/helpers';
 import { Ionicons } from '@expo/vector-icons';
-import { or } from 'react-native-reanimated';
+import { select } from '@react-native-material/core';
 
 // create validation schema for yup to pass to formik
 const profileSchema = yup.object({
@@ -59,17 +68,17 @@ const ProfileForm = (props) => {
     const originalUser = useSelector((state) => state.users.currentUser);
     let user = useSelector((state) => state.users.currentUser);
     const [affiliationSelected, setAffiliationSelected] = useState(
-        user?.affiliations?.active
+        user?.affiliations?.active.value
     );
     //-------------------------------------------
     // need to create affiliate dropdown data
     //-------------------------------------------
-    const definedAffiliationList = user?.affiliations?.options.map((a) => {
-        return {
-            label: a,
-            value: a,
-        };
-    });
+    // const definedAffiliationList = user?.affiliations?.options.map((a) => {
+    //     return {
+    //         label: a,
+    //         value: a,
+    //     };
+    // });
     let feo = useSelector((state) => state.system);
 
     const onDismissSnackBar = () => setSnackbarVisible(false);
@@ -134,6 +143,41 @@ const ProfileForm = (props) => {
 
         // gather data
         values.phone = phoneToPass;
+        // printObject('PF:136------------------>original:', originalUser);
+        if (affiliationSelected !== originalUser.affiliations.active.value) {
+            //    get the label of the affiliation selected
+            let selectedReference = originalUser.affiliations.options.filter(
+                (a) => a.value === affiliationSelected
+            );
+
+            let activeData = {
+                value: selectedReference[0].value,
+                label: selectedReference[0].label,
+            };
+
+            let updatedAffiliateData = {
+                options: originalUser.affiliations.options,
+                active: activeData,
+            };
+
+            values.affiliations = updatedAffiliateData;
+            // printObject('PF:156______values', values);
+            let newAffiliateInfo = originalUser.userAffiliates.filter(
+                (a) => a.value === affiliationSelected
+            );
+            values.affiliate = newAffiliateInfo[0];
+        }
+        // printObject('PF:156=======>values:', values);
+        console.log('\n\n');
+        //   UPDATE REDUX SYSTEM
+        getAffiliate(affiliationSelected).then((response) => {
+            dispatch(updateAffiliate(response.body[0]));
+        });
+        dispatch(updateRegion(originalUser.region));
+        dispatch(updateStateProv(originalUser.residence.stateProv));
+        dispatch(updateAffiliation(affiliationSelected));
+
+        //   UPDATE REDUX CURRENTUSER
         dispatch(updateCurrentUser(values));
         // need to create residence structure
         let dbProfile = {
@@ -156,11 +200,36 @@ const ProfileForm = (props) => {
                     : '',
             },
             affiliations: originalUser.affiliations,
-
+            userAffiliates: originalUser.userAffiliates,
             isLoggedIn: true,
         };
-        // now conditionally add the rep and lead info if applicable
+        //   check the updates to affilations
+        if (affiliationSelected != originalUser.affiliations.active.value) {
+            //    get the label of the affiliation selected
+            let selectedReference = originalUser.affiliations.options.filter(
+                (a) => a.value === affiliationSelected
+            );
+            let activeValues = {
+                value: selectedReference[0].value,
+                label: selectedReference[0].labelContainer,
+            };
+            let updatedAffiliateData = {
+                options: originalUser.affiliations.options,
+                active: activeValues,
+            };
+            dbProfile = {
+                ...dbProfile,
+                affiliations: updatedAffiliateData,
+            };
+        } else {
+            // console.log('PF:165-->same, no need to update');
+            dbProfile = {
+                ...dbProfile,
+                affiliations: originalUser.affiliations,
+            };
+        }
         if (originalUser?.stateRep) {
+            // now conditionally add the rep and lead info if applicable
             dbProfile = { ...dbProfile, stateRep: originalUser.stateRep };
             dbProfile = { ...dbProfile, profile: originalUser.profile };
         }
@@ -171,8 +240,8 @@ const ProfileForm = (props) => {
         dbProfile = { ...dbProfile, username: originalUser.username };
         dbProfile = { ...dbProfile, role: originalUser.role };
         dbProfile = { ...dbProfile, region: originalUser.region };
-        printObject('PF:156-->originalUser', originalUser);
-        printObject('PF:157-->dbProfile', dbProfile);
+        // printObject('PF:156-->originalUser', originalUser);
+        // printObject('PF:157-->dbProfile', dbProfile);
 
         updateProfile(dbProfile)
             .then((response) => {
@@ -182,6 +251,9 @@ const ProfileForm = (props) => {
                 console.log('error saving profile to database\n', err)
             );
         return;
+    };
+    const handleAffiliationsSelectClick = () => {
+        console.log('PF:187-->affiliationSelected:', affiliationSelected);
     };
     // const dispatch = useDispatch();
     return (
@@ -951,8 +1023,8 @@ const ProfileForm = (props) => {
                                                         </Surface>
                                                     </List.Accordion>
                                                 </List.Section>
-                                                {user?.affiliations?.active ===
-                                                    'FEO' && (
+                                                {user?.affiliations.options
+                                                    .length > 1 && (
                                                     <List.Section>
                                                         <List.Accordion
                                                             title='Affiliation Information'
@@ -1043,7 +1115,9 @@ const ProfileForm = (props) => {
                                                                             setAffiliationSelected
                                                                         }
                                                                         list={
-                                                                            definedAffiliationList
+                                                                            user
+                                                                                .affiliations
+                                                                                .options
                                                                         }
                                                                     />
                                                                 </View>

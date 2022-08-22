@@ -12,25 +12,24 @@ const makeToday = () => {
 };
 let today = makeToday();
 let AFF = {
-    ownerEmail: 'owner@feo.com',
-    code: 'FEO',
+    ownerEmail: 'dflt@init.com',
+    code: 'DFLT',
     ownerContact: 'Affiliate Owner',
-    label: 'department',
+    label: 'DEFAULT',
     status: 'active',
-    category: 'development',
-    description: 'FEO System Testing Affiliate',
+    category: 'default',
+    description: 'default desc. value',
     ownerPhone: '1234567890',
-    title: 'FEO Testing',
+    title: 'Default Title',
 };
 
 const initialState = {
-    region: 'us#east#test',
-    eventRegion: 'test',
+    region: 'us#east#dflt',
+    eventRegion: 'dflt',
     stateProv: 'TT',
-    affiliateTitle: 'FEO title',
+    affiliateTitle: 'default affTitle',
     today: today,
-    affiliationEntity: '',
-    affiliation: 'FEO',
+    affiliation: 'DFLT',
     isLoading: true,
     affiliate: AFF,
 };
@@ -42,14 +41,26 @@ export const systemSlice = createSlice({
         setRegion: (state, action) => {
             state.region = action.payload;
         },
+        updateRegion: (state, action) => {
+            state.region = action.payload;
+        },
         setEventRegion: (state, action) => {
             state.eventRegion = action.payload;
         },
-        setStateProv: (state, action) => {
+        updateEventRegion: (state, action) => {
+            state.eventRegion = action.payload;
+        },
+        updateStateProv: (state, action) => {
             state.stateProv = action.payload;
         },
         updateAffiliate: (state, action) => {
             state.affiliate = action.payload;
+        },
+        updateAffiliation: (state, action) => {
+            state.affiliation = action.payload;
+        },
+        updateAffiliateTitle: (state, action) => {
+            state.affiliateTitle = action.payload;
         },
         clearToday: (state) => {
             state.today = '';
@@ -75,10 +86,14 @@ export const systemSlice = createSlice({
 export const {
     setRegion,
     setEventRegion,
+    updateRegion,
+    updateEventRegion,
     logout,
-    setStateProv,
+    updateStateProv,
     setSystemDate,
     updateAffiliate,
+    updateAffiliateTitle,
+    updateAffiliation,
     clearToday,
 } = systemSlice.actions;
 

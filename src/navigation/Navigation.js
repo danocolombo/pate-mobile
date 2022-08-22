@@ -27,10 +27,7 @@ import ConfirmEmailScreen from '../screens/Auth/ConfirmEmailScreen';
 import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
 import NewPasswordScreen from '../screens/Auth/NewPasswordScreen';
 import UserProfileScreen from '../screens/ProfileScreen';
-import ProfileEditInfo from '../components/profile/Profile.Edit.Info';
-import ProfileEditResidence from '../components/profile/Profile.Edit.Residence';
-import ProfileEditAffiliation from '../components/profile/Profile.Edit.Affiliation';
-import ProfileEditAffiliations from '../components/profile/Profile.Edit.Affiliations';
+
 import AuthDrawer from './AuthDrawer';
 import { Auth, Hub } from 'aws-amplify';
 
@@ -87,51 +84,7 @@ function PateStack() {
                     headerBackTitle: 'Back',
                 })}
             />
-            <Stack.Screen
-                name='ProfileEditInfo'
-                component={ProfileEditInfo}
-                options={({ navigation }) => ({
-                    title: 'FEO',
-                    headerStyle: {
-                        backgroundColor: Colors.primary,
-                    },
-                    headerTintColor: 'white',
-                    headerBackVisible: false,
-                })}
-            />
-            <Stack.Screen
-                name='ProfileEditResidence'
-                component={ProfileEditResidence}
-                options={({ navigation }) => ({
-                    title: 'FEO',
-                    headerStyle: {
-                        backgroundColor: Colors.primary,
-                    },
-                    headerTintColor: 'white',
-                })}
-            />
-            <Stack.Screen
-                name='ProfileEditAffiliation'
-                component={ProfileEditAffiliation}
-                options={({ navigation }) => ({
-                    title: 'FEO',
-                    headerStyle: {
-                        backgroundColor: Colors.primary,
-                    },
-                    headerTintColor: 'white',
-                })}
-            />
-            <Stack.Screen
-                name='ProfileEditAffiliations'
-                component={ProfileEditAffiliations}
-                options={({ navigation }) => ({
-                    title: 'FEO',
-                    headerStyle: {
-                        backgroundColor: Colors.primary,
-                    },
-                    headerTintColor: 'white',
-                })}
-            />
+
             <Stack.Screen
                 name='RallyRegister'
                 component={RegisterScreen}

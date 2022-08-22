@@ -26,6 +26,9 @@ import {
     setRegion,
     setEventRegion,
     updateAffiliate,
+    updateAffiliateTitle,
+    updateStateProv,
+    updateAffiliation,
 } from '../../../features/system/systemSlice';
 import { getToday, printObject } from '../../../utils/helpers';
 import { REGION } from '../../../constants/regions';
@@ -172,22 +175,35 @@ const SignInScreen = () => {
                     fullUserInfo.profile = false;
                     break;
             }
-            printObject('SIS:168:--fullUserInfo:', fullUserInfo);
+            // printObject('SIS:168:--fullUserInfo:', fullUserInfo);
             // if profile does not have affiliations, set default to FEO
             if (!fullUserInfo?.affiliations) {
                 let defaultAff = {
-                    options: ['FEO'],
-                    active: 'FEO',
+                    options: [{ value: 'FEO', lable: 'FEO Testing' }],
+                    active: { value: 'FEO', label: 'FEO Testing' },
                 };
                 fullUserInfo = { ...fullUserInfo, affiliations: defaultAff };
                 //fullUserInfo = { ...fullUserInfo, affiliate: 'FEO' };
             }
             dispatch(updateCurrentUser(fullUserInfo));
             //   get system.region and system.eventRegion
-            getAffiliate(fullUserInfo.affiliations.active)
+            getAffiliate(fullUserInfo.affiliations.active.value)
                 .then((response) => {
                     if (response.statusCode === 200) {
+                        dispatch(
+                            updateAffiliation(
+                                fullUserInfo.affiliations.active.value
+                            )
+                        );
                         dispatch(updateAffiliate(response.body[0]));
+                        dispatch(
+                            updateAffiliateTitle(
+                                fullUserInfo?.affiliations?.active?.label
+                            )
+                        );
+                        dispatch(
+                            updateStateProv(fullUserInfo?.residence?.stateProv)
+                        );
                     } else {
                         console.log(
                             'response.statusCode:',

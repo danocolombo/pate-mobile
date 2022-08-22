@@ -20,7 +20,7 @@ export default function UpcomingEventsScreen(props) {
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
     const allRallies = useSelector((state) => state.rallies.allRallies);
-    const { eventRegion, affiliateHeader, today } = useSelector(
+    const { eventRegion, affiliateHeader, today, affiliation } = useSelector(
         (state) => state.system
     );
 
@@ -30,7 +30,10 @@ export default function UpcomingEventsScreen(props) {
     useEffect(() => {
         setIsLoading(true);
         const filteredRallies = allRallies.filter(
-            (r) => r.eventDate >= today && r.approved === true
+            (r) =>
+                r.eventDate >= today &&
+                r.approved === true &&
+                r.affiliate === affiliation
         );
         if (filteredRallies) {
             setDisplayRallies(filteredRallies);
