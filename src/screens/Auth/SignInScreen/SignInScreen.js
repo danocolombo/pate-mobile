@@ -23,6 +23,7 @@ import { getAffiliate } from '../../../providers/system';
 import { loadRallies } from '../../../features/rallies/ralliesSlice';
 import { loadRegistrations } from '../../../features/users/usersSlice';
 import {
+    updateAppName,
     setRegion,
     setEventRegion,
     updateAffiliate,
@@ -196,6 +197,7 @@ const SignInScreen = () => {
                             )
                         );
                         dispatch(updateAffiliate(response.body[0]));
+                        dispatch(updateAppName(response.body[0].appName));
                         dispatch(
                             updateAffiliateTitle(
                                 fullUserInfo?.affiliations?.active?.label

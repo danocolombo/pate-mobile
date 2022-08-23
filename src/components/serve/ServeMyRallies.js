@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView, Modal } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -17,6 +17,7 @@ const ServeMyRallies = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [rally, setRally] = useState();
     const dispatch = useDispatch();
+    const feo = useSelector((state) => state.system);
     let me = useSelector((state) => state.users.currentUser);
     let rallies = useSelector((state) => state.rallies.allRallies);
     // printObject('SR20 rallies:', rallies);
@@ -40,6 +41,11 @@ const ServeMyRallies = () => {
         });
 
     const navigation = useNavigation();
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation]);
     const handleDeleteConfirm = (rally) => {
         if (process.env.ENV === 'DEV') {
             console.log('DEV DELETE REQUEST');

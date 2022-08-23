@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -19,6 +19,7 @@ import CustomButton from '../ui/CustomButton';
 import { updateCurrentUser } from '../../features/users/usersSlice';
 import {
     updateRegion,
+    updateAppName,
     updateEventRegion,
     updateAffiliate,
     updateAffiliateTitle,
@@ -65,6 +66,7 @@ const ProfileForm = (props) => {
         useState(false);
     const { colors } = props.theme;
     const dispatch = useDispatch();
+    const feo = useSelector((state) => state.system);
     const originalUser = useSelector((state) => state.users.currentUser);
     let user = useSelector((state) => state.users.currentUser);
     const [affiliationSelected, setAffiliationSelected] = useState(
@@ -79,7 +81,6 @@ const ProfileForm = (props) => {
     //         value: a,
     //     };
     // });
-    let feo = useSelector((state) => state.system);
 
     const onDismissSnackBar = () => setSnackbarVisible(false);
     const [showPhoneError, setShowPhoneError] = useState(false);
@@ -105,7 +106,11 @@ const ProfileForm = (props) => {
     }
 
     const [userPhone, setUserPhone] = useState(phoneDisplayValue);
-
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation]);
     let rally;
     const handleAccordPress = () => {
         setContactAccordionIsOpen(!contactAccordionIsOpen);
@@ -176,6 +181,7 @@ const ProfileForm = (props) => {
         dispatch(updateRegion(originalUser.region));
         dispatch(updateStateProv(originalUser.residence.stateProv));
         dispatch(updateAffiliation(affiliationSelected));
+        dispatch(updateAppName(response.body[0].appName));
 
         //   UPDATE REDUX CURRENTUSER
         dispatch(updateCurrentUser(values));

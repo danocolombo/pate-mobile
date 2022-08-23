@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import {
     View,
     Text,
@@ -19,6 +19,7 @@ export default function UpcomingEventsScreen(props) {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
+    const feo = useSelector((state) => state.system);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const { eventRegion, affiliateHeader, today, affiliation } = useSelector(
         (state) => state.system
@@ -26,7 +27,11 @@ export default function UpcomingEventsScreen(props) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [displayRallies, setDisplayRallies] = useState([]);
-
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation]);
     useEffect(() => {
         setIsLoading(true);
         const filteredRallies = allRallies.filter(

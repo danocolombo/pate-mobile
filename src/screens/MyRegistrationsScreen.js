@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import axios from 'axios';
 import {
     ScrollView,
@@ -24,6 +24,7 @@ import { Colors } from '../constants/colors';
 const MyRegistrationsScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const feo = useSelector((state) => state.system);
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const registrations = useSelector((state) => state.users.registrations);
@@ -63,7 +64,11 @@ const MyRegistrationsScreen = () => {
         });
         return allCombinedRegs;
     };
-
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation]);
     useEffect(() => {
         //we want to associate rally details with each registration
         setIsLoading(true);

@@ -61,6 +61,7 @@ const RallyDetails = ({ rallyId }) => {
     // create the Edit button in upper right navigation
     useLayoutEffect(() => {
         navigation.setOptions({
+            title: 'WOW-REALLY',
             headerRight: () => (
                 <Button
                     onPress={() =>

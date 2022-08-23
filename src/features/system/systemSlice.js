@@ -24,6 +24,7 @@ let AFF = {
 };
 
 const initialState = {
+    appName: 'FEO',
     region: 'us#east#dflt',
     eventRegion: 'dflt',
     stateProv: 'TT',
@@ -38,6 +39,9 @@ export const systemSlice = createSlice({
     name: 'system',
     initialState,
     reducers: {
+        updateAppName: (state, action) => {
+            state.appName = action.payload;
+        },
         setRegion: (state, action) => {
             state.region = action.payload;
         },
@@ -69,6 +73,7 @@ export const systemSlice = createSlice({
             state.today = action.payload;
         },
         logout: (state) => {
+            state.appName = '';
             state.region = '';
             state.eventRegion = '';
             state.stateProv = '';
@@ -84,6 +89,7 @@ export const systemSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
+    updateAppName,
     setRegion,
     setEventRegion,
     updateRegion,

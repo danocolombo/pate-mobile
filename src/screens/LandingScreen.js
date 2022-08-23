@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import {
     View,
     Text,
@@ -36,7 +36,11 @@ export default function LandingScreen(props) {
     // useEffect(() => {
     //     dispatch(getAvailableEvents({ name, today: today }));
     // }, [props, isFocused]);
-
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation]);
     const handleProfileAcknowledge = () => {
         setShowProfileNeededModal(false);
         navigation.navigate('Profile');
