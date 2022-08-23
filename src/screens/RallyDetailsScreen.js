@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { ImageBackground, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 import RallyDetails from '../components/rallies/RallyDetails';
 const RallyDetailsScreen = ({ route, navigation }) => {
     const rally = route.params.rally;
+    const feo = useSelector((state) => state.system);
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation, feo]);
     return (
         <ImageBackground
             source={require('../components/images/background.png')}

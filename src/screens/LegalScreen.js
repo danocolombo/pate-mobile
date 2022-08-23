@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import {
     StyleSheet,
     Text,
@@ -7,6 +7,8 @@ import {
     ScrollView,
     useWindowDimensions,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import { Surface } from 'react-native-paper';
 import * as Animatable from 'react-native-animatable';
 import { AntDesign } from '@expo/vector-icons';
@@ -19,6 +21,8 @@ import { PRIVACY_POLICY } from '../constants/PrivacyPolicy';
 import RenderHtml from 'react-native-render-html';
 
 const LegalScreen = (props) => {
+    const navigation = useNavigation();
+    const feo = useSelector((state) => state.system);
     const [termsCollapsed, setTermsCollapsed] = useState(true); //collapsible
     const [privacyCollapsed, setPrivacyCollapsed] = useState(true); //collapsible
     const { width } = useWindowDimensions();
@@ -33,7 +37,11 @@ const LegalScreen = (props) => {
         setPrivacyCollapsed(!privacyCollapsed);
         setTermsCollapsed(true);
     };
-
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation, feo]);
     return (
         <View style={styles.rootContainer}>
             <Surface style={styles.surfaceContainer}>

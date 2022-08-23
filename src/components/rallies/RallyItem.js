@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useLayoutEffect } from 'react';
 import {
     Pressable,
     StyleSheet,
@@ -15,7 +15,9 @@ import { printObject } from '../../utils/helpers';
 import { convertPateTime } from '../../utils/date';
 
 function RallyItem(rally) {
+    const navigation = useNavigation();
     const registrations = useSelector((state) => state.users.registrations);
+    const feo = useSelector((state = state.system));
     const { uid, eventDate, name, city, stateProv, startTime } = rally.rally;
     let registered = false;
     let found = registrations.find((r) => {
@@ -25,7 +27,7 @@ function RallyItem(rally) {
         registered = true;
     }
     // printObject('RI:18', rally.rally);
-    const navigation = useNavigation();
+
     function rallyPressHandler() {
         // if the user is registered, take them to registerForm
         if (registered) {
@@ -38,7 +40,11 @@ function RallyItem(rally) {
             });
         }
     }
-
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation, feo]);
     return (
         <>
             <ImageBackground

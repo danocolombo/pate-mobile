@@ -6,11 +6,20 @@ import {
     Platform,
     ImageBackground,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import UserDisplay from '../../components/serve/UserDisplay';
 import { printObject } from '../../utils/helpers';
 const UserProfileScreen = ({ route }) => {
     const profile = route.params.profile;
+    const navigation = useNavigation();
+    const feo = useSelector((state) => state.system);
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation, feo]);
     //printObject('UPS:14--profile:', profile);
     return (
         <ImageBackground

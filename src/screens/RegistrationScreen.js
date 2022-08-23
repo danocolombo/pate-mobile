@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { View, Text, ImageBackground, StyleSheet } from 'react-native';
 import { List, Badge } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import CardDate from '../components/ui/RallyCardDate';
 import RegistrationDetails from '../components/registrations/Registration.Details';
 function RegistrationScreen({ route }) {
     const reg = route.params.reg;
+    const navigation = useNavigation();
+    const feo = useSelector((state) => state.system);
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation, feo]);
     return (
         <>
             <ImageBackground

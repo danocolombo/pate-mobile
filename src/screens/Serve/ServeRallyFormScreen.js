@@ -1,9 +1,18 @@
 import { StyleSheet, Text, View, ImageBackground } from 'react-native';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
+
+import { useSelector } from 'react-redux';
 import ServeRallyForm from '../../components/serve/ServeRallyForm';
 import { printObject } from '../../utils/helpers';
 const ServeRallyFormScreen = ({ route, navigation }) => {
     const rally = route.params.rally;
+
+    const feo = useSelector((state) => state.system);
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation, feo]);
     return (
         <ImageBackground
             source={require('../../components/images/background.png')}

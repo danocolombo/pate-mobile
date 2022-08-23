@@ -1,6 +1,15 @@
-import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, ImageBackground } from 'react-native';
+import { useSelector } from 'react-redux';
 function ServeScreen() {
+    const navigation = useNavigation();
+    const feo = useSelector((state) => state.system);
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation, feo]);
     return (
         <>
             <ImageBackground

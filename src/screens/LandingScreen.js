@@ -40,7 +40,7 @@ export default function LandingScreen(props) {
         navigation.setOptions({
             title: feo.appName,
         });
-    }, [navigation]);
+    }, [navigation, feo]);
     const handleProfileAcknowledge = () => {
         setShowProfileNeededModal(false);
         navigation.navigate('Profile');

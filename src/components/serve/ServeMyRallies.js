@@ -14,6 +14,7 @@ import { printObject, asc_sort, desc_sort } from '../../utils/helpers';
 import { CONFIG } from '../../utils/helpers';
 import { Colors } from '../../constants/colors';
 const ServeMyRallies = () => {
+    const navigation = useNavigation();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [rally, setRally] = useState();
     const dispatch = useDispatch();
@@ -40,7 +41,6 @@ const ServeMyRallies = () => {
             console.log('error sorting', err);
         });
 
-    const navigation = useNavigation();
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,
