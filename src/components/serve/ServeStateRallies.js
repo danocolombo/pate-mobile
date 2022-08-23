@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import EventListCard from '../ui/EventListCard';
@@ -18,6 +18,7 @@ const ServeMyRallies = () => {
             return s.name;
         }
     });
+    let feo = useSelector((state) => state.system);
     let rallies = useSelector((state) => state.rallies.allRallies);
     const stateRalliesRAW = useSelector((state) =>
         state.rallies.allRallies.filter((r) => r.stateProv === me.stateRep)
@@ -39,6 +40,11 @@ const ServeMyRallies = () => {
     const handleEventPress = (e) => {
         printObject('event', e);
     };
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName,
+        });
+    }, [navigation, feo]);
     let sliceRallies = getStateRallies();
     // printObject('SSR:43-->sliceRallies', sliceRallies);
     return (

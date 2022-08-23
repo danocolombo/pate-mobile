@@ -49,6 +49,7 @@ const RallyDetails = ({ rallyId }) => {
     const [statusRally, setStatusRally] = useState();
     const [newStatus, setNewStatus] = useState();
     const navigation = useNavigation();
+    const feo = useSelector((state) => state.system);
     const user = useSelector((state) => state.users.currentUser);
     const rallyEntry = useSelector((state) =>
         state.rallies.allRallies.filter((r) => r.uid === rallyId)
@@ -61,7 +62,7 @@ const RallyDetails = ({ rallyId }) => {
     // create the Edit button in upper right navigation
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: 'WOW-REALLY',
+            title: feo.appName,
             headerRight: () => (
                 <Button
                     onPress={() =>
@@ -75,7 +76,7 @@ const RallyDetails = ({ rallyId }) => {
                 />
             ),
         });
-    }, [navigation]);
+    }, [navigation, feo]);
     useEffect(() => {
         const fetchData = async () => {
             // console.log('RI:54-->rallyId:', rallyId);

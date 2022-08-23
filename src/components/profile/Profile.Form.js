@@ -110,7 +110,7 @@ const ProfileForm = (props) => {
         navigation.setOptions({
             title: feo.appName,
         });
-    }, [navigation]);
+    }, [navigation, feo]);
     let rally;
     const handleAccordPress = () => {
         setContactAccordionIsOpen(!contactAccordionIsOpen);
@@ -177,11 +177,11 @@ const ProfileForm = (props) => {
         //   UPDATE REDUX SYSTEM
         getAffiliate(affiliationSelected).then((response) => {
             dispatch(updateAffiliate(response.body[0]));
+            dispatch(updateAppName(response.body[0].appName));
         });
         dispatch(updateRegion(originalUser.region));
         dispatch(updateStateProv(originalUser.residence.stateProv));
         dispatch(updateAffiliation(affiliationSelected));
-        dispatch(updateAppName(response.body[0].appName));
 
         //   UPDATE REDUX CURRENTUSER
         dispatch(updateCurrentUser(values));

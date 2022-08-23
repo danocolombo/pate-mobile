@@ -31,7 +31,7 @@ export default function UpcomingEventsScreen(props) {
         navigation.setOptions({
             title: feo.appName,
         });
-    }, [navigation]);
+    }, [navigation, feo]);
     useEffect(() => {
         setIsLoading(true);
         const filteredRallies = allRallies.filter(

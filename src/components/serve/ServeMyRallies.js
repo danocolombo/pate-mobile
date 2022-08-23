@@ -44,8 +44,20 @@ const ServeMyRallies = () => {
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,
+            headerRight: () => (
+                <Button
+                    onPress={() =>
+                        navigation.navigate('RallyEditFlow', {
+                            rallyId: rally.uid,
+                            stage: 1,
+                        })
+                    }
+                    color='white'
+                    title='Edit'
+                />
+            ),
         });
-    }, [navigation]);
+    }, [navigation, feo]);
     const handleDeleteConfirm = (rally) => {
         if (process.env.ENV === 'DEV') {
             console.log('DEV DELETE REQUEST');
