@@ -84,8 +84,6 @@ export default function LandingScreen(props) {
                         </View>
                     </Surface>
                 </Modal>
-                {/* <View style={styles.graphicRoot}>
-                    <View style={styles.imageContainer}> */}
 
                 <Surface style={styles.welcomeSurface}>
                     <View style={styles.mainTextContainer}>
@@ -98,7 +96,6 @@ export default function LandingScreen(props) {
                         <Image
                             source={require('../../assets/images/FEO.png')}
                             style={{ resizeMode: 'cover' }}
-                            // style={styles.heroImageContainer}
                         ></Image>
                     </View>
 
@@ -107,7 +104,7 @@ export default function LandingScreen(props) {
                             marginTop: 15,
                             marginHorizontal: 40,
                             marginBottom: 20,
-                            backgroundColor: 'white',
+                            // backgroundColor: 'white',
                             borderRadius: 10,
                             padding: 5,
                         }}
@@ -140,17 +137,6 @@ const styles = StyleSheet.create({
         height: '100%',
         alignItems: 'center',
     },
-    graphicRoot: {
-        backgroundColor: Colors.secondary,
-        // flex: 0.8,
-        flexDirection: 'column',
-
-        paddingHorizontal: 10,
-        marginTop: 20,
-        borderRadius: 30,
-
-        width: '90%',
-    },
     heroImageContainer: {
         // flexDirection: 'column',
         marginTop: 10,
@@ -173,13 +159,13 @@ const styles = StyleSheet.create({
         fontSize: 34,
         letterSpacing: 0.5,
         fontWeight: '600',
-        color: 'white',
+        // color: 'white',
         textAlign: 'center',
     },
     subTitle: {
         fontSize: 18,
         fontWeight: '600',
-        color: 'white',
+        // color: 'white',
     },
     affiliateHeader: {
         paddingTop: 20,
@@ -194,7 +180,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     infoText: {
-        color: 'white',
+        // color: 'white',
         fontSize: 24,
     },
     imageContainer: {
@@ -212,7 +198,7 @@ const styles = StyleSheet.create({
     welcomeSurface: {
         padding: 12,
         marginVertical: 8,
-        backgroundColor: Colors.primary500,
+        // backgroundColor: Colors.primary500,
         marginHorizontal: 20,
         justifyContent: 'space-between',
         borderRadius: 10,

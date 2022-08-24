@@ -20,11 +20,12 @@ import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import Ionicons from '@expo/vector-icons/Ionicons';
+
 import RallyLocationInfo from './Rally.Location.Info';
 import RallyLogisticsInfo from './Rally.Logistics.Info';
 import RallyContactInfo from './Rally.Contact.Info';
 import RallyMealInfo from './Rally.Meal.Info';
-import RallyStatusInfo from './Rally.Status.Info';
+import RallyStatusDetails from './Rally.Status.Details';
 import CustomButton from '../../ui/CustomButton';
 import SelectDropdown from 'react-native-select-dropdown';
 import RegScrollItem from '../../serve/ServeRegistrationScrollItem';
@@ -44,6 +45,8 @@ const RallyDetails = ({ rallyId }) => {
     const snapPoints = useMemo(() => ['8%', '75%'], []);
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [showRegDetail, setShowRegDetail] = useState(false);
+    const [showDetailModal, setShowDetailModal] = useState(false);
+
     const [regInquiry, setRegInquiry] = useState({});
     // let regInquiry = {};
     const [statusRally, setStatusRally] = useState();
@@ -331,22 +334,68 @@ const RallyDetails = ({ rallyId }) => {
                         </View>
                     </Surface>
                 </Modal>
+                <Modal visible={showDetailModal} animationStyle='slide'>
+                    <Surface style={{ marginTop: 60 }}>
+                        <View>
+                            <View
+                                style={{ marginTop: 5, alignItems: 'center' }}
+                            >
+                                <Text style={styles.modalTitle}>Details</Text>
+                            </View>
+                            <RallyStatusDetails
+                                rally={rally}
+                                onPress={handleStatusPress}
+                            />
+                            <View style={styles.modalButtonContainer}>
+                                <View style={styles.modalButtonWrapper}>
+                                    <View style={styles.modalConfirmButton}>
+                                        <CustomButton
+                                            title='Dismiss'
+                                            graphic={null}
+                                            cbStyles={{
+                                                backgroundColor: Colors.gray35,
+                                                color: 'black',
+                                            }}
+                                            txtColor='white'
+                                            onPress={() =>
+                                                setShowDetailModal(false)
+                                            }
+                                        />
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </Surface>
+                </Modal>
                 <ScrollView>
+                    <View style={styles.rootContainer}>
+                        <Surface style={[styles.surface, { elevation: 5 }]}>
+                            <View
+                                style={{
+                                    flexDirection: 'column',
+                                    alignItems: 'flex-end',
+                                    paddingRight: 5,
+                                    paddingTop: 5,
+                                }}
+                            >
+                                <Pressable
+                                    onPress={() => setShowDetailModal(true)}
+                                >
+                                    <Ionicons
+                                        name='information-circle'
+                                        size={24}
+                                        color={Colors.gray35}
+                                    />
+                                </Pressable>
+                            </View>
+                        </Surface>
+                    </View>
                     <RallyLocationInfo rally={rally} />
                     <RallyLogisticsInfo rally={rally} />
 
                     <RallyContactInfo rally={rally} />
                     <RallyMealInfo rally={rally} />
-                    {/* {rally.status !== 'pending' && rally.status !== 'draft' ? (
-                        <RallyRegistrars
-                            key={rally.uid}
-                            rally={rally}
-                            onPress={(reg) => handleRegistrarRequest(reg)}
-                        />
-                    ) : null} */}
-                    {/** ------------------------------ */}
-                    {/**  REGISTRATIONS SECTION         */}
-                    {/** ------------------------------ */}
+
                     <View style={{ alignItems: 'center', height: 100 }}>
                         <Surface
                             style={{
@@ -412,11 +461,6 @@ const RallyDetails = ({ rallyId }) => {
                             </View>
                         </Surface>
                     </View>
-
-                    <RallyStatusInfo
-                        rally={rally}
-                        onPress={handleStatusPress}
-                    />
                 </ScrollView>
                 <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints}>
                     <View
@@ -458,6 +502,20 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
+    rootContainer: {
+        marginTop: 5,
+        alignItems: 'center',
+    },
+    surface: {
+        // marginTop: 10,
+        // padding: 20,
+        // height: 80,
+        width: '90%',
+        // alignItems: 'flex-end',
+        // justifyContent: 'center',
+        // paddingHorizontal: 5,
+    },
+
     buttonContainer: {
         marginTop: 5,
         alignItems: 'center',
@@ -468,6 +526,14 @@ const styles = StyleSheet.create({
     },
     modalSurface: {
         marginTop: 80,
+        marginHorizontal: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+    },
+    modalDetailSurface: {
+        marginTop: 130,
+        height: '90%',
         marginHorizontal: 0,
         alignItems: 'center',
         justifyContent: 'center',

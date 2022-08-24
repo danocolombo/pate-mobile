@@ -41,8 +41,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     surface: {
-        marginTop: 10,
-        padding: 20,
+        marginTop: 0,
+        // padding: 20,
+        paddingBottom: 20,
         // height: 80,
         width: '90%',
         alignItems: 'center',

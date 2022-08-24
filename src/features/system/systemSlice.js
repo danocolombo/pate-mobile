@@ -24,7 +24,7 @@ let AFF = {
 };
 
 const initialState = {
-    appName: 'FEO',
+    appName: 'P8 Rallies',
     region: 'us#east#dflt',
     eventRegion: 'dflt',
     stateProv: 'TT',
