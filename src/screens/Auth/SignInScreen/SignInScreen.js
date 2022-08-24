@@ -30,6 +30,7 @@ import {
     updateAffiliateTitle,
     updateStateProv,
     updateAffiliation,
+    updateUserRole,
 } from '../../../features/system/systemSlice';
 import { getToday, printObject } from '../../../utils/helpers';
 import { REGION } from '../../../constants/regions';
@@ -187,7 +188,7 @@ const SignInScreen = () => {
                 //fullUserInfo = { ...fullUserInfo, affiliate: 'FEO' };
             }
             dispatch(updateCurrentUser(fullUserInfo));
-            //   get system.region and system.eventRegion
+            //   get/set system.region and system.eventRegion
             getAffiliate(fullUserInfo.affiliations.active.value)
                 .then((response) => {
                     if (response.statusCode === 200) {
@@ -206,6 +207,15 @@ const SignInScreen = () => {
                         dispatch(
                             updateStateProv(fullUserInfo?.residence?.stateProv)
                         );
+                        if (fullUserInfo?.affiliations?.active?.role) {
+                            dispatch(
+                                updateUserRole(
+                                    fullUserInfo?.affiliations?.active?.role
+                                )
+                            );
+                        } else {
+                            dispatch(updateUserRole('guest'));
+                        }
                     } else {
                         console.log(
                             'response.statusCode:',

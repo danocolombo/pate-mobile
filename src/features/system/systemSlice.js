@@ -33,6 +33,7 @@ const initialState = {
     affiliation: 'DFLT',
     isLoading: true,
     affiliate: AFF,
+    userRole: '',
 };
 
 export const systemSlice = createSlice({
@@ -63,8 +64,12 @@ export const systemSlice = createSlice({
         updateAffiliation: (state, action) => {
             state.affiliation = action.payload;
         },
+
         updateAffiliateTitle: (state, action) => {
             state.affiliateTitle = action.payload;
+        },
+        updateUserRole: (state, action) => {
+            state.userRole = action.payload;
         },
         clearToday: (state) => {
             state.today = '';
@@ -98,6 +103,7 @@ export const {
     updateStateProv,
     setSystemDate,
     updateAffiliate,
+    updateUserRole,
     updateAffiliateTitle,
     updateAffiliation,
     clearToday,
