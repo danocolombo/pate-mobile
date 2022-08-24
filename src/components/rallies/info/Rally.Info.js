@@ -26,6 +26,7 @@ import RallyLogisticsInfo from './Rally.Logistics.Info';
 import RallyContactInfo from './Rally.Contact.Info';
 import RallyMealInfo from './Rally.Meal.Info';
 import RallyStatusDetails from './Rally.Status.Details';
+import RallyStatusInfo from './Rally.Status.Info';
 import CustomButton from '../../ui/CustomButton';
 import SelectDropdown from 'react-native-select-dropdown';
 import RegScrollItem from '../../serve/ServeRegistrationScrollItem';
@@ -60,7 +61,12 @@ const RallyDetails = ({ rallyId }) => {
     let rally = rallyEntry[0];
     const dispatch = useDispatch();
     //modal stuff
-    const statusValues = ['draft', 'pending', 'approved'];
+    let statusValues = [];
+    if (user.role === 'lead') {
+        statusValues = ['draft', 'pending', 'approved'];
+    } else {
+        statusValues = ['draft', 'pending'];
+    }
     const [registrations, setRegistrations] = useState([]);
     // create the Edit button in upper right navigation
     useLayoutEffect(() => {
@@ -130,6 +136,25 @@ const RallyDetails = ({ rallyId }) => {
     const handleRegDetailDismiss = () => {
         setShowRegDetail(false);
     };
+    const PENDING = { backgroundColor: 'yellow', color: 'white' };
+    const DRAFT = { backgroundColor: 'white', color: 'black' };
+    const APPROVED = { backgroundColor: 'green', color: 'white' };
+    const COMPLETE = { backgroundColor: 'black', color: 'white' };
+    let statusColor = {};
+    switch (rally.status) {
+        case 'pending':
+            statusColor = PENDING;
+            break;
+        case 'approved':
+            statusColor = APPROVED;
+            break;
+        case 'complete':
+            statusColor = COMPLETE;
+            break;
+        default:
+            statusColor = DRAFT;
+            break;
+    }
     const handleStatusChange = () => {
         // console.log('NEW STATUS WOULD BE ===>', newStatus);
         let approved = newStatus === 'approved' ? true : false;
@@ -257,6 +282,21 @@ const RallyDetails = ({ rallyId }) => {
                             <Text style={styles.modalTitle}>Manage Status</Text>
                             <RallyLocationInfo rally={rally} />
                         </View>
+                        <View style={styles.statusModalInstructions}>
+                            {user.role === 'lead' ? (
+                                <Text
+                                    style={styles.statusModalInstructionsText}
+                                >
+                                    Approve or change status
+                                </Text>
+                            ) : (
+                                <Text
+                                    style={styles.statusModalInstructionsText}
+                                >
+                                    Set to pending when ready for review
+                                </Text>
+                            )}
+                        </View>
                         <View style={styles.radioButtonContainer}>
                             <SelectDropdown
                                 data={statusValues}
@@ -379,13 +419,23 @@ const RallyDetails = ({ rallyId }) => {
                                 }}
                             >
                                 <Pressable
-                                    onPress={() => setShowDetailModal(true)}
+                                    onPress={() => setShowStatusModal(true)}
                                 >
-                                    <Ionicons
-                                        name='information-circle'
-                                        size={24}
-                                        color={Colors.gray35}
-                                    />
+                                    <View
+                                        style={[
+                                            styles.statusStyle,
+                                            statusColor,
+                                        ]}
+                                    >
+                                        <Text
+                                            style={[
+                                                statusColor,
+                                                { paddingHorizontal: 2 },
+                                            ]}
+                                        >
+                                            {rally.status}
+                                        </Text>
+                                    </View>
                                 </Pressable>
                             </View>
                         </Surface>
@@ -458,6 +508,32 @@ const RallyDetails = ({ rallyId }) => {
                                           })
                                         : null}
                                 </ScrollView>
+                            </View>
+                            <View style={styles.rootContainer}>
+                                <Surface
+                                    style={[styles.surface, { elevation: 5 }]}
+                                >
+                                    <View
+                                        style={{
+                                            flexDirection: 'column',
+                                            alignItems: 'flex-end',
+                                            paddingRight: 5,
+                                            paddingTop: 5,
+                                        }}
+                                    >
+                                        <Pressable
+                                            onPress={() =>
+                                                setShowDetailModal(true)
+                                            }
+                                        >
+                                            <Ionicons
+                                                name='information-circle'
+                                                size={24}
+                                                color={Colors.gray35}
+                                            />
+                                        </Pressable>
+                                    </View>
+                                </Surface>
                             </View>
                         </Surface>
                     </View>
@@ -541,6 +617,7 @@ const styles = StyleSheet.create({
     },
     modalInfoWrapper: {
         alignItems: 'center',
+        width: '100%',
     },
     modalTitle: {
         marginTop: 15,
@@ -581,6 +658,18 @@ const styles = StyleSheet.create({
         borderBottomColor: '#C5C5C5',
     },
     dropdown1RowTxtStyle: { color: '#444', textAlign: 'left' },
+    statusStyle: {
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 4,
+    },
+    statusModalInstructions: {
+        marginTop: 20,
+    },
+    statusModalInstructionsText: {
+        fontSize: 20,
+        fontWeight: '400',
+    },
     mapContainer: {
         flexDirection: 'row',
         // backgroundColor: 'lightgrey',

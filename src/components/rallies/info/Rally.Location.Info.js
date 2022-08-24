@@ -39,6 +39,7 @@ export default RallyLocationInfo;
 const styles = StyleSheet.create({
     rootContainer: {
         alignItems: 'center',
+        width: '100%',
     },
     surface: {
         marginTop: 0,
