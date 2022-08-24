@@ -17,7 +17,7 @@ import { convertPateTime } from '../../utils/date';
 function RallyItem(rally) {
     const navigation = useNavigation();
     const registrations = useSelector((state) => state.users.registrations);
-    const feo = useSelector((state = state.system));
+    const feo = useSelector((state) => state.system);
     const { uid, eventDate, name, city, stateProv, startTime } = rally.rally;
     let registered = false;
     let found = registrations.find((r) => {

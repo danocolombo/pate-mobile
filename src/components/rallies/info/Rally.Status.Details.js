@@ -18,75 +18,66 @@ const RallyStatusDetails = ({ rally, onPress }) => {
     let tColor = 'gold';
     let bColor = 'blue';
 
-    switch (rally.status) {
-        case 'pending':
-            tColor = 'black';
-            bColor = 'yellow';
-            break;
-        case 'draft':
-            tColor = 'white';
-            bColor = 'grey';
-            break;
-        case 'approved':
-        case 'public':
-            tColor = 'white';
-            bColor = 'green';
-            break;
-        case 'public':
-            tColor = 'white';
-            bColor = 'green';
-            break;
-        default:
-            break;
-    }
-
     return (
         <>
             <View style={styles.rootContainer}>
                 <ScrollView>
-                    <View style={styles.detailContainer}>
-                        <Surface style={[styles.surface, { elevation: 5 }]}>
-                            <View style={styles.statusOutline}>
-                                <View style={styles.statusDataWrapper}>
-                                    {user?.stateLead ? (
-                                        <View style={styles.statusRow}>
-                                            <CustomSmallButton
-                                                title={rally?.status}
-                                                cbStyles={{
-                                                    backgroundColor: bColor,
-                                                    color: tColor,
-                                                    fontSize: 14,
-                                                }}
-                                                onPress={onPress}
-                                            />
-                                        </View>
-                                    ) : (
-                                        <View style={styles.statusRow}>
-                                            <View>
-                                                <Text style={{ fontSize: 18 }}>
-                                                    STATUS: {rally?.status}
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    )}
-                                    <View style={styles.statusRow}>
-                                        <Text style={styles.textWrapper}>
-                                            Region:
-                                            {rally.region}
-                                        </Text>
-                                        <Text style={styles.textWrapper}>
-                                            EventRegion: {rally.eventRegion}
+                    <View style={styles.detailsContainer}>
+                        <Surface style={styles.detailsSurface}>
+                            <View style={styles.statusDataWrapper}>
+                                <View style={styles.statusRow}>
+                                    <View>
+                                        <Text style={{ fontSize: 18 }}>
+                                            STATUS:{' '}
                                         </Text>
                                     </View>
-                                    <View style={styles.statusRow}>
-                                        <Text style={styles.textWrapper}>
-                                            UID: {rally.uid}
+                                    <View>
+                                        <Text style={{ fontSize: 18 }}>
+                                            {rally?.status}
                                         </Text>
                                     </View>
-                                    <View style={styles.statusRow}>
-                                        <Text style={styles.textWrapper}>
+                                </View>
+                                <View style={styles.statusRow}>
+                                    <View>
+                                        <Text style={{ fontSize: 18 }}>
+                                            Region:{' '}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text style={{ fontSize: 18 }}>
+                                            {rally?.region}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={styles.statusRow}>
+                                    <View>
+                                        <Text style={{ fontSize: 18 }}>
+                                            EventRegion:{' '}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text style={{ fontSize: 18 }}>
+                                            {rally?.eventRegion}
+                                        </Text>
+                                    </View>
+                                </View>
+
+                                <View style={styles.statusRow}>
+                                    <View>
+                                        <Text style={{ fontSize: 18 }}>
                                             Coordinator:{' '}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text style={{ fontSize: 18 }}>
                                             {rally?.coordinator?.name}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={styles.statusRow}>
+                                    <View>
+                                        <Text style={{ fontSize: 14 }}>
+                                            {rally?.uid}
                                         </Text>
                                     </View>
                                 </View>
@@ -106,29 +97,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 15,
     },
-    detailContainer: {
-        alignItems: 'center',
+    detailsContainer: {
+        // alignItems: 'center',
     },
-    surface: {
-        // margin: 24,
-        height: 80,
-
+    detailsSurface: {
+        height: '100%',
         width: '100%',
-
         borderRadius: 15,
-        alignItems: 'center',
-        justifyContent: 'center',
+        elevation: 5,
     },
-    // statusOutline: {
-    //     // borderWidth: 1,
-    //     borderColor: Colors.primary,
-    //     padding: 5,
-    //     borderRadius: 15,
-    //     width: '100%',
-    // },
+
     statusRow: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        // justifyContent: 'center',
         paddingHorizontal: 5,
     },
     statusTitle: {

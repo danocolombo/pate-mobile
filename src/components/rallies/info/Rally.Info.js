@@ -41,6 +41,7 @@ import { getRegistrarsForEvent } from '../../../providers/registrations';
 import RallyRegistrars from './RallyRegistrars';
 import { blue } from '@material-ui/core/colors';
 import RallyMap from '../Rally.Map';
+import { colors } from '@material-ui/core';
 const RallyDetails = ({ rallyId }) => {
     const bottomSheetRef = useRef(null);
     const snapPoints = useMemo(() => ['8%', '75%'], []);
@@ -136,7 +137,7 @@ const RallyDetails = ({ rallyId }) => {
     const handleRegDetailDismiss = () => {
         setShowRegDetail(false);
     };
-    const PENDING = { backgroundColor: 'yellow', color: 'white' };
+    const PENDING = { backgroundColor: 'yellow', color: 'black' };
     const DRAFT = { backgroundColor: 'white', color: 'black' };
     const APPROVED = { backgroundColor: 'green', color: 'white' };
     const COMPLETE = { backgroundColor: 'black', color: 'white' };
@@ -386,8 +387,8 @@ const RallyDetails = ({ rallyId }) => {
                                 rally={rally}
                                 onPress={handleStatusPress}
                             />
-                            <View style={styles.modalButtonContainer}>
-                                <View style={styles.modalButtonWrapper}>
+                            <View style={styles.modalDetailsButtonContainer}>
+                                <View style={styles.modalDetailsButtonWrapper}>
                                     <View style={styles.modalConfirmButton}>
                                         <CustomButton
                                             title='Dismiss'
@@ -433,7 +434,7 @@ const RallyDetails = ({ rallyId }) => {
                                                 { paddingHorizontal: 2 },
                                             ]}
                                         >
-                                            {rally.status}
+                                            {rally.status.toUpperCase()}
                                         </Text>
                                     </View>
                                 </Pressable>
@@ -509,18 +510,9 @@ const RallyDetails = ({ rallyId }) => {
                                         : null}
                                 </ScrollView>
                             </View>
-                            <View style={styles.rootContainer}>
-                                <Surface
-                                    style={[styles.surface, { elevation: 5 }]}
-                                >
-                                    <View
-                                        style={{
-                                            flexDirection: 'column',
-                                            alignItems: 'flex-end',
-                                            paddingRight: 5,
-                                            paddingTop: 5,
-                                        }}
-                                    >
+                            <View style={styles.detailsContainer}>
+                                <Surface style={[styles.detailsSurface]}>
+                                    <View style={styles.detailsView}>
                                         <Pressable
                                             onPress={() =>
                                                 setShowDetailModal(true)
@@ -635,6 +627,12 @@ const styles = StyleSheet.create({
         color: 'blue',
         backgroundColor: 'yellow',
     },
+    modalDetailsButtonContainer: {
+        marginVertical: 20,
+
+        alignItems: 'center',
+    },
+    modalDetailsButtonWrapper: {},
     modalButtonContainer: {
         marginVertical: 20,
         flexDirection: 'row',
@@ -669,6 +667,19 @@ const styles = StyleSheet.create({
     statusModalInstructionsText: {
         fontSize: 20,
         fontWeight: '400',
+    },
+    detailsContainer: {
+        width: '100%',
+    },
+    detailsSurface: {
+        backgroundColor: colors.blueGrey,
+        elevation: 5,
+    },
+    detailsView: {
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        paddingRight: 5,
+        paddingTop: 5,
     },
     mapContainer: {
         flexDirection: 'row',
