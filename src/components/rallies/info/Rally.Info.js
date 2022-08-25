@@ -16,6 +16,11 @@ import {
     ImageBackground,
     Pressable,
 } from 'react-native';
+import {
+    TouchableOpacity,
+    TouchableHighlight,
+    TouchableWithoutFeedback,
+} from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
@@ -42,6 +47,7 @@ import RallyRegistrars from './RallyRegistrars';
 import { blue } from '@material-ui/core/colors';
 import RallyMap from '../Rally.Map';
 import { colors } from '@material-ui/core';
+import { useCallback } from 'react';
 const RallyDetails = ({ rallyId }) => {
     const bottomSheetRef = useRef(null);
     const snapPoints = useMemo(() => ['8%', '75%'], []);
@@ -81,7 +87,7 @@ const RallyDetails = ({ rallyId }) => {
                             stage: 1,
                         })
                     }
-                    color='white'
+                    // color='white'
                     title='Edit'
                 />
             ),
@@ -185,6 +191,9 @@ const RallyDetails = ({ rallyId }) => {
         // printObject('RI:122-reg', reg);
         navigation.navigate('RegistrationDetails', { reg: reg });
     };
+    const handleSheetChanges = useCallback((index) => {
+        console.log('hadleSheetChanges', index);
+    });
     // printObject('RI:124-rally', rally);
     return (
         <>
@@ -408,7 +417,7 @@ const RallyDetails = ({ rallyId }) => {
                         </View>
                     </Surface>
                 </Modal>
-                <ScrollView>
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     <View style={styles.rootContainer}>
                         <Surface style={[styles.surface, { elevation: 5 }]}>
                             <View
@@ -530,7 +539,12 @@ const RallyDetails = ({ rallyId }) => {
                         </Surface>
                     </View>
                 </ScrollView>
-                <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints}>
+                <BottomSheet
+                    ref={bottomSheetRef}
+                    snapPoints={snapPoints}
+                    index={0}
+                    onChange={handleSheetChanges}
+                >
                     <View
                         style={{
                             alignItems: 'center',

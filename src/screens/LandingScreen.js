@@ -36,11 +36,11 @@ export default function LandingScreen(props) {
     // useEffect(() => {
     //     dispatch(getAvailableEvents({ name, today: today }));
     // }, [props, isFocused]);
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            title: feo.appName,
-        });
-    }, [navigation, feo]);
+    // useLayoutEffect(() => {
+    //     navigation.setOptions({
+    //         title: feo.appName,
+    //     });
+    // }, [navigation, feo]);
     const handleProfileAcknowledge = () => {
         setShowProfileNeededModal(false);
         navigation.navigate('Profile');
@@ -146,7 +146,6 @@ const styles = StyleSheet.create({
         // height: '100%',
     },
     mainTextContainer: {
-        justifyContent: 'top',
         marginTop: 20,
         marginBottom: 10,
         alignItems: 'center',
