@@ -1,3 +1,5 @@
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer, StackActions } from '@react-navigation/native';
@@ -181,28 +183,36 @@ function Navigation() {
     }, []);
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-                {user?.jwtToken ? (
-                    <Stack.Screen name='PateStack' component={PateStack} />
-                ) : (
-                    <>
-                        <Stack.Screen name='SignIn' component={SignInScreen} />
-                        <Stack.Screen name='SignUp' component={SignUpScreen} />
-                        <Stack.Screen
-                            name='ConfirmEmail'
-                            component={ConfirmEmailScreen}
-                        />
-                        <Stack.Screen
-                            name='ForgotPassword'
-                            component={ForgotPasswordScreen}
-                        />
-                        <Stack.Screen
-                            name='NewPassword'
-                            component={NewPasswordScreen}
-                        />
-                    </>
-                )}
-            </Stack.Navigator>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+                <Stack.Navigator screenOptions={{ headerShown: false }}>
+                    {user?.jwtToken ? (
+                        <Stack.Screen name='PateStack' component={PateStack} />
+                    ) : (
+                        <>
+                            <Stack.Screen
+                                name='SignIn'
+                                component={SignInScreen}
+                            />
+                            <Stack.Screen
+                                name='SignUp'
+                                component={SignUpScreen}
+                            />
+                            <Stack.Screen
+                                name='ConfirmEmail'
+                                component={ConfirmEmailScreen}
+                            />
+                            <Stack.Screen
+                                name='ForgotPassword'
+                                component={ForgotPasswordScreen}
+                            />
+                            <Stack.Screen
+                                name='NewPassword'
+                                component={NewPasswordScreen}
+                            />
+                        </>
+                    )}
+                </Stack.Navigator>
+            </GestureHandlerRootView>
         </NavigationContainer>
     );
 }
