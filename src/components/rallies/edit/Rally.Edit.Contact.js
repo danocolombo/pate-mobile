@@ -87,18 +87,21 @@ export default function RallyContactForm({ rallyId }) {
                 setShowPhoneError(true);
                 return;
             }
-
-            let pType = getPhoneType(contactPhone);
-            switch (pType) {
-                case 'PATE':
-                    phoneToPass = transformPatePhone(contactPhone);
-                    break;
-                case 'MASKED':
-                    phoneToPass = contactPhone;
-                    break;
-                default:
-                    phoneToPass = '';
-                    break;
+            if (contactPhone) {
+                let pType = getPhoneType(contactPhone);
+                switch (pType) {
+                    case 'PATE':
+                        phoneToPass = transformPatePhone(contactPhone);
+                        break;
+                    case 'MASKED':
+                        phoneToPass = contactPhone;
+                        break;
+                    default:
+                        phoneToPass = '';
+                        break;
+                }
+            } else {
+                phoneToPass = '';
             }
         } else {
             phoneToPass = '';

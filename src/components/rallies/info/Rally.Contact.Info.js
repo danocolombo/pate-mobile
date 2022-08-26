@@ -6,16 +6,20 @@ import { getPhoneType, transformPatePhone } from '../../../utils/helpers';
 const RallyContactInfo = ({ rally }) => {
     let phoneValueToDisplay;
     let pType = getPhoneType(rally?.contact?.phone);
-    switch (pType) {
-        case 'PATE':
-            phoneValueToDisplay = transformPatePhone(rally.contact.phone);
-            break;
-        case 'MASKED':
-            phoneValueToDisplay = rally.contact.phone;
-            break;
-        default:
-            phoneValueToDisplay = null;
-            break;
+    if (rally.contact.phone) {
+        switch (pType) {
+            case 'PATE':
+                phoneValueToDisplay = transformPatePhone(rally.contact.phone);
+                break;
+            case 'MASKED':
+                phoneValueToDisplay = rally.contact.phone;
+                break;
+            default:
+                phoneValueToDisplay = null;
+                break;
+        }
+    } else {
+        phoneValueToDisplay = null;
     }
 
     return (

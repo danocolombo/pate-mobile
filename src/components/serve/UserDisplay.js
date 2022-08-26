@@ -112,7 +112,9 @@ const UserDisplay = ({ profile }) => {
                 </View>
                 <View>
                     <Text style={styles.userPhone}>
-                        {transformPatePhone(profile.phone)}
+                        {profile?.phone
+                            ? transformPatePhone(profile.phone)
+                            : null}
                     </Text>
                 </View>
                 <View>
