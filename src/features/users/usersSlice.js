@@ -57,6 +57,29 @@ export const usersSlice = createSlice({
             state.registrations = smaller;
             return state;
         },
+        updateAffiliationActive: (state, action) => {
+            //first get the selected
+            const optionsList = state.currentUser.affiliations.options;
+            const newAffiliateObject = optionsList.filter(
+                (o) => o.value === action.payload
+            );
+            const newActiveValues = newAffiliateObject[0];
+            const newActive = {
+                label: newActiveValues.label,
+                region: newActiveValues.region,
+                role: newActiveValues.role,
+                value: newActiveValues.value,
+            };
+            const affiliations = {
+                options: optionsList,
+                active: newActive,
+            };
+
+            const currentSettings = state.currentUser;
+            const newSettings = { ...currentSettings, affiliations };
+            state.currentUser = newSettings;
+            return state;
+        },
         logout: (state) => {
             state.currentUser = {};
             state.registrations = [];
@@ -74,6 +97,7 @@ export const {
     deleteRegistration,
     updateRegistration,
     addNewRegistration,
+    updateAffiliationActive,
     logout,
 } = usersSlice.actions;
 
