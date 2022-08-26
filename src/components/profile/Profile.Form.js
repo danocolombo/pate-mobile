@@ -186,6 +186,32 @@ const ProfileForm = (props) => {
         //   UPDATE REDUX CURRENTUSER
         dispatch(updateCurrentUser(values));
         // need to create residence structure
+        // printObject('PF:188--affiliationSelected:', affiliationSelected);
+        // printObject('PF:189--values:', values);
+        // printObject('PF:191-->options:', values.affiliations.options);
+        // let opts = values.affiliations.options;
+        // opts.map((m) => console.log('value:', m.value));
+
+        //todo: make affiliations object with active values updated.
+        let selection = values.affiliations.options.filter(
+            (x) => x.value === affiliationSelected
+        );
+
+        let newAffiliations = {
+            options: values.affiliations.options,
+            active: selection,
+        };
+        printObject('newAffiliations:', newAffiliations);
+
+        // copy the affiliationSelected from affiliations.options to active
+        // let newActive = values.affiliations.options.filter(
+        //     (a) => a.value === affiliationSelected
+        // );
+        // printObject('PF:196-->newActive:', newActive);
+        // let affiliationsActive = {
+        //     label: values.affiliateName
+        // }
+
         let dbProfile = {
             uid: user.uid,
             firstName: values?.firstName ? values.firstName : '',
@@ -205,35 +231,35 @@ const ProfileForm = (props) => {
                     ? values.affiliateStateProv
                     : '',
             },
-            affiliations: originalUser.affiliations,
+            affiliations: newAffiliations,
             userAffiliates: originalUser.userAffiliates,
             isLoggedIn: true,
         };
-        //   check the updates to affilations
-        if (affiliationSelected != originalUser.affiliations.active.value) {
-            //    get the label of the affiliation selected
-            let selectedReference = originalUser.affiliations.options.filter(
-                (a) => a.value === affiliationSelected
-            );
-            let activeValues = {
-                value: selectedReference[0].value,
-                label: selectedReference[0].labelContainer,
-            };
-            let updatedAffiliateData = {
-                options: originalUser.affiliations.options,
-                active: activeValues,
-            };
-            dbProfile = {
-                ...dbProfile,
-                affiliations: updatedAffiliateData,
-            };
-        } else {
-            // console.log('PF:165-->same, no need to update');
-            dbProfile = {
-                ...dbProfile,
-                affiliations: originalUser.affiliations,
-            };
-        }
+        // //   check the updates to affilations
+        // if (affiliationSelected != originalUser.affiliations.active.value) {
+        //     //    get the label of the affiliation selected
+        //     let selectedReference = originalUser.affiliations.options.filter(
+        //         (a) => a.value === affiliationSelected
+        //     );
+        //     let activeValues = {
+        //         value: selectedReference[0].value,
+        //         label: selectedReference[0].labelContainer,
+        //     };
+        //     let updatedAffiliateData = {
+        //         options: originalUser.affiliations.options,
+        //         active: activeValues,
+        //     };
+        //     dbProfile = {
+        //         ...dbProfile,
+        //         affiliations: updatedAffiliateData,
+        //     };
+        // } else {
+        //     // console.log('PF:165-->same, no need to update');
+        //     dbProfile = {
+        //         ...dbProfile,
+        //         affiliations: originalUser.affiliations,
+        //     };
+        // }
         if (originalUser?.stateRep) {
             // now conditionally add the rep and lead info if applicable
             dbProfile = { ...dbProfile, stateRep: originalUser.stateRep };

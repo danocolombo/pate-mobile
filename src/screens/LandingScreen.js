@@ -122,7 +122,10 @@ export default function LandingScreen(props) {
                             Affiliation: {user?.affiliations?.active.value}
                         </Text>
                         <Text style={{ textAlign: 'center' }}>
-                            Region: {user?.region}
+                            Region:{' '}
+                            {user?.affiliations?.active?.region
+                                ? user?.affiliations?.active?.region
+                                : null}
                         </Text>
                     </View>
                 </Surface>
