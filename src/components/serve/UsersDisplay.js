@@ -6,18 +6,20 @@ import {
     ScrollView,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import UsersList from './UsersList';
 import { getAllProfiles, getProfile } from '../../providers/users';
 import { loadProfiles } from '../../features/profiles/profilesSlice';
 import { Colors } from '../../constants/colors';
 import { printObject } from '../../utils/helpers';
-import { Headline } from 'react-native-paper';
 
-const UsersDisplay = () => {
+const UsersDisplay = (props) => {
+    const isFocused = useIsFocused();
     const dispatch = useDispatch();
     const profilesData = useSelector((state) => state.profiles.allProfiles);
     const user = useSelector((state) => state.users.currentUser);
+    const feo = useSelector((state) => state.system);
     const [allProfiles, setAllProfiles] = useState([]);
     const [regionLeaders, setRegionLeaders] = useState([]);
     const [regionUsers, setRegionUsers] = useState([]);
@@ -29,29 +31,77 @@ const UsersDisplay = () => {
             const allTheProfiles = allProfilesData.profiles;
             setAllProfiles(allProfilesData.profiles);
             dispatch(loadProfiles(allTheProfiles));
-            const leaders = allTheProfiles.filter((p) => {
-                if (
-                    p.stateRep === user.stateLead &&
-                    p.region === user.region &&
-                    p.uid !== user.uid
-                ) {
-                    return p;
+            //   get leaders from system.affiliate data
+
+            let users = [];
+            allTheProfiles.map((a) => {
+                if (a.affiliations) {
+                    if (a.affiliations.options) {
+                        a.affiliations.options.map((o) => {
+                            if (o.value === feo.affiliate.code) {
+                                users.push(a);
+                            }
+                        });
+                    }
                 }
             });
-
-            const regionalUsers = allTheProfiles.filter(
-                (p) =>
-                    p.region === user.region &&
-                    (p.stateRep !== user.stateLead) & (p.uid !== user.uid)
-            );
-            setRegionLeaders((prevState) => ({
-                ...prevState,
-                leaders,
-            }));
-            setRegionUsers(regionalUsers);
+            setRegionUsers(users);
+            let userLeaders = [];
+            allTheProfiles.map((a) => {
+                if (a.affiliations) {
+                    if (a.affiliations.options) {
+                        a.affiliations.options.map((o) => {
+                            if (
+                                o.value === feo.affiliate.code &&
+                                (o.role === 'lead' || o.role === 'rep')
+                            ) {
+                                userLeaders.push(a);
+                            }
+                        });
+                    }
+                }
+            });
+            setRegionLeaders(userLeaders);
         }
         return;
     };
+    const getAffiliateProfiles = async () => {
+        let users = [];
+        profilesData.map((a) => {
+            if (a.affiliations) {
+                if (a.affiliations.options) {
+                    a.affiliations.options.map((o) => {
+                        if (o.value === feo.affiliate.code) {
+                            users.push(a);
+                        }
+                    });
+                }
+            }
+        });
+        setRegionUsers(users);
+        let userLeaders = [];
+        profilesData.map((a) => {
+            if (a.affiliations) {
+                if (a.affiliations.options) {
+                    a.affiliations.options.map((o) => {
+                        if (
+                            o.value === feo.affiliate.code &&
+                            (o.role === 'lead' || o.role === 'rep')
+                        ) {
+                            userLeaders.push(a);
+                        }
+                    });
+                }
+            }
+        });
+        setRegionLeaders(userLeaders);
+    };
+    useEffect(() => {
+        getAffiliateProfiles().then(() =>
+            console.log('getAffiliateProfiles DONE')
+        );
+    }, [props, isFocused]);
+
     useEffect(() => {
         setIsLoading(true);
 

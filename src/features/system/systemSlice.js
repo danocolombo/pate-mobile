@@ -84,7 +84,7 @@ export const systemSlice = createSlice({
             state.stateProv = '';
             state.affiliateTitle = '';
             state.affiliationEntity = '';
-            // state.today = '';
+            state.userRole = '';
             state.affiliation = '';
             state.affiliate = {};
             return state;
