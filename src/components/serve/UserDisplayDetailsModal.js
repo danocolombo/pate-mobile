@@ -112,6 +112,58 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                     </View>
                 </View>
                 <View style={styles.modalProfileDetailsRow}>
+                    <View
+                        style={
+                            (styles.modalProfileDetailsTopic, { marginTop: 5 })
+                        }
+                    >
+                        <Text
+                            style={
+                                (styles.modalProfileDetailsTopic,
+                                { fontWeight: '500', fontSize: 18 })
+                            }
+                        >
+                            Active Affiliations:
+                        </Text>
+                    </View>
+                </View>
+                <View style={styles.modalProfileDetailsRow}>
+                    <View
+                        style={
+                            (styles.modalProfileDetailsTopic,
+                            { marginLeft: 20 })
+                        }
+                    >
+                        <Text style={styles.modalProfileDetailsTopicText}>
+                            VALUE:{user?.affiliations?.active?.value}
+                        </Text>
+                    </View>
+                </View>
+                <View style={styles.modalProfileDetailsRow}>
+                    <View
+                        style={
+                            (styles.modalProfileDetailsTopic,
+                            { marginLeft: 20 })
+                        }
+                    >
+                        <Text style={styles.modalProfileDetailsTopicText}>
+                            LABEL:{user?.affiliations?.active?.label}
+                        </Text>
+                    </View>
+                </View>
+                <View style={styles.modalProfileDetailsRow}>
+                    <View
+                        style={
+                            (styles.modalProfileDetailsTopic,
+                            { marginLeft: 20 })
+                        }
+                    >
+                        <Text style={styles.modalProfileDetailsTopicText}>
+                            ROLE:{user?.affiliations?.active?.role}
+                        </Text>
+                    </View>
+                </View>
+                <View style={styles.modalProfileDetailsRow}>
                     <View style={styles.modalProfileDetailsTopic}>
                         <Text style={styles.modalProfileDetailsTopic}>
                             Region:

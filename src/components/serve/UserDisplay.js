@@ -22,8 +22,8 @@ const UserDisplay = ({ profile }) => {
     printObject('UD:19--profile:', profile);
 
     const [userStatus, setUserStatus] = useState(
-        profile?.affiliate?.active?.role === 'rep' ||
-            profile?.affiliate?.active?.role === 'lead'
+        profile?.affiliations?.active?.role === 'rep' ||
+            profile?.affiliations?.active?.role === 'lead'
             ? 'leader'
             : 'guest'
     );
@@ -41,20 +41,28 @@ const UserDisplay = ({ profile }) => {
         console.log('UD38:--newStatus:', newStatus);
         console.log('UD:39--userStatus:', userStatus);
         if (newStatus !== userStatus) {
-            //change detected.
-
+            console.log('1 =======================');
+            console.log('no match');
             if (newStatus === 'leader') {
-                let affiliate = {
-                    name: profile.affiliate.name,
-                    stateProv: profile.affiliate.stateProv,
-                    role: 'rep',
+                console.log('2 =======================');
+                let affiliations = {
+                    options: profile.affiliations.options,
+                    active: {
+                        value: profile.affiliations.active.value,
+                        label: profile?.affiliations.active.label,
+                        role: 'rep',
+                    },
                 };
+                console.log('3 =======================');
                 newProfile = {
                     ...profile,
-                    affiliate,
+                    affiliations,
                     role: 'rep',
                 };
+
                 //   add stateRep to registration in REDUX
+                console.log('4 =======================');
+                printObject('UD:58-->newProfile (rep):', newProfile);
                 dispatch(updateProfile(newProfile));
                 //   update DDB p8Users with
                 DDBUpdateProfile(newProfile)
@@ -68,10 +76,27 @@ const UserDisplay = ({ profile }) => {
                         )
                     );
             } else {
-                // updating as GUEST
+                console.log('A =======================');
+                let affiliations = {
+                    options: profile.affiliations.options,
+                    active: {
+                        value: profile.affiliations.active.value,
+                        label: profile?.affiliations.active.label,
+                        role: 'guest',
+                    },
+                };
+                console.log('B =======================');
+                newProfile = {
+                    ...profile,
+                    affiliations,
+                    role: 'guest',
+                }; // updating as GUEST
+                console.log('C =======================');
                 delete newProfile['stateRep'];
+                console.log('D =======================');
                 newProfile['role'] = 'guest';
-
+                console.log('E =======================');
+                printObject('UD:92-->newProfile (guest):', newProfile);
                 //   remove stateRep from regisrations in REDUX
                 dispatch(updateProfile(newProfile));
                 //   update DDB by removing the stateRep info
