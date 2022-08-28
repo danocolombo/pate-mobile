@@ -19,10 +19,13 @@ const UserDisplay = ({ profile }) => {
     const user = useSelector((state) => state.users.currentUser);
     const [showMoreDetail, setShowMoreDetail] = useState(false);
     // printObject('UD:18--user:', user);
-    // printObject('UD:19--profile:', profile);
+    printObject('UD:19--profile:', profile);
 
     const [userStatus, setUserStatus] = useState(
-        profile?.stateRep ? 'leader' : 'guest'
+        profile?.affiliate?.active?.role === 'rep' ||
+            profile?.affiliate?.active?.role === 'lead'
+            ? 'leader'
+            : 'guest'
     );
     const [newStatus, setNewStatus] = useState();
     const statusValues = ['guest', 'leader'];
@@ -31,20 +34,24 @@ const UserDisplay = ({ profile }) => {
         setShowMoreDetail(false);
     };
     const handleStatusChange = () => {
+        let originalProfile = profile;
         let newProfile = { ...profile };
+        printObject('UD:36originalProfile:', originalProfile);
+        printObject('UD:37---newProfile:', newProfile);
+        console.log('UD38:--newStatus:', newStatus);
+        console.log('UD:39--userStatus:', userStatus);
         if (newStatus !== userStatus) {
             //change detected.
-            console.log(
-                '🚀 ~ file: UserDisplay.js ~ line 27 ~ handleStatusChange ~ user',
-                user
-            );
 
             if (newStatus === 'leader') {
-                // ...insert stateRep value
-                console.log('LEADER');
+                let affiliate = {
+                    name: profile.affiliate.name,
+                    stateProv: profile.affiliate.stateProv,
+                    role: 'rep',
+                };
                 newProfile = {
                     ...profile,
-                    stateRep: user.stateLead,
+                    affiliate,
                     role: 'rep',
                 };
                 //   add stateRep to registration in REDUX
@@ -198,7 +205,7 @@ const UserDisplay = ({ profile }) => {
                     <View style={styles.customButton}>
                         <CustomButton
                             key={profile.uid}
-                            title='UPDATE'
+                            title='UPDATE8'
                             graphic={null}
                             cbStyles={{
                                 backgroundColor: Colors.primary,
