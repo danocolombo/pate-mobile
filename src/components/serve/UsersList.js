@@ -1,4 +1,11 @@
-import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    Pressable,
+    TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { printObject } from '../../utils/helpers';
@@ -30,7 +37,7 @@ const UsersList = (props) => {
                                           marginLeft: '20%',
                                       }}
                                   >
-                                      <Pressable
+                                      <TouchableOpacity
                                           key={p.uid}
                                           onPress={() =>
                                               navigation.navigate(
@@ -45,7 +52,7 @@ const UsersList = (props) => {
                                           }
                                       >
                                           <UserCard user={p} key={p.uid} />
-                                      </Pressable>
+                                      </TouchableOpacity>
                                   </View>
                               );
                           })

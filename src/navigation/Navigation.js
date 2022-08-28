@@ -28,7 +28,7 @@ import SignUpScreen from '../screens/Auth/SignUpScreen';
 import ConfirmEmailScreen from '../screens/Auth/ConfirmEmailScreen';
 import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
 import NewPasswordScreen from '../screens/Auth/NewPasswordScreen';
-import UserProfileScreen from '../screens/ProfileScreen';
+import UserProfileScreen from '../screens/Serve/UserProfileScreen';
 
 import AuthDrawer from './AuthDrawer';
 import { Auth, Hub } from 'aws-amplify';
