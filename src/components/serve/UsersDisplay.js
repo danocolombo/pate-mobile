@@ -71,7 +71,12 @@ const UsersDisplay = (props) => {
             if (a.affiliations) {
                 if (a.affiliations.options) {
                     a.affiliations.options.map((o) => {
-                        if (o.value === feo.affiliate.code) {
+                        if (
+                            o.value === feo.affiliate.code &&
+                            o.role !== 'rep' &&
+                            o.role !== 'lead' &&
+                            o.role !== 'superuser'
+                        ) {
                             users.push(a);
                         }
                     });

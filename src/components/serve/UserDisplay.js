@@ -88,10 +88,7 @@ const UserDisplay = ({ profile }) => {
             ' was ',
             userStatus
         );
-        console.log(
-            '🚀 ~ file: UserDisplay.js ~ line 65 ~ handleStatusChange ~ newProfile',
-            newProfile
-        );
+
         navigate.goBack();
     };
 

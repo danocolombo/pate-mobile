@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from '../../constants/colors';
 import { printObject, transformPatePhone } from '../../utils/helpers';
 const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
-    printObject('UDDM:9-->user', user);
+    // printObject('UDDM:9-->user', user);
     return (
         <Surface style={styles.modalSurface}>
             <View style={styles.modalTitleWrapper}>
