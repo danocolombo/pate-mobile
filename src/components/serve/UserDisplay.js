@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -10,12 +10,14 @@ import { transformPatePhone } from '../../utils/helpers';
 import { updateProfile } from '../../features/profiles/profilesSlice';
 import { updateProfile as DDBUpdateProfile } from '../../providers/users';
 import { Colors } from '../../constants/colors';
+import { colors } from '@material-ui/core';
 import { printObject } from '../../utils/helpers';
-
+import UserDisplayDetailsModal from './UserDisplayDetailsModal';
 const UserDisplay = ({ profile }) => {
     const dispatch = useDispatch();
     const navigate = useNavigation();
     const user = useSelector((state) => state.users.currentUser);
+    const [showMoreDetail, setShowMoreDetail] = useState(false);
     // printObject('UD:18--user:', user);
     // printObject('UD:19--profile:', profile);
 
@@ -25,6 +27,9 @@ const UserDisplay = ({ profile }) => {
     const [newStatus, setNewStatus] = useState();
     const statusValues = ['guest', 'leader'];
     useEffect(() => {}, []);
+    const handleDismiss = () => {
+        setShowMoreDetail(false);
+    };
     const handleStatusChange = () => {
         let newProfile = { ...profile };
         if (newStatus !== userStatus) {
@@ -92,7 +97,28 @@ const UserDisplay = ({ profile }) => {
 
     return (
         <>
+            <Modal visible={showMoreDetail} animationStyle='slide'>
+                <UserDisplayDetailsModal
+                    user={profile}
+                    handleDismiss={handleDismiss}
+                />
+            </Modal>
             <Surface style={styles.userCardWrapper}>
+                <View style={styles.detailsContainer}>
+                    <Surface style={[styles.detailsSurface]}>
+                        <View style={styles.detailsView}>
+                            <TouchableOpacity
+                                onPress={() => setShowMoreDetail(true)}
+                            >
+                                <Ionicons
+                                    name='information-circle'
+                                    size={24}
+                                    color={Colors.gray35}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </Surface>
+                </View>
                 <View>
                     <Text style={styles.userName}>
                         {profile.firstName} {profile.lastName}
@@ -199,6 +225,20 @@ const styles = StyleSheet.create({
     header: {
         alignItems: 'center',
     },
+
+    detailsContainer: {
+        width: '100%',
+    },
+    detailsSurface: {
+        backgroundColor: colors.blueGrey,
+        elevation: 5,
+    },
+    detailsView: {
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        paddingRight: 5,
+        paddingTop: 5,
+    },
     userCardWrapper: {
         flexDirection: 'column',
         //alignItems: 'center',
@@ -210,7 +250,7 @@ const styles = StyleSheet.create({
         borderTopEndRadius: 40,
     },
     userName: {
-        marginTop: 30,
+        marginTop: 0,
         marginLeft: 10,
         fontSize: 30,
         fontWeight: '500',
@@ -247,6 +287,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginHorizontal: 50,
     },
+
     dropdown1BtnStyle: {
         width: '80%',
         height: 50,
@@ -268,9 +309,5 @@ const styles = StyleSheet.create({
     customButtonContainer: {
         marginVertical: 20,
         flexDirection: 'row',
-    },
-    modalButtonWrapper: {
-        marginHorizontal: 10,
-        marginVertical: 25,
     },
 });

@@ -24,10 +24,16 @@ const feoTheme = {
     dark: false,
     colors: {
         ...DefaultTheme.colors,
-        primary: '#1656A3',
+        primary5: '#1656A3',
         secondary: '#A8C7ED',
         accent: '#A8C7ED',
         lightBlack: '#696969',
+        gray10: '#e6e6e6',
+        gray20: '#cccccc',
+        gray35: '#a6a6a6',
+        gray50: '#808080',
+        gray60: '#666666',
+        gray75: '#404040',
     },
 };
 function App() {
