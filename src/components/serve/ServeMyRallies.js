@@ -4,12 +4,12 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { Subheading, Surface } from 'react-native-paper';
+import { Ionicons } from '@expo/vector-icons';
 import EventListCard from '../ui/EventListCard';
 import RallyLocationInfo from '../rallies/info/Rally.Location.Info';
 import { deleteRally } from '../../features/rallies/ralliesSlice';
 import CustomButton from '../ui/CustomButton';
 import { Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { printObject, asc_sort, desc_sort } from '../../utils/helpers';
 import { CONFIG } from '../../utils/helpers';
 import { Colors } from '../../constants/colors';
@@ -141,8 +141,32 @@ const ServeMyRallies = () => {
                     </View>
                 </Surface>
             </Modal>
-            <View style={styles.screenHeader}>
-                <Text style={styles.screenHeaderText}>Your Events</Text>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                }}
+            >
+                <View>
+                    <Text></Text>
+                </View>
+                <View style={styles.screenHeader}>
+                    <Text style={styles.screenHeaderText}>Your Events</Text>
+                </View>
+                <View style={{ marginRight: 10 }}>
+                    <Ionicons
+                        name='md-add-circle-sharp'
+                        size={24}
+                        color={Colors.primary}
+                        onPress={() =>
+                            navigation.navigate('RallyEditFlow', {
+                                rallyId: 0,
+                                stage: 1,
+                            })
+                        }
+                    />
+                </View>
             </View>
             {displayData.length > 0 && (
                 <View>
@@ -187,25 +211,6 @@ const ServeMyRallies = () => {
                     ))}
                 </View>
             </ScrollView>
-            <View style={styles.buttonContainer}>
-                <CustomButton
-                    title='ADD NEW EVENT'
-                    graphic={null}
-                    cbStyles={{
-                        backgroundColor: 'green',
-                        color: 'white',
-                        width: 200,
-                        textAlign: 'center',
-                    }}
-                    txtColor='white'
-                    onPress={() =>
-                        navigation.navigate('RallyEditFlow', {
-                            rallyId: 0,
-                            stage: 1,
-                        })
-                    }
-                />
-            </View>
         </View>
     );
 };
