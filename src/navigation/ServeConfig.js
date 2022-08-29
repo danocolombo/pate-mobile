@@ -22,8 +22,9 @@ const ServeConfig = () => {
                 options={{
                     title: 'FEO',
                     tabBarLabel: 'MINE',
+                    tabBarInactiveBackgroundColor: 'lightgrey',
                     tabBarIcon: ({ color, size }) => (
-                        <FontAwesome name='user' size={24} color='black' />
+                        <FontAwesome name='user' size={size} color={color} />
                     ),
                 }}
             />
@@ -33,8 +34,9 @@ const ServeConfig = () => {
                 options={{
                     title: 'FEO',
                     tabBarLabel: 'REGION',
+                    tabBarInactiveBackgroundColor: 'lightgrey',
                     tabBarIcon: ({ color, size }) => (
-                        <FontAwesome name='users' size={24} color='black' />
+                        <FontAwesome name='users' size={size} color={color} />
                     ),
                 }}
             />
@@ -46,11 +48,12 @@ const ServeConfig = () => {
                     options={{
                         title: 'FEO',
                         tabBarLabel: 'ADMIN',
+                        tabBarInactiveBackgroundColor: 'lightgrey',
                         tabBarIcon: ({ color, size }) => (
                             <Ionicons
                                 name='settings-sharp'
-                                size={24}
-                                color='black'
+                                size={size}
+                                color={color}
                             />
                         ),
                     }}

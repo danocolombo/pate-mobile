@@ -8,7 +8,7 @@ import {
     Keyboard,
     ScrollView,
 } from 'react-native';
-import { List, Surface, withTheme, Snackbar } from 'react-native-paper';
+import { List, Surface, withTheme, Snackbar, FAB } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import DropDown from 'react-native-paper-dropdown';
@@ -79,7 +79,11 @@ const ProfileForm = (props) => {
     const onDismissSnackBar = () => setSnackbarVisible(false);
     const [showPhoneError, setShowPhoneError] = useState(false);
     const [showDropDown, setShowDropDown] = useState(false);
-
+    const [headerUser, setHeaderUser] = useState(user);
+    useEffect(() => {
+        setHeaderUser(user);
+    }, [user]);
+    printObject('PF:86-->user:', user);
     let phoneDisplayValue;
     if (user.phone) {
         let phoneType = getPhoneType(user.phone);
@@ -104,6 +108,7 @@ const ProfileForm = (props) => {
             title: feo.appName,
         });
     }, [navigation, feo]);
+
     let rally;
     const handleAccordPress = () => {
         setContactAccordionIsOpen(!contactAccordionIsOpen);
@@ -138,10 +143,19 @@ const ProfileForm = (props) => {
         // gather data
         values.phone = phoneToPass;
         // printObject('PF:136------------------>original:', originalUser);
+        console.log('PF:146-->affiliationSelected:', affiliationSelected);
+        console.log(
+            'PF:147-active.value:',
+            originalUser?.affiliations?.active?.value
+        );
         if (affiliationSelected !== originalUser.affiliations.active.value) {
             //    get the label of the affiliation selected
             let selectedReference = originalUser.affiliations.options.filter(
                 (a) => a.value === affiliationSelected
+            );
+            console.log(
+                'PF:156-->updating REDUX affiliation active:',
+                selectedReference[0].value
             );
             dispatch(updateAffiliationActive(selectedReference[0].value));
             let activeData = {
@@ -155,37 +169,41 @@ const ProfileForm = (props) => {
             };
 
             values.affiliations = updatedAffiliateData;
-            // printObject('PF:156______values', values);
+            console.log('next output of values should have new active info');
+            console.log('===========================================');
+            printObject('PF:156______values', values);
             let newAffiliateInfo = originalUser.userAffiliates.filter(
                 (a) => a.value === affiliationSelected
             );
             values.affiliate = newAffiliateInfo[0];
+            //   GET AFFILIATION INFO FROM DDB - UPDATE REDUX SYSTEM
+            getAffiliate(affiliationSelected).then((response) => {
+                dispatch(updateAffiliate(response.body[0]));
+                dispatch(updateAppName(response.body[0].appName));
+            });
         }
-        // printObject('PF:156=======>values:', values);
 
-        //   UPDATE REDUX SYSTEM
-        getAffiliate(affiliationSelected).then((response) => {
-            dispatch(updateAffiliate(response.body[0]));
-            dispatch(updateAppName(response.body[0].appName));
-        });
         dispatch(updateRegion(originalUser.region));
         dispatch(updateStateProv(originalUser.residence.stateProv));
-        dispatch(updateAffiliation(affiliationSelected));
+        printObject('PF:174-->values:', values);
+        let selection;
+        let affiliations;
+        let newValues = values;
+        if (values?.affliations) {
+            selection = values.affiliations.options.filter(
+                (x) => x.value === affiliationSelected
+            );
+            // NOTE: regurn from filter will be array object, so use selection[0]
+            affiliations = {
+                options: values.affiliations.options,
+                active: selection[0],
+            };
+            newValues = { ...values, affiliations };
+        }
 
-        let selection = values.affiliations.options.filter(
-            (x) => x.value === affiliationSelected
-        );
-        // NOTE: regurn from filter will be array object, so use selection[0]
-        let affiliations = {
-            options: values.affiliations.options,
-            active: selection[0],
-        };
         //   UPDATE REDUX CURRENTUSER
 
-        let newValues = { ...values, affiliations };
         dispatch(updateCurrentUser(newValues));
-
-        //   copy affiliationSelected to active for DDB
 
         let dbProfile = {
             uid: user.uid,
@@ -240,7 +258,7 @@ const ProfileForm = (props) => {
     // const dispatch = useDispatch();
     return (
         <>
-            <PersonalHeader user={user} />
+            <PersonalHeader user={headerUser} />
             <View>
                 <ScrollView>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -794,6 +812,19 @@ const ProfileForm = (props) => {
                                                                     </View>
                                                                 </View>
                                                             </View>
+                                                            <FAB
+                                                                icon='check'
+                                                                style={
+                                                                    styles.FAB
+                                                                }
+                                                                onPress={(
+                                                                    values
+                                                                ) =>
+                                                                    formikProps.handleSubmit(
+                                                                        values
+                                                                    )
+                                                                }
+                                                            />
                                                         </Surface>
                                                     </List.Accordion>
                                                 </List.Section>
@@ -1157,6 +1188,13 @@ const styles = StyleSheet.create({
     formHeader: {
         marginVertical: 10,
         alignItems: 'center',
+    },
+    FAB: {
+        position: 'absolute',
+        marginRight: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'green',
     },
     personalSurface: {
         padding: 5,

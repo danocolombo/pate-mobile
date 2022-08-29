@@ -20,7 +20,7 @@ let AFF = {
     category: 'default',
     description: 'default desc. value',
     ownerPhone: '1234567890',
-    title: 'Default Title',
+    title: 'Welcome...',
 };
 
 const initialState = {
