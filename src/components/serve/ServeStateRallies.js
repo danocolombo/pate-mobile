@@ -21,7 +21,10 @@ const ServeMyRallies = () => {
     let feo = useSelector((state) => state.system);
     let rallies = useSelector((state) => state.rallies.allRallies);
     const stateRalliesRAW = useSelector((state) =>
-        state.rallies.allRallies.filter((r) => r.stateProv === me.stateRep)
+        state.rallies.allRallies.filter(
+            (r) =>
+                r.stateProv === me.stateRep && r.affiliate === feo.affiliation
+        )
     );
 
     function asc_sort(a, b) {

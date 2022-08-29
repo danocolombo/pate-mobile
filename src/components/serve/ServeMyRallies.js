@@ -22,7 +22,9 @@ const ServeMyRallies = () => {
     let me = useSelector((state) => state.users.currentUser);
     let rallies = useSelector((state) => state.rallies.allRallies);
     // printObject('SR20 rallies:', rallies);
-    const myRalliesRAW = rallies.filter((r) => r.coordinator.id === me.uid);
+    const myRalliesRAW = rallies.filter(
+        (r) => r.coordinator.id === me.uid && r.affiliate === feo.affiliation
+    );
     // now sort the rallies
     function asc_sort(a, b) {
         return b.eventDate - a.eventDate;

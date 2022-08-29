@@ -16,6 +16,18 @@ const ServeEventsMyScreen = () => {
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,
+            headerRight: () => (
+                <Button
+                    onPress={() =>
+                        navigation.navigate('RallyEditFlow', {
+                            rallyId: rally.uid,
+                            stage: 1,
+                        })
+                    }
+                    // color='white'
+                    title='NEW'
+                />
+            ),
         });
     }, [navigation, feo]);
     return (

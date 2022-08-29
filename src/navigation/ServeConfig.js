@@ -38,7 +38,8 @@ const ServeConfig = () => {
                     ),
                 }}
             />
-            {user.role === 'lead' || user.role === 'superuser' ? (
+            {user?.affiliations?.active?.role === 'lead' ||
+            user?.affiliations?.active?.role === 'superuser' ? (
                 <BottomTab.Screen
                     name='ServeConfig'
                     component={ServeConfigScreen}

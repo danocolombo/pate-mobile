@@ -181,7 +181,10 @@ const SignInScreen = () => {
             // if profile does not have affiliations, set default to FEO
             if (!fullUserInfo?.affiliations) {
                 let defaultAff = {
-                    options: [{ value: 'FEO', lable: 'FEO Testing' }],
+                    options: [
+                        { value: 'FEO', label: 'FEO Testing' },
+                        { value: 'CRP8', label: 'CR P8 Rallies' },
+                    ],
                     active: { value: 'FEO', label: 'FEO Testing' },
                 };
                 fullUserInfo = { ...fullUserInfo, affiliations: defaultAff };
@@ -216,6 +219,7 @@ const SignInScreen = () => {
                         } else {
                             dispatch(updateUserRole('guest'));
                         }
+                        dispatch(setRegion(response.body[0].regions[0]));
                     } else {
                         console.log(
                             'response.statusCode:',
@@ -229,15 +233,15 @@ const SignInScreen = () => {
             // default to GEORGIA
 
             // printObject('SS:167-->fullUserInfo:', fullUserInfo);
-            if (fullUserInfo?.residence?.stateProv) {
-                // lookup region from value
-                region =
-                    REGION[fullUserInfo?.residence?.stateProv.toUpperCase()];
-                const regionParts = region.split('#');
-                eventRegion = regionParts[1];
-            }
-            dispatch(setRegion(region));
-            dispatch(setEventRegion(eventRegion));
+            // if (fullUserInfo?.residence?.stateProv) {
+            //     // lookup region from value
+            //     region =
+            //         REGION[fullUserInfo?.residence?.stateProv.toUpperCase()];
+            //     const regionParts = region.split('#');
+            //     eventRegion = regionParts[1];
+            // }
+            // dispatch(setRegion(region));
+            // dispatch(setEventRegion(eventRegion));
         });
         // let's load redux with rallies.
 

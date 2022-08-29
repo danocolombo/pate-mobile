@@ -17,12 +17,12 @@ const Stack = createNativeStackNavigator();
 
 const AuthDrawer = (navigation) => {
     const user = useSelector((state) => state.users.currentUser);
-    // printObject('PF:17-->user', user);
+    printObject('PF:17-->user', user);
     let patron = false;
     if (
-        user?.role === 'rep' ||
-        user?.role === 'lead' ||
-        user?.role === 'superuser'
+        user?.affiliations?.active?.role === 'rep' ||
+        user?.affiliations?.active?.role === 'lead' ||
+        user?.affiliations?.active?.role === 'superuser'
     ) {
         patron = true;
     }
