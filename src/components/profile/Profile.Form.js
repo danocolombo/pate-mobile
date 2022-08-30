@@ -41,6 +41,7 @@ import {
 } from '../../utils/helpers';
 import { Ionicons } from '@expo/vector-icons';
 import { select } from '@react-native-material/core';
+import { or } from 'ramda';
 
 // create validation schema for yup to pass to formik
 const profileSchema = yup.object({
@@ -125,132 +126,18 @@ const ProfileForm = (props) => {
         setContactAccordionIsOpen(false);
         setAffiliationAccordionIsOpen(false);
     };
-    const handleSubmit = (values) => {
-        let pType = getPhoneType(userPhone);
-        let phoneToPass;
-        switch (pType) {
-            case 'PATE':
-                phoneToPass = userPhone;
-                break;
-            case 'MASKED':
-                phoneToPass = createPatePhone(userPhone);
-                break;
-            default:
-                phoneToPass = '';
-                break;
-        }
+    const handleContactSubmit = (values) => {
+        printObject('contactSubmit:', values);
+    };
+    const handleSubmit = (values, actions) => {
+        //   is contact info updated???
 
-        // gather data
-        values.phone = phoneToPass;
-        // printObject('PF:136------------------>original:', originalUser);
-        console.log('PF:146-->affiliationSelected:', affiliationSelected);
-        console.log(
-            'PF:147-active.value:',
-            originalUser?.affiliations?.active?.value
-        );
-        if (affiliationSelected !== originalUser.affiliations.active.value) {
-            //    get the label of the affiliation selected
-            let selectedReference = originalUser.affiliations.options.filter(
-                (a) => a.value === affiliationSelected
-            );
-            console.log(
-                'PF:156-->updating REDUX affiliation active:',
-                selectedReference[0].value
-            );
-            dispatch(updateAffiliationActive(selectedReference[0].value));
-            let activeData = {
-                value: selectedReference[0].value,
-                label: selectedReference[0].label,
-            };
+        //   is
 
-            let updatedAffiliateData = {
-                options: originalUser.affiliations.options,
-                active: activeData,
-            };
-
-            values.affiliations = updatedAffiliateData;
-            console.log('next output of values should have new active info');
-            console.log('===========================================');
-            printObject('PF:156______values', values);
-            let newAffiliateInfo = originalUser.userAffiliates.filter(
-                (a) => a.value === affiliationSelected
-            );
-            values.affiliate = newAffiliateInfo[0];
-            //   GET AFFILIATION INFO FROM DDB - UPDATE REDUX SYSTEM
-            getAffiliate(affiliationSelected).then((response) => {
-                dispatch(updateAffiliate(response.body[0]));
-                dispatch(updateAppName(response.body[0].appName));
-            });
-        }
-
-        dispatch(updateRegion(originalUser.region));
-        dispatch(updateStateProv(originalUser.residence.stateProv));
-        printObject('PF:174-->values:', values);
-        let selection;
-        let affiliations;
-        let newValues = values;
-        if (values?.affliations) {
-            selection = values.affiliations.options.filter(
-                (x) => x.value === affiliationSelected
-            );
-            // NOTE: regurn from filter will be array object, so use selection[0]
-            affiliations = {
-                options: values.affiliations.options,
-                active: selection[0],
-            };
-            newValues = { ...values, affiliations };
-        }
-
-        //   UPDATE REDUX CURRENTUSER
-
-        dispatch(updateCurrentUser(newValues));
-
-        let dbProfile = {
-            uid: user.uid,
-            firstName: values?.firstName ? values.firstName : '',
-            lastName: values?.lastName ? values.lastName : '',
-            email: values?.email ? values.email : '',
-            phone: userPhone,
-            residence: {
-                street: values?.street ? values.street : '',
-                city: values?.city ? values.city : '',
-                stateProv: values?.stateProv ? values.stateProv : '',
-                postalCode: values?.postalCode ? values.postalCode : '',
-            },
-            affiliate: {
-                name: values?.affiliateName ? values.affiliateName : '',
-                city: values?.affiliateCity ? values.affiliateCity : '',
-                stateProv: values?.affiliateStateProv
-                    ? values.affiliateStateProv
-                    : '',
-            },
-            affiliations: affiliations,
-            userAffiliates: originalUser.userAffiliates,
-            isLoggedIn: true,
-        };
-        if (originalUser?.stateRep) {
-            // now conditionally add the rep and lead info if applicable
-            dbProfile = { ...dbProfile, stateRep: originalUser.stateRep };
-            dbProfile = { ...dbProfile, profile: originalUser.profile };
-        }
-        if (originalUser?.stateLead) {
-            dbProfile = { ...dbProfile, stateLead: originalUser.stateLead };
-            dbProfile = { ...dbProfile, profile: originalUser.profile };
-        }
-        dbProfile = { ...dbProfile, username: originalUser.username };
-        dbProfile = { ...dbProfile, role: originalUser.role };
-        dbProfile = { ...dbProfile, region: originalUser.region };
-        // printObject('PF:156-->originalUser', originalUser);
-        // printObject('PF:157-->dbProfile', dbProfile);
-
-        updateProfile(dbProfile)
-            .then((response) => {
-                setSnackbarVisible(true);
-            })
-            .catch((err) =>
-                console.log('error saving profile to database\n', err)
-            );
-        return;
+        console.log('original handleSubmit');
+        printObject('ORIGINAL_USER', originalUser);
+        printObject('VALUES:', values);
+        printObject('AFFILIATIONSELECT:', affiliationSelected);
     };
     const handleAffiliationsSelectClick = () => {
         console.log('PF:187-->affiliationSelected:', affiliationSelected);
@@ -300,7 +187,7 @@ const ProfileForm = (props) => {
                                     }}
                                     validationSchema={profileSchema}
                                     onSubmit={async (values, actions) => {
-                                        handleSubmit(values);
+                                        handleSubmit(values, actions);
                                     }}
                                 >
                                     {(formikProps) => (
@@ -817,12 +704,8 @@ const ProfileForm = (props) => {
                                                                 style={
                                                                     styles.FAB
                                                                 }
-                                                                onPress={(
-                                                                    values
-                                                                ) =>
-                                                                    formikProps.handleSubmit(
-                                                                        values
-                                                                    )
+                                                                onPress={
+                                                                    formikProps.handleSubmit
                                                                 }
                                                             />
                                                         </Surface>
@@ -1033,6 +916,15 @@ const ProfileForm = (props) => {
                                                                     </Text>
                                                                 ) : null}
                                                             </View>
+                                                            <FAB
+                                                                icon='check'
+                                                                style={
+                                                                    styles.FAB
+                                                                }
+                                                                onPress={
+                                                                    formikProps.handleSubmit
+                                                                }
+                                                            />
                                                         </Surface>
                                                     </List.Accordion>
                                                 </List.Section>
@@ -1134,11 +1026,20 @@ const ProfileForm = (props) => {
                                                                         }
                                                                     />
                                                                 </View>
+                                                                <FAB
+                                                                    icon='check'
+                                                                    style={
+                                                                        styles.FABAffiliationChange
+                                                                    }
+                                                                    onPress={
+                                                                        formikProps.handleSubmit
+                                                                    }
+                                                                />
                                                             </Surface>
                                                         </List.Accordion>
                                                     </List.Section>
                                                 )}
-                                                <View
+                                                {/* <View
                                                     style={
                                                         styles.buttonContainer
                                                     }
@@ -1156,7 +1057,7 @@ const ProfileForm = (props) => {
                                                             formikProps.handleSubmit
                                                         }
                                                     />
-                                                </View>
+                                                </View> */}
                                             </Surface>
                                         </>
                                     )}
@@ -1194,6 +1095,14 @@ const styles = StyleSheet.create({
         marginRight: 16,
         right: 0,
         bottom: 0,
+        backgroundColor: 'green',
+    },
+    FABAffiliationChange: {
+        position: 'absolute',
+        marginRight: 16,
+        // top: 100,
+        right: 0,
+        bottom: 10,
         backgroundColor: 'green',
     },
     personalSurface: {
@@ -1298,7 +1207,8 @@ const styles = StyleSheet.create({
     affiliatesSurfaceContainer: {
         padding: 5,
         marginHorizontal: 20,
-        paddingVertical: 10,
+        paddingTop: 10,
+        paddingBottom: 75,
         marginBottom: 0,
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
