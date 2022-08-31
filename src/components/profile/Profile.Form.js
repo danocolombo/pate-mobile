@@ -7,6 +7,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
+    Modal,
 } from 'react-native';
 import { List, Surface, withTheme, Snackbar, FAB } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -42,6 +43,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { select } from '@react-native-material/core';
 import { or } from 'ramda';
+import { original } from '@reduxjs/toolkit';
 
 // create validation schema for yup to pass to formik
 const profileSchema = yup.object({
@@ -62,6 +64,8 @@ const profileSchema = yup.object({
 
 const ProfileForm = (props) => {
     const navigation = useNavigation();
+    const [showUnsupportedChange, setShowUnsupportedChange] = useState(false);
+    const [showCantChangeModal, setShowCantChangeModal] = useState(false);
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [contactAccordionIsOpen, setContactAccordionIsOpen] = useState(false);
     const [affiliationAccordionIsOpen, setAffiliationAccordionIsOpen] =
@@ -129,15 +133,61 @@ const ProfileForm = (props) => {
     const handleContactSubmit = (values) => {
         printObject('contactSubmit:', values);
     };
+    const handleErrorReset = () => {
+        setAffiliationSelected(originalUser.affiliations.active.value);
+        // values.affiliateName = originalUser.affiliate.name;
+        // values.affiliateCity = originalUser.affiliate.city;
+        // values.affiliateStateProv = originalUser.affiliate.stateProv;
+        setShowUnsupportedChange(false);
+    };
     const handleSubmit = (values, actions) => {
         //   is contact info updated???
-
-        //   is
-
-        console.log('original handleSubmit');
-        printObject('ORIGINAL_USER', originalUser);
-        printObject('VALUES:', values);
-        printObject('AFFILIATIONSELECT:', affiliationSelected);
+        const AFFCODE = affiliationSelected;
+        // console.log('AFFCODE:', AFFCODE);
+        // console.log('test', originalUser.affiliations.active.value);
+        // printObject('originalUser', originalUser);
+        // printObject('values:', values);
+        if (AFFCODE !== originalUser?.affiliations?.active?.value) {
+            //   affiliation change attempt.
+            if (
+                values.affiliateName !== originalUser.affiliate.name ||
+                values.affiliateCity !== originalUser.affiliate.city ||
+                values.affiliateStateProv !== originalUser.affiliate.stateProv
+            ) {
+                setShowUnsupportedChange(true);
+                return;
+            }
+            //   proceed with changing the active affiliation
+            //todo - get the affiliation details from ddb
+            let affiliate = {};
+            getAffiliate(affiliationSelected).then((response) => {
+                if (response.statusCode !== 200) {
+                    setShowCantChangeModal(true);
+                    return;
+                } else {
+                    affiliate = response.body[0];
+                }
+            });
+            //todo - get the currentUser.affiliations.option for the AFFCODE
+            const UserAffOptionObject = originalUser.affiliations.options.map(
+                (o) => {
+                    if (o.value === AFFCODE) {
+                        return o;
+                    }
+                }
+            );
+            const USERAFFOPTION = UserAffOptionObject[0];
+            // printObject('original option info:', USERAFFOPTION);
+            //   now create payload for userSlice
+            printObject('affiliate:', affiliate);
+            let usPayload = {
+                label: USERAFFOPTION.label,
+                role: USERAFFOPTION.role,
+                region: affiliate.regions[0],
+                value: AFFCODE,
+            };
+            printObject('usPayload:', usPayload);
+        }
     };
     const handleAffiliationsSelectClick = () => {
         console.log('PF:187-->affiliationSelected:', affiliationSelected);
@@ -145,6 +195,85 @@ const ProfileForm = (props) => {
     // const dispatch = useDispatch();
     return (
         <>
+            <Modal visible={showUnsupportedChange} animationStyle='slide'>
+                <Surface style={styles.modalSurface}>
+                    <View>
+                        <View style={{ marginTop: 5, alignItems: 'center' }}>
+                            <Text style={styles.modalTitle}>Error</Text>
+                        </View>
+                        <View style={styles.modalInfoWrapper}>
+                            <Text style={styles.modalText}>
+                                Cannot change the affiliate information and
+                                attempt to change the affiliation definitions at
+                                the same time.
+                            </Text>
+                        </View>
+                        <View style={styles.modalInfoWrapper}>
+                            <Text style={styles.modalText}>
+                                Please correct your settings, or press the reset
+                                button to back out changes.
+                            </Text>
+                        </View>
+                        <View style={styles.modalButtonContainer}>
+                            <View style={styles.modalButton}>
+                                <CustomButton
+                                    title='Reset'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: Colors.success,
+                                        color: 'white',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() => handleErrorReset()}
+                                />
+                            </View>
+                            <View style={styles.modalButton}>
+                                <CustomButton
+                                    title='Dismiss'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: Colors.gray35,
+                                        color: 'black',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() =>
+                                        setShowUnsupportedChange(false)
+                                    }
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Surface>
+            </Modal>
+            <Modal visible={showUnsupportedChange} animationStyle='slide'>
+                <Surface style={styles.modalSurface}>
+                    <View>
+                        <View style={{ marginTop: 5, alignItems: 'center' }}>
+                            <Text style={styles.modalTitle}>Error</Text>
+                        </View>
+                        <View style={styles.modalInfoWrapper}>
+                            <Text style={styles.modalText}>
+                                Cannot make change at this time, please try
+                                again later. Or contact support.
+                            </Text>
+                        </View>
+                        <View style={styles.modalButtonContainer}>
+                            <View style={styles.modalButton}>
+                                <CustomButton
+                                    title='Dismiss'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: Colors.gray35,
+                                        color: 'black',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() => showCantChangeModal(false)}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Surface>
+            </Modal>
             <PersonalHeader user={headerUser} />
             <View>
                 <ScrollView>
@@ -1231,5 +1360,43 @@ const styles = StyleSheet.create({
     },
     submitButton: {
         width: '70%',
+    },
+    modalContainer: {
+        marginTop: 50,
+        // alignSelf: 'flex-end',
+    },
+    modalSurface: {
+        marginTop: 80,
+        marginHorizontal: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+    },
+
+    modalTitle: {
+        marginTop: 15,
+        fontSize: 30,
+        fontWeight: 'bold',
+    },
+    modalInfoWrapper: {
+        marginTop: 15,
+        paddingHorizontal: 20,
+        width: '100%',
+    },
+    modalText: {
+        fontSize: 24,
+        textAlign: 'center',
+        letterSpacing: 0.7,
+    },
+    modalButtonContainer: {
+        marginVertical: 20,
+
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    modalButtonWrapper: { flexDirection: 'row' },
+    modalButton: {
+        paddingHorizontal: 10,
     },
 });
