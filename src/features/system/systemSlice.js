@@ -26,7 +26,6 @@ let AFF = {
 const initialState = {
     appName: 'P8 Rallies',
     region: 'us#east#dflt',
-    eventRegion: 'dflt',
     stateProv: 'TT',
     affiliateTitle: 'default affTitle',
     today: today,
@@ -52,17 +51,25 @@ export const systemSlice = createSlice({
         setEventRegion: (state, action) => {
             state.eventRegion = action.payload;
         },
-        updateEventRegion: (state, action) => {
-            state.eventRegion = action.payload;
-        },
+
         updateStateProv: (state, action) => {
             state.stateProv = action.payload;
         },
         updateAffiliate: (state, action) => {
             state.affiliate = action.payload;
         },
-        updateAffiliation: (state, action) => {
+        updateAffiliationString: (state, action) => {
             state.affiliation = action.payload;
+        },
+        updateAffiliation: (state, action) => {
+            state.appName = action.payload.appName;
+            state.region = action.payload.regions[0];
+            state.affiliateTitle = action.payload.title;
+            state.affiliation = action.payload.value;
+            state.userRole = action.payload.userRole;
+            delete action.payload.userRole;
+            state.affiliate = action.payload;
+            return state;
         },
 
         updateAffiliateTitle: (state, action) => {
@@ -98,12 +105,12 @@ export const {
     setRegion,
     setEventRegion,
     updateRegion,
-    updateEventRegion,
     logout,
     updateStateProv,
     setSystemDate,
     updateAffiliate,
     updateUserRole,
+    updateAffiliationString,
     updateAffiliateTitle,
     updateAffiliation,
     clearToday,

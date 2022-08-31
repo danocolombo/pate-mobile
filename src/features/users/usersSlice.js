@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { printObject } from '../../utils/helpers';
 
 const initialState = {
     value: 0,
@@ -16,6 +17,24 @@ export const usersSlice = createSlice({
         updateCurrentUser: (state, action) => {
             const newValues = action.payload;
             const updates = { ...state.currentUser, ...newValues };
+            state.currentUser = updates;
+            return state;
+        },
+        updateAffiliateActiveAndReference: (state, action) => {
+            //todo - update active references
+            const newActive = {
+                active: {
+                    label: action.payload.label,
+                    role: action.payload.role,
+                    region: action.payload.region,
+                    value: action.payload.value,
+                },
+            };
+            let newAff = { ...state.currentUser.affiliations, ...newActive };
+            let newUpdate = { affiliations: newAff };
+            // printObject('slice newAff', newAff);
+            const updates = { ...state.currentUser, ...newUpdate };
+            // printObject('slice updates', updates);
             state.currentUser = updates;
             return state;
         },
@@ -98,6 +117,7 @@ export const {
     updateRegistration,
     addNewRegistration,
     updateAffiliationActive,
+    updateAffiliateActiveAndReference,
     logout,
 } = usersSlice.actions;
 

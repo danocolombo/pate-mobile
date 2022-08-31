@@ -20,11 +20,11 @@ import CustomButton from '../ui/CustomButton';
 import {
     updateCurrentUser,
     updateAffiliationActive,
+    updateAffiliateActiveAndReference,
 } from '../../features/users/usersSlice';
 import {
     updateRegion,
     updateAppName,
-    updateEventRegion,
     updateAffiliate,
     updateAffiliateTitle,
     updateStateProv,
@@ -88,7 +88,7 @@ const ProfileForm = (props) => {
     useEffect(() => {
         setHeaderUser(user);
     }, [user]);
-    printObject('PF:86-->user:', user);
+
     let phoneDisplayValue;
     if (user.phone) {
         let phoneType = getPhoneType(user.phone);
@@ -166,27 +166,39 @@ const ProfileForm = (props) => {
                     return;
                 } else {
                     affiliate = response.body[0];
+
+                    const UserAffOptionObject =
+                        originalUser.affiliations.options.map((o) => {
+                            if (o.value === AFFCODE) {
+                                return o;
+                            }
+                        });
+                    const USERAFFOPTION = UserAffOptionObject[0];
+                    //   now create payload for userSlice
+                    try {
+                        let usPayload = {
+                            label: USERAFFOPTION.label,
+                            role: USERAFFOPTION.role,
+                            region: affiliate.regions[0],
+                            value: AFFCODE,
+                        };
+                        // printObject('usPayload:', usPayload);
+                        dispatch(updateAffiliateActiveAndReference(usPayload));
+                    } catch (error) {
+                        console.log('error setting usPayload');
+                        return;
+                    }
+
+                    //   now create payload for systemSlice
+                    let addUserRole = { userRole: USERAFFOPTION.role };
+                    let ssPayload = {
+                        ...affiliate,
+                        ...addUserRole,
+                    };
+                    // printObject('ssPayload:', ssPayload);
+                    dispatch(updateAffiliation(ssPayload));
                 }
             });
-            //todo - get the currentUser.affiliations.option for the AFFCODE
-            const UserAffOptionObject = originalUser.affiliations.options.map(
-                (o) => {
-                    if (o.value === AFFCODE) {
-                        return o;
-                    }
-                }
-            );
-            const USERAFFOPTION = UserAffOptionObject[0];
-            // printObject('original option info:', USERAFFOPTION);
-            //   now create payload for userSlice
-            printObject('affiliate:', affiliate);
-            let usPayload = {
-                label: USERAFFOPTION.label,
-                role: USERAFFOPTION.role,
-                region: affiliate.regions[0],
-                value: AFFCODE,
-            };
-            printObject('usPayload:', usPayload);
         }
     };
     const handleAffiliationsSelectClick = () => {

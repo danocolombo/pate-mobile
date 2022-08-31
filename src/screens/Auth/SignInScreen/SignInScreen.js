@@ -29,7 +29,7 @@ import {
     updateAffiliate,
     updateAffiliateTitle,
     updateStateProv,
-    updateAffiliation,
+    updateAffiliationString,
     updateUserRole,
 } from '../../../features/system/systemSlice';
 import { getToday, printObject } from '../../../utils/helpers';
@@ -196,7 +196,7 @@ const SignInScreen = () => {
                 .then((response) => {
                     if (response.statusCode === 200) {
                         dispatch(
-                            updateAffiliation(
+                            updateAffiliationString(
                                 fullUserInfo.affiliations.active.value
                             )
                         );

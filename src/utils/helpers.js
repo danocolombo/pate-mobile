@@ -143,6 +143,9 @@ export function createMtgCompKey(client, meetingDate) {
     return mtgCompKey;
 }
 export function capitalize(textString) {
+    if (!textString) {
+        return null;
+    }
     const word = textString;
     const lower = word.toLowerCase();
     const first = word.charAt(0);
