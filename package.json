@@ -83,7 +83,7 @@
   },
   "resolutions": {
     "expo-modules-core": "0.9.2",
-    "expo-modules-autolinking": "0.10.1",
+    "expo-modules-autolinking": "0.8.1",
     "@expo/config-plugins": "~5.0.0",
     "@expo/prebuild-config": "~5.0.1"
   },

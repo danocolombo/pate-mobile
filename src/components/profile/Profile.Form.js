@@ -167,13 +167,13 @@ const ProfileForm = (props) => {
                 } else {
                     affiliate = response.body[0];
 
-                    const UserAffOptionObject =
-                        originalUser.affiliations.options.map((o) => {
-                            if (o.value === AFFCODE) {
-                                return o;
-                            }
-                        });
+                    let target = originalUser.affiliations.options;
+                    const UserAffOptionObject = target.filter(
+                        (o) => o.value === AFFCODE
+                    );
+
                     const USERAFFOPTION = UserAffOptionObject[0];
+
                     //   now create payload for userSlice
                     try {
                         let usPayload = {
@@ -185,7 +185,8 @@ const ProfileForm = (props) => {
                         // printObject('usPayload:', usPayload);
                         dispatch(updateAffiliateActiveAndReference(usPayload));
                     } catch (error) {
-                        console.log('error setting usPayload');
+                        console.log('error setting usPayload\n', error);
+                        printObject('USERAFFOPTION:', USERAFFOPTION);
                         return;
                     }
 
@@ -268,7 +269,7 @@ const ProfileForm = (props) => {
                     dbProfile = { ...dbProfile, role: originalUser.role };
                     dbProfile = { ...dbProfile, region: originalUser.region };
                     // printObject('PF:156-->originalUser', originalUser);
-                    // printObject('PF:261-->dbProfile', dbProfile);
+                    printObject('PF:261-->dbProfile', dbProfile);
 
                     updateProfile(dbProfile)
                         .then((response) => {
@@ -280,7 +281,7 @@ const ProfileForm = (props) => {
                                 err
                             )
                         );
-                    return;
+                    // return;
                 }
             });
         }
