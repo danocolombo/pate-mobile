@@ -197,6 +197,90 @@ const ProfileForm = (props) => {
                     };
                     // printObject('ssPayload:', ssPayload);
                     dispatch(updateAffiliation(ssPayload));
+
+                    //   CREATE dbProfile and UPDATE DDB
+                    //todo: create affiliations object
+                    let affiliations = {
+                        options: originalUser.affiliations.options,
+                        active: {
+                            label: USERAFFOPTION.label,
+                            role: USERAFFOPTION.role,
+                            region: affiliate.regions[0],
+                            value: AFFCODE,
+                        },
+                    };
+                    let dbProfile = {
+                        uid: user.uid,
+                        firstName: values?.firstName ? values.firstName : '',
+                        lastName: values?.lastName ? values.lastName : '',
+                        email: values?.email ? values.email : '',
+                        phone: userPhone,
+                        residence: {
+                            street: values?.street ? values.street : '',
+                            city: values?.city ? values.city : '',
+                            stateProv: values?.stateProv
+                                ? values.stateProv
+                                : '',
+                            postalCode: values?.postalCode
+                                ? values.postalCode
+                                : '',
+                        },
+                        affiliate: {
+                            name: values?.affiliateName
+                                ? values.affiliateName
+                                : '',
+                            city: values?.affiliateCity
+                                ? values.affiliateCity
+                                : '',
+                            stateProv: values?.affiliateStateProv
+                                ? values.affiliateStateProv
+                                : '',
+                        },
+                        affiliations: affiliations,
+                        userAffiliates: originalUser.userAffiliates,
+                        isLoggedIn: true,
+                    };
+                    if (originalUser?.stateRep) {
+                        // now conditionally add the rep and lead info if applicable
+                        dbProfile = {
+                            ...dbProfile,
+                            stateRep: originalUser.stateRep,
+                        };
+                        dbProfile = {
+                            ...dbProfile,
+                            profile: originalUser.profile,
+                        };
+                    }
+                    if (originalUser?.stateLead) {
+                        dbProfile = {
+                            ...dbProfile,
+                            stateLead: originalUser.stateLead,
+                        };
+                        dbProfile = {
+                            ...dbProfile,
+                            profile: originalUser.profile,
+                        };
+                    }
+                    dbProfile = {
+                        ...dbProfile,
+                        username: originalUser.username,
+                    };
+                    dbProfile = { ...dbProfile, role: originalUser.role };
+                    dbProfile = { ...dbProfile, region: originalUser.region };
+                    // printObject('PF:156-->originalUser', originalUser);
+                    // printObject('PF:261-->dbProfile', dbProfile);
+
+                    updateProfile(dbProfile)
+                        .then((response) => {
+                            setSnackbarVisible(true);
+                        })
+                        .catch((err) =>
+                            console.log(
+                                'error saving profile to database\n',
+                                err
+                            )
+                        );
+                    return;
                 }
             });
         }
