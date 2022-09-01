@@ -2,21 +2,23 @@ import { StyleSheet, View } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Avatar, Surface, Text } from 'react-native-paper';
 
-const PersonalHeader = ({ user }) => {
+const PersonalHeader = ({ firstName, lastName }) => {
+    const [fName, setFName] = useState(firstName ? firstName : '');
+    const [lName, setLName] = useState(lastName ? lastName : '');
     const [fullName, setFullName] = useState('');
     const [initials, setInitials] = useState('');
 
     useEffect(() => {
-        let fn = user?.firstName + ' ' + user?.lastName;
-        let first = user?.firstName ? user?.firstName : '';
-        let last = user?.lastName ? user?.lastName : '';
-        if (first.length > 1 && last.length > 1) {
-            setInitials(first.substring(0, 1) + last.substring(0, 1));
+        let fn = fName + ' ' + lName;
+        // let first = user?.firstName ? user?.firstName : '';
+        // let last = user?.lastName ? user?.lastName : '';
+        if (fName.length > 1 && lName.length > 1) {
+            setInitials(fName.substring(0, 1) + lName.substring(0, 1));
         } else {
             setInitials('');
         }
         setFullName(fn);
-    }, []);
+    }, [firstName, lastName]);
 
     return (
         <Surface>

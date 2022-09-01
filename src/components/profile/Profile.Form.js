@@ -86,9 +86,18 @@ const ProfileForm = (props) => {
     const [showPhoneError, setShowPhoneError] = useState(false);
     const [showEmailError, setShowEmailError] = useState(false);
     const [showDropDown, setShowDropDown] = useState(false);
-    const [headerUser, setHeaderUser] = useState(user);
+    const [fName, setFName] = useState(user?.firstName ? user.firstName : '');
+    const [lName, setLName] = useState(user?.lastName ? user.lastName : '');
+    // const [headerUser, setHeaderUser] = useState(user);
     useEffect(() => {
-        setHeaderUser(user);
+        //setHeaderUser(user);
+        if (originalUser.firstName !== user.firstName) {
+            setFName = user.firstName;
+        }
+        if (originalUser.lastName !== user.lastName) {
+            setLName = user.lastName;
+        }
+        // setFName = user.firstName
     }, [user]);
 
     let phoneDisplayValue;
@@ -385,9 +394,11 @@ const ProfileForm = (props) => {
                         different = true;
                     }
                 } else {
+                    setLName(values.lastName);
                     different = true;
                 }
             } else {
+                setFName(values.firstName);
                 different = true;
             }
             if (!different) {
@@ -525,7 +536,7 @@ const ProfileForm = (props) => {
                     </View>
                 </Surface>
             </Modal>
-            <PersonalHeader user={headerUser} />
+            <PersonalHeader firstName={fName} lastName={lName} />
             <View>
                 <ScrollView>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
