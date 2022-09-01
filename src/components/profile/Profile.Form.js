@@ -41,9 +41,10 @@ import {
     createPatePhone,
 } from '../../utils/helpers';
 import { Ionicons } from '@expo/vector-icons';
-import { select } from '@react-native-material/core';
-import { or } from 'ramda';
+// import { select } from '@react-native-material/core';
+// import { or } from 'ramda';
 import { original } from '@reduxjs/toolkit';
+// import { validate } from 'react-native-web/dist/cjs/exports/StyleSheet/validate';
 
 // create validation schema for yup to pass to formik
 const profileSchema = yup.object({
@@ -83,6 +84,7 @@ const ProfileForm = (props) => {
 
     const onDismissSnackBar = () => setSnackbarVisible(false);
     const [showPhoneError, setShowPhoneError] = useState(false);
+    const [showEmailError, setShowEmailError] = useState(false);
     const [showDropDown, setShowDropDown] = useState(false);
     const [headerUser, setHeaderUser] = useState(user);
     useEffect(() => {
@@ -284,6 +286,158 @@ const ProfileForm = (props) => {
                     // return;
                 }
             });
+        } else {
+            //   AFFILIATE NOT CHANGED, CHECK user details
+            setShowPhoneError(false);
+            setShowEmailError(false);
+            // printObject('original:', originalUser);
+            // printObject('values:', values);
+
+            //todo --- validate phone format
+            let pType = getPhoneType(userPhone);
+            let phoneToPass;
+
+            switch (pType) {
+                case 'PATE':
+                    phoneToPass = userPhone;
+                    break;
+                case 'MASKED':
+                    phoneToPass = createPatePhone(userPhone);
+                    break;
+                default:
+                    phoneToPass = '';
+                    setShowPhoneError(true);
+                    return;
+            }
+            values.phone = phoneToPass;
+            //todo - check the email format
+
+            const validateEmail = (email) => {
+                return String(email)
+                    .toLowerCase()
+                    .match(
+                        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                    );
+            };
+            if (validateEmail(values.email) === null) {
+                setShowEmailError(true);
+                return;
+            }
+
+            let different = false;
+            if (originalUser.firstName === values.firstName) {
+                if (originalUser.lastName === values.lastName) {
+                    if (originalUser.phone === values.phone) {
+                        if (originalUser.email === values.email) {
+                            if (
+                                originalUser.residence.street === values.street
+                            ) {
+                                if (
+                                    originalUser.residence.city === values.city
+                                ) {
+                                    if (
+                                        originalUser.residence.stateProv ===
+                                        values.stateProv
+                                    ) {
+                                        if (
+                                            originalUser.residence
+                                                .postalCode ===
+                                            values.postalCode
+                                        ) {
+                                            if (
+                                                originalUser.affiliate.name ===
+                                                values.affiliateName
+                                            ) {
+                                                if (
+                                                    originalUser.affiliate
+                                                        .city ===
+                                                    values.affiliateCity
+                                                ) {
+                                                    if (
+                                                        originalUser.affiliate
+                                                            .stateProv ===
+                                                        values.affiliateStateProv
+                                                    ) {
+                                                        different = false;
+                                                    } else {
+                                                        different = true;
+                                                    }
+                                                } else {
+                                                    different = true;
+                                                }
+                                            } else {
+                                                different = true;
+                                            }
+                                        }
+                                    } else {
+                                        different = true;
+                                    }
+                                } else {
+                                    different = true;
+                                }
+                            } else {
+                                different = true;
+                            }
+                        } else {
+                            different = true;
+                        }
+                    } else {
+                        different = true;
+                    }
+                } else {
+                    different = true;
+                }
+            } else {
+                different = true;
+            }
+            if (!different) {
+                console.error('NO CHANGES DETECTED');
+                return;
+            }
+            // var newCurrentUser = { ...originalUser };
+            // put all values in new array
+
+            let newCurrentUser = {
+                ...originalUser,
+                ['firstName']: values.firstName,
+                ['lastName']: values.lastName,
+                ['email']: values.email,
+                ['phone']: values.phone,
+            };
+            let residence = {
+                ...newCurrentUser.residence,
+                street: values.street,
+                city: values.city,
+                stateProv: values.stateProv,
+                postalCode: values.postalCode,
+            };
+            newCurrentUser = {
+                ...newCurrentUser,
+                residence: residence,
+            };
+            let updatedAffiliate = {
+                ...newCurrentUser.affiliate,
+                ['name']: values.affiliateName,
+                ['city']: values.affiliateCity,
+                ['stateProv']: values.affiliateStateProv,
+            };
+            newCurrentUser = {
+                ...newCurrentUser,
+                affiliate: updatedAffiliate,
+            };
+            dispatch(updateCurrentUser(newCurrentUser));
+            // clean up newCurrent to save to DDB
+            delete newCurrentUser.jwtToken;
+            delete newCurrentUser.groups;
+            updateProfile(newCurrentUser)
+                .then((response) => {
+                    setSnackbarVisible(true);
+                })
+                .catch((err) =>
+                    console.log('error saving profile to database\n', err)
+                );
+            return;
+            // printObject('newCurrentUser', newCurrentUser);
         }
     };
     const handleAffiliationsSelectClick = () => {
@@ -604,12 +758,13 @@ const ProfileForm = (props) => {
                                                                             'email'
                                                                         )}
                                                                     />
-                                                                    {formikProps
+                                                                    {(formikProps
                                                                         .errors
                                                                         .email &&
-                                                                    formikProps
-                                                                        .touched
-                                                                        .email ? (
+                                                                        formikProps
+                                                                            .touched
+                                                                            .email) ||
+                                                                    showEmailError ? (
                                                                         <Text
                                                                             style={
                                                                                 styles.errorText
