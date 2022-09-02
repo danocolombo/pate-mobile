@@ -24,7 +24,7 @@ const RallyNewConfirmation = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const REGION = useSelector((state) => state.system.region);
-    const EVENT_REGION = useSelector((state) => state.system.eventRegion);
+    const feo = useSelector((state) => state.system);
     const user = useSelector((state) => state.users.currentUser);
     const tmp = useSelector((state) => state.rallies.tmpRally);
     const systemRegion = useSelector((state) => state.system.region);
@@ -48,8 +48,8 @@ const RallyNewConfirmation = () => {
     rallyBasic.coordinator = me;
 
     // rallyBasic.region = process.env.REGION;
-    rallyBasic.region = REGION;
-    rallyBasic.eventRegion = EVENT_REGION;
+    rallyBasic.region = feo.region;
+    rallyBasic.eventRegion = feo.appName;
 
     let strippedPhone;
     // printObject('REC:52 tmp:', tmp);
@@ -151,17 +151,25 @@ const RallyNewConfirmation = () => {
                 });
             } else {
                 //todo: need DDB call
-                putRally(newRally, user).then((response) => {
-                    console.log('submitted rally', newRally);
-                    dispatch(addNewRally(response.Item));
-                });
-                Analytics.record({
-                    name: 'eventAdded',
-                    attributes: { userId: user.uid, body: newRally },
-                    metrics: {
-                        eventAdded: 1,
-                    },
-                });
+                putRally(newRally, user, feo.appName, feo.eventRegion)
+                    .then((response) => {
+                        console.log('submitted rally', newRally);
+                        dispatch(addNewRally(response.Item));
+                    })
+                    .catch((error) => {
+                        console.log('putRally error\n', error);
+                    });
+                try {
+                    Analytics.record({
+                        name: 'eventAdded',
+                        attributes: { userId: user.uid, body: newRally },
+                        metrics: {
+                            eventAdded: 1,
+                        },
+                    });
+                } catch (error) {
+                    console.log('Analytics error:\n', error);
+                }
             }
             navigation.navigate('Serve', null);
         }

@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.primary,
     },
     cardBackGroundNotMine: {
-        backgroundColor: Colors.secondary,
+        backgroundColor: Colors.primary500,
     },
     cardRow: {
         flexDirection: 'row',

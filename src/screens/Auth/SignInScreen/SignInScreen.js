@@ -220,6 +220,9 @@ const SignInScreen = () => {
                             dispatch(updateUserRole('guest'));
                         }
                         dispatch(setRegion(response.body[0].regions[0]));
+                        dispatch(
+                            setEventRegion(response.body[0].eventRegions[0])
+                        );
                     } else {
                         console.log(
                             'response.statusCode:',

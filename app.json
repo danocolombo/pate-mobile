@@ -1,0 +1,9 @@
+{
+    "expo": {
+        "name": "FEO",
+        "slug": "FortsonEventOrganizer",
+        "ios": {
+            "bundleIdentifier": "guru.fortson.eor"
+        }
+    }
+}

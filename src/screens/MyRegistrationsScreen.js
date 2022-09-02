@@ -208,7 +208,7 @@ const MyRegistrationsScreen = () => {
                                                                 registration={r}
                                                                 oldStyle={{
                                                                     backgroundColor:
-                                                                        Colors.secondaryDark,
+                                                                        Colors.primary500,
                                                                 }}
                                                             />
                                                         </View>

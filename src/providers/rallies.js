@@ -90,7 +90,7 @@ export async function updateRally(rally, user) {
     var returnValue = res.data;
     return returnValue;
 }
-export async function putRally(rally, user) {
+export async function putRally(rally, user, affiliate, eventRegion) {
     // this function
     // 1. if no eventCompKey, create one
     // 2.
@@ -102,9 +102,11 @@ export async function putRally(rally, user) {
 
     //default rally with user info
     // printObject('rally=======in putRally', rally);
-    const EVENT_REGION = useSelector((state) => state.system.eventRegion);
-    const REGION = useSelector((state) => state.system.region);
+    //const EVENT_REGION = useSelector((state) => state.system.eventRegion);
+    //const REGION = useSelector((state) => state.system.region);
     const readyEvent = {
+        affiliate: affiliate,
+        eventRegion: eventRegion,
         meal: {
             startTime: rally?.meal?.startTime ? rally.meal.startTime : '',
             mealCount: rally?.meal?.count ? rally.meal.count : 0,
@@ -120,8 +122,8 @@ export async function putRally(rally, user) {
             email: rally?.contact?.email ? rally.contact.email : '',
         },
         status: rally?.status ? rally.status : 'draft',
-        eventRegion: rally?.eventRegion ? rally.eventRegion : EVENT_REGION,
-        region: rally?.region ? rally.region : REGION,
+        // eventRegion: rally?.eventRegion ? rally.eventRegion : EVENT_REGION,
+        region: rally?.region ? rally.region : eventRegion,
         message: rally?.eventMessage ? rally.eventMessage : '',
         stateProv: rally?.stateProv ? rally.stateProv : '',
         coordinator: {
