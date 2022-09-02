@@ -10,6 +10,7 @@ import {
     View,
     Text,
     StyleSheet,
+    Platform,
     Button,
     Modal,
     ScrollView,
@@ -77,8 +78,13 @@ const RallyDetails = ({ rallyId }) => {
     const [registrations, setRegistrations] = useState([]);
     // create the Edit button in upper right navigation
     useLayoutEffect(() => {
+        let headerLabelColor = '';
+        if (Platform.OS === 'ios') {
+            headerLabelColor = 'white';
+        }
         navigation.setOptions({
             title: feo.appName,
+            headerBackTitle: 'Back',
             headerRight: () => (
                 <Button
                     onPress={() =>
@@ -87,7 +93,7 @@ const RallyDetails = ({ rallyId }) => {
                             stage: 1,
                         })
                     }
-                    // color='white'
+                    color={headerLabelColor}
                     title='Edit'
                 />
             ),

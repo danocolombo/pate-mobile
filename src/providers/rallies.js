@@ -108,6 +108,7 @@ export async function putRally(rally, user, affiliate, eventRegion) {
         affiliate: affiliate,
         eventRegion: eventRegion,
         meal: {
+            offered: rally?.meal?.offered ? rally?.meal?.offered : false,
             startTime: rally?.meal?.startTime ? rally.meal.startTime : '',
             mealCount: rally?.meal?.count ? rally.meal.count : 0,
             cost: rally?.meal?.cost ? rally.meal.cost : '',
@@ -125,7 +126,7 @@ export async function putRally(rally, user, affiliate, eventRegion) {
         // eventRegion: rally?.eventRegion ? rally.eventRegion : EVENT_REGION,
         region: rally?.region ? rally.region : eventRegion,
         message: rally?.eventMessage ? rally.eventMessage : '',
-        stateProv: rally?.stateProv ? rally.stateProv : '',
+        stateProv: rally?.stateProv ? rally.stateProv.toUpperCase() : '',
         coordinator: {
             name: rally?.coordinator?.name
                 ? rally.coordinator.name

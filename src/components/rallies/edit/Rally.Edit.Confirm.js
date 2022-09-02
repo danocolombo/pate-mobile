@@ -81,7 +81,7 @@ const RallyNewConfirmation = () => {
     // printObject('CONFIRMING tmpRally:', rally);
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
-        printObject('S.R.E.REC:82-->newRally', newRally);
+        // printObject('S.R.E.REC:82-->newRally', newRally);
         if (newRally?.contact?.phone) {
             // need value either blank or pateDate
             let valueToUse;
@@ -125,6 +125,7 @@ const RallyNewConfirmation = () => {
             }
         } else {
             if (newRally?.uid) {
+                // printObject('REC:128-->update(DDB):', newRally);
                 //   UPDATE EXISTING EVENT
                 let obj = {
                     operation: 'updateEvent',
@@ -138,7 +139,7 @@ const RallyNewConfirmation = () => {
                 axios
                     .post(api2use, body, CONFIG)
                     .then((response) => {
-                        //dispatch(updateRally(response.data.Item));
+                        // printObject('REC:142-->update(REDUX):', newRally);
                         dispatch(updateRally(newRally));
                     })
                     .catch((err) => {
@@ -150,14 +151,16 @@ const RallyNewConfirmation = () => {
                     metrics: { eventUpdated: 1 },
                 });
             } else {
+                // printObject('REC:154-->new(DDB):', newRally);
                 //todo: need DDB call
                 putRally(newRally, user, feo.appName, feo.eventRegion)
                     .then((response) => {
-                        console.log('submitted rally', newRally);
+                        //need to pass response.Item because we get UID back.
+                        // printObject('REC:158-->update(REDUX):', response.Item);
                         dispatch(addNewRally(response.Item));
                     })
                     .catch((error) => {
-                        console.log('putRally error\n', error);
+                        console.log('REC:162--->putRally error\n', error);
                     });
                 try {
                     Analytics.record({

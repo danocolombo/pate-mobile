@@ -7,6 +7,7 @@ import { Subheading, Surface } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import EventListCard from '../ui/EventListCard';
 import RallyLocationInfo from '../rallies/info/Rally.Location.Info';
+import RallyLogisticsInfo from '../rallies/info/Rally.Logistics.Info';
 import { deleteRally } from '../../features/rallies/ralliesSlice';
 import CustomButton from '../ui/CustomButton';
 import { Pressable } from 'react-native';
@@ -105,7 +106,15 @@ const ServeMyRallies = () => {
                         <Text style={styles.modalTitle}>
                             Confirm You Want To Delete
                         </Text>
-                        <RallyLocationInfo rally={rally} />
+                        <View>
+                            <RallyLocationInfo rally={rally} />
+                        </View>
+                        <View>
+                            <RallyLogisticsInfo
+                                rally={rally}
+                                customStyle={{ paddingVertical: 10 }}
+                            />
+                        </View>
                     </View>
                     <View style={styles.modalButtonContainer}>
                         <View style={styles.modalButtonWrapper}>
@@ -149,7 +158,7 @@ const ServeMyRallies = () => {
                 }}
             >
                 <View>
-                    <Text></Text>
+                    <Text> </Text>
                 </View>
                 <View style={styles.screenHeader}>
                     <Text style={styles.screenHeaderText}>Your Events</Text>
@@ -267,6 +276,7 @@ const styles = StyleSheet.create({
     modalSurface: {
         marginTop: 80,
         marginHorizontal: 10,
+
         alignItems: 'center',
         justifyContent: 'center',
         elevation: 5,

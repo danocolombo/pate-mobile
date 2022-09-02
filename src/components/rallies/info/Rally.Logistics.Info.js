@@ -3,11 +3,13 @@ import React from 'react';
 import { Surface, Headline } from 'react-native-paper';
 import { Colors } from '../../../constants/colors';
 import { convertPateDate, convertPateTime } from '../../../utils/date';
-const RallyLogisticsInfo = ({ rally }) => {
+const RallyLogisticsInfo = ({ rally, customStyle }) => {
     return (
         <>
             <View style={styles.rootContainer}>
-                <Surface style={[styles.surface, { elevation: 5 }]}>
+                <Surface
+                    style={[styles.surface, { elevation: 5 }, customStyle]}
+                >
                     <View>
                         <Headline
                             style={{
