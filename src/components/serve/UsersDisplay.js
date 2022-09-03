@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import UsersList from './UsersList';
-import { getAllProfiles, getProfile } from '../../providers/users';
+import { getAffiliateProfiles } from '../../providers/users';
 import { loadProfiles } from '../../features/profiles/profilesSlice';
 import { Colors } from '../../constants/colors';
 import { printObject } from '../../utils/helpers';
@@ -25,9 +25,12 @@ const UsersDisplay = (props) => {
     const [regionUsers, setRegionUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const getProfileData = async () => {
-        const allProfilesData = await getAllProfiles();
+        const allProfilesData = await getAffiliateProfiles(feo.affiliation);
+        printObject('UD:33-->allProfilesData:', allProfilesData);
         // printObject('PL:11-->allProfileData', allProfilesData);
         if (allProfilesData.statusCode === 200) {
+            console.log('back..');
+
             const allTheProfiles = allProfilesData.profiles;
             setAllProfiles(allProfilesData.profiles);
             dispatch(loadProfiles(allTheProfiles));
@@ -65,7 +68,7 @@ const UsersDisplay = (props) => {
         }
         return;
     };
-    const getAffiliateProfiles = async () => {
+    const getTheAffiliateProfiles = async () => {
         let users = [];
         profilesData.map((a) => {
             if (a.affiliations) {
@@ -102,8 +105,8 @@ const UsersDisplay = (props) => {
         setRegionLeaders(userLeaders);
     };
     useEffect(() => {
-        getAffiliateProfiles().then(() =>
-            console.log('getAffiliateProfiles DONE')
+        getTheAffiliateProfiles().then(() =>
+            console.log('getTheAffiliateProfiles DONE')
         );
     }, [props, isFocused]);
 

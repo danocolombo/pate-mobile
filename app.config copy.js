@@ -1,7 +1,7 @@
 export default {
     name: 'FEO',
     slug: 'FortsonEventOrganizer',
-    version: '1.0.16',
+    version: '1.0.17',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'light',
