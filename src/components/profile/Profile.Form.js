@@ -33,6 +33,7 @@ import {
 import PersonalHeader from './personalHeader';
 import { updateProfile } from '../../providers/users';
 import { getAffiliate } from '../../providers/system';
+import { clearLeadersAndGuests } from '../../features/profiles/profilesSlice';
 import { Colors } from '../../constants/colors';
 import {
     printObject,
@@ -295,6 +296,7 @@ const ProfileForm = (props) => {
                     // return;
                 }
             });
+            dispatch(clearLeadersAndGuests());
         } else {
             //   AFFILIATE NOT CHANGED, CHECK user details
             setShowPhoneError(false);

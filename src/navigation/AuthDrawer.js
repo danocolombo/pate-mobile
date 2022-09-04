@@ -9,6 +9,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import PateSignOut from '../screens/PateSignOut';
 import MyRegistrationsScreen from '../screens/MyRegistrationsScreen';
 import LegalScreen from '../screens/LegalScreen';
+import TeamScreen from '../screens/TeamScreen';
 import ServeConfig from './ServeConfig';
 import { Colors } from '../constants/colors';
 import { printObject } from '../utils/helpers';
@@ -18,6 +19,13 @@ const Stack = createNativeStackNavigator();
 const AuthDrawer = (navigation) => {
     const user = useSelector((state) => state.users.currentUser);
     // printObject('PF:17-->user', user);
+    let manager = false;
+    if (
+        user?.affiliations?.active?.role === 'lead' ||
+        user?.affiliations?.active?.role === 'superuser'
+    ) {
+        manager = true;
+    }
     let patron = false;
     if (
         user?.affiliations?.active?.role === 'rep' ||
@@ -128,6 +136,25 @@ const AuthDrawer = (navigation) => {
                     tabBarActiveTintColor: 'white',
                 })}
             />
+            {manager ? (
+                <Drawer.Screen
+                    name='Team'
+                    component={TeamScreen}
+                    options={({ navigation }) => ({
+                        title: 'P8 Rallies',
+                        drawerLabel: 'Team',
+                        headerStyle: {
+                            backgroundColor: Colors.primary,
+                        },
+
+                        headerTintColor: 'white',
+                        tabBarStyle: {
+                            backgroundColor: Colors.primary,
+                        },
+                        tabBarActiveTintColor: 'white',
+                    })}
+                />
+            ) : null}
             <Stack.Screen
                 name='Legal'
                 component={LegalScreen}
