@@ -61,7 +61,7 @@ function TeamScreen(props) {
             console.log('guests found');
         }
         setIsLoading(false);
-    }, [feo.affiliations]);
+    }, [props, isFocused]);
     if (isLoading) {
         return <ActivityIndicator />;
     }
