@@ -42,6 +42,19 @@ export const profilesSlice = createSlice({
             state.allProfiles = updates;
             return state;
         },
+        updateAndMoveProfile: (state, action) => {
+            if (action.payload.target === 'rep') {
+                console.log('move to leaders');
+                printObject('newProfile', action.payload.newProfile);
+                //todo remove from guests
+                //todo add to leaders
+            } else {
+                console.log('move to guest');
+                printObject('newProfile', action.payload.newProfile);
+                //todo remove from leaders
+                //todo add to guests
+            }
+        },
         loadLeaders: (state, action) => {
             state.leaders = action.payload;
             return state;
@@ -91,6 +104,7 @@ export const {
     loadLeaders,
     loadProfiles,
     updateProfile,
+    updateAndMoveProfile,
     logout,
 } = profilesSlice.actions;
 

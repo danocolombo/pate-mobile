@@ -41,7 +41,7 @@ const UsersList = (props) => {
                                           key={p.uid}
                                           onPress={() =>
                                               navigation.navigate(
-                                                  'UserProfile',
+                                                  'UserPermissionsSet',
                                                   {
                                                       profile: p,
                                                   }

@@ -3,7 +3,7 @@ import { View, Text, ImageBackground, StyleSheet } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-import Profiles from '../components/team/profiles';
+import Members from '../components/team/Members';
 import { getAffiliateProfiles } from '../providers/users';
 import { loadGuests, loadLeaders } from '../features/profiles/profilesSlice';
 import { printObject } from '../utils/helpers';
@@ -71,10 +71,10 @@ function TeamScreen(props) {
                 source={require('../components/images/background.png')}
                 style={styles.bgImageContainer}
             >
-                <View>
-                    <Text>Team Info</Text>
+                <View style={styles.screenHeader}>
+                    <Text style={styles.screenHeaderText}>Members</Text>
                 </View>
-                <Profiles />
+                <Members />
             </ImageBackground>
         </>
     );
@@ -85,5 +85,13 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
+    },
+    screenHeader: {
+        alignItems: 'center',
+    },
+    screenHeaderText: {
+        paddingVertical: 20,
+        fontSize: 30,
+        fontWeight: 'bold',
     },
 });

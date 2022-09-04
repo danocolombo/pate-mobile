@@ -16,7 +16,7 @@ import profilesSlice, {
 import { Colors } from '../../constants/colors';
 import { printObject } from '../../utils/helpers';
 
-const Profiles = (props) => {
+const Members = (props) => {
     const [isLoading, setIsLoading] = useState(true);
     const leaders = useSelector((state) => state.profiles.leaders);
     const guests = useSelector((state) => state.profiles.guests);
@@ -55,7 +55,7 @@ const Profiles = (props) => {
     );
 };
 
-export default Profiles;
+export default Members;
 
 const styles = StyleSheet.create({
     header: {

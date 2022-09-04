@@ -28,7 +28,8 @@ import SignUpScreen from '../screens/Auth/SignUpScreen';
 import ConfirmEmailScreen from '../screens/Auth/ConfirmEmailScreen';
 import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
 import NewPasswordScreen from '../screens/Auth/NewPasswordScreen';
-import UserProfileScreen from '../screens/Serve/UserProfileScreen';
+import UserPermissions from '../screens/UserPermissionsScreen';
+import UserPermissionsSet from '../screens/UserPermissionsSetScreen';
 
 import AuthDrawer from './AuthDrawer';
 import { Auth, Hub } from 'aws-amplify';
@@ -75,8 +76,8 @@ function PateStack() {
                 })}
             />
             <Stack.Screen
-                name='UserProfile'
-                component={UserProfileScreen}
+                name='UserPermissions'
+                component={UserPermissions}
                 options={({ navigation }) => ({
                     title: 'FEO',
                     headerStyle: {
@@ -86,7 +87,18 @@ function PateStack() {
                     headerBackTitle: 'Back',
                 })}
             />
-
+            <Stack.Screen
+                name='UserPermissionsSet'
+                component={UserPermissionsSet}
+                options={({ navigation }) => ({
+                    title: 'FEO',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                    headerBackTitle: 'Back',
+                })}
+            />
             <Stack.Screen
                 name='RallyRegister'
                 component={RegisterScreen}
