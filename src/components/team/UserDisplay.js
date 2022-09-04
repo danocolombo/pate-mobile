@@ -74,106 +74,17 @@ const UserDisplay = ({ profile }) => {
             );
 
             //   update DDB p8Users with
-            // DDBUpdateProfile(newProfile)
-            //     .then((response) => {
-            //         console.log('DDBUpdateProfile successful');
-            //     })
-            //     .catch((err) =>
-            //         console.log('Error trying to update profile in DDB\n', err)
-            //     );
+            DDBUpdateProfile(newProfile)
+                .then((response) => {
+                    printObject('DDB response:', response);
+                    console.log('DDBUpdateProfile successful');
+                })
+                .catch((err) =>
+                    console.log('Error trying to update profile in DDB\n', err)
+                );
         }
         navigate.goBack();
     };
-    // const OLDhandleStatusChange = () => {
-    //     let originalProfile = profile;
-    //     let newProfile = { ...profile };
-    //     printObject('UD:36originalProfile:', originalProfile);
-    //     printObject('UD:37---newProfile:', newProfile);
-    //     console.log('UD38:--newStatus:', newStatus);
-    //     console.log('UD:39--userStatus:', userStatus);
-    //     if (newStatus !== userStatus) {
-    //         console.log('1 =======================');
-    //         console.log('no match');
-    //         if (newStatus === 'leader') {
-    //             console.log('2 =======================');
-    //             let affiliations = {
-    //                 options: profile.affiliations.options,
-    //                 active: {
-    //                     value: profile.affiliations.active.value,
-    //                     label: profile?.affiliations.active.label,
-    //                     role: 'rep',
-    //                 },
-    //             };
-    //             console.log('3 =======================');
-    //             newProfile = {
-    //                 ...profile,
-    //                 affiliations,
-    //                 role: 'rep',
-    //             };
-
-    //             //   add stateRep to registration in REDUX
-    //             console.log('4 =======================');
-    //             printObject('UD:58-->newProfile (rep):', newProfile);
-    //             dispatch(updateProfile(newProfile));
-    //             //   update DDB p8Users with
-    //             DDBUpdateProfile(newProfile)
-    //                 .then((response) => {
-    //                     console.log('DDBUpdateProfile successful');
-    //                 })
-    //                 .catch((err) =>
-    //                     console.log(
-    //                         'Error trying to update profile in DDB\n',
-    //                         err
-    //                     )
-    //                 );
-    //         } else {
-    //             console.log('A =======================');
-    //             let affiliations = {
-    //                 options: profile.affiliations.options,
-    //                 active: {
-    //                     value: profile.affiliations.active.value,
-    //                     label: profile?.affiliations.active.label,
-    //                     role: 'guest',
-    //                 },
-    //             };
-    //             console.log('B =======================');
-    //             newProfile = {
-    //                 ...profile,
-    //                 affiliations,
-    //                 role: 'guest',
-    //             }; // updating as GUEST
-    //             console.log('C =======================');
-    //             delete newProfile['stateRep'];
-    //             console.log('D =======================');
-    //             newProfile['role'] = 'guest';
-    //             console.log('E =======================');
-    //             printObject('UD:92-->newProfile (guest):', newProfile);
-    //             //   remove stateRep from regisrations in REDUX
-    //             dispatch(updateProfile(newProfile));
-    //             //   update DDB by removing the stateRep info
-    //             DDBUpdateProfile(newProfile)
-    //                 .then((response) => {
-    //                     console.log('DDBUpdateProfile successful');
-    //                 })
-    //                 .catch((err) =>
-    //                     console.log(
-    //                         'Error trying to update profile in DDB\n',
-    //                         err
-    //                     )
-    //                 );
-    //         }
-    //     }
-    //     console.log(
-    //         'Setting ',
-    //         profile.uid,
-    //         ' status to ',
-    //         newStatus,
-    //         ' was ',
-    //         userStatus
-    //     );
-
-    //     navigate.goBack();
-    // };
 
     return (
         <>

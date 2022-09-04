@@ -43,16 +43,26 @@ export const profilesSlice = createSlice({
             return state;
         },
         updateAndMoveProfile: (state, action) => {
+            // printObject('action', action);
             if (action.payload.target === 'rep') {
-                console.log('move to leaders');
-                printObject('newProfile', action.payload.newProfile);
-                //todo remove from guests
-                //todo add to leaders
+                const reducedGuests = state.guests.filter(
+                    (g) => g.uid !== action.payload.newProfile.uid
+                );
+                state.guests = reducedGuests;
+                const before = state.leaders;
+                const newProfile = action.payload.newProfile;
+                before.push(newProfile);
+                state.leaders = before;
             } else {
-                console.log('move to guest');
-                printObject('newProfile', action.payload.newProfile);
-                //todo remove from leaders
-                //todo add to guests
+                const reducedLeaders = state.leaders.filter(
+                    (l) => l.uid !== action.payload.newProfile.uid
+                );
+                state.leaders = reducedLeaders;
+
+                const before = state.guests;
+                const newProfile = action.payload.newProfile;
+                before.push(newProfile);
+                state.guests = before;
             }
         },
         loadLeaders: (state, action) => {
