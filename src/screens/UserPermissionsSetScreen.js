@@ -29,7 +29,7 @@ const UserPermissionsSet = ({ route }) => {
             <View style={styles.rootContainer}>
                 <View style={styles.screenHeader}>
                     <Text style={styles.screenHeaderText}>
-                        User Permissions SET
+                        Team Definitions
                     </Text>
                 </View>
                 <View style={styles.userWrapper}>

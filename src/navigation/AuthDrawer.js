@@ -142,7 +142,7 @@ const AuthDrawer = (navigation) => {
                     component={TeamScreen}
                     options={({ navigation }) => ({
                         title: 'P8 Rallies',
-                        drawerLabel: 'Team',
+                        drawerLabel: 'Members',
                         headerStyle: {
                             backgroundColor: Colors.primary,
                         },

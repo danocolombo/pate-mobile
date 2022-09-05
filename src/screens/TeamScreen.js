@@ -50,15 +50,15 @@ function TeamScreen(props) {
         setIsLoading(true);
 
         if (leaderList.length < 1) {
-            console.log('no leaders');
+            //console.log('no leaders');
         } else {
-            console.log('leaders found');
+            //console.log('leaders found');
         }
         if (guestList.length < 1) {
-            console.log('no guests');
+            //console.log('no guests');
             getProfiles();
         } else {
-            console.log('guests found');
+            //console.log('guests found');
         }
         setIsLoading(false);
     }, [props, isFocused]);

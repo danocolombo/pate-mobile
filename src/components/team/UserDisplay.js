@@ -16,30 +16,35 @@ import UserDisplayDetailsModal from './UserDisplayDetailsModal';
 const UserDisplay = ({ profile }) => {
     const dispatch = useDispatch();
     const navigate = useNavigation();
+    const feo = useSelector((state) => state.system);
     const user = useSelector((state) => state.users.currentUser);
     const [showMoreDetail, setShowMoreDetail] = useState(false);
-    // printObject('UD:18--user:', user);
-    printObject('UD:19--profile:', profile);
 
-    const [userStatus, setUserStatus] = useState(
-        profile?.affiliations?.active?.role === 'rep' ||
-            profile?.affiliations?.active?.role === 'lead'
-            ? 'leader'
-            : 'guest'
-    );
+    const [userStatus, setUserStatus] = useState('');
     const [newStatus, setNewStatus] = useState();
     const statusValues = ['guest', 'leader'];
-    useEffect(() => {}, []);
+    useEffect(() => {
+        let role = null;
+        const ref = profile.affiliations.options.filter(
+            (o) => o.value === feo.affiliation
+        );
+        role = ref[0].role;
+        if (role === 'rep') {
+            role = 'leader';
+        }
+        console.log('ROLE:', role);
+        setUserStatus(role);
+    }, []);
     const handleDismiss = () => {
         setShowMoreDetail(false);
     };
     const handleStatusChange = () => {
         let originalProfile = profile;
         let newProfile = { ...profile };
-        printObject('UD:36originalProfile:', originalProfile);
-        printObject('UD:37---newProfile:', newProfile);
-        console.log('UD38:--newStatus:', newStatus);
-        console.log('UD:39--userStatus:', userStatus);
+        // printObject('UD:36originalProfile:', originalProfile);
+        // printObject('UD:37---newProfile:', newProfile);
+        // console.log('UD38:--newStatus:', newStatus);
+        // console.log('UD:39--userStatus:', userStatus);
 
         let newProfileType = '';
         if (newStatus !== userStatus) {
@@ -48,14 +53,27 @@ const UserDisplay = ({ profile }) => {
             } else {
                 newProfileType = 'guest';
             }
+            //todo == need to update the options role for feo.affiliation
+
+            //todo == need to update active if feo.affiliation
+            let origActive = profile.affiliations.active;
+            if (origActive.value === feo.affiliation) {
+                origActive = { ...origActive, role: newProfileType };
+                origActive.role = newProfileType;
+            }
+            const optionUpdates = profile.affiliations.options.map((o) => {
+                if (o.value === feo.affiliation) {
+                    let newValues = { ...o, role: newProfileType };
+                    return newValues;
+                }
+                return o;
+            });
+
             let affiliations = {
-                options: profile.affiliations.options,
-                active: {
-                    value: profile.affiliations.active.value,
-                    label: profile?.affiliations.active.label,
-                    role: newProfileType,
-                },
+                options: optionUpdates,
+                active: origActive,
             };
+
             newProfile = {
                 ...profile,
                 affiliations,
@@ -76,7 +94,7 @@ const UserDisplay = ({ profile }) => {
             //   update DDB p8Users with
             DDBUpdateProfile(newProfile)
                 .then((response) => {
-                    printObject('DDB response:', response);
+                    // printObject('DDB response:', response);
                     console.log('DDBUpdateProfile successful');
                 })
                 .catch((err) =>

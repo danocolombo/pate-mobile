@@ -281,7 +281,7 @@ const ProfileForm = (props) => {
                     dbProfile = { ...dbProfile, role: originalUser.role };
                     dbProfile = { ...dbProfile, region: originalUser.region };
                     // printObject('PF:156-->originalUser', originalUser);
-                    printObject('PF:261-->dbProfile', dbProfile);
+                    // printObject('PF:261-->dbProfile', dbProfile);
 
                     updateProfile(dbProfile)
                         .then((response) => {
