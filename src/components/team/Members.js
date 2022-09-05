@@ -26,8 +26,8 @@ const Members = (props) => {
         </View>;
     }
     return (
-        <View>
-            <ScrollView>
+        <View style={{ flex: 1 }}>
+            <ScrollView style={{ marginBottom: 10 }}>
                 <UsersList
                     data={leaders}
                     key={1}

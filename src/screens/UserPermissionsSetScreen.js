@@ -28,9 +28,7 @@ const UserPermissionsSet = ({ route }) => {
         >
             <View style={styles.rootContainer}>
                 <View style={styles.screenHeader}>
-                    <Text style={styles.screenHeaderText}>
-                        Team Definitions
-                    </Text>
+                    <Text style={styles.screenHeaderText}>User Role</Text>
                 </View>
                 <View style={styles.userWrapper}>
                     <UserDisplay profile={profile} />

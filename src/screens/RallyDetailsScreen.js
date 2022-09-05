@@ -8,6 +8,7 @@ const RallyDetailsScreen = ({ route, navigation }) => {
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,
+            headerBackTitle: 'Back',
         });
     }, [navigation, feo]);
     return (

@@ -12,6 +12,7 @@ const RegisterScreen = (props) => {
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,
+            headerBackTitle: 'Back',
         });
     }, [navigation, feo]);
     // printObject('RS:8-->props', props);

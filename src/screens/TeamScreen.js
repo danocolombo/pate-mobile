@@ -39,11 +39,23 @@ function TeamScreen(props) {
                 });
             }
         });
+        //   sort function on firstName
+        function compare_firstName(a, b) {
+            if (a.firstName < b.firstName) {
+                return -1;
+            }
+            if (a.firstName > b.firstName) {
+                return 1;
+            }
+            return 0;
+        }
+        guests.sort(compare_firstName);
         dispatch(loadGuests(guests));
+        leaders.sort(compare_firstName);
         dispatch(loadLeaders(leaders));
-        console.log('leaders:', leaders.length);
-        console.log('guests:', guests.length);
-        console.log('total:', all.profiles.length);
+        // console.log('leaders:', leaders.length);
+        // console.log('guests:', guests.length);
+        // console.log('total:', all.profiles.length);
         // all with have users with affiliations.option[x].value === feo.affiliation
     };
     useEffect(() => {
