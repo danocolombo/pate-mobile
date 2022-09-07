@@ -5,6 +5,7 @@ import CustomButton from '../../../components/ui/Auth/CustomButton/CustomButton'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { Auth } from 'aws-amplify';
+import { printObject } from '../../../utils/helpers';
 const ForgotPasswordScreen = () => {
     const route = useRoute();
     const { control, handleSubmit } = useForm({
@@ -19,7 +20,17 @@ const ForgotPasswordScreen = () => {
             console.log('forgotPassword response', response);
             navigation.navigate('NewPassword', { username });
         } catch (e) {
-            Alert.alert('Yikes', e.message);
+            switch (e.code) {
+                case 'UserNotFoundException':
+                    Alert.alert(
+                        'Username not found.\nMake sure to provide your username, not your email.'
+                    );
+                    break;
+
+                default:
+                    Alert.alert('Yikes', e.message);
+                    break;
+            }
         }
     };
 
@@ -31,9 +42,7 @@ const ForgotPasswordScreen = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.root}>
                 <Text style={styles.title}>Reset your password</Text>
-                <View>
-                    <Text>WHAT?</Text>
-                </View>
+
                 <CustomInput
                     name='username'
                     control={control}

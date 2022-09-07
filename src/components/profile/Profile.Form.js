@@ -5,11 +5,19 @@ import {
     View,
     Text,
     TouchableWithoutFeedback,
+    TouchableOpacity,
     Keyboard,
     ScrollView,
     Modal,
 } from 'react-native';
-import { List, Surface, withTheme, Snackbar, FAB } from 'react-native-paper';
+import {
+    List,
+    Surface,
+    Button,
+    withTheme,
+    Snackbar,
+    FAB,
+} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import DropDown from 'react-native-paper-dropdown';
@@ -31,6 +39,7 @@ import {
     updateAffiliation,
 } from '../../features/system/systemSlice';
 import PersonalHeader from './personalHeader';
+
 import { updateProfile } from '../../providers/users';
 import { getAffiliate } from '../../providers/system';
 import { clearLeadersAndGuests } from '../../features/profiles/profilesSlice';
@@ -45,6 +54,7 @@ import { Ionicons } from '@expo/vector-icons';
 // import { select } from '@react-native-material/core';
 // import { or } from 'ramda';
 import { original } from '@reduxjs/toolkit';
+
 // import { validate } from 'react-native-web/dist/cjs/exports/StyleSheet/validate';
 
 // create validation schema for yup to pass to formik
@@ -456,6 +466,11 @@ const ProfileForm = (props) => {
     const handleAffiliationsSelectClick = () => {
         console.log('PF:187-->affiliationSelected:', affiliationSelected);
     };
+    const handleDeleteRequest = () => {
+        console.log('PF:461--> DELETE REQUESTED');
+        navigation.navigate('DeleteAccount', null);
+        return;
+    };
     // const dispatch = useDispatch();
     return (
         <>
@@ -539,7 +554,7 @@ const ProfileForm = (props) => {
                 </Surface>
             </Modal>
             <PersonalHeader firstName={fName} lastName={lName} />
-            <View>
+            <View style={{ flex: 1 }}>
                 <ScrollView>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View>
@@ -1461,6 +1476,26 @@ const ProfileForm = (props) => {
                         </View>
                     </TouchableWithoutFeedback>
                 </ScrollView>
+            </View>
+            <View style={{ marginHorizontal: 10, alignItems: 'center' }}>
+                <TouchableOpacity
+                    key={1}
+                    onPress={() => navigation.navigate('DeleteAccount', null)}
+                    style={({ pressed }) => pressed && styles.pressed}
+                >
+                    <CustomButton
+                        title='DELETE ACCOUNT'
+                        graphic={null}
+                        cbStyles={{
+                            backgroundColor: Colors.critical,
+                            width: '80%',
+                            paddingVertical: 3,
+                            color: 'white',
+                        }}
+                        txtColor='white'
+                        onPress={() => handleDeleteRequest()}
+                    />
+                </TouchableOpacity>
             </View>
             <Snackbar
                 visible={snackbarVisible}

@@ -104,6 +104,12 @@ export const usersSlice = createSlice({
             state.registrations = [];
             return state;
         },
+        terminate: (state) => {
+            // state.currentUser = {};
+            state.currentUser.jwtToken = '';
+            // state.registrations = [];
+            return state;
+        },
     },
 });
 
@@ -118,6 +124,7 @@ export const {
     addNewRegistration,
     updateAffiliationActive,
     updateAffiliateActiveAndReference,
+    terminate,
     logout,
 } = usersSlice.actions;
 

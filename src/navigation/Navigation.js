@@ -22,7 +22,9 @@ import RallyDetailScreen from '../screens/RallyDetailsScreen';
 import RallyEditFlowScreen from '../screens/RallyEditFlowScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import RegistrationScreen from '../screens/RegistrationScreen';
+import RemoveUser from '../screens/RemoveUser';
 import ErrorScreen from '../screens/ErrorScreen';
+import DeleteAccountScreen from '../screens/DeleteAccount';
 import SignInScreen from '../screens/Auth/SignInScreen';
 import SignUpScreen from '../screens/Auth/SignUpScreen';
 import ConfirmEmailScreen from '../screens/Auth/ConfirmEmailScreen';
@@ -78,6 +80,18 @@ function PateStack() {
             <Stack.Screen
                 name='UserPermissions'
                 component={UserPermissions}
+                options={({ navigation }) => ({
+                    title: 'FEO',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                    headerBackTitle: 'Back',
+                })}
+            />
+            <Stack.Screen
+                name='DeleteAccount'
+                component={DeleteAccountScreen}
                 options={({ navigation }) => ({
                     title: 'FEO',
                     headerStyle: {
@@ -148,6 +162,17 @@ function PateStack() {
             <Stack.Screen
                 name='ErrorMsg'
                 component={ErrorScreen}
+                options={({ navigation }) => ({
+                    title: 'FEO',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
+            <Stack.Screen
+                name='RemoveUser'
+                component={RemoveUser}
                 options={({ navigation }) => ({
                     title: 'FEO',
                     headerStyle: {
