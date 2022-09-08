@@ -12,7 +12,7 @@ import {
     Dimensions,
     ActivityIndicator,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import MapView, {
     Callout,
     Marker,
@@ -26,8 +26,10 @@ import { getGeoCode } from '../../../providers/google';
 import CustomNavButton from '../../ui/CustomNavButton';
 import { printObject } from '../../../utils/helpers';
 
-export default function RallyLocationConfirm({ rallyId }) {
+export default function RallyLocationConfirm(props) {
+    const rallyId = props.rallyId;
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
     const [locationDefined, setLocationDefined] = useState(false);
@@ -53,10 +55,14 @@ export default function RallyLocationConfirm({ rallyId }) {
                 tmp.postalCode;
             getGeoCode(address)
                 .then((geoInfo) => {
-                    setGeoLat(geoInfo.latitude);
-                    setGeoLng(geoInfo.longitude);
-                    setPin(geoInfo);
-                    setLocationDefined(true);
+                    try {
+                        setGeoLat(geoInfo.latitude);
+                        setGeoLng(geoInfo.longitude);
+                        setPin(geoInfo);
+                        setLocationDefined(true);
+                    } catch (error) {
+                        console.log('Error decoding geoInfo\n', error);
+                    }
                 })
                 .catch((err) => {
                     Alert.alert('ERROR', 'could not get geoInfo');
@@ -71,6 +77,7 @@ export default function RallyLocationConfirm({ rallyId }) {
             setLocationDefined(true);
         }
     }, []);
+    //props, isFocused
 
     const handleNext = () => {
         let latValue = pin.latitude;
@@ -96,7 +103,7 @@ export default function RallyLocationConfirm({ rallyId }) {
     const mHeight = Dimensions.get('window').height * 0.4;
     const mWidth = Dimensions.get('window').width * 0.9;
 
-    if (!locationDefined) {
+    if (!locationDefined || !pin.latitude || !pin.longitude) {
         return <ActivityIndicator />;
     }
     return (
@@ -105,6 +112,9 @@ export default function RallyLocationConfirm({ rallyId }) {
                 source={require('../../../components/images/background.png')}
                 style={styles.bgImageContainer}
             >
+                <View>
+                    <Text>PIN: {pin.latitude}</Text>
+                </View>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.root}>
                         <ScrollView contentContainerStyle={styles.root}>
@@ -122,7 +132,8 @@ export default function RallyLocationConfirm({ rallyId }) {
                                         as needed.
                                     </Text>
                                 </View>
-                                {pin && (
+
+                                {pin && locationDefined && (
                                     <View style={styles.container}>
                                         <MapView
                                             provider={PROVIDER_GOOGLE}

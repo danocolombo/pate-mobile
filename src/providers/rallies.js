@@ -168,9 +168,9 @@ export async function putRally(rally, user, affiliate, eventRegion) {
         '#' +
         mo +
         '#' +
-        readyEvent.stateProv +
-        '#' +
         da +
+        '#' +
+        readyEvent.stateProv +
         '#' +
         readyEvent?.uid
             ? readyEvent.uid

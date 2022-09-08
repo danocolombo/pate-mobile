@@ -13,6 +13,7 @@ import {
 import { Headline } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from '@react-native-material/core';
+import { getGeoCode } from '../../../providers/google';
 import { Surface } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
@@ -66,7 +67,7 @@ export default function RallyLocationForm({ rallyId }) {
         }
     }, []);
 
-    const handleNext = (values) => {
+    const handleNext = async (values) => {
         // gather data
         // console.log('in handleNext');
         if (rally?.uid) {
