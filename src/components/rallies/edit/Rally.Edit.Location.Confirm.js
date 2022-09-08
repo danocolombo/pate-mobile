@@ -112,9 +112,6 @@ export default function RallyLocationConfirm(props) {
                 source={require('../../../components/images/background.png')}
                 style={styles.bgImageContainer}
             >
-                <View>
-                    <Text>PIN: {pin.latitude}</Text>
-                </View>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.root}>
                         <ScrollView contentContainerStyle={styles.root}>
