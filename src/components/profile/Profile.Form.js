@@ -806,7 +806,7 @@ const ProfileForm = (props) => {
                                                                                     .email}
                                                                         </Text>
                                                                     ) : null}
-                                                                    <View
+                                                                    {/* <View
                                                                         style={
                                                                             styles.labelContainer
                                                                         }
@@ -856,7 +856,7 @@ const ProfileForm = (props) => {
                                                                                 number
                                                                             </Text>
                                                                         ) : null}
-                                                                    </View>
+                                                                    </View> */}
                                                                     <View
                                                                         style={
                                                                             styles.labelContainer

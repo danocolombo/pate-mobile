@@ -43,7 +43,7 @@ const UpcomingAreaEvents = ({ locations, mapHeight, mapWidth }) => {
         <View style={styles.container}>
             <MapView
                 provider={PROVIDER_GOOGLE}
-                zoomEnabled={false}
+                zoomEnabled={true}
                 style={{ ...styles.map, width: mWidth, height: mHeight }}
                 initialRegion={{
                     latitude: 32.5334093,
