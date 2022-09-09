@@ -7,7 +7,8 @@ import {
     Modal,
     Image,
 } from 'react-native';
-
+import Constants from 'expo-constants';
+import * as Application from 'expo-application';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import CustomButton from '../components/ui/CustomButton';
@@ -23,7 +24,9 @@ export default function LandingScreen(props) {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
-
+    // const expoVersion = Constants.expoConfig.version;
+    // const feoVersion = Application.nativeBuildVersion;
+    const description = Constants.manifest.extra.feo;
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     // printObject('LS:29-->user:', user);
@@ -126,6 +129,9 @@ export default function LandingScreen(props) {
                             {user?.affiliations?.active?.region
                                 ? user?.affiliations?.active?.region
                                 : null}
+                        </Text>
+                        <Text style={{ textAlign: 'center' }}>
+                            v: {description}
                         </Text>
                     </View>
                 </Surface>
