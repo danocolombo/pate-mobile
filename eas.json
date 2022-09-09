@@ -15,7 +15,7 @@
       "env": {
         "ENV": "QA",
         "API_ENV_VALUES": "QA",
-        "AWS_API_ENDPOINT"="https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA",
+        "AWS_API_ENDPOINT": "https://j7qty6ijwg.execute-api.us-east-1.amazonaws.com/QA",
         "REGION": "us#east",
         "EVENT_REGION": "test"
       }
