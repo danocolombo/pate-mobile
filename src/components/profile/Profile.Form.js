@@ -9,6 +9,7 @@ import {
     Keyboard,
     ScrollView,
     Modal,
+    Platform,
 } from 'react-native';
 import {
     List,
@@ -112,24 +113,27 @@ const ProfileForm = (props) => {
     }, [user]);
 
     let phoneDisplayValue;
-    if (user.phone) {
-        let phoneType = getPhoneType(user.phone);
+    if (Platform.OS === 'ios') {
+        if (user.phone) {
+            let phoneType = getPhoneType(user.phone);
 
-        switch (phoneType) {
-            case 'PATE':
-                phoneDisplayValue = user.phone;
-                break;
-            case 'MASKED':
-                // console.log('PF:60 user.phone', user.phone);
-                phoneDisplayValue = createPatePhone(user.phone);
-                break;
-            default:
-                phoneDisplayValue = '';
-                break;
+            switch (phoneType) {
+                case 'PATE':
+                    phoneDisplayValue = user.phone;
+                    break;
+                case 'MASKED':
+                    // console.log('PF:60 user.phone', user.phone);
+                    phoneDisplayValue = createPatePhone(user.phone);
+                    break;
+                default:
+                    phoneDisplayValue = '';
+                    break;
+            }
         }
     }
-
-    const [userPhone, setUserPhone] = useState(phoneDisplayValue);
+    const [userPhone, setUserPhone] = useState(
+        Platform.OS === 'ios' ? phoneDisplayValue : ''
+    );
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,
@@ -168,7 +172,7 @@ const ProfileForm = (props) => {
         // console.log('AFFCODE:', AFFCODE);
         // console.log('test', originalUser.affiliations.active.value);
         // printObject('originalUser', originalUser);
-        // printObject('values:', values);
+        printObject('values:', values);
         if (AFFCODE !== originalUser?.affiliations?.active?.value) {
             //   affiliation change attempt.
             if (
@@ -340,11 +344,12 @@ const ProfileForm = (props) => {
                         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                     );
             };
-            if (validateEmail(values.email) === null) {
-                setShowEmailError(true);
-                return;
+            if (values.email) {
+                if (validateEmail(values.email) === null) {
+                    setShowEmailError(true);
+                    return;
+                }
             }
-
             let different = false;
             if (originalUser.firstName === values.firstName) {
                 if (originalUser.lastName === values.lastName) {
@@ -553,7 +558,9 @@ const ProfileForm = (props) => {
                     </View>
                 </Surface>
             </Modal>
-            <PersonalHeader firstName={fName} lastName={lName} />
+            {fName && lName && (
+                <PersonalHeader firstName={fName} lastName={lName} />
+            )}
             <View style={{ flex: 1 }}>
                 <ScrollView>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -806,57 +813,62 @@ const ProfileForm = (props) => {
                                                                                     .email}
                                                                         </Text>
                                                                     ) : null}
-                                                                    {/* <View
-                                                                        style={
-                                                                            styles.labelContainer
-                                                                        }
-                                                                    >
-                                                                        <Text
-                                                                            style={
-                                                                                styles.labelText
-                                                                            }
-                                                                        >
-                                                                            Phone
-                                                                        </Text>
-                                                                    </View>
-                                                                    <View
-                                                                        style={
-                                                                            showPhoneError
-                                                                                ? styles.phoneWrapperError
-                                                                                : styles.phoneWrapper
-                                                                        }
-                                                                    >
-                                                                        <PhoneInput
-                                                                            overrideStyle={{
-                                                                                borderColor:
-                                                                                    Colors.gray20,
-                                                                                borderWidth: 2,
-                                                                                borderRadius: 6,
-                                                                                width: 280,
-                                                                                alignItems:
-                                                                                    'left',
-                                                                            }}
-                                                                            value={
-                                                                                userPhone
-                                                                            }
-                                                                            onChange={
-                                                                                setUserPhone
-                                                                            }
-                                                                        />
-                                                                        {showPhoneError ? (
-                                                                            <Text
+                                                                    {Platform.OS ===
+                                                                    'ios' ? (
+                                                                        <>
+                                                                            <View
                                                                                 style={
-                                                                                    styles.phoneError
+                                                                                    styles.labelContainer
                                                                                 }
                                                                             >
-                                                                                Please
-                                                                                correct
-                                                                                the
-                                                                                phone
-                                                                                number
-                                                                            </Text>
-                                                                        ) : null}
-                                                                    </View> */}
+                                                                                <Text
+                                                                                    style={
+                                                                                        styles.labelText
+                                                                                    }
+                                                                                >
+                                                                                    Phone
+                                                                                </Text>
+                                                                            </View>
+                                                                            <View
+                                                                                style={
+                                                                                    showPhoneError
+                                                                                        ? styles.phoneWrapperError
+                                                                                        : styles.phoneWrapper
+                                                                                }
+                                                                            >
+                                                                                <PhoneInput
+                                                                                    overrideStyle={{
+                                                                                        borderColor:
+                                                                                            Colors.gray20,
+                                                                                        borderWidth: 2,
+                                                                                        borderRadius: 6,
+                                                                                        width: 280,
+                                                                                        alignItems:
+                                                                                            'left',
+                                                                                    }}
+                                                                                    value={
+                                                                                        userPhone
+                                                                                    }
+                                                                                    onChange={
+                                                                                        setUserPhone
+                                                                                    }
+                                                                                />
+                                                                                {showPhoneError ? (
+                                                                                    <Text
+                                                                                        style={
+                                                                                            styles.phoneError
+                                                                                        }
+                                                                                    >
+                                                                                        Please
+                                                                                        correct
+                                                                                        the
+                                                                                        phone
+                                                                                        number
+                                                                                    </Text>
+                                                                                ) : null}
+                                                                            </View>
+                                                                        </>
+                                                                    ) : null}
                                                                     <View
                                                                         style={
                                                                             styles.labelContainer
