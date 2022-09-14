@@ -51,13 +51,15 @@ function EventListCard({ rally, deletePress }) {
                             </Text>
                         </View>
                     </View>
-                    <View>
-                        <View style={styles.stateToken}>
-                            <Text style={styles.stateTokenText}>
-                                {rally.stateProv}
-                            </Text>
+                    {user.affiliations.active.role === 'director' && (
+                        <View>
+                            <View style={styles.stateToken}>
+                                <Text style={styles.stateTokenText}>
+                                    {rally.stateProv}
+                                </Text>
+                            </View>
                         </View>
-                    </View>
+                    )}
                 </View>
                 <View style={styles.cardRow}>
                     <View style={styles.timeWrapper}>

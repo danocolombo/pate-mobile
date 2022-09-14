@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { Badge } from 'react-native-paper';
-//import for the animation of Collapse and Expand
+import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
 import { AntDesign } from '@expo/vector-icons';
 import Collapsible from 'react-native-collapsible';
@@ -12,12 +12,12 @@ import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 import { ScrollView } from 'react-native-gesture-handler';
 const RallyStatusDetails = ({ rally, onPress }) => {
+    const navigation = useNavigation();
     // printObject('RSI:9 --> rally', rally);
     const user = useSelector((state) => state.users.currentUser);
     const [collapsed, setCollapsed] = useState(true); //collapsible
     let tColor = 'gold';
     let bColor = 'blue';
-
     return (
         <>
             <View style={styles.rootContainer}>
@@ -69,9 +69,24 @@ const RallyStatusDetails = ({ rally, onPress }) => {
                                         </Text>
                                     </View>
                                     <View>
-                                        <Text style={{ fontSize: 18 }}>
-                                            {rally?.coordinator?.name}
-                                        </Text>
+                                        <TouchableOpacity
+                                            key={rally.uid}
+                                            onPress={() =>
+                                                navigation.navigate(
+                                                    'Coordinators',
+                                                    {
+                                                        rally: rally,
+                                                    }
+                                                )
+                                            }
+                                            style={({ pressed }) =>
+                                                pressed && styles.pressed
+                                            }
+                                        >
+                                            <Text style={{ fontSize: 18 }}>
+                                                {rally?.coordinator?.name}
+                                            </Text>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                                 <View style={styles.statusRow}>

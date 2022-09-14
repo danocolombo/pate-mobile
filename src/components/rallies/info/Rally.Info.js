@@ -140,6 +140,9 @@ const RallyDetails = ({ rallyId }) => {
         setNewStatus(rally?.status);
         setShowStatusModal(true);
     };
+    const handleDetailModalPress = () => {
+        setShowDetailModal(false);
+    };
     const handleRegRequest = (reg) => {
         // printObject('RI:88-reg', reg);
         setRegInquiry(reg);
@@ -200,7 +203,7 @@ const RallyDetails = ({ rallyId }) => {
     const handleSheetChanges = useCallback((index) => {
         console.log('hadleSheetChanges', index);
     });
-    // printObject('RI:124-rally', rally);
+
     return (
         <>
             <ImageBackground
@@ -414,7 +417,7 @@ const RallyDetails = ({ rallyId }) => {
                                             }}
                                             txtColor='white'
                                             onPress={() =>
-                                                setShowDetailModal(false)
+                                                handleDetailModalPress(false)
                                             }
                                         />
                                     </View>
