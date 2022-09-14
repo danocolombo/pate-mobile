@@ -18,6 +18,11 @@ const RallyStatusDetails = ({ rally, onPress }) => {
     const [collapsed, setCollapsed] = useState(true); //collapsible
     let tColor = 'gold';
     let bColor = 'blue';
+    const handleCoordinatorPress = (reg) => {
+        // printObject('RI:122-reg', reg);
+
+        navigation.navigate('RegistrationDetails', { reg: reg });
+    };
     return (
         <>
             <View style={styles.rootContainer}>
