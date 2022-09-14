@@ -6,9 +6,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import ServeEventsMyScreen from '../screens/Serve/ServeEventsMyScreen';
 import ServeEventsStateScreen from '../screens/Serve/ServeEventsStateScreen';
+import ServeEventsRegionScreen from '../screens/Serve/ServeEventsRegionScreen';
 const BottomTab = createBottomTabNavigator();
 const ServeConfig = () => {
     let user = useSelector((state) => state.users.currentUser);
+    let director = false;
+    if (user.affiliations.active.role === 'director') {
+        director = true;
+    }
     return (
         <BottomTab.Navigator
             initialRouteName='ServeMy'
@@ -28,7 +33,9 @@ const ServeConfig = () => {
             />
             <BottomTab.Screen
                 name='ServeState'
-                component={ServeEventsStateScreen}
+                component={
+                    director ? ServeEventsRegionScreen : ServeEventsStateScreen
+                }
                 options={{
                     title: 'FEO',
                     tabBarLabel: 'REGION',

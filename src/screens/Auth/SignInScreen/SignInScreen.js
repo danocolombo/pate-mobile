@@ -186,17 +186,20 @@ const SignInScreen = () => {
                             value: 'FEO',
                             label: 'FEO Testing',
                             region: 'us#east#south',
+                            role: 'guest',
                         },
                         {
                             value: 'CRP8',
                             label: 'CR P8 Rallies',
                             region: 'us#east#south',
+                            role: 'guest',
                         },
                     ],
                     active: {
                         value: 'FEO',
                         label: 'FEO Testing',
                         region: 'us#east#south',
+                        role: 'guest',
                     },
                 };
                 fullUserInfo = { ...fullUserInfo, affiliations: defaultAff };

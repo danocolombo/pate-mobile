@@ -51,6 +51,13 @@ function EventListCard({ rally, deletePress }) {
                             </Text>
                         </View>
                     </View>
+                    <View>
+                        <View style={styles.stateToken}>
+                            <Text style={styles.stateTokenText}>
+                                {rally.stateProv}
+                            </Text>
+                        </View>
+                    </View>
                 </View>
                 <View style={styles.cardRow}>
                     <View style={styles.timeWrapper}>
@@ -221,4 +228,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'flex-end',
     },
+    stateToken: { backgroundColor: 'black', borderRadius: 20, padding: 2 },
+    stateTokenText: { color: 'white' },
 });
