@@ -319,24 +319,25 @@ const ProfileForm = (props) => {
             // printObject('values:', values);
 
             //todo --- validate phone format
-            let pType = getPhoneType(userPhone);
-            let phoneToPass;
+            if (values.phone.length > 0) {
+                let pType = getPhoneType(userPhone);
+                let phoneToPass;
 
-            switch (pType) {
-                case 'PATE':
-                    phoneToPass = userPhone;
-                    break;
-                case 'MASKED':
-                    phoneToPass = createPatePhone(userPhone);
-                    break;
-                default:
-                    phoneToPass = '';
-                    setShowPhoneError(true);
-                    return;
+                switch (pType) {
+                    case 'PATE':
+                        phoneToPass = userPhone;
+                        break;
+                    case 'MASKED':
+                        phoneToPass = createPatePhone(userPhone);
+                        break;
+                    default:
+                        phoneToPass = '';
+                        setShowPhoneError(true);
+                        return;
+                }
+                values.phone = phoneToPass;
             }
-            values.phone = phoneToPass;
             //todo - check the email format
-
             const validateEmail = (email) => {
                 return String(email)
                     .toLowerCase()
@@ -344,6 +345,7 @@ const ProfileForm = (props) => {
                         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                     );
             };
+
             if (values.email) {
                 if (validateEmail(values.email) === null) {
                     setShowEmailError(true);
@@ -453,6 +455,45 @@ const ProfileForm = (props) => {
                 ...newCurrentUser,
                 affiliate: updatedAffiliate,
             };
+
+            //===============================
+            // need to set profile = true and
+            // update user region and affliations active
+            // valuse
+            if (values.stateProv.length === 2) {
+                //get region from system.states
+                const theRegion = feo.affiliate.states.filter(
+                    (s) => s.state === values.stateProv.toUpperCase()
+                );
+                printObject('theRegion', theRegion);
+                newCurrentUser = {
+                    ...newCurrentUser,
+                    ['region']: theRegion[0].region,
+                };
+                // need to update the region in the affilates.ative as well.
+                // 1. get affiliate info
+                printObject('newCurrentUser:', newCurrentUser);
+                let existingActiveAffiliation =
+                    newCurrentUser?.affiliations?.active;
+                let newActiveAffiliation = {
+                    ...newCurrentUser.affiliations.active,
+                    ['region']: theRegion[0].region,
+                };
+                let newAffiliations = {
+                    ...newCurrentUser.affiliations,
+                    ['active']: newActiveAffiliation,
+                };
+                newCurrentUser = {
+                    ...newCurrentUser,
+                    ['affiliations']: newAffiliations,
+                };
+                printObject('newCurrentUser:', newCurrentUser);
+            }
+            newCurrentUser = {
+                ...newCurrentUser,
+                ['profile']: true,
+            };
+
             dispatch(updateCurrentUser(newCurrentUser));
             // clean up newCurrent to save to DDB
             delete newCurrentUser.jwtToken;

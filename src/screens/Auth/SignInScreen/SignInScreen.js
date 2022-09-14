@@ -182,10 +182,22 @@ const SignInScreen = () => {
             if (!fullUserInfo?.affiliations) {
                 let defaultAff = {
                     options: [
-                        { value: 'FEO', label: 'FEO Testing' },
-                        { value: 'CRP8', label: 'CR P8 Rallies' },
+                        {
+                            value: 'FEO',
+                            label: 'FEO Testing',
+                            region: 'us#east#south',
+                        },
+                        {
+                            value: 'CRP8',
+                            label: 'CR P8 Rallies',
+                            region: 'us#east#south',
+                        },
                     ],
-                    active: { value: 'FEO', label: 'FEO Testing' },
+                    active: {
+                        value: 'FEO',
+                        label: 'FEO Testing',
+                        region: 'us#east#south',
+                    },
                 };
                 fullUserInfo = { ...fullUserInfo, affiliations: defaultAff };
                 //fullUserInfo = { ...fullUserInfo, affiliate: 'FEO' };

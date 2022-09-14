@@ -19,11 +19,20 @@ const UserDisplay = ({ profile }) => {
     const feo = useSelector((state) => state.system);
     const user = useSelector((state) => state.users.currentUser);
     const [showMoreDetail, setShowMoreDetail] = useState(false);
-
+    const [showCompletionModal, setShowCompletionModal] = useState(false);
     const [userStatus, setUserStatus] = useState('');
     const [newStatus, setNewStatus] = useState();
     const statusValues = ['guest', 'leader'];
     useEffect(() => {
+        // need to check to see if user has adequate profile, if not
+        // we will prompt to request updates.
+        if (
+            !profile?.residence?.city ||
+            !profile?.residence?.stateProv ||
+            !profile?.phone
+        ) {
+            setShowCompletionModal(true);
+        }
         let role = null;
         const ref = profile.affiliations.options.filter(
             (o) => o.value === feo.affiliation
@@ -103,9 +112,38 @@ const UserDisplay = ({ profile }) => {
         }
         navigate.goBack();
     };
-
+    const handleProfileAcknowledge = () => {
+        setShowCompletionModal(false);
+    };
     return (
         <>
+            <Modal visible={showCompletionModal} animationStyle='slide'>
+                <Surface style={styles.modalSurface}>
+                    <View style={styles.modalInfoWrapper}>
+                        <Text style={styles.modalTitle}>
+                            Please request the user to complete their profile.
+                        </Text>
+                    </View>
+                    <View style={styles.modalButtonContainer}>
+                        <View style={styles.modalButtonWrapper}>
+                            <View style={styles.modalCancelButton}>
+                                <CustomButton
+                                    title='OK'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: 'green',
+                                        color: 'white',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() => {
+                                        handleProfileAcknowledge();
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Surface>
+            </Modal>
             <Modal visible={showMoreDetail} animationStyle='slide'>
                 <UserDisplayDetailsModal
                     user={profile}
@@ -135,23 +173,28 @@ const UserDisplay = ({ profile }) => {
                 </View>
                 <View>
                     <Text style={styles.userResidence}>
-                        {profile.residence.street}
+                        {profile?.residence?.street}
                     </Text>
                 </View>
-                <View>
-                    <Text style={styles.userResidence}>
-                        {profile.residence.city}, {profile.residence.stateProv}
-                        {'  '}
-                        {profile.residence.postalCode}
-                    </Text>
-                </View>
-                <View>
-                    <Text style={styles.userPhone}>
-                        {profile?.phone
-                            ? transformPatePhone(profile.phone)
-                            : null}
-                    </Text>
-                </View>
+                {profile?.residence?.city && profile?.residence?.stateProv && (
+                    <View>
+                        <Text style={styles.userResidence}>
+                            {profile.residence.city},{' '}
+                            {profile?.residence?.stateProv}
+                            {'  '}
+                            {profile.residence.postalCode}
+                        </Text>
+                    </View>
+                )}
+                {profile?.phone && (
+                    <View>
+                        <Text style={styles.userPhone}>
+                            {profile?.phone
+                                ? transformPatePhone(profile.phone)
+                                : null}
+                        </Text>
+                    </View>
+                )}
                 <View>
                     <Text style={styles.userEmail}>{profile.email}</Text>
                 </View>
@@ -318,5 +361,34 @@ const styles = StyleSheet.create({
     customButtonContainer: {
         marginVertical: 20,
         flexDirection: 'row',
+    },
+    modalSurface: {
+        marginTop: '50%',
+        marginHorizontal: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+        // elevation: 3,
+        shadowColor: Colors.primary500,
+        shadowRadius: 4,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.4,
+    },
+    modalInfoWrapper: {
+        alignItems: 'center',
+        marginHorizontal: 20,
+    },
+    modalTitle: {
+        marginTop: 15,
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalButtonContainer: {
+        marginVertical: 20,
+        flexDirection: 'row',
+    },
+    modalButtonWrapper: {
+        marginHorizontal: 10,
     },
 });
