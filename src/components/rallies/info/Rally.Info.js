@@ -140,6 +140,13 @@ const RallyDetails = ({ rallyId }) => {
         setNewStatus(rally?.status);
         setShowStatusModal(true);
     };
+    const handleCoordinatorPress = () => {
+        setShowDetailModal(false);
+        printObject('RI:145-->rally', rally);
+        navigation.navigate('Coordinators', {
+            rally: rally,
+        });
+    };
     const handleDetailModalPress = () => {
         setShowDetailModal(false);
     };
@@ -404,6 +411,7 @@ const RallyDetails = ({ rallyId }) => {
                             <RallyStatusDetails
                                 rally={rally}
                                 onPress={handleStatusPress}
+                                onCoordinatorPress={handleCoordinatorPress}
                             />
                             <View style={styles.modalDetailsButtonContainer}>
                                 <View style={styles.modalDetailsButtonWrapper}>

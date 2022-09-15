@@ -4,12 +4,15 @@ import { ActivityIndicator } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import Coordinators from '../components/rallies/edit/Coordinators';
+import RallyLocationInfo from '../components/rallies/info/Rally.Location.Info';
 import { getAffiliateProfiles } from '../providers/users';
 import { loadGuests, loadLeaders } from '../features/profiles/profilesSlice';
 import { printObject } from '../utils/helpers';
 import { getProfiles } from '../features/profiles/profilesSlice';
-function CoordinatorScreen(props) {
-    const rally = props.rally;
+function CoordinatorScreen({ route }) {
+    const rally = route.params.rally;
+
+    printObject('rally:', rally);
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
@@ -78,7 +81,7 @@ function CoordinatorScreen(props) {
             //console.log('guests found');
         }
         setIsLoading(false);
-    }, [props, isFocused]);
+    }, [route, isFocused]);
     if (isLoading) {
         return <ActivityIndicator />;
     }
@@ -89,8 +92,11 @@ function CoordinatorScreen(props) {
                 style={styles.bgImageContainer}
             >
                 <View style={styles.screenHeader}>
-                    <Text style={styles.screenHeaderText}>Leaders</Text>
+                    <Text style={styles.screenHeaderText}>
+                        Manage Coordinator
+                    </Text>
                 </View>
+                <RallyLocationInfo rally={rally} />
                 <Coordinators rally={rally} />
             </ImageBackground>
         </>

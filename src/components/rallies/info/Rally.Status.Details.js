@@ -11,7 +11,7 @@ import CustomSmallButton from '../../ui/CustomSmallButton';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 import { ScrollView } from 'react-native-gesture-handler';
-const RallyStatusDetails = ({ rally, onPress }) => {
+const RallyStatusDetails = ({ rally, onPress, onCoordinatorPress }) => {
     const navigation = useNavigation();
     // printObject('RSI:9 --> rally', rally);
     const user = useSelector((state) => state.users.currentUser);
@@ -76,14 +76,7 @@ const RallyStatusDetails = ({ rally, onPress }) => {
                                     <View>
                                         <TouchableOpacity
                                             key={rally.uid}
-                                            onPress={() =>
-                                                navigation.navigate(
-                                                    'Coordinators',
-                                                    {
-                                                        rally: rally,
-                                                    }
-                                                )
-                                            }
+                                            onPress={() => onCoordinatorPress()}
                                             style={({ pressed }) =>
                                                 pressed && styles.pressed
                                             }
