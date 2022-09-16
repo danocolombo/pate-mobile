@@ -107,7 +107,10 @@ const ServeMyRallies = () => {
                             Confirm You Want To Delete
                         </Text>
                         <View>
-                            <RallyLocationInfo rally={rally} />
+                            <RallyLocationInfo
+                                rally={rally}
+                                title='Event Information'
+                            />
                         </View>
                         <View>
                             <RallyLogisticsInfo

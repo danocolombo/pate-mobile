@@ -183,7 +183,7 @@ const RallyNewConfirmation = () => {
                 source={require('../../../components/images/background.png')}
                 style={styles.bgImageContainer}
             >
-                <RallyLocationInfo rally={newRally} />
+                <RallyLocationInfo rally={newRally} title='Event Information' />
                 <RallyLogisticsInfo rally={newRally} />
                 <RallyContactInfo rally={newRally} />
                 <RallyMealInfo rally={newRally} />

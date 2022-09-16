@@ -306,7 +306,10 @@ const RallyDetails = ({ rallyId }) => {
                     <Surface style={styles.modalSurface}>
                         <View style={styles.modalInfoWrapper}>
                             <Text style={styles.modalTitle}>Manage Status</Text>
-                            <RallyLocationInfo rally={rally} />
+                            <RallyLocationInfo
+                                rally={rally}
+                                title='Event Information'
+                            />
                         </View>
                         <View style={styles.statusModalInstructions}>
                             {user.role === 'lead' ? (
@@ -467,7 +470,10 @@ const RallyDetails = ({ rallyId }) => {
                             </View>
                         </Surface>
                     </View>
-                    <RallyLocationInfo rally={rally} />
+                    <RallyLocationInfo
+                        rally={rally}
+                        title='Event Information'
+                    />
                     <RallyLogisticsInfo rally={rally} />
 
                     <RallyContactInfo rally={rally} />

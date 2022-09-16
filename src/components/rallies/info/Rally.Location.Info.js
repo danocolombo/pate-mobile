@@ -3,14 +3,14 @@ import React from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
-const RallyLocationInfo = ({ rally }) => {
+const RallyLocationInfo = ({ rally, title }) => {
     // printObject('RLI:07-->rally:', rally);
     return (
         <>
             <View style={styles.rootContainer}>
                 <Surface style={[styles.surface, { elevation: 5 }]}>
                     <View style={{ marginHorizontal: 5 }}>
-                        <Text style={styles.titleText}>Event Information</Text>
+                        <Text style={styles.titleText}>{title}</Text>
                     </View>
                     <View style={styles.textWrapper}>
                         {rally?.name ? (
