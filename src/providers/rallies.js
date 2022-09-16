@@ -90,6 +90,20 @@ export async function updateRally(rally, user) {
     var returnValue = res.data;
     return returnValue;
 }
+export async function updateEvent(rally) {
+    let obj = {
+        operation: 'updateEvent',
+        payload: {
+            Item: rally,
+        },
+    };
+    let body = JSON.stringify(obj);
+    let api2use = process.env.AWS_API_ENDPOINT + '/events';
+
+    let res = await axios.post(api2use, body, config);
+    var returnValue = res.data;
+    return returnValue;
+}
 export async function putRally(rally, user, affiliate, eventRegion) {
     // this function
     // 1. if no eventCompKey, create one

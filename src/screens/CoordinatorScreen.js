@@ -13,6 +13,7 @@ import { loadGuests, loadLeaders } from '../features/profiles/profilesSlice';
 import { printObject } from '../utils/helpers';
 import { getProfiles } from '../features/profiles/profilesSlice';
 import { updateRally } from '../features/rallies/ralliesSlice';
+import { updateEvent } from '../providers/rallies';
 import { Colors } from '../constants/colors';
 import { select } from '@react-native-material/core';
 function CoordinatorScreen({ route }) {
@@ -86,7 +87,24 @@ function CoordinatorScreen({ route }) {
         if (selectedCoordinator !== undefined) {
             id = selectedCoordinator;
         }
+        //   rip and replace eventCompKey
+        //   "2022#09#TT#10#86e55ed48c7c6bd0b2f373790de8aca3#bb3aa10a-0956-41ba-bcba-51e9ffd80985",
+        let parts = rally.eventCompKey.split('#');
+        let newCompKey =
+            parts[0] +
+            '#' +
+            parts[1] +
+            '#' +
+            parts[2] +
+            '#' +
+            parts[3] +
+            '#' +
+            parts[4] +
+            '#' +
+            leaderDetails[id].uid;
 
+        console.log('before:', rally.eventCompKey);
+        console.log('after: ', newCompKey);
         //   update rally, save to redux
         let newCoordinator = {
             name:
@@ -95,9 +113,21 @@ function CoordinatorScreen({ route }) {
             phone: leaderDetails[id].phone,
             email: leaderDetails[id].email,
         };
-        let newRally = { ...rally, coordinator: newCoordinator };
+        let newRally = {
+            ...rally,
+            coordinator: newCoordinator,
+            eventCompKey: newCompKey,
+        };
         printObject('newRally:', newRally);
-        dispatch(updateRally(newRally));
+        updateEvent(newRally)
+            .then((results) => {
+                printObject('results:', results);
+                dispatch(updateRally(newRally));
+            })
+            .catch((e) => {
+                console.log('ERROR updating rally');
+            });
+
         navigation.goBack();
     };
     const onCancelPress = () => {
