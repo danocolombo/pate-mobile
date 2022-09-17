@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal } from 'react-native';
 import React, { useState } from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -8,11 +8,15 @@ import * as Animatable from 'react-native-animatable';
 import { AntDesign } from '@expo/vector-icons';
 import Collapsible from 'react-native-collapsible';
 import CustomSmallButton from '../../ui/CustomSmallButton';
+import CustomButton from '../../ui/CustomButton';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 import { ScrollView } from 'react-native-gesture-handler';
 const RallyStatusDetails = ({ rally, onPress, onCoordinatorPress }) => {
     const navigation = useNavigation();
+    const [showTransferModal, setShowTranferModal] = useState(false);
     // printObject('RSI:9 --> rally', rally);
     const user = useSelector((state) => state.users.currentUser);
     const [collapsed, setCollapsed] = useState(true); //collapsible
@@ -27,6 +31,55 @@ const RallyStatusDetails = ({ rally, onPress, onCoordinatorPress }) => {
         <>
             <View style={styles.rootContainer}>
                 <ScrollView>
+                    <Modal visible={showTransferModal} animationStyle='slide'>
+                        <Surface style={styles.modalSurface}>
+                            <View style={styles.modalInfoWrapper}>
+                                <Text style={styles.modalTitle}>
+                                    Would you like to transfer this event to
+                                    your leader?
+                                </Text>
+                            </View>
+                            <View>
+                                <View style={styles.modalButtonContainer}>
+                                    <View style={styles.modalButtonWrapper}>
+                                        <View style={styles.modalCancelButton}>
+                                            <CustomButton
+                                                title='NO'
+                                                graphic={null}
+                                                cbStyles={{
+                                                    backgroundColor:
+                                                        Colors.gray35,
+                                                    color: 'white',
+                                                    textAlign: 'center',
+                                                    marginHorizontal: 5,
+                                                }}
+                                                txtColor='white'
+                                                onPress={() => {
+                                                    setShowTranferModal(false);
+                                                }}
+                                            />
+                                        </View>
+                                        <View style={styles.modalCancelButton}>
+                                            <CustomButton
+                                                title='YES'
+                                                graphic={null}
+                                                cbStyles={{
+                                                    backgroundColor: 'green',
+                                                    color: 'white',
+                                                    textAlign: 'center',
+                                                    marginHorizontal: 5,
+                                                }}
+                                                txtColor='white'
+                                                onPress={() => {
+                                                    handleTransferRequest();
+                                                }}
+                                            />
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                        </Surface>
+                    </Modal>
                     <View style={styles.detailsContainer}>
                         <Surface style={styles.detailsSurface}>
                             <View style={styles.statusDataWrapper}>
@@ -74,18 +127,53 @@ const RallyStatusDetails = ({ rally, onPress, onCoordinatorPress }) => {
                                         </Text>
                                     </View>
                                     <View>
-                                        <TouchableOpacity
-                                            key={rally.uid}
-                                            onPress={() => onCoordinatorPress()}
-                                            style={({ pressed }) =>
-                                                pressed && styles.pressed
-                                            }
-                                        >
-                                            <Text style={{ fontSize: 18 }}>
-                                                {rally?.coordinator?.name}
-                                            </Text>
-                                        </TouchableOpacity>
+                                        <Text style={{ fontSize: 18 }}>
+                                            {rally?.coordinator?.name}
+                                        </Text>
                                     </View>
+                                    {(user.affiliations.active.role ===
+                                        'lead' ||
+                                        user.affiliations.active.role ===
+                                            'director' ||
+                                        user.role === 'superuser') && (
+                                        <View style={{ paddingLeft: 10 }}>
+                                            <TouchableOpacity
+                                                key={rally.uid}
+                                                onPress={() =>
+                                                    onCoordinatorPress()
+                                                }
+                                                style={({ pressed }) =>
+                                                    pressed && styles.pressed
+                                                }
+                                            >
+                                                <MaterialCommunityIcons
+                                                    name='account-switch'
+                                                    size={24}
+                                                    color='black'
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                    )}
+                                    {user.affiliations.active.role ===
+                                        'rep' && (
+                                        <View style={{ paddingLeft: 10 }}>
+                                            <TouchableOpacity
+                                                key={rally.uid}
+                                                onPress={() =>
+                                                    setShowTranferModal(true)
+                                                }
+                                                style={({ pressed }) =>
+                                                    pressed && styles.pressed
+                                                }
+                                            >
+                                                <MaterialCommunityIcons
+                                                    name='account-switch'
+                                                    size={24}
+                                                    color='black'
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                    )}
                                 </View>
                                 <View style={styles.statusRow}>
                                     <View>
@@ -160,5 +248,35 @@ const styles = StyleSheet.create({
     },
     collapsibleHeaderIcon: {
         paddingLeft: 5,
+    },
+    modalSurface: {
+        marginTop: '50%',
+        marginHorizontal: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+        // elevation: 3,
+        shadowColor: Colors.primary500,
+        shadowRadius: 4,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.4,
+    },
+    modalInfoWrapper: {
+        alignItems: 'center',
+        marginHorizontal: 20,
+    },
+    modalTitle: {
+        marginTop: 15,
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalButtonContainer: {
+        marginVertical: 20,
+        flexDirection: 'column',
+    },
+    modalButtonWrapper: {
+        marginHorizontal: 10,
+        flexDirection: 'row',
     },
 });

@@ -197,13 +197,14 @@ function CoordinatorScreen({ route }) {
                         />
                     </View>
                     <View style={styles.customButtonContainer}>
-                        <View style={styles.modalConfirmButton}>
+                        <View style={styles.modalCancelButton}>
                             <CustomButton
                                 title='CANCEL'
                                 graphic={null}
                                 cbStyles={{
                                     backgroundColor: Colors.gray35,
                                     color: 'black',
+                                    marginHorizontal: 5,
                                 }}
                                 txtColor='white'
                                 onPress={() => onCancelPress()}
@@ -218,6 +219,7 @@ function CoordinatorScreen({ route }) {
                                 cbStyles={{
                                     backgroundColor: Colors.primary,
                                     color: 'white',
+                                    marginHorizontal: 5,
                                 }}
                                 txtColor='white'
                                 onPress={() => {
