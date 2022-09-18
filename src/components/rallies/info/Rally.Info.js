@@ -26,7 +26,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import { Entypo } from '@expo/vector-icons';
 import RallyLocationInfo from './Rally.Location.Info';
 import RallyLogisticsInfo from './Rally.Logistics.Info';
 import RallyContactInfo from './Rally.Contact.Info';
@@ -550,10 +550,10 @@ const RallyDetails = ({ rallyId }) => {
                                                 setShowDetailModal(true)
                                             }
                                         >
-                                            <Ionicons
-                                                name='information-circle'
+                                            <Entypo
+                                                name='dots-three-horizontal'
                                                 size={24}
-                                                color={Colors.gray35}
+                                                color='black'
                                             />
                                         </Pressable>
                                     </View>
