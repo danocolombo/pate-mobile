@@ -18,6 +18,7 @@ const Stack = createNativeStackNavigator();
 
 const AuthDrawer = (navigation) => {
     const user = useSelector((state) => state.users.currentUser);
+    const feo = useSelector((state) => state.system);
     // printObject('PF:17-->user', user);
     let manager = false;
     if (
@@ -54,7 +55,7 @@ const AuthDrawer = (navigation) => {
                 name='Landing'
                 component={LandingScreen}
                 options={({ navigation }) => ({
-                    title: 'P8 Rallies',
+                    title: feo.appName,
                     drawerLabel: 'Home',
                     headerStyle: {
                         backgroundColor: Colors.primary,
@@ -71,7 +72,7 @@ const AuthDrawer = (navigation) => {
                 name='Main'
                 component={UpcomingEventsScreen}
                 options={({ navigation }) => ({
-                    title: 'P8 Rallies',
+                    title: feo.appName,
                     drawerLabel: 'Upcoming Events',
                     headerStyle: {
                         backgroundColor: Colors.primary,
@@ -89,7 +90,7 @@ const AuthDrawer = (navigation) => {
                     name='Serve'
                     component={ServeConfig}
                     options={({ navigation }) => ({
-                        title: 'P8 Rallies',
+                        title: feo.appName,
                         drawerLabel: 'Serve',
                         headerStyle: {
                             backgroundColor: Colors.primary,
@@ -107,7 +108,7 @@ const AuthDrawer = (navigation) => {
                 name='MyRegistrations'
                 component={MyRegistrationsScreen}
                 options={({ navigation }) => ({
-                    title: 'P8 Rallies',
+                    title: feo.appName,
                     drawerLabel: 'My Registrations',
 
                     headerStyle: {
@@ -125,7 +126,7 @@ const AuthDrawer = (navigation) => {
                 name='Profile'
                 component={ProfileScreen}
                 options={({ navigation }) => ({
-                    title: 'P8 Rallies',
+                    title: feo.appName,
                     drawerLabel: 'Profile',
                     headerStyle: {
                         backgroundColor: Colors.primary,
@@ -143,7 +144,7 @@ const AuthDrawer = (navigation) => {
                     name='Team'
                     component={TeamScreen}
                     options={({ navigation }) => ({
-                        title: 'P8 Rallies',
+                        title: feo.appName,
                         drawerLabel: 'Members',
                         headerStyle: {
                             backgroundColor: Colors.primary,
@@ -161,7 +162,7 @@ const AuthDrawer = (navigation) => {
                 name='Legal'
                 component={LegalScreen}
                 options={({ navigation }) => ({
-                    title: 'P8 Rallies',
+                    title: feo.appName,
                     drawerLabel: 'Legal',
                     headerStyle: {
                         backgroundColor: Colors.primary,

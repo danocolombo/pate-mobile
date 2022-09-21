@@ -14,7 +14,7 @@ const ServeMyRallies = () => {
     const dispatch = useDispatch();
     let me = useSelector((state) => state.users.currentUser);
     const stateName = StateProvs.map((s) => {
-        if (s.symbol === me.stateRep) {
+        if (s.symbol === me.residence.stateProv) {
             return s.name;
         }
     });
@@ -23,7 +23,8 @@ const ServeMyRallies = () => {
     const stateRalliesRAW = useSelector((state) =>
         state.rallies.allRallies.filter(
             (r) =>
-                r.stateProv === me.stateRep && r.affiliate === feo.affiliation
+                r.stateProv === me.residence.stateProv &&
+                r.affiliate === feo.affiliation
         )
     );
 
@@ -32,13 +33,6 @@ const ServeMyRallies = () => {
     }
     let displayData = stateRalliesRAW.sort(asc_sort);
 
-    // sortRallies()
-    //     .then((results) => {
-    //         //printObject('diplayData-sorted', displayData);
-    //     })
-    //     .catch((err) => {
-    //         console.log('error sorting', err);
-    //     });
     const navigation = useNavigation();
     const handleEventPress = (e) => {
         printObject('event', e);
@@ -71,14 +65,7 @@ const ServeMyRallies = () => {
                                     })
                                 }
                             >
-                                <EventListCard
-                                    key={ral.uid}
-                                    rally={ral}
-                                    // date={ral.eventDate}
-                                    // locationName={ral.name}
-                                    // city={ral.city}
-                                    // stateProv={ral.stateProv}
-                                />
+                                <EventListCard key={ral.uid} rally={ral} />
                             </Pressable>
                         </View>
                     ))}

@@ -10,6 +10,7 @@ import ServeEventsRegionScreen from '../screens/Serve/ServeEventsRegionScreen';
 const BottomTab = createBottomTabNavigator();
 const ServeConfig = () => {
     let user = useSelector((state) => state.users.currentUser);
+    let feo = useSelector((state) => state.system);
     let director = false;
     if (user.affiliations.active.role === 'director') {
         director = true;
@@ -23,7 +24,7 @@ const ServeConfig = () => {
                 name='ServeMy'
                 component={ServeEventsMyScreen}
                 options={{
-                    title: 'FEO',
+                    title: feo.appName,
                     tabBarLabel: 'MINE',
                     tabBarInactiveBackgroundColor: 'lightgrey',
                     tabBarIcon: ({ color, size }) => (
@@ -37,7 +38,7 @@ const ServeConfig = () => {
                     director ? ServeEventsRegionScreen : ServeEventsStateScreen
                 }
                 options={{
-                    title: 'FEO',
+                    title: feo.appName,
                     tabBarLabel: 'REGION',
                     tabBarInactiveBackgroundColor: 'lightgrey',
                     tabBarIcon: ({ color, size }) => (

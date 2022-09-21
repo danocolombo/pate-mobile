@@ -15,7 +15,7 @@ const ServeEventsMyScreen = () => {
     const feo = useSelector((state) => state.system);
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: feo.title,
+            title: <feo className='appName'></feo>,
             headerRight: () => (
                 <Button
                     onPress={() =>

@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { View, Text, ImageBackground, StyleSheet } from 'react-native';
 import { ActivityIndicator, Surface } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import {
+    useNavigation,
+    useIsFocused,
+    StackActions,
+} from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Coordinators from '../components/rallies/edit/Coordinators';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -16,7 +20,7 @@ import { updateRally } from '../features/rallies/ralliesSlice';
 import { updateEvent } from '../providers/rallies';
 import { Colors } from '../constants/colors';
 import { select } from '@react-native-material/core';
-function CoordinatorScreen({ route }) {
+function CoordinatorTransferScreen({ route }) {
     const rally = route.params.rally;
     const navigation = useNavigation();
     const isFocused = useIsFocused();
@@ -28,66 +32,32 @@ function CoordinatorScreen({ route }) {
 
     const [userStatus, setUserStatus] = useState('');
     const [selectedCoordinator, setSelectedCoordinator] = useState();
-    const [leaderDetails, setLeaderDetails] = useState([]);
+    const [lead, setLead] = useState([]);
     let nameArray = [];
-
-    const getProfiles = async () => {
-        console.log('CS:35-->feo.affiliation:', feo.affiliation);
-        const all = await getAffiliateProfiles(feo.affiliation);
-        // printObject('all', all);
-        let leaders = [];
-        let leaderArray = [];
-        all.profiles.map((a) => {
-            if (a?.affiliations?.options) {
-                a.affiliations.options.map((o) => {
-                    if (o.value === feo.affiliation) {
-                        if (o?.role) {
-                            if (
-                                o.role === 'rep' ||
-                                o.role === 'lead' ||
-                                o.role === 'director'
-                            ) {
-                                leaders.push(a);
-                            }
-                        }
-                    }
-                });
-            }
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'JONES',
+            headerLeft: () => {
+                return null;
+            },
         });
-        //   sort function on firstName
-        function compare_firstName(a, b) {
-            if (a.firstName < b.firstName) {
-                return -1;
-            }
-            if (a.firstName > b.firstName) {
-                return 1;
-            }
-            return 0;
+    }, [navigation, feo]);
+    const getLead = () => {
+        let leads = feo.affiliate.managers.filter((m) => m.role === 'lead');
+        if (leads.length < 1) {
+            console.log('no leads');
+            return;
         }
-
-        leaders.sort(compare_firstName);
-
-        // load the values for leaders to display availableCoordinators
-
-        leaders.map((l) => {
-            if (l.uid !== rally.coordinator.id) {
-                nameArray.push(l.firstName);
-                leaderArray.push(l);
-            }
-        });
-        setLeaderDetails(leaderArray);
-        setAvailableCoordinators(nameArray);
+        setLead(leads[0]);
     };
     useEffect(() => {
         setIsLoading(true);
-        getProfiles();
+        getLead();
         setIsLoading(false);
     }, [route, isFocused]);
-    const onChangePress = () => {
-        let id = 0;
-        if (selectedCoordinator !== undefined) {
-            id = selectedCoordinator;
-        }
+    const onConfirmPress = () => {
+        // define the current affiliate lead
+
         //   rip and replace eventCompKey
         //   "2022#09#TT#10#86e55ed48c7c6bd0b2f373790de8aca3#bb3aa10a-0956-41ba-bcba-51e9ffd80985",
         let parts = rally.eventCompKey.split('#');
@@ -102,17 +72,16 @@ function CoordinatorScreen({ route }) {
             '#' +
             parts[4] +
             '#' +
-            leaderDetails[id].uid;
+            lead.uid;
 
         console.log('before:', rally.eventCompKey);
         console.log('after: ', newCompKey);
         //   update rally, save to redux
         let newCoordinator = {
-            name:
-                leaderDetails[id].firstName + ' ' + leaderDetails[id].lastName,
-            id: leaderDetails[id].uid,
-            phone: leaderDetails[id].phone,
-            email: leaderDetails[id].email,
+            name: lead.firstName + ' ' + lead.lastName,
+            id: lead.uid,
+            phone: lead?.phone ? lead.phone : '',
+            email: lead?.email ? lead.email : '',
         };
         let newRally = {
             ...rally,
@@ -129,7 +98,8 @@ function CoordinatorScreen({ route }) {
                 console.log('ERROR updating rally');
             });
 
-        navigation.goBack();
+        navigation.dispatch(StackActions.popToTop());
+        return;
     };
     const onCancelPress = () => {
         navigation.goBack();
@@ -145,57 +115,26 @@ function CoordinatorScreen({ route }) {
             >
                 <View style={styles.screenHeader}>
                     <Text style={styles.screenHeaderText}>
-                        Manage Coordinator
+                        Transfer Ownership
                     </Text>
                 </View>
-                <RallyLocationInfo rally={rally} title='Event Impacted' />
+                <RallyLocationInfo rally={rally} title='' />
 
                 <Surface style={styles.manageWrapper}>
-                    <View style={{ marginTop: 10 }}>
-                        <Text style={{ fontWeight: '600' }}>
-                            Current Coordinator: {rally.coordinator.name}
-                        </Text>
-                    </View>
                     <View style={styles.manageContainer}>
-                        <View style={{ marginTop: 10 }}>
-                            <Text style={{ fontSize: 18 }}>
-                                New Coordinator
+                        <View style={{ marginTop: 0 }}>
+                            <Text
+                                style={{
+                                    textAlign: 'center',
+                                    fontSize: 24,
+                                    fontWeight: '400',
+                                    letterSpacing: '0.5',
+                                }}
+                            >
+                                Confirm you want to transfer this event to your
+                                lead/manager...
                             </Text>
                         </View>
-                        <SelectDropdown
-                            data={availableCoordinators}
-                            defaultValue={availableCoordinators[0]}
-                            onSelect={(selectedItem, index) => {
-                                setSelectedCoordinator(index);
-                                console.log(selectedItem, index);
-                            }}
-                            defaultButtonText={userStatus}
-                            buttonTextAfterSelection={(selectedItem, index) => {
-                                return selectedItem;
-                            }}
-                            rowTextForSelection={(item, index) => {
-                                return item;
-                            }}
-                            buttonStyle={styles.dropdown1BtnStyle}
-                            buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                            renderDropdownIcon={(isOpened) => {
-                                return (
-                                    <Ionicons
-                                        name={
-                                            isOpened
-                                                ? 'chevron-up-sharp'
-                                                : 'chevron-down-sharp'
-                                        }
-                                        color={'black'}
-                                        size={24}
-                                    />
-                                );
-                            }}
-                            dropdownIconPosition={'right'}
-                            dropdownStyle={styles.dropdown1DropdownStyle}
-                            rowStyle={styles.dropdown1RowStyle}
-                            rowTextStyle={styles.dropdown1RowTxtStyle}
-                        />
                     </View>
                     <View style={styles.customButtonContainer}>
                         <View style={styles.modalCancelButton}>
@@ -215,7 +154,7 @@ function CoordinatorScreen({ route }) {
                         <View style={styles.customButton}>
                             <CustomButton
                                 key={rally.uid}
-                                title='UPDATE'
+                                title='CONFIRM'
                                 graphic={null}
                                 cbStyles={{
                                     backgroundColor: Colors.primary,
@@ -224,7 +163,7 @@ function CoordinatorScreen({ route }) {
                                 }}
                                 txtColor='white'
                                 onPress={() => {
-                                    onChangePress();
+                                    onConfirmPress();
                                 }}
                             />
                         </View>
@@ -234,7 +173,7 @@ function CoordinatorScreen({ route }) {
         </>
     );
 }
-export default CoordinatorScreen;
+export default CoordinatorTransferScreen;
 const styles = StyleSheet.create({
     bgImageContainer: {
         flex: 1,

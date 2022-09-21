@@ -26,30 +26,33 @@ import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import RallyLocationInfo from './Rally.Location.Info';
 import RallyLogisticsInfo from './Rally.Logistics.Info';
 import RallyContactInfo from './Rally.Contact.Info';
 import RallyMealInfo from './Rally.Meal.Info';
 import RallyStatusDetails from './Rally.Status.Details';
-import RallyStatusInfo from './Rally.Status.Info';
+// import RallyStatusInfo from './Rally.Status.Info';
 import CustomButton from '../../ui/CustomButton';
 import SelectDropdown from 'react-native-select-dropdown';
 import RegScrollItem from '../../serve/ServeRegistrationScrollItem';
 import BottomSheet from '@gorhom/bottom-sheet';
-import ServeRegDetailModal from '../../serve/ServeRegDetailModal';
+// import ServeRegDetailModal from '../../serve/ServeRegDetailModal';
 import { Colors } from '../../../constants/colors';
 import { CONFIG, transformPatePhone } from '../../../utils/helpers';
 import { printObject } from '../../../utils/helpers';
 //import { ScrollView } from 'react-native-gesture-handler';
 import { updateRally } from '../../../features/rallies/ralliesSlice';
 import { getRegistrarsForEvent } from '../../../providers/registrations';
-import RallyRegistrars from './RallyRegistrars';
-import { blue } from '@material-ui/core/colors';
+// import RallyRegistrars from './RallyRegistrars';
+// import CoordinatorTransferScreen from '../../../screens/CoordinatorTransfer';
+// import { blue } from '@material-ui/core/colors';
 import RallyMap from '../Rally.Map';
 import { colors } from '@material-ui/core';
 import { useCallback } from 'react';
 const RallyDetails = ({ rallyId }) => {
+    const navigation = useNavigation();
     const bottomSheetRef = useRef(null);
     const snapPoints = useMemo(() => ['8%', '75%'], []);
     const [showStatusModal, setShowStatusModal] = useState(false);
@@ -58,9 +61,9 @@ const RallyDetails = ({ rallyId }) => {
 
     const [regInquiry, setRegInquiry] = useState({});
     // let regInquiry = {};
-    const [statusRally, setStatusRally] = useState();
+    // const [statusRally, setStatusRally] = useState();
     const [newStatus, setNewStatus] = useState();
-    const navigation = useNavigation();
+    // const navigation = useNavigation();
     const feo = useSelector((state) => state.system);
     const user = useSelector((state) => state.users.currentUser);
     const rallyEntry = useSelector((state) =>
@@ -142,10 +145,7 @@ const RallyDetails = ({ rallyId }) => {
     };
     const handleCoordinatorPress = () => {
         setShowDetailModal(false);
-        printObject('RI:145-->rally', rally);
-        navigation.navigate('Coordinators', {
-            rally: rally,
-        });
+        navigation.navigate('Coordinators', { rally: rally });
     };
     const handleDetailModalPress = () => {
         setShowDetailModal(false);
@@ -203,13 +203,12 @@ const RallyDetails = ({ rallyId }) => {
 
         setShowStatusModal(false);
     };
-    const handleRegistrarRequest = (reg) => {
-        // printObject('RI:122-reg', reg);
-        navigation.navigate('RegistrationDetails', { reg: reg });
-    };
     const handleSheetChanges = useCallback((index) => {
-        console.log('hadleSheetChanges', index);
+        // console.log('handleSheetChanges', index);
     });
+    const handleTransferClick = () => {
+        navigation.navigate('CoordinatorTransfer', { rally: rally });
+    };
 
     return (
         <>
@@ -413,7 +412,6 @@ const RallyDetails = ({ rallyId }) => {
                             </View>
                             <RallyStatusDetails
                                 rally={rally}
-                                onPress={handleStatusPress}
                                 onCoordinatorPress={handleCoordinatorPress}
                             />
                             <View style={styles.modalDetailsButtonContainer}>
@@ -544,19 +542,38 @@ const RallyDetails = ({ rallyId }) => {
                             </View>
                             <View style={styles.detailsContainer}>
                                 <Surface style={[styles.detailsSurface]}>
-                                    <View style={styles.detailsView}>
-                                        <Pressable
-                                            onPress={() =>
-                                                setShowDetailModal(true)
-                                            }
-                                        >
-                                            <Entypo
-                                                name='dots-three-horizontal'
-                                                size={24}
-                                                color='black'
-                                            />
-                                        </Pressable>
-                                    </View>
+                                    {user.affiliations.active.role ===
+                                        'lead' && (
+                                        <View style={styles.detailsView}>
+                                            <Pressable
+                                                onPress={() =>
+                                                    setShowDetailModal(true)
+                                                }
+                                            >
+                                                <Entypo
+                                                    name='dots-three-horizontal'
+                                                    size={24}
+                                                    color='black'
+                                                />
+                                            </Pressable>
+                                        </View>
+                                    )}
+                                    {user.affiliations.active.role === 'rep' &&
+                                        rally.coordinator.id === user.uid && (
+                                            <View style={styles.detailsView}>
+                                                <Pressable
+                                                    onPress={() =>
+                                                        handleTransferClick()
+                                                    }
+                                                >
+                                                    <MaterialCommunityIcons
+                                                        name='account-switch'
+                                                        size={24}
+                                                        color='black'
+                                                    />
+                                                </Pressable>
+                                            </View>
+                                        )}
                                 </Surface>
                             </View>
                         </Surface>

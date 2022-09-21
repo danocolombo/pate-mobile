@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Modal,
+    TouchableOpacity,
+    Alert,
+} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -62,7 +69,9 @@ const UserDisplay = ({ profile }) => {
             } else {
                 newProfileType = 'guest';
             }
-            //todo == need to update the options role for feo.affiliation
+            //todo == WHEN IMPLEMENTING DIRECTOR ASSIGNING LEAD,
+            //todo  TO UPDATE P8Affiliates.maagers WITH NEW LEAD
+            //todo  OR REMOVE THE LEAD BEING DEMOTED.
 
             //todo == need to update active if feo.affiliation
             let origActive = profile.affiliations.active;
@@ -110,6 +119,9 @@ const UserDisplay = ({ profile }) => {
                     console.log('Error trying to update profile in DDB\n', err)
                 );
         }
+        Alert.alert(
+            'NOTE: changes not in effect until user logs out and back in.'
+        );
         navigate.goBack();
     };
     const handleProfileAcknowledge = () => {

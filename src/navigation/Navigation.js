@@ -5,6 +5,7 @@ import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { Button } from 'react-native';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
@@ -15,13 +16,13 @@ import {
 } from '@react-navigation/drawer';
 
 import { Colors } from '../constants/colors';
-
 import ServeRallyFormScreen from '../screens/Serve/ServeRallyFormScreen';
 import RallyInfoScreen from '../screens/RallyInfoScreen';
 import RallyDetailScreen from '../screens/RallyDetailsScreen';
 import RallyEditFlowScreen from '../screens/RallyEditFlowScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import CoordinatorScreen from '../screens/CoordinatorScreen';
+import CoordinatorTransferScreen from '../screens/CoordinatorTransfer';
 import RegistrationScreen from '../screens/RegistrationScreen';
 import RemoveUser from '../screens/RemoveUser';
 import ErrorScreen from '../screens/ErrorScreen';
@@ -48,8 +49,10 @@ const Stack = createNativeStackNavigator();
 // }
 
 function PateStack() {
+    const feo = useSelector((state) => state.system);
     return (
         <Stack.Navigator>
+            {/* <Stack.Screen name='ServeList' options={{ headerShown: false }} /> */}
             <Stack.Screen
                 name='AuthenticatedDrawer'
                 // component={AuthenticatedDrawer}
@@ -61,6 +64,20 @@ function PateStack() {
                 component={RallyDetailScreen}
                 options={({ navigation }) => ({
                     title: 'FEO',
+                    headerStyle: {
+                        backgroundColor: Colors.primary,
+                    },
+                    headerTintColor: 'white',
+                })}
+            />
+            <Stack.Screen
+                name='CoordinatorTransfer'
+                component={CoordinatorTransferScreen}
+                options={({ navigation }) => ({
+                    title: feo.affiliation ? feo.affiliation : 'FEO',
+                    headerLeft: () => {
+                        return null;
+                    },
                     headerStyle: {
                         backgroundColor: Colors.primary,
                     },

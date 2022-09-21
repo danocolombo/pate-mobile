@@ -79,7 +79,6 @@ export default function RallyLocationConfirm(props) {
             });
             setLocationDefined(true);
         }
-        console.log('REL:82');
     }, []);
     //props, isFocused
 

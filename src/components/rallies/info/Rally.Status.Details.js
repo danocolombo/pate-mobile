@@ -1,85 +1,44 @@
 import { StyleSheet, View, Text, TouchableOpacity, Modal } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { Badge } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
-import { AntDesign } from '@expo/vector-icons';
 import Collapsible from 'react-native-collapsible';
-import CustomSmallButton from '../../ui/CustomSmallButton';
-import CustomButton from '../../ui/CustomButton';
+
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
 import { Colors } from '../../../constants/colors';
 import { printObject } from '../../../utils/helpers';
 import { ScrollView } from 'react-native-gesture-handler';
-const RallyStatusDetails = ({ rally, onPress, onCoordinatorPress }) => {
+const RallyStatusDetails = ({ rally, onCoordinatorPress }) => {
     const navigation = useNavigation();
-    const [showTransferModal, setShowTranferModal] = useState(false);
     // printObject('RSI:9 --> rally', rally);
     const user = useSelector((state) => state.users.currentUser);
-    const [collapsed, setCollapsed] = useState(true); //collapsible
-    let tColor = 'gold';
-    let bColor = 'blue';
-    const handleCoordinatorPress = (reg) => {
-        // printObject('RI:122-reg', reg);
-
-        navigation.navigate('RegistrationDetails', { reg: reg });
+    const onCoordinatorClick = () => {
+        onCoordinatorPress();
+    };
+    const displayEventCompKey = () => {
+        let parts = rally.eventCompKey.split('#');
+        let results =
+            'Year: ' +
+            parts[0] +
+            '\nMonth:' +
+            parts[1] +
+            '\nDay:' +
+            parts[2] +
+            '\nState:' +
+            parts[3] +
+            '\nEvent ID:' +
+            parts[4] +
+            '\nUser ID:' +
+            parts[5];
+        return results;
     };
     return (
         <>
             <View style={styles.rootContainer}>
                 <ScrollView>
-                    <Modal visible={showTransferModal} animationStyle='slide'>
-                        <Surface style={styles.modalSurface}>
-                            <View style={styles.modalInfoWrapper}>
-                                <Text style={styles.modalTitle}>
-                                    Would you like to transfer this event to
-                                    your leader?
-                                </Text>
-                            </View>
-                            <View>
-                                <View style={styles.modalButtonContainer}>
-                                    <View style={styles.modalButtonWrapper}>
-                                        <View style={styles.modalCancelButton}>
-                                            <CustomButton
-                                                title='NO'
-                                                graphic={null}
-                                                cbStyles={{
-                                                    backgroundColor:
-                                                        Colors.gray35,
-                                                    color: 'white',
-                                                    textAlign: 'center',
-                                                    marginHorizontal: 5,
-                                                }}
-                                                txtColor='white'
-                                                onPress={() => {
-                                                    setShowTranferModal(false);
-                                                }}
-                                            />
-                                        </View>
-                                        <View style={styles.modalCancelButton}>
-                                            <CustomButton
-                                                title='YES'
-                                                graphic={null}
-                                                cbStyles={{
-                                                    backgroundColor: 'green',
-                                                    color: 'white',
-                                                    textAlign: 'center',
-                                                    marginHorizontal: 5,
-                                                }}
-                                                txtColor='white'
-                                                onPress={() => {
-                                                    handleTransferRequest();
-                                                }}
-                                            />
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                        </Surface>
-                    </Modal>
                     <View style={styles.detailsContainer}>
                         <Surface style={styles.detailsSurface}>
                             <View style={styles.statusDataWrapper}>
@@ -140,7 +99,7 @@ const RallyStatusDetails = ({ rally, onPress, onCoordinatorPress }) => {
                                             <TouchableOpacity
                                                 key={rally.uid}
                                                 onPress={() =>
-                                                    onCoordinatorPress()
+                                                    onCoordinatorClick()
                                                 }
                                                 style={({ pressed }) =>
                                                     pressed && styles.pressed
@@ -178,7 +137,16 @@ const RallyStatusDetails = ({ rally, onPress, onCoordinatorPress }) => {
                                 <View style={styles.statusRow}>
                                     <View>
                                         <Text style={{ fontSize: 14 }}>
-                                            {rally?.uid}
+                                            Event ID: {rally?.uid}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={styles.statusRow}>
+                                    <View>
+                                        <Text style={{ fontSize: 14 }}>
+                                            {displayEventCompKey(
+                                                rally.displayEventCompKey
+                                            )}
                                         </Text>
                                     </View>
                                 </View>

@@ -16,7 +16,7 @@ const RallyDetailsScreen = ({ route, navigation }) => {
             source={require('../components/images/background.png')}
             style={styles.bgImageContainer}
         >
-            <RallyDetails rally={rally} navigation />
+            <RallyDetails rally={rally} />
         </ImageBackground>
     );
 };

@@ -12,12 +12,9 @@ import {
     addNewRally,
     updateRally,
 } from '../../../features/rallies/ralliesSlice';
-import { systemm } from '../../../features/system/systemSlice';
 import { getPhoneType, CONFIG, createPatePhone } from '../../../utils/helpers';
-import { Colors } from '../../../constants/colors';
 
 import { printObject, getUniqueId } from '../../../utils/helpers';
-import { faCropSimple } from '@fortawesome/free-solid-svg-icons';
 import { Analytics } from 'aws-amplify';
 
 const RallyNewConfirmation = () => {
@@ -59,7 +56,7 @@ const RallyNewConfirmation = () => {
     }
     // create new eventCompKey in case date changed
     const yr = tmp.eventDate.substr(0, 4);
-    const mo = tmp.eventDate.substr(4, 6);
+    const mo = tmp.eventDate.substr(4, 2);
     const da = tmp.eventDate.substr(6);
     let keyToUse;
     tmp?.uid ? (keyToUse = tmp.uid) : (keyToUse = 'TBD');
@@ -68,9 +65,9 @@ const RallyNewConfirmation = () => {
         '#' +
         mo +
         '#' +
-        tmp.stateProv +
-        '#' +
         da +
+        '#' +
+        tmp.stateProv +
         '#' +
         keyToUse +
         '#' +
