@@ -13,7 +13,7 @@ const makeToday1 = () => {
 };
 const makeToday = () => {
     var data = new Date();
-    printObject('data', data);
+    // printObject('data', data);
     const yr = parseInt(data.getFullYear());
     let mo = parseInt(data.getMonth());
     const da = parseInt(data.getDate());

@@ -111,11 +111,11 @@ export default function RallyMealForm({ rallyId }) {
                 hr = parseInt(tmp.meal.startTime.substr(0, 2));
                 mi = parseInt(tmp.meal.startTime.substr(3, 2));
             }
-            console.log('yr', yr);
-            console.log('mo', mo);
-            console.log('da', da);
-            console.log('hr', hr);
-            console.log('mi', mi);
+            // console.log('yr', yr);
+            // console.log('mo', mo);
+            // console.log('da', da);
+            // console.log('hr', hr);
+            // console.log('mi', mi);
             let tmpDate = new Date(yr, mo - 1, da, hr, mi, 0);
             setMealStartTime(tmpDate);
             let t = makeTimeString(tmpDate);
