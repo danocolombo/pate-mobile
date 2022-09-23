@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { View, Text, Button, SafeAreaView, StyleSheet } from 'react-native';
+import {
+    View,
+    Text,
+    Button,
+    SafeAreaView,
+    StyleSheet,
+    Platform,
+} from 'react-native';
 import Navigation from './src/navigation/Navigation';
 // - - - - - redux toolkit - -  - - - - -
 import { store } from './src/app/store';
@@ -41,7 +48,13 @@ function App() {
         <Provider store={store}>
             <QueryClientProvider client={queryClient}>
                 <PaperProvider theme={feoTheme}>
-                    <SafeAreaView style={styles.container}>
+                    <SafeAreaView
+                        style={
+                            Platform === 'ios'
+                                ? styles.containerIOS
+                                : styles.container
+                        }
+                    >
                         <Navigation />
                     </SafeAreaView>
                 </PaperProvider>
@@ -52,9 +65,13 @@ function App() {
 
 export default App;
 const styles = StyleSheet.create({
-    container: {
+    containerIOS: {
         flex: 1,
         backgroundColor: '#fff',
         marginTop: 50,
+    },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
     },
 });
