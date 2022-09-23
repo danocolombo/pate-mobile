@@ -1,62 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
-    TextInput,
     View,
     Text,
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
     ImageBackground,
-    Alert,
+    Pressable,
+    Platform,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
-import {
-    getPateDate,
-    getPateTime,
-    pateDateToSpinner,
-    pateTimeToSpinner,
-} from '../../../utils/date';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { getPateDate, getPateTime } from '../../../utils/date';
 import { compareAsc } from 'date-fns';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyLogisticsForm({ rallyId }) {
     // messy
     let dateNow = new Date(2022, 6, 23);
+    const feo = useSelector((state) => state.system);
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
+
+    const [defaultDateString, setDefaultDateString] = useState();
+    const [eventDate, setEventDate] = useState();
+    const [eventDateString, setEventDateString] = useState();
+    const [startTime, setStartTime] = useState();
+    const [startTimeString, setStartTimeString] = useState();
+    const [endTime, setEndTime] = useState();
+    const [endTimeString, setEndTimeString] = useState();
+    const [modalEventDateVisible, setModalEventDateVisible] = useState(false);
+    const [modalStartTimeVisible, setModalStartTimeVisisble] = useState(false);
+    const [modalEndTimeVisible, setModalEndTimeVisisble] = useState(false);
+
     const [finishDateError, setFinishDateError] = useState(false);
-    const [date, setDate] = useState(
-        tmp?.eventDate ? pateDateToSpinner(tmp?.eventDate) : dateNow
-    );
-    // const [date, setDate] = useState(new Date(Date.now()));
-    const [startTime, setStartTime] = useState(
-        tmp?.startTime
-            ? pateTimeToSpinner(tmp?.eventDate, tmp?.startTime)
-            : dateNow
-    );
-    // const [startTime, setStartTime] = useState(new Date(Date.now()));
-    const [endTime, setEndTime] = useState(
-        tmp?.endTime ? pateTimeToSpinner(tmp?.eventDate, tmp?.endTime) : dateNow
-    );
-    // const [endTime, setEndTime] = useState(new Date(Date.now()));
+
+    useEffect(() => {
+        if (rallyId !== 0) {
+            console.log('-->', tmp.startTime);
+            const yr = parseInt(tmp.eventDate.substr(0, 4));
+            const mo = parseInt(tmp.eventDate.substr(4, 2));
+            const da = parseInt(tmp.eventDate.substr(6, 2));
+            const shr = parseInt(tmp.startTime.substr(0, 2));
+            const smi = parseInt(tmp.startTime.substr(2, 2));
+            const ehr = parseInt(tmp.endTime.substr(0, 2));
+            const emi = parseInt(tmp.endTime.substr(2, 2));
+            let tmpDate = new Date(yr, mo - 1, da, shr, smi, 0);
+            console.log('shr:', shr);
+            console.log('tmpDate:', tmpDate);
+            setEventDate(tmpDate);
+            setEventDateString(tmpDate.toDateString());
+            setDefaultDateString(tmpDate.toDateString());
+            setStartTime(tmpDate);
+            let stime = makeDateString(tmpDate);
+
+            console.log('stime:', stime);
+            setStartTimeString(stime);
+            tmpDate = new Date(yr, mo - 1, da, ehr, emi, 0);
+            let etime = makeDateString(tmpDate);
+
+            setEndTime(tmpDate);
+            setEndTimeString(etime);
+        } else {
+            const yr = feo.today.substr(0, 4);
+            const mo = feo.today.substr(4, 2);
+            const da = feo.today.substr(6, 2);
+            let tmpDate = new Date(yr, mo - 1, da, 13, 0, 0, 0);
+
+            setEventDate(tmpDate);
+            setEventDateString(tmpDate.toDateString());
+            setStartTime(tmpDate);
+            let stime = makeDateString(tmpDate);
+            setStartTimeString(stime);
+
+            tmpDate = new Date(yr, mo - 1, da, 17, 0, 0, 0);
+            setEndTime(tmpDate);
+            let etime = makeDateString(tmpDate);
+            setEndTimeString(etime);
+        }
+    }, []);
     const handleNext = () => {
-        let theDateObject = date;
-        let ed = Date.parse(theDateObject);
+        let ed = Date.parse(eventDate);
         let pDate = getPateDate(ed);
 
-        theDateObject = startTime;
-        let st = Date.parse(theDateObject);
+        let st = Date.parse(startTime);
         let pStart = getPateTime(st);
 
-        theDateObject = endTime;
-        let et = Date.parse(theDateObject);
+        let et = Date.parse(endTime);
         let pEnd = getPateTime(et);
 
         //make sure the Finish/End date/time is = or greater than start.
@@ -82,17 +118,93 @@ export default function RallyLogisticsForm({ rallyId }) {
             stage: 4,
         });
     };
-    const onDateChange = (event, value) => {
-        setDate(value);
+    const onEventDateConfirm = (data) => {
+        FormatEventDate(data);
+        setModalEventDateVisible(false);
     };
-    const onStartTimeChange = (event, value) => {
-        setStartTime(value);
+    const FormatEventDate = (data) => {
+        let dateString =
+            data.getMonth() +
+            1 +
+            '-' +
+            data.getDate() +
+            '-' +
+            data.getFullYear() +
+            ' ';
+        const yr = parseInt(data.getFullYear());
+        const mo = parseInt(data.getMonth());
+        const da = parseInt(data.getDate());
+        const tmp = new Date(yr, mo, da, 0, 0, 0);
+        setEventDate(tmp);
+        setEventDateString(tmp.toDateString());
+        return;
     };
-    const onEndTimeChange = (event, value) => {
-        setEndTime(value);
+    const onStartTimeConfirm = (data) => {
+        FormatTime(data, 'START');
+        setModalStartTimeVisisble(false);
     };
+    const onEndTimeConfirm = (data) => {
+        FormatTime(data, 'END');
+        setModalEndTimeVisisble(false);
+    };
+    const FormatTime = (data, target) => {
+        const yr = parseInt(data.getFullYear());
+        const mo = parseInt(data.getMonth());
+        const da = parseInt(data.getDate());
+        const hr = parseInt(data.getHours());
+        const mi = parseInt(data.getMinutes());
+        const tmpDate = new Date(yr, mo, da, hr, mi, 0, 0);
+        let str;
+        if (Platform === 'android') {
+            str =
+                (hr > 12 ? hr - 12 : hr).toString() +
+                ':' +
+                ('0' + mi.toString()).slice(-2) +
+                ' ' +
+                (hr > 11 ? 'PM' : 'AM');
+        } else {
+            str =
+                (hr > 12 ? hr - 12 : hr).toString() +
+                ':' +
+                ('0' + mi.toString()).slice(-2) +
+                ' ' +
+                (hr > 11 ? 'PM' : 'AM');
+        }
+        if (target === 'START') {
+            setStartTimeString(str);
+        } else {
+            setEndTimeString(str);
+        }
+        return;
+    };
+    const makeDateString = (data) => {
+        const yr = parseInt(data.getFullYear());
+        const mo = parseInt(data.getMonth());
+        const da = parseInt(data.getDate());
+        const hr = parseInt(data.getHours());
+        const mi = parseInt(data.getMinutes());
 
-    // printObject('1. tmpRally:', tmp);
+        let str;
+        if (Platform === 'android') {
+            str =
+                (hr > 12 ? hr - 12 : hr).toString() +
+                ':' +
+                ('0' + mi.toString()).slice(-2) +
+                ' ' +
+                (hr > 11 ? 'PM' : 'AM');
+        } else {
+            str =
+                (hr > 12 ? hr - 12 : hr).toString() +
+                ':' +
+                ('0' + mi.toString()).slice(-2) +
+                ' ' +
+                (hr > 11 ? 'PM' : 'AM');
+        }
+        return str;
+    };
+    const onEventCancel = (data) => setModalEventDateVisible(false);
+    const onStartTimeCancel = (data) => setModalStartTimeVisisble(false);
+    const onEndTimeCancel = (data) => setModalEndTimeVisisble(false);
     return (
         <>
             <ImageBackground
@@ -106,89 +218,153 @@ export default function RallyLogisticsForm({ rallyId }) {
                                 <Text style={styles.titleText}>Logistics</Text>
                             </View>
                             <View style={styles.inputContainer}>
-                                <View>
-                                    <View>
-                                        <View style={styles.inputLabels}>
-                                            <Text style={styles.inputLabelText}>
-                                                Event Date
-                                            </Text>
-                                            <View
-                                                style={styles.datePickerWrapper}
+                                <View
+                                    style={{
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 24,
+                                            fontWeight: '400',
+                                            letterSpacing: 0.6,
+                                        }}
+                                    >
+                                        EVENT DATE
+                                    </Text>
+                                    <Pressable
+                                        onPress={() =>
+                                            setModalEventDateVisible(true)
+                                        }
+                                    >
+                                        <View
+                                            style={{
+                                                backgroundColor: 'lightgrey',
+                                                marginVertical: 2,
+                                                marginHorizontal: 5,
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    padding: 15,
+                                                    fontSize: 25,
+                                                }}
                                             >
-                                                <DateTimePicker
-                                                    testID='dateTimePicker'
-                                                    minimumDate={new Date()}
-                                                    value={date}
-                                                    mode='date'
-                                                    display={
-                                                        Platform.OS === 'ios'
-                                                            ? 'spinner'
-                                                            : 'default'
-                                                    }
-                                                    is24Hour={true}
-                                                    onChange={onDateChange}
-                                                    style={styles.datePicker}
-                                                />
-                                            </View>
-                                            <Text style={styles.inputLabelText}>
-                                                Start Time
+                                                {eventDateString
+                                                    ? eventDateString
+                                                    : defaultDateString}
                                             </Text>
-                                            <View
-                                                style={styles.datePickerWrapper}
-                                            >
-                                                <DateTimePicker
-                                                    value={startTime}
-                                                    minuteInterval={15}
-                                                    mode='time'
-                                                    display={
-                                                        Platform.OS === 'ios'
-                                                            ? 'spinner'
-                                                            : 'default'
-                                                    }
-                                                    is24Hour={true}
-                                                    onChange={onStartTimeChange}
-                                                    style={styles.datePicker}
-                                                />
-                                            </View>
-                                            <Text style={styles.inputLabelText}>
-                                                Finish Time
-                                            </Text>
-                                            <View
-                                                style={styles.datePickerWrapper}
-                                            >
-                                                <DateTimePicker
-                                                    value={endTime}
-                                                    mode='time'
-                                                    minuteInterval={15}
-                                                    display={
-                                                        Platform.OS === 'ios'
-                                                            ? 'spinner'
-                                                            : 'default'
-                                                    }
-                                                    is24Hour={true}
-                                                    onChange={onEndTimeChange}
-                                                    style={styles.datePicker}
-                                                />
-                                            </View>
-                                            {finishDateError && (
-                                                <View
-                                                    style={
-                                                        styles.finishTimeErrorWrapper
-                                                    }
-                                                >
-                                                    <Text
-                                                        style={
-                                                            styles.finishTimeErrorText
-                                                        }
-                                                    >
-                                                        Finish Time cannot be
-                                                        before Start Time
-                                                    </Text>
-                                                </View>
-                                            )}
                                         </View>
-                                    </View>
+                                    </Pressable>
                                 </View>
+                                <View
+                                    style={{
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        marginTop: 15,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 24,
+                                            fontWeight: '400',
+                                            letterSpacing: 0.6,
+                                        }}
+                                    >
+                                        START TIME
+                                    </Text>
+                                    <Pressable
+                                        onPress={() =>
+                                            setModalStartTimeVisisble(true)
+                                        }
+                                    >
+                                        <View
+                                            style={{
+                                                backgroundColor: 'lightgrey',
+                                                marginVertical: 2,
+                                                marginHorizontal: 5,
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    padding: 15,
+                                                    fontSize: 25,
+                                                }}
+                                            >
+                                                {startTimeString
+                                                    ? startTimeString
+                                                    : defaultDateString}
+                                            </Text>
+                                        </View>
+                                    </Pressable>
+                                </View>
+                                <View
+                                    style={{
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        marginTop: 15,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 24,
+                                            fontWeight: '400',
+                                            letterSpacing: 0.6,
+                                        }}
+                                    >
+                                        FINISH TIME
+                                    </Text>
+                                    <Pressable
+                                        onPress={() =>
+                                            setModalEndTimeVisisble(true)
+                                        }
+                                    >
+                                        <View
+                                            style={{
+                                                backgroundColor: 'lightgrey',
+                                                marginVertical: 2,
+                                                marginHorizontal: 5,
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    padding: 15,
+                                                    fontSize: 25,
+                                                }}
+                                            >
+                                                {endTimeString
+                                                    ? endTimeString
+                                                    : defaultDateString}
+                                            </Text>
+                                        </View>
+                                    </Pressable>
+                                </View>
+
+                                <DateTimePickerModal
+                                    isVisible={modalEventDateVisible}
+                                    date={eventDate}
+                                    mode='date'
+                                    value={eventDate}
+                                    onConfirm={onEventDateConfirm}
+                                    onCancel={onEventCancel}
+                                />
+                                <DateTimePickerModal
+                                    isVisible={modalStartTimeVisible}
+                                    date={startTime}
+                                    mode='time'
+                                    value={startTime}
+                                    onConfirm={onStartTimeConfirm}
+                                    onCancel={onStartTimeCancel}
+                                />
+                                <DateTimePickerModal
+                                    isVisible={modalEndTimeVisible}
+                                    date={endTime}
+                                    mode='time'
+                                    value={endTime}
+                                    onConfirm={onEndTimeConfirm}
+                                    onCancel={onEndTimeCancel}
+                                />
                             </View>
                         </ScrollView>
                         <View style={styles.buttonContainer}>
@@ -235,8 +411,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     titleText: {
-        fontSize: 28,
+        fontSize: 32,
         fontWeight: 'bold',
+        marginBottom: 15,
     },
     inputLabels: {
         alignItems: 'center',
