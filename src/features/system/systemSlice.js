@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-const makeToday = () => {
+import { printObject } from '../../utils/helpers';
+const makeToday1 = () => {
     var d = new Date();
     const dminusone = d.toLocaleString(); //  M/DD/YYYY, H:MM:SS PM
     let datetime = dminusone.split(', '); // M/DD/YYYY
@@ -9,6 +10,21 @@ const makeToday = () => {
     const da = dateparts[1] < 10 ? '0' + dateparts[1] : dateparts[1];
     const target = yr + mn + da;
     return target; // returns YYYYMMDD
+};
+const makeToday = () => {
+    var data = new Date();
+    printObject('data', data);
+    const yr = parseInt(data.getFullYear());
+    let mo = parseInt(data.getMonth());
+    const da = parseInt(data.getDate());
+    const hr = parseInt(data.getHours());
+    const mi = parseInt(data.getMinutes());
+    //month and day lengths if applicable
+    mo = mo + 1;
+    const moFix = ('0' + mo.toString()).slice(-2);
+    const daFix = ('0' + da.toString()).slice(-2);
+    const target = yr.toString() + moFix + daFix;
+    return target; //
 };
 let today = makeToday();
 let AFF = {

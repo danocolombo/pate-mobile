@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -7,12 +7,13 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ScrollView,
+    Pressable,
+    Platform,
     Modal,
     ImageBackground,
 } from 'react-native';
-import { Headline } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CustomButton from '../../../components/ui/CustomButton';
 import { Surface } from 'react-native-paper';
 import CurrencyInput from 'react-native-currency-input';
@@ -27,14 +28,24 @@ import {
 } from '../../../utils/date';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
-import { normalize } from 'react-native-elements';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyMealForm({ rallyId }) {
-    let dateNow = new Date(2022, 6, 23);
+    // let dateNow = new Date(2022, 6, 23);
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const feo = useSelector((state) => state.system);
     const tmp = useSelector((state) => state.rallies.tmpRally);
+    let dateNow = new Date();
+
+    const [defaultDateTime, setDefaultDateTime] = useState();
+    const [defaultDateTimeString, setDefaultDateTimeString] = useState();
+    const [mealStartTime, setMealStartTime] = useState();
+    const [mealStartTimeString, setMealStartTimeString] = useState();
+    const [deadlineDate, setDeadlineDate] = useState();
+    const [deadlineDateString, setDeadlineDateString] = useState();
+    const [modalMealTimeVisible, setModalMealTimeVisible] = useState();
+    const [modalDealineVisible, setModalDeadlineVisible] = useState();
 
     const [showMealCountConfirm, setShowMealCountConfirm] = useState(
         parseInt(tmp?.meal?.mealCount) > 0 ? true : false
@@ -44,28 +55,161 @@ export default function RallyMealForm({ rallyId }) {
         mealSetting = false;
     }
     const [offerMeal, setOfferMeal] = useState(mealSetting);
-    const [mealTime, setMealTime] = useState(
-        tmp?.eventDate && tmp?.meal?.startTime
-            ? pateTimeToSpinner(tmp.eventDate, tmp.meal.startTime)
-            : dateNow
-    );
     const [cost, setCost] = useState(tmp?.meal?.cost);
-    const [deadline, setDeadline] = useState(
-        tmp?.eventDate ? pateDateToSpinner(tmp.eventDate) : dateNow
-    );
     const [mealMessage, setMealMessage] = useState(
         tmp?.meal?.message ? tmp.meal.message : ''
     );
-    const onMealTimeChange = (event, value) => {
-        setMealTime(value);
+    const makeTimeString = (data) => {
+        const yr = parseInt(data.getFullYear());
+        const mo = parseInt(data.getMonth());
+        const da = parseInt(data.getDate());
+        const hr = parseInt(data.getHours());
+        const mi = parseInt(data.getMinutes());
+
+        let str;
+        // console.log('yr', yr);
+        // console.log('mo', mo);
+        // console.log('da', da);
+        // console.log('hr', hr);
+        // console.log('mi', mi);
+        if (Platform === 'android') {
+            str =
+                (hr > 12 ? hr - 12 : hr).toString() +
+                ':' +
+                ('0' + mi.toString()).slice(-2) +
+                ' ' +
+                (hr > 11 ? 'PM' : 'AM');
+        } else {
+            str =
+                (hr > 12 ? hr - 12 : hr).toString() +
+                ':' +
+                ('0' + mi.toString()).slice(-2) +
+                ' ' +
+                (hr > 11 ? 'PM' : 'AM');
+        }
+        return str;
     };
-    const onDeadlineChange = (event, value) => {
-        setDeadline(value);
-    };
+    useState(() => {
+        // get mealStartTime and deadline, or set default
+        printObject('feo', feo);
+        let yr = feo.today.substr(0, 4);
+        let mo = feo.today.substr(4, 2);
+        let da = feo.today.substr(6, 2);
+        if (tmp?.meal?.offered === false) {
+            // default of today at noon
+            let tmpDate = new Date(yr, mo - 1, da, 12, 0, 0, 0);
+            setDefaultDateTime(tmpDate);
+            yr = parseInt(tmp.eventDate.substr(0, 4));
+            mo = parseInt(tmp.eventDate.substr(4, 2));
+            da = parseInt(tmp.eventDate.substr(6, 2));
+            setDeadlineDate(tmpDate);
+            setDeadlineDateString(tmpDate.toDateString());
+        } else {
+            let hr = 12;
+            let mi = 0;
+            if (tmp.uid) {
+                hr = parseInt(tmp.meal.startTime.substr(0, 2));
+                mi = parseInt(tmp.meal.startTime.substr(3, 2));
+            }
+            console.log('yr', yr);
+            console.log('mo', mo);
+            console.log('da', da);
+            console.log('hr', hr);
+            console.log('mi', mi);
+            let tmpDate = new Date(yr, mo - 1, da, hr, mi, 0);
+            setMealStartTime(tmpDate);
+            let t = makeTimeString(tmpDate);
+            setMealStartTimeString(t);
+
+            //now set deadline
+            if (tmp?.meal?.deadline) {
+                yr = parseInt(tmp.meal.deadline.substr(0, 4));
+                mo = parseInt(tmp.meal.deadline.substr(4, 2));
+                da = parseInt(tmp.meal.deadline.substr(6, 2));
+            } else {
+                //set t o eventDate
+                yr = parseInt(tmp.eventDate.substr(0, 4));
+                mo = parseInt(tmp.eventDate.substr(4, 2));
+                da = parseInt(tmp.eventDate.substr(6, 2));
+            }
+            // can use start times, since the values are not used
+            tmpDate = new Date(yr, mo - 1, da, hr, mi, 0);
+            setDeadlineDate(tmpDate);
+            setDeadlineDateString(tmpDate.toDateString());
+        }
+        if (tmp?.meal?.offered === false) {
+            let tmpDate = new Date(yr, mo - 1, da, 12, 0, 0);
+            setMealStartTime(tmpDate);
+            let t = makeTimeString(tmpDate);
+            setMealStartTimeString(t);
+            //default the deadline to be the date of the event
+            yr = parseInt(tmp.eventDate.substr(0, 4));
+            mo = parseInt(tmp.eventDate.substr(4, 2));
+            da = parseInt(tmp.eventDate.substr(6, 2));
+            setDeadlineDate(tmpDate);
+            setDeadlineDateString(tmpDate.toDateString());
+        }
+    }, []);
+
     const onMessageChange = (e) => {
         // printObject('REM:64-->e:', e);
         setMealMessage(e);
     };
+    const onMealTimeConfirm = (data) => {
+        FormatTime(data);
+        setModalMealTimeVisible(false);
+    };
+    const FormatTime = (data) => {
+        const yr = parseInt(data.getFullYear());
+        const mo = parseInt(data.getMonth());
+        const da = parseInt(data.getDate());
+        const hr = parseInt(data.getHours());
+        const mi = parseInt(data.getMinutes());
+        const tmpDate = new Date(yr, mo, da, hr, mi, 0, 0);
+        let str;
+        if (Platform === 'android') {
+            str =
+                (hr > 12 ? hr - 12 : hr).toString() +
+                ':' +
+                ('0' + mi.toString()).slice(-2) +
+                ' ' +
+                (hr > 11 ? 'PM' : 'AM');
+        } else {
+            str =
+                (hr > 12 ? hr - 12 : hr).toString() +
+                ':' +
+                ('0' + mi.toString()).slice(-2) +
+                ' ' +
+                (hr > 11 ? 'PM' : 'AM');
+        }
+        setMealStartTime(tmpDate);
+        setMealStartTimeString(str);
+
+        return;
+    };
+    const onDeadlineDateConfirm = (data) => {
+        FormatDate(data);
+        setModalDeadlineVisible(false);
+    };
+    const FormatDate = (data) => {
+        let dateString =
+            data.getMonth() +
+            1 +
+            '-' +
+            data.getDate() +
+            '-' +
+            data.getFullYear() +
+            ' ';
+        const yr = parseInt(data.getFullYear());
+        const mo = parseInt(data.getMonth());
+        const da = parseInt(data.getDate());
+        const tmp = new Date(yr, mo, da, 0, 0, 0);
+        setDeadlineDate(tmp);
+        setDeadlineDateString(tmp.toDateString());
+        return;
+    };
+    const onMealTimeCancel = (data) => setModalMealTimeVisible(false);
+    const onDeadlineDateCancel = (data) => setModalDeadlineVisible(false);
     const handleNext = () => {
         let mealOffered = offerMeal;
         let theDateObject = '';
@@ -74,11 +218,11 @@ export default function RallyMealForm({ rallyId }) {
         let mCost = '';
         let mMessage = mealMessage;
         if (mealOffered === true) {
-            theDateObject = mealTime;
-            let mt = Date.parse(theDateObject);
+            // theDateObject = mealTime;
+            let mt = Date.parse(mealStartTime);
             mTime = getPateTime(mt);
-            theDateObject = deadline;
-            let mealDeadline = Date.parse(theDateObject);
+            // theDateObject = deadline;
+            let mealDeadline = Date.parse(deadlineDate);
             mDeadline = getPateDate(mealDeadline);
             mCost = cost;
             mMessage = mealMessage;
@@ -187,20 +331,31 @@ export default function RallyMealForm({ rallyId }) {
                                             Meal Start Time
                                         </Text>
                                     </View>
-                                    <DateTimePicker
-                                        value={mealTime}
-                                        minuteInterval={15}
-                                        mode='time'
-                                        disabled={!offerMeal}
-                                        display={
-                                            Platform.OS === 'ios'
-                                                ? 'spinner'
-                                                : 'default'
+                                    <Pressable
+                                        onPress={() =>
+                                            setModalMealTimeVisible(true)
                                         }
-                                        is24Hour={true}
-                                        onChange={onMealTimeChange}
-                                        style={styles.datePicker}
-                                    />
+                                    >
+                                        <View
+                                            style={
+                                                offerMeal
+                                                    ? styles.dateTimeDisplay
+                                                    : styles.disabledDateTimeDisplay
+                                            }
+                                        >
+                                            <Text
+                                                style={
+                                                    offerMeal
+                                                        ? styles.dateTimeTextString
+                                                        : styles.disabledDateTimeTextString
+                                                }
+                                            >
+                                                {mealStartTimeString
+                                                    ? mealStartTimeString
+                                                    : defaultDateTimeString}
+                                            </Text>
+                                        </View>
+                                    </Pressable>
                                 </View>
                                 <View style={styles.costWrapper}>
                                     <Text style={styles.costLabel}>
@@ -220,7 +375,7 @@ export default function RallyMealForm({ rallyId }) {
                                         style={
                                             offerMeal
                                                 ? styles.costInput
-                                                : styles.costInputDisabled
+                                                : styles.disabledCostInput
                                         }
                                         // onChangeText={(formattedValue) => {
                                         //     console.log(formattedValue); // $2,310.46
@@ -232,23 +387,31 @@ export default function RallyMealForm({ rallyId }) {
                                     <Text style={styles.datePickerLabel}>
                                         Deadline to signup for meal
                                     </Text>
-                                    <DateTimePicker
-                                        value={deadline}
-                                        mode='date'
-                                        maximumDate={pateDateToSpinner(
-                                            tmp.eventDate
-                                        )}
-                                        minuteInterval={15}
-                                        disabled={!offerMeal}
-                                        display={
-                                            Platform.OS === 'ios'
-                                                ? 'spinner'
-                                                : 'default'
+                                    <Pressable
+                                        onPress={() =>
+                                            setModalDeadlineVisible(true)
                                         }
-                                        is24Hour={true}
-                                        onChange={onDeadlineChange}
-                                        style={styles.datePicker}
-                                    />
+                                    >
+                                        <View
+                                            style={
+                                                offerMeal
+                                                    ? styles.dateTimeDisplay
+                                                    : styles.disabledDateTimeDisplay
+                                            }
+                                        >
+                                            <Text
+                                                style={
+                                                    offerMeal
+                                                        ? styles.dateTimeTextString
+                                                        : styles.disabledDateTimeTextString
+                                                }
+                                            >
+                                                {deadlineDateString
+                                                    ? deadlineDateString
+                                                    : defaultDateTimeString}
+                                            </Text>
+                                        </View>
+                                    </Pressable>
                                 </View>
                                 <View style={styles.messageWrapper}>
                                     <Text style={styles.mealMessageLabel}>
@@ -282,6 +445,22 @@ export default function RallyMealForm({ rallyId }) {
                                 />
                             </View>
                         </View>
+                        <DateTimePickerModal
+                            isVisible={modalMealTimeVisible}
+                            date={mealStartTime}
+                            mode='time'
+                            value={mealStartTime}
+                            onConfirm={onMealTimeConfirm}
+                            onCancel={onMealTimeCancel}
+                        />
+                        <DateTimePickerModal
+                            isVisible={modalDealineVisible}
+                            date={deadlineDate}
+                            mode='date'
+                            value={deadlineDate}
+                            onConfirm={onDeadlineDateConfirm}
+                            onCancel={onDeadlineDateCancel}
+                        />
                     </View>
                 </TouchableWithoutFeedback>
             </ImageBackground>
@@ -328,32 +507,35 @@ const styles = StyleSheet.create({
     },
     offerSwitchWrapper: {},
     offerSwitch: {},
-    inputContainer: {
-        marginLeft: '10%',
-    },
-    input: {
-        borderWidth: 1,
-        // borderColor: 'grey',
-        padding: 10,
-        marginTop: 0,
-        fontSize: 18,
-        borderRadius: 6,
-        width: '90%',
-    },
-    inputStateProv: {
-        width: 75,
-    },
-    inputPostalCode: {
-        width: 125,
-    },
-
     buttonContainer: {
         alignItems: 'center',
         marginTop: 10,
         marginBottom: 20,
     },
-    submitButton: {
-        width: '70%',
+    dateTimeDisplay: {
+        backgroundColor: 'lightgrey',
+        marginVertical: 2,
+        marginHorizontal: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: 'black',
+    },
+    disabledDateTimeDisplay: {
+        // backgroundColor: 'lightgrey',
+        marginVertical: 2,
+        marginHorizontal: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: 'lightgrey',
+    },
+    dateTimeTextString: {
+        padding: 15,
+        fontSize: 25,
+    },
+    disabledDateTimeTextString: {
+        padding: 15,
+        fontSize: 25,
+        color: 'lightgrey',
     },
     datePickerLabel: {
         fontSize: 20,
@@ -361,12 +543,8 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     datePickerWrapper: {
-        // borderWidth: 4,
-        // borderColor: Colors.gray35,
-        // borderRadius: 10,
         marginBottom: 5,
         alignItems: 'center',
-        // marginHorizontal: 3,
     },
     datePicker: {
         width: 300,
@@ -394,13 +572,23 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     costInput: {
-        // marginVertical: 8,
         fontSize: 18,
         borderWidth: 1,
         borderRadius: 6,
         width: 100,
+        backgroundColor: 'lightgrey',
         marginHorizontal: 0,
-        // backgroundColor: 'white',
+        borderColor: Colors.gray35,
+        paddingHorizontal: 12,
+        height: 45,
+    },
+    disabledCostInput: {
+        fontSize: 18,
+        borderWidth: 1,
+        borderRadius: 6,
+        color: 'lightgrey',
+        width: 100,
+        marginHorizontal: 0,
         borderColor: Colors.gray35,
         paddingHorizontal: 12,
         height: 45,

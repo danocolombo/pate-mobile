@@ -21,8 +21,6 @@ import { compareAsc } from 'date-fns';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyLogisticsForm({ rallyId }) {
-    // messy
-    let dateNow = new Date(2022, 6, 23);
     const feo = useSelector((state) => state.system);
     const navigation = useNavigation();
     const dispatch = useDispatch();
@@ -43,7 +41,7 @@ export default function RallyLogisticsForm({ rallyId }) {
 
     useEffect(() => {
         if (rallyId !== 0) {
-            console.log('-->', tmp.startTime);
+            // console.log('-->', tmp.startTime);
             const yr = parseInt(tmp.eventDate.substr(0, 4));
             const mo = parseInt(tmp.eventDate.substr(4, 2));
             const da = parseInt(tmp.eventDate.substr(6, 2));
@@ -52,19 +50,14 @@ export default function RallyLogisticsForm({ rallyId }) {
             const ehr = parseInt(tmp.endTime.substr(0, 2));
             const emi = parseInt(tmp.endTime.substr(2, 2));
             let tmpDate = new Date(yr, mo - 1, da, shr, smi, 0);
-            console.log('shr:', shr);
-            console.log('tmpDate:', tmpDate);
             setEventDate(tmpDate);
             setEventDateString(tmpDate.toDateString());
             setDefaultDateString(tmpDate.toDateString());
             setStartTime(tmpDate);
             let stime = makeDateString(tmpDate);
-
-            console.log('stime:', stime);
             setStartTimeString(stime);
             tmpDate = new Date(yr, mo - 1, da, ehr, emi, 0);
             let etime = makeDateString(tmpDate);
-
             setEndTime(tmpDate);
             setEndTimeString(etime);
         } else {
@@ -72,13 +65,11 @@ export default function RallyLogisticsForm({ rallyId }) {
             const mo = feo.today.substr(4, 2);
             const da = feo.today.substr(6, 2);
             let tmpDate = new Date(yr, mo - 1, da, 13, 0, 0, 0);
-
             setEventDate(tmpDate);
             setEventDateString(tmpDate.toDateString());
             setStartTime(tmpDate);
             let stime = makeDateString(tmpDate);
             setStartTimeString(stime);
-
             tmpDate = new Date(yr, mo - 1, da, 17, 0, 0, 0);
             setEndTime(tmpDate);
             let etime = makeDateString(tmpDate);
@@ -110,8 +101,6 @@ export default function RallyLogisticsForm({ rallyId }) {
             startTime: pStart,
             endTime: pEnd,
         };
-
-        // printObject('handleNext::values', values);
         dispatch(updateTmp(values));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
@@ -171,8 +160,10 @@ export default function RallyLogisticsForm({ rallyId }) {
                 (hr > 11 ? 'PM' : 'AM');
         }
         if (target === 'START') {
+            setStartTime(tmpDate);
             setStartTimeString(str);
         } else {
+            setEndTime(tmpDate);
             setEndTimeString(str);
         }
         return;
@@ -238,13 +229,7 @@ export default function RallyLogisticsForm({ rallyId }) {
                                             setModalEventDateVisible(true)
                                         }
                                     >
-                                        <View
-                                            style={{
-                                                backgroundColor: 'lightgrey',
-                                                marginVertical: 2,
-                                                marginHorizontal: 5,
-                                            }}
-                                        >
+                                        <View style={styles.dateTimeDisplay}>
                                             <Text
                                                 style={{
                                                     padding: 15,
@@ -279,13 +264,7 @@ export default function RallyLogisticsForm({ rallyId }) {
                                             setModalStartTimeVisisble(true)
                                         }
                                     >
-                                        <View
-                                            style={{
-                                                backgroundColor: 'lightgrey',
-                                                marginVertical: 2,
-                                                marginHorizontal: 5,
-                                            }}
-                                        >
+                                        <View style={styles.dateTimeDisplay}>
                                             <Text
                                                 style={{
                                                     padding: 15,
@@ -320,13 +299,7 @@ export default function RallyLogisticsForm({ rallyId }) {
                                             setModalEndTimeVisisble(true)
                                         }
                                     >
-                                        <View
-                                            style={{
-                                                backgroundColor: 'lightgrey',
-                                                marginVertical: 2,
-                                                marginHorizontal: 5,
-                                            }}
-                                        >
+                                        <View style={styles.dateTimeDisplay}>
                                             <Text
                                                 style={{
                                                     padding: 15,
@@ -415,48 +388,17 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 15,
     },
-    inputLabels: {
-        alignItems: 'center',
-    },
-    inputLabelText: {
-        fontSize: 24,
-        // fontWeight: 'bold',
-    },
     buttonContainer: {
         alignItems: 'center',
         marginTop: 10,
         marginBottom: 20,
     },
-    submitButton: {
-        width: '70%',
-    },
-    datePickerWrapper: {
-        borderWidth: 4,
-        backgroundColor: 'white',
-        borderColor: Colors.gray35,
+    dateTimeDisplay: {
+        backgroundColor: 'lightgrey',
+        marginVertical: 2,
+        marginHorizontal: 5,
         borderRadius: 10,
-        marginBottom: 5,
-    },
-    datePicker: {
-        width: 320,
-        height: 100,
-        // display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 0,
-        padding: 0,
-        // borderWidth: 3,
-        // borderStyle: 'double',
-        borderColor: Colors.gray700,
-    },
-    finishTimeErrorWrapper: {
-        paddingHorizontal: 5,
-    },
-
-    finishTimeErrorText: {
-        fontSize: 24,
-        color: Colors.critical,
-        fontWeight: 'bold',
-        textAlign: 'center',
+        borderWidth: 1,
+        borderColor: 'black',
     },
 });
