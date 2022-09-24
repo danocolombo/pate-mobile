@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     Keyboard,
     ScrollView,
+    Pressable,
     Modal,
     Platform,
 } from 'react-native';
@@ -21,6 +22,7 @@ import {
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import Checkbox from 'expo-checkbox';
 import DropDown from 'react-native-paper-dropdown';
 import PhoneInput from '../ui/PhoneInput';
 import { Formik } from 'formik';
@@ -101,6 +103,11 @@ const ProfileForm = (props) => {
     const [fName, setFName] = useState(user?.firstName ? user.firstName : '');
     const [lName, setLName] = useState(user?.lastName ? user.lastName : '');
     // const [headerUser, setHeaderUser] = useState(user);
+    const [showModalSegregateTip, setShowModalSegregateTip] = useState(false);
+    const [registrationSegregation, setRegistrationSegregation] = useState(
+        user?.registrationSegregation
+    );
+    console.log('registrationSegregation:', user.registrationSegregation);
     useEffect(() => {
         //setHeaderUser(user);
         if (originalUser.firstName !== user.firstName) {
@@ -242,6 +249,7 @@ const ProfileForm = (props) => {
                         lastName: values?.lastName ? values.lastName : '',
                         email: values?.email ? values.email : '',
                         phone: userPhone,
+                        registrationSegregation: registrationSegregation,
                         residence: {
                             street: values?.street ? values.street : '',
                             city: values?.city ? values.city : '',
@@ -386,7 +394,14 @@ const ProfileForm = (props) => {
                                                             .stateProv ===
                                                         values.affiliateStateProv
                                                     ) {
-                                                        different = false;
+                                                        if (
+                                                            originalUser.registrationSegregation ===
+                                                            registrationSegregation
+                                                        ) {
+                                                            different = false;
+                                                        } else {
+                                                            different = true;
+                                                        }
                                                     } else {
                                                         different = true;
                                                     }
@@ -433,6 +448,7 @@ const ProfileForm = (props) => {
                 ['lastName']: values.lastName,
                 ['email']: values.email,
                 ['phone']: values.phone,
+                ['registrationSegregation']: registrationSegregation,
             };
             let residence = {
                 ...newCurrentUser.residence,
@@ -517,6 +533,9 @@ const ProfileForm = (props) => {
         navigation.navigate('DeleteAccount', null);
         return;
     };
+    const checkSegregation = () => {
+        setRegistrationSegregation(!registrationSegregation);
+    };
     // const dispatch = useDispatch();
     return (
         <>
@@ -593,6 +612,45 @@ const ProfileForm = (props) => {
                                     }}
                                     txtColor='white'
                                     onPress={() => showCantChangeModal(false)}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Surface>
+            </Modal>
+            <Modal visible={showModalSegregateTip} animationStyle='slide'>
+                <Surface style={styles.modalSurface}>
+                    <View>
+                        <View style={{ marginTop: 5, alignItems: 'center' }}>
+                            <Text style={styles.modalTitle}>
+                                Registration Segregation
+                            </Text>
+                        </View>
+                        <View style={styles.modalInfoWrapper}>
+                            <Text style={styles.modalText}>
+                                This configuration define whether all your
+                                registrartions display across different
+                                affiliations, or only display registraitons for
+                                the current affiliation selected.
+                            </Text>
+                            <Text style={[styles.modalText, { marginTop: 10 }]}>
+                                This will only have an effect if you participate
+                                in multiple affiliations.
+                            </Text>
+                        </View>
+                        <View style={styles.modalButtonContainer}>
+                            <View style={styles.modalButton}>
+                                <CustomButton
+                                    title='Dismiss'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: Colors.gray35,
+                                        color: 'black',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() =>
+                                        setShowModalSegregateTip(false)
+                                    }
                                 />
                             </View>
                         </View>
@@ -1488,6 +1546,69 @@ const ProfileForm = (props) => {
                                                                         }
                                                                     />
                                                                 </View>
+                                                                <View
+                                                                    style={
+                                                                        styles.segregateRow
+                                                                    }
+                                                                >
+                                                                    <View
+                                                                        style={
+                                                                            styles.segregateTextWrapper
+                                                                        }
+                                                                    >
+                                                                        <Text
+                                                                            style={
+                                                                                styles.segregateText
+                                                                            }
+                                                                        >
+                                                                            Registration
+                                                                            Segregation{' '}
+                                                                        </Text>
+                                                                    </View>
+                                                                    <View
+                                                                        style={
+                                                                            styles.segregateCheckboxWrapper
+                                                                        }
+                                                                    >
+                                                                        <Checkbox
+                                                                            style={
+                                                                                styles.checkbox
+                                                                            }
+                                                                            value={
+                                                                                registrationSegregation
+                                                                            }
+                                                                            onValueChange={
+                                                                                checkSegregation
+                                                                            }
+                                                                            color={
+                                                                                registrationSegregation
+                                                                                    ? '#4630EB'
+                                                                                    : undefined
+                                                                            }
+                                                                        />
+                                                                    </View>
+                                                                    <View
+                                                                        style={
+                                                                            styles.segregationTipWrapper
+                                                                        }
+                                                                    >
+                                                                        <Pressable
+                                                                            onPress={() =>
+                                                                                setShowModalSegregateTip(
+                                                                                    true
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <Ionicons
+                                                                                name='information-circle-outline'
+                                                                                size={
+                                                                                    24
+                                                                                }
+                                                                                color='black'
+                                                                            />
+                                                                        </Pressable>
+                                                                    </View>
+                                                                </View>
                                                                 <FAB
                                                                     icon='check'
                                                                     style={
@@ -1752,4 +1873,13 @@ const styles = StyleSheet.create({
     modalButton: {
         paddingHorizontal: 10,
     },
+    segregateRow: {
+        paddingTop: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    segregateTextWrapper: { paddingHorizontal: 5 },
+    segregateText: { fontSize: 18 },
+    segregateCheckboxWrapper: {},
+    segregationTipWrapper: { marginLeft: 10 },
 });
