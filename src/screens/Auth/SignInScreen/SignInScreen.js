@@ -248,18 +248,6 @@ const SignInScreen = () => {
                 .catch((err) => {
                     console.log('OH SNAP\n', err);
                 });
-            // default to GEORGIA
-
-            // printObject('SS:167-->fullUserInfo:', fullUserInfo);
-            // if (fullUserInfo?.residence?.stateProv) {
-            //     // lookup region from value
-            //     region =
-            //         REGION[fullUserInfo?.residence?.stateProv.toUpperCase()];
-            //     const regionParts = region.split('#');
-            //     eventRegion = regionParts[1];
-            // }
-            // dispatch(setRegion(region));
-            // dispatch(setEventRegion(eventRegion));
         });
         // let's load redux with rallies.
 
@@ -286,27 +274,6 @@ const SignInScreen = () => {
                 // printObject('SIS:208-->response:', response);
                 //   SAVE ALL RALLIES TO REDUX
                 dispatch(loadRallies(response.data.body.Items));
-
-                //saveAllRallies(response.data.body.Items);
-                // console.log('MS:81-->events', response.data.body.Items);
-
-                // let dbRallies = response.data.body.Items;
-                // const publicRallies = dbRallies.filter((r) => {
-                //     return (
-                //         r.approved === true &&
-                //         r.eventDate >= tDay &&
-                //         r.eventRegion === eventRegion
-                //     );
-                // console.log('==============================');
-                // console.log('r.name:', r.name);
-                // console.log('r.approved:', r.approved);
-                // console.log('r.eventDate', r.eventDate);
-                // console.log('tDay:', tDay);
-                // console.log('r.eventRegion:', r.eventRegion);
-                // console.log('EVENT_REGION:', eventRegion);
-                // });
-                // printObject('MS:112->publicRallies', publicRallies);
-                // setApprovedRallies(publicRallies);
             })
             .catch((err) => {
                 console.log('MS-60: error:', err);
@@ -333,29 +300,71 @@ const SignInScreen = () => {
         try {
             axios
                 .post(api2use, body, config)
-                .then((response) => {
+                .then((regResponse) => {
                     //printObject('SIS:258-->response', response.data);
-                    let respData = response.data.body;
+                    let respData = regResponse.data.body;
                     if (respData) {
                         function asc_sort(a, b) {
                             return b.eventDate - a.eventDate;
                         }
                         let newRegList = respData.sort(asc_sort);
                         // printObject('SIS:256-->regList', newRegList);
-
-                        dispatch(loadRegistrations(newRegList));
+                        //todo ------------------------------------
+                        //todo now get the events
+                        //todo ------------------------------------
+                        obj = {
+                            operation: 'getAllEvents',
+                        };
+                        body = JSON.stringify(obj);
+                        api2use = process.env.AWS_API_ENDPOINT + '/events';
+                        try {
+                            axios
+                                .post(api2use, body, config)
+                                .then((eResponse) => {
+                                    let eventData = eResponse.data.body.Items;
+                                    //   ------------------------------------------
+                                    //   now match up the event with registrations
+                                    //   ------------------------------------------
+                                    const bigList = newRegList.map((reg) => {
+                                        const eFound = eventData.filter(
+                                            (e) => e.uid === reg.eid
+                                        );
+                                        const newReg = {
+                                            ...reg,
+                                            eventInfo: eFound[0],
+                                        };
+                                        return newReg;
+                                    });
+                                    dispatch(loadRegistrations(bigList));
+                                })
+                                .catch((err) => {
+                                    console.log('SIS:255: error:', err);
+                                    navigation.navigate('ErrorMsg', {
+                                        id: 'SIS-376',
+                                        message: 'Cannot blend events',
+                                    });
+                                });
+                        } catch (error) {
+                            console.log('SIS:381: error:', err);
+                            navigation.navigate('ErrorMsg', {
+                                id: 'SIS-383',
+                                message:
+                                    'Cannot connect to get registrations. Please check internet connection and try again.',
+                            });
+                        }
+                        // dispatch(loadRegistrations(newRegList));
                     }
                 })
                 .catch((err) => {
-                    console.log('SIS:255: error:', err);
+                    console.log('SIS:392: error:', err);
                     navigation.navigate('ErrorMsg', {
-                        id: 'SIS-257',
+                        id: 'SIS-394',
                         message:
                             'Cannot connect to server. Please check internet connection and try again.',
                     });
                 });
         } catch (error) {
-            console.log('SIS:265-->Axios errror.');
+            console.log('SIS:400-->Axios errror.');
         }
 
         setLoading(false);
