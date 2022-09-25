@@ -33,35 +33,82 @@ const MyRegistrationsScreen = () => {
     const combineDetails = async () => {
         // printObject('MHS:33-->registrations', registrations);
         // printObject('MHS-34-->allRallies', allRallies);
-        const allCombinedRegs = registrations.map((reg) => {
+        // const allCombinedRegs = registrations.map((reg) => {
+        let allCombinedRegs = [];
+        registrations.forEach((reg) => {
             //for each registration
             // printObject('MHS:37-->reg:', reg);
-
-            let registration = reg;
-            registration = { ...registration, registrationId: reg?.uid };
-            registration = { ...registration, rallyId: reg?.eid };
-            registration = { ...registration, registrar: reg?.rid };
-            let eventId;
-            if (reg?.eventId) {
-                eventId = reg.eventId;
+            //todo - check if registrationsSegregation, then filter if true
+            if (user.registrationSegregation === true) {
+                //console.log(
+                //     'MRS:42-->reg.eventInfo.affiliate',
+                //     reg.eventInfo.affiliate
+                // );
+                //console.log('MRS:43-->feo.affiliation', feo.affiliation);
+                if (reg.eventInfo.affiliate === feo.affiliation) {
+                    console.log('match');
+                    let registration = reg;
+                    registration = {
+                        ...registration,
+                        registrationId: reg?.uid,
+                    };
+                    registration = { ...registration, rallyId: reg?.eid };
+                    registration = { ...registration, registrar: reg?.rid };
+                    let eventId;
+                    if (reg?.eventId) {
+                        eventId = reg.eventId;
+                    } else {
+                        //old registration
+                        eventId = reg.eid;
+                    }
+                    let rallyInfo = allRallies.filter((ral) => {
+                        return ral.uid === eventId;
+                    });
+                    // printObject('MHS:53-->registration', registration);
+                    // printObject('MHS:54-->rallyInfo[0]', rallyInfo[0]);
+                    let entireRegDetails = Object.assign(
+                        {},
+                        registration,
+                        rallyInfo[0]
+                    );
+                    entireRegDetails.uid = registration.registrationId;
+                    // printObject('MHS:61-->entireRegDetails', entireRegDetails);
+                    allCombinedRegs.push(entireRegDetails);
+                }
+                console.log('not match');
+                return;
             } else {
-                //old registration
-                eventId = reg.eid;
+                console.log(
+                    'MRS:81-->registrationSegregation',
+                    user.registrationSegregation
+                );
+                let registration = reg;
+                registration = { ...registration, registrationId: reg?.uid };
+                registration = { ...registration, rallyId: reg?.eid };
+                registration = { ...registration, registrar: reg?.rid };
+                let eventId;
+                if (reg?.eventId) {
+                    eventId = reg.eventId;
+                } else {
+                    //old registration
+                    eventId = reg.eid;
+                }
+                let rallyInfo = allRallies.filter((ral) => {
+                    return ral.uid === eventId;
+                });
+                // printObject('MHS:53-->registration', registration);
+                // printObject('MHS:54-->rallyInfo[0]', rallyInfo[0]);
+                let entireRegDetails = Object.assign(
+                    {},
+                    registration,
+                    rallyInfo[0]
+                );
+                entireRegDetails.uid = registration.registrationId;
+                // printObject('MHS:61-->entireRegDetails', entireRegDetails);
+                allCombinedRegs.push(entireRegDetails);
             }
-            let rallyInfo = allRallies.filter((ral) => {
-                return ral.uid === eventId;
-            });
-            // printObject('MHS:53-->registration', registration);
-            // printObject('MHS:54-->rallyInfo[0]', rallyInfo[0]);
-            let entireRegDetails = Object.assign(
-                {},
-                registration,
-                rallyInfo[0]
-            );
-            entireRegDetails.uid = registration.registrationId;
-            // printObject('MHS:61-->entireRegDetails', entireRegDetails);
-            return entireRegDetails;
         });
+        printObject('allCombinedRegs:', allCombinedRegs);
         return allCombinedRegs;
     };
     useLayoutEffect(() => {
@@ -74,13 +121,22 @@ const MyRegistrationsScreen = () => {
         setIsLoading(true);
         combineDetails()
             .then((results) => {
-                setDisplayEvents(results);
+                printObject('MRS:116-->results', results);
+                console.log('MRS:117--length:', results.length);
+                if (results !== 'undefined') {
+                    console.log('YES');
+                    setDisplayEvents(results);
+                } else {
+                    console.log('NO');
+                    setDisplayEvents([]);
+                }
+                printObject('MRS:121-->setDisplayEvents', setDisplayEvents);
             })
             .catch((error) => {
                 console.log('MHS:74-->error', error);
             });
         setIsLoading(false);
-    }, [registrations]);
+    }, []);
 
     function regPressHandler(reg) {
         // printObject('MHS:64-->reg', reg);
@@ -219,7 +275,7 @@ const MyRegistrationsScreen = () => {
                                     ) : (
                                         <View style={styles.noHistoryContainer}>
                                             <Text style={styles.noHistoryText}>
-                                                No Historical Informaton
+                                                No Informaton Found
                                             </Text>
                                         </View>
                                     )
