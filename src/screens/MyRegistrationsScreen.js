@@ -9,9 +9,9 @@ import {
     Pressable,
     ActivityIndicator,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Surface } from 'react-native-paper';
 import RegListCard from '../components/ui/RegistrationListCard';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteRegistration as deleteDDBRegistration } from '../providers/registrations';
 import { deleteRegistration as deleteReduxUserRegistration } from '../features/users/usersSlice';
@@ -28,6 +28,7 @@ const MyRegistrationsScreen = () => {
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const registrations = useSelector((state) => state.users.registrations);
+    const isFocused = useIsFocused();
     const [isLoading, setIsLoading] = useState(false);
     const [displayEvents, setDisplayEvents] = useState();
     const combineDetails = async () => {
@@ -136,7 +137,7 @@ const MyRegistrationsScreen = () => {
                 console.log('MHS:74-->error', error);
             });
         setIsLoading(false);
-    }, []);
+    }, [navigation, isFocused]);
 
     function regPressHandler(reg) {
         // printObject('MHS:64-->reg', reg);
