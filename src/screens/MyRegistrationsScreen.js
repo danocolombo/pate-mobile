@@ -41,13 +41,7 @@ const MyRegistrationsScreen = () => {
             // printObject('MHS:37-->reg:', reg);
             //todo - check if registrationsSegregation, then filter if true
             if (user.registrationSegregation === true) {
-                //console.log(
-                //     'MRS:42-->reg.eventInfo.affiliate',
-                //     reg.eventInfo.affiliate
-                // );
-                //console.log('MRS:43-->feo.affiliation', feo.affiliation);
                 if (reg.eventInfo.affiliate === feo.affiliation) {
-                    console.log('match');
                     let registration = reg;
                     registration = {
                         ...registration,
@@ -76,13 +70,8 @@ const MyRegistrationsScreen = () => {
                     // printObject('MHS:61-->entireRegDetails', entireRegDetails);
                     allCombinedRegs.push(entireRegDetails);
                 }
-                console.log('not match');
                 return;
             } else {
-                console.log(
-                    'MRS:81-->registrationSegregation',
-                    user.registrationSegregation
-                );
                 let registration = reg;
                 registration = { ...registration, registrationId: reg?.uid };
                 registration = { ...registration, rallyId: reg?.eid };
@@ -97,8 +86,6 @@ const MyRegistrationsScreen = () => {
                 let rallyInfo = allRallies.filter((ral) => {
                     return ral.uid === eventId;
                 });
-                // printObject('MHS:53-->registration', registration);
-                // printObject('MHS:54-->rallyInfo[0]', rallyInfo[0]);
                 let entireRegDetails = Object.assign(
                     {},
                     registration,
@@ -109,7 +96,6 @@ const MyRegistrationsScreen = () => {
                 allCombinedRegs.push(entireRegDetails);
             }
         });
-        printObject('allCombinedRegs:', allCombinedRegs);
         return allCombinedRegs;
     };
     useLayoutEffect(() => {
@@ -122,16 +108,11 @@ const MyRegistrationsScreen = () => {
         setIsLoading(true);
         combineDetails()
             .then((results) => {
-                printObject('MRS:116-->results', results);
-                console.log('MRS:117--length:', results.length);
                 if (results !== 'undefined') {
-                    console.log('YES');
                     setDisplayEvents(results);
                 } else {
-                    console.log('NO');
                     setDisplayEvents([]);
                 }
-                printObject('MRS:121-->setDisplayEvents', setDisplayEvents);
             })
             .catch((error) => {
                 console.log('MHS:74-->error', error);

@@ -24,7 +24,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import Checkbox from 'expo-checkbox';
 import DropDown from 'react-native-paper-dropdown';
-import PhoneInput from '../ui/PhoneInput';
+// import PhoneInput from '../ui/PhoneInput';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import CustomButton from '../ui/CustomButton';
@@ -42,7 +42,7 @@ import {
     updateAffiliation,
 } from '../../features/system/systemSlice';
 import PersonalHeader from './personalHeader';
-
+import PhoneInput from '../ui/PhoneInput';
 import { updateProfile } from '../../providers/users';
 import { getAffiliate } from '../../providers/system';
 import { clearLeadersAndGuests } from '../../features/profiles/profilesSlice';
@@ -179,7 +179,7 @@ const ProfileForm = (props) => {
         // console.log('AFFCODE:', AFFCODE);
         // console.log('test', originalUser.affiliations.active.value);
         // printObject('originalUser', originalUser);
-        printObject('values:', values);
+        // printObject('values:', values);
         if (AFFCODE !== originalUser?.affiliations?.active?.value) {
             //   affiliation change attempt.
             if (
@@ -481,14 +481,14 @@ const ProfileForm = (props) => {
                 const theRegion = feo.affiliate.states.filter(
                     (s) => s.state === values.stateProv.toUpperCase()
                 );
-                printObject('theRegion', theRegion);
+                // printObject('theRegion', theRegion);
                 newCurrentUser = {
                     ...newCurrentUser,
                     ['region']: theRegion[0].region,
                 };
                 // need to update the region in the affilates.ative as well.
                 // 1. get affiliate info
-                printObject('newCurrentUser:', newCurrentUser);
+                // printObject('newCurrentUser:', newCurrentUser);
                 let existingActiveAffiliation =
                     newCurrentUser?.affiliations?.active;
                 let newActiveAffiliation = {
@@ -503,7 +503,7 @@ const ProfileForm = (props) => {
                     ...newCurrentUser,
                     ['affiliations']: newAffiliations,
                 };
-                printObject('newCurrentUser:', newCurrentUser);
+                // printObject('newCurrentUser:', newCurrentUser);
             }
             newCurrentUser = {
                 ...newCurrentUser,
@@ -913,7 +913,9 @@ const ProfileForm = (props) => {
                                                                         </Text>
                                                                     ) : null}
                                                                     {Platform.OS ===
-                                                                    'ios' ? (
+                                                                        'ios' ||
+                                                                    Platform.OS ===
+                                                                        'android' ? (
                                                                         <>
                                                                             <View
                                                                                 style={
@@ -938,12 +940,12 @@ const ProfileForm = (props) => {
                                                                                 <PhoneInput
                                                                                     overrideStyle={{
                                                                                         borderColor:
-                                                                                            Colors.gray20,
+                                                                                            'lightgrey',
                                                                                         borderWidth: 2,
                                                                                         borderRadius: 6,
-                                                                                        width: 280,
-                                                                                        alignItems:
-                                                                                            'left',
+                                                                                        backgroundColor:
+                                                                                            'white',
+                                                                                        width: 200,
                                                                                     }}
                                                                                     value={
                                                                                         userPhone
@@ -952,6 +954,7 @@ const ProfileForm = (props) => {
                                                                                         setUserPhone
                                                                                     }
                                                                                 />
+
                                                                                 {showPhoneError ? (
                                                                                     <Text
                                                                                         style={
