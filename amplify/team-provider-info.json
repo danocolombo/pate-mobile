@@ -26,6 +26,9 @@
           "unauthRoleArn": "arn:aws:iam::226036691416:role/amplify-pate2021-dev-175248-unauthRole",
           "unauthRoleName": "amplify-pate2021-dev-175248-unauthRole"
         }
+      },
+      "storage": {
+        "s3eorimages2022": {}
       }
     }
   }
