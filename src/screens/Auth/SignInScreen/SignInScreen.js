@@ -208,12 +208,14 @@ const SignInScreen = () => {
                             label: 'FEO Testing',
                             region: 'us#east#south',
                             role: 'guest',
+                            divisionId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
                         },
                         {
                             value: 'CRP8',
                             label: 'CR P8 Rallies',
                             region: 'us#east#south',
                             role: 'guest',
+                            divisionId: 'fffedde6-5d5a-46f0-a3ac-882a350edc64',
                         },
                     ],
                     active: {
@@ -221,6 +223,7 @@ const SignInScreen = () => {
                         label: 'FEO Testing',
                         region: 'us#east#south',
                         role: 'guest',
+                        divisionId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
                     },
                 };
                 fullUserInfo = { ...fullUserInfo, affiliations: defaultAff };
@@ -292,7 +295,7 @@ const SignInScreen = () => {
         axios
             .post(api2use, body, config)
             .then((response) => {
-                // printObject('SIS:208-->response:', response);
+                printObject('SIS:298-->response:', response);
                 //   SAVE ALL RALLIES TO REDUX
                 dispatch(loadRallies(response.data.body.Items));
             })

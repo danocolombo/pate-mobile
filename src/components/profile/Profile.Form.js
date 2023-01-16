@@ -241,6 +241,7 @@ const ProfileForm = (props) => {
                             role: USERAFFOPTION.role,
                             region: affiliate.regions[0],
                             value: AFFCODE,
+                            divisionId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
                         },
                     };
                     let dbProfile = {
@@ -308,6 +309,7 @@ const ProfileForm = (props) => {
                     updateProfile(dbProfile)
                         .then((response) => {
                             setSnackbarVisible(true);
+                            printObject('PF:311:savedProfile:\n', dbProfile);
                         })
                         .catch((err) =>
                             console.log(
