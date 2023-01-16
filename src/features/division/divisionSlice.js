@@ -1,5 +1,6 @@
 import { createAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { API, graphqlOperation } from 'aws-amplify';
+import * as queries from '../../graphql/queries';
 import { printObject, getToday } from '../../utils/helpers';
 import { getPateDate } from '../../utils/date';
 //   this is url for all meetings
@@ -11,25 +12,7 @@ const initialState = {
     tmpRally: {},
     isLoading: false,
 };
-export const getAvailableEvents = createAsyncThunk(
-    'rallies/getAvailableEvents',
-    async ({ name, today }, thunkAPI) => {
-        try {
-            const getFilterDate = async () => {
-                return today;
-            };
 
-            return getFilterDate()
-                .then((d) => d)
-                .catch((e) => console.error('oops'));
-
-            // const resp = await axios(url);
-            // return resp.data;
-        } catch (error) {
-            return thunkAPI.rejectWithValue('RS:36-->>> something went wrong');
-        }
-    }
-);
 export const divisionSlice = createSlice({
     name: 'rallies',
     initialState,
@@ -60,7 +43,7 @@ export const divisionSlice = createSlice({
         // loadUserRallies: (state, action) => {
         //     state.userRallies = action.payload;
         // },
-        loadRallies: (state, action) => {
+        loadDivisionInfo: (state, action) => {
             // state.publicRallies = action.payload;
             state.allRallies = action.payload;
             return state;
@@ -218,30 +201,30 @@ export const divisionSlice = createSlice({
         },
     },
     extraReducers: {
-        [getAvailableEvents.pending]: (state) => {
-            state.isLoading = true;
-        },
-        [getAvailableEvents.fulfilled]: (state, action) => {
-            // console.log(action);
-            state.isLoading = false;
-            // printObject('RS:223--> action', action);
-            state.displayRallies = state.allRallies.filter(
-                (r) =>
-                    r.eventDate >= action.payload &&
-                    r.eventRegion === 'test' &&
-                    r.approved === true
-            );
-        },
-        [getAvailableEvents.rejected]: (state, action) => {
-            console.log(action);
-            state.isLoading = false;
-        },
+        // [getAvailableEvents.pending]: (state) => {
+        //     state.isLoading = true;
+        // },
+        // [getAvailableEvents.fulfilled]: (state, action) => {
+        //     // console.log(action);
+        //     state.isLoading = false;
+        //     // printObject('RS:223--> action', action);
+        //     state.displayRallies = state.allRallies.filter(
+        //         (r) =>
+        //             r.eventDate >= action.payload &&
+        //             r.eventRegion === 'test' &&
+        //             r.approved === true
+        //     );
+        // },
+        // [getAvailableEvents.rejected]: (state, action) => {
+        //     console.log(action);
+        //     state.isLoading = false;
+        // },
     },
 });
 
 // Action creators are generated for each case reducer function
 export const {
-    loadRallies,
+    loadDivisionInfo,
     getRally,
     addNewRally,
     updateRally,

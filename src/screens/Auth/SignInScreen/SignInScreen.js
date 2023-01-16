@@ -15,10 +15,11 @@ import SocialSignInButtons from '../../../components/ui/Auth/SocialSignInButtons
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { Auth, API, graphqlOperation } from 'aws-amplify';
-import * as queries from '../../../graphql/queries';
+import * as queries from '../../../pateGraphQL/queries';
 import { useDispatch } from 'react-redux';
 // import { ALL_EVENTS } from '../../../../data/getRegionalEvents';
 import { updateCurrentUser } from '../../../features/users/usersSlice';
+import { loadDivisionInfo } from '../../../features/division/divisionSlice';
 import { getProfile } from '../../../providers/users';
 import { getAffiliate } from '../../../providers/system';
 import { loadRallies } from '../../../features/rallies/ralliesSlice';
@@ -279,6 +280,55 @@ const SignInScreen = () => {
         //   START RALLY LOADING
         //   ====================================
         const tDay = getPateDate(getToday());
+        //* get the graphql divisional events
+        try {
+            async function getDivEvents() {
+                const divisionEvents = await API.graphql(
+                    graphqlOperation(queries.getDivisionEvents, {
+                        id: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
+                    })
+                );
+                API.graphql(
+                    graphqlOperation(queries.getDivisionEvents, {
+                        id: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
+                    })
+                )
+                    .then((divisionEvents) => {
+                        //console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
+                        //console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
+                        //printObject(
+                        //     'SIS:290-->divisionEvents:\n',
+                        //     divisionEvents
+                        // );
+                        //console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
+                        //console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
+
+                        if (
+                            divisionEvents?.data?.getDivision?.events.items
+                                .length > 0
+                        ) {
+                            console.log('YEP');
+                            dispatch(
+                                loadDivisionInfo(
+                                    divisionEvents?.data?.getDivision?.events
+                                        .items
+                                )
+                            );
+                        } else {
+                            console.log('NOPE');
+                        }
+                    })
+                    .catch((error) => {
+                        printObject(
+                            'error getting division events from graphql',
+                            error
+                        );
+                    });
+            }
+            getDivEvents();
+        } catch (error) {
+            printObject('ERROR GETTING GRAPHQL DATA---->:\n', error);
+        }
         const config = {
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',

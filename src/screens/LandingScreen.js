@@ -29,6 +29,7 @@ export default function LandingScreen(props) {
     const description = Constants?.manifest?.extra?.feo;
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
+    const divEvents = useSelector((state) => state.division.allRallies);
     // printObject('LS:29-->user:', user);
     const feo = useSelector((state) => state.system);
 
@@ -48,6 +49,7 @@ export default function LandingScreen(props) {
         setShowProfileNeededModal(false);
         navigation.navigate('Profile');
     };
+    printObject('LS:52==> division.allRallies: ', divEvents);
     return (
         <ImageBackground
             source={require('../components/images/background.png')}
