@@ -26,7 +26,7 @@ export default function LandingScreen(props) {
     const dispatch = useDispatch();
     // const expoVersion = Constants.expoConfig.version;
     // const feoVersion = Application.nativeBuildVersion;
-    const description = Constants.manifest.extra.feo;
+    const description = Constants?.manifest?.extra?.feo;
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     // printObject('LS:29-->user:', user);
@@ -130,9 +130,11 @@ export default function LandingScreen(props) {
                                 ? user?.affiliations?.active?.region
                                 : null}
                         </Text>
-                        <Text style={{ textAlign: 'center' }}>
-                            v: {description}
-                        </Text>
+                        {description && (
+                            <Text style={{ textAlign: 'center' }}>
+                                v: {description}
+                            </Text>
+                        )}
                     </View>
                 </Surface>
             </>

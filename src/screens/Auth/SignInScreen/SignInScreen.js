@@ -14,7 +14,8 @@ import CustomButton from '../../../components/ui/Auth/CustomButton/CustomButton'
 import SocialSignInButtons from '../../../components/ui/Auth/SocialSignInButtons';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
-import { Auth } from 'aws-amplify';
+import { Auth, API, graphqlOperation } from 'aws-amplify';
+import * as queries from '../../../graphql/queries';
 import { useDispatch } from 'react-redux';
 // import { ALL_EVENTS } from '../../../../data/getRegionalEvents';
 import { updateCurrentUser } from '../../../features/users/usersSlice';
@@ -63,6 +64,7 @@ const SignInScreen = () => {
         let setAlert = {};
         await Auth.signIn(username, password)
             .then((user) => {
+                printObject('SIS:66-->user:\n', user);
                 if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
                     const { requiredAttributes } = user.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
                     Auth.completeNewPassword(
@@ -72,7 +74,7 @@ const SignInScreen = () => {
                     )
                         .then((user) => {
                             // at this time the user is logged in if no MFA required
-                            console.log(user);
+                            printObject('SIS:75-->user:\n', user);
                         })
                         .catch((e) => {
                             const alertPayload = {
@@ -160,6 +162,25 @@ const SignInScreen = () => {
                     // profile found
                     let profileInfo = profileResponse.userProfile;
                     fullUserInfo = { ...theUser, ...profileInfo };
+                    printObject(
+                        'SIS:164-->DDB resulting profile:\n',
+                        fullUserInfo
+                    );
+                    async function getGQLProfile() {
+                        try {
+                            const gqlProfileData = await API.graphql({
+                                query: queries.getUserBySub,
+                                variables: { cognito: fullUserInfo.uid },
+                            });
+                            printObject('SIS:175-->userBySub', gqlProfileData);
+                        } catch (error) {
+                            printObject(
+                                'SIS:176->>error getting gqlProfile:\n',
+                                error
+                            );
+                        }
+                    }
+                    getGQLProfile();
                     fullUserInfo.profile = true;
                     break;
                 case 404:
