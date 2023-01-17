@@ -283,31 +283,18 @@ const SignInScreen = () => {
         //* get the graphql divisional events
         try {
             async function getDivEvents() {
-                const divisionEvents = await API.graphql(
-                    graphqlOperation(queries.getDivisionEvents, {
-                        id: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
-                    })
-                );
+                const variables = {
+                    divId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
+                    startDate: '2023-01-16',
+                };
                 API.graphql(
-                    graphqlOperation(queries.getDivisionEvents, {
-                        id: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
-                    })
+                    graphqlOperation(queries.getDivisionEvents, variables)
                 )
                     .then((divisionEvents) => {
-                        //console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
-                        //console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
-                        //printObject(
-                        //     'SIS:290-->divisionEvents:\n',
-                        //     divisionEvents
-                        // );
-                        //console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
-                        //console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
-
                         if (
                             divisionEvents?.data?.getDivision?.events.items
                                 .length > 0
                         ) {
-                            console.log('YEP');
                             dispatch(
                                 loadDivisionInfo(
                                     divisionEvents?.data?.getDivision?.events
@@ -345,7 +332,7 @@ const SignInScreen = () => {
         axios
             .post(api2use, body, config)
             .then((response) => {
-                printObject('SIS:298-->response:', response);
+                //printObject('SIS:298-->response:', response);
                 //   SAVE ALL RALLIES TO REDUX
                 dispatch(loadRallies(response.data.body.Items));
             })

@@ -148,27 +148,13 @@ export const getDivision = /* GraphQL */ `
     }
 `;
 export const getDivisionEvents = /* GraphQL */ `
-    query GetDivision($id: ID!) {
-        getDivision(id: $id) {
-            id
+    query MyQuery($divId: ID!, $startDate: String) {
+        getDivision(id: $divId) {
             code
-            divCompKey
-            organization {
-                id
-                appName
-                available
-                category
-                code
-                description
-                exposure
-                label
-                name
-                title
-                value
-                createdAt
-                updatedAt
-            }
-            events {
+            events(
+                sortDirection: ASC
+                filter: { eventDate: { ge: $startDate } }
+            ) {
                 items {
                     id
                     name
@@ -178,6 +164,7 @@ export const getDivisionEvents = /* GraphQL */ `
                     endTime
                     status
                     message
+                    graphic
                     plannedCount
                     actualCount
                     mealPlannedCount
@@ -215,38 +202,7 @@ export const getDivisionEvents = /* GraphQL */ `
                         phone
                     }
                 }
-                nextToken
             }
-            affiliations {
-                items {
-                    id
-                    role
-                    status
-                    createdAt
-                    updatedAt
-                    divisionAffiliationsId
-                    userAffiliationsId
-                }
-                nextToken
-            }
-            defaultUsers {
-                items {
-                    id
-                    sub
-                    username
-                    firstName
-                    lastName
-                    email
-                    phone
-                    createdAt
-                    updatedAt
-                    divisionDefaultUsersId
-                    residenceResidentsId
-                }
-                nextToken
-            }
-            createdAt
-            updatedAt
         }
     }
 `;
