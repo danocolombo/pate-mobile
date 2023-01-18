@@ -87,9 +87,9 @@ export default function UpcomingEventsScreen(props) {
                         <View>
                             <FlatList
                                 data={divisionEvents}
-                                keyExtractor={(item) => item.uid}
+                                keyExtractor={(item) => item.id}
                                 renderItem={({ item, key }) => (
-                                    <DivisionRallyItem key={key} rally={item} />
+                                    <DivisionRallyItem rally={item} />
                                 )}
                             />
                         </View>

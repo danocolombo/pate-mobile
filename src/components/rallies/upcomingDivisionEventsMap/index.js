@@ -24,8 +24,6 @@ import { pateDateToShortMonthDay, getPateDate } from '../../../utils/date';
 const UpcomingDivisionEventsMap = ({ locations, mapHeight, mapWidth }) => {
     const navigation = useNavigation();
     const divEvents = useSelector((state) => state.division.allRallies);
-    printObject('UDE:27-->divEvents:\n', divEvents);
-    console.log('!!!!!!!!!');
     let mH = mapHeight || 0.35;
     let mW = mapWidth || 0.9;
 

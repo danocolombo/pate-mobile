@@ -2,6 +2,7 @@ import React, { useLayoutEffect } from 'react';
 import { ImageBackground, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import RallyDetails from '../components/rallies/RallyDetails';
+import EventDetails from '../components/rallies/EventDetails';
 const RallyDetailsScreen = ({ route, navigation }) => {
     const rally = route.params.rally;
     const feo = useSelector((state) => state.system);
@@ -16,7 +17,7 @@ const RallyDetailsScreen = ({ route, navigation }) => {
             source={require('../components/images/background.png')}
             style={styles.bgImageContainer}
         >
-            <RallyDetails rally={rally} />
+            <EventDetails rally={rally} />
         </ImageBackground>
     );
 };

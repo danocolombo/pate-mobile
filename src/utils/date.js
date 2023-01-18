@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import moment from 'moment/moment';
+
 const SHORT_MONTH = {
     1: 'Jan',
     2: 'Feb',
@@ -38,6 +39,19 @@ export function dateNumsToLongDayLongMondayDay(dateNum) {
     }
     // YYYYMMDD to long date
     const convDate = dateNumToJSDate(dateNum);
+    const result = format(convDate, 'EEEE, LLLL do');
+    return result;
+}
+export function awsDateToLongDayLongMondayDay(dateNum) {
+    //remove dashes
+    //console.log('DATE:47-->', dateNum);
+    //var newDate = dateNum.replace(/-/g, ''); // 20231210
+
+    if (!newDate) {
+        return null;
+    }
+    // YYYYMMDD to long date
+    const convDate = dateNumToJSDate(newDate);
     const result = format(convDate, 'EEEE, LLLL do');
     return result;
 }
@@ -137,22 +151,70 @@ export function dateNumToDisplayTime(numTime) {
         return '';
     }
 }
+export function awsTimeToDisplayTime(numTime) {
+    // need to get the UTC time to numTime
+    const moment = require('moment-timezone');
+    const dateString = '16:00:00.000-05:00';
+    const time = moment.tz(numTime, 'HH:mm:ss.SSSZ', 'UTC').format('h:mmA');
+
+    if (!time) {
+        return null;
+    }
+    // 1330 or 13:30 to 1:30 PM
+    let A = '';
+    let B = '';
+    let confirmedValue;
+    // the length of numTime can only be 4 or 5 characters, if not return ""
+    if (time.length < 4 || time.length > 5) {
+        console.log('1');
+        return '';
+    }
+    if (time.length === 4) {
+        const colon = time.indexOf(':');
+        if (colon === -1) {
+            //no colon, split the numbers and stick colon in.
+            A = time.substr(0, 2);
+            B = time.substr(2);
+            let returnValue = A + ':' + B;
+            confirmedValue = returnValue;
+        } else {
+            let parts = time.split(':');
+            let returnValue = parts[0] + ':' + parts[1];
+            confirmedValue = returnValue;
+        }
+    } else if (time.length === 5) {
+        const colon = time.indexOf(':');
+        if (colon === -1) {
+            return '';
+        } else {
+            confirmedValue = time;
+        }
+    }
+    let timeParts = confirmedValue.split(':');
+
+    // Get the hours of 29 February 2012 11:45:00:
+    try {
+        const result = new Date(2012, 1, 29, timeParts[0], timeParts[1]);
+        const returnTime = format(result, 'h:mm a');
+        return returnTime;
+    } catch (error) {
+        return '';
+    }
+}
 export function displayAWSTime(awsTime) {
     //  this converts AWSTime to 12-hour time format.
     // 13:00.000-05.00 => 1:00PM
     //-------------------
     // create date object
-    console.log('awsTime:', awsTime);
+    // console.log('awsTime:', awsTime);
     var moment = require('moment');
     var date = moment(awsTime, 'HH:mm:ss.sssZ').format('h:mm A');
     return date; // "1:00:00 PM"
 
     const tm = awsTime;
     var date = new Date(tm);
-    console.log('date:', date);
     var options = { hour: 'numeric', minute: 'numeric', hour12: true };
     var formattedTime = date.toLocaleString('en-US', options);
-    console.log('formattedTime:', formattedTime);
     return formattedTime;
 }
 export function getPateDate(dateTimeNumber) {

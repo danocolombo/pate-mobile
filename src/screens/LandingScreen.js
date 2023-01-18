@@ -49,7 +49,7 @@ export default function LandingScreen(props) {
         setShowProfileNeededModal(false);
         navigation.navigate('Profile');
     };
-    printObject('LS:52==> division.allRallies: ', divEvents);
+    // printObject('LS:52==> division.allRallies: ', divEvents);
     return (
         <ImageBackground
             source={require('../components/images/background.png')}

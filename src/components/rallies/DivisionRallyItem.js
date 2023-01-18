@@ -37,8 +37,9 @@ function DivisionRallyItem(rally) {
                 registration: found,
             });
         } else {
+            printObject('');
             navigation.navigate('RallyDetail', {
-                rally: rally.rally,
+                rally: theEvent,
             });
         }
     }
