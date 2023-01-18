@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-
+import moment from 'moment/moment';
 const SHORT_MONTH = {
     1: 'Jan',
     2: 'Feb',
@@ -136,6 +136,24 @@ export function dateNumToDisplayTime(numTime) {
     } catch (error) {
         return '';
     }
+}
+export function displayAWSTime(awsTime) {
+    //  this converts AWSTime to 12-hour time format.
+    // 13:00.000-05.00 => 1:00PM
+    //-------------------
+    // create date object
+    console.log('awsTime:', awsTime);
+    var moment = require('moment');
+    var date = moment(awsTime, 'HH:mm:ss.sssZ').format('h:mm A');
+    return date; // "1:00:00 PM"
+
+    const tm = awsTime;
+    var date = new Date(tm);
+    console.log('date:', date);
+    var options = { hour: 'numeric', minute: 'numeric', hour12: true };
+    var formattedTime = date.toLocaleString('en-US', options);
+    console.log('formattedTime:', formattedTime);
+    return formattedTime;
 }
 export function getPateDate(dateTimeNumber) {
     // takes dateStamp and returns YYYYMMDD

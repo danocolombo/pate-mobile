@@ -10,6 +10,8 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import UpcomingAreaEvents from '../components/rallies/upcomingAreaEvents';
+import DivisionRallyItem from '../components/rallies/DivisionRallyItem';
+import UpcomingDivisionEventsMap from '../components/rallies/upcomingDivisionEventsMap';
 import RallyItem from '../components/rallies/RallyItem';
 import NoEventsNotice from '../components/ui/NoEventsNotice.js';
 import { ActivityIndicator, Surface } from 'react-native-paper';
@@ -21,6 +23,7 @@ export default function UpcomingEventsScreen(props) {
     const dispatch = useDispatch();
     const feo = useSelector((state) => state.system);
     const allRallies = useSelector((state) => state.rallies.allRallies);
+    const divisionEvents = useSelector((state) => state.division.allRallies);
     const { eventRegion, affiliateHeader, today, affiliation } = useSelector(
         (state) => state.system
     );
@@ -70,18 +73,23 @@ export default function UpcomingEventsScreen(props) {
                         </View>
 
                         <View style={styles.mapContainer}>
-                            <UpcomingAreaEvents
+                            {/* <UpcomingAreaEvents
                                 locations={displayRallies}
+                                mapHeight={0.35}
+                                mapWidth={0.9}
+                            /> */}
+                            <UpcomingDivisionEventsMap
+                                locations={divisionEvents}
                                 mapHeight={0.35}
                                 mapWidth={0.9}
                             />
                         </View>
                         <View>
                             <FlatList
-                                data={displayRallies}
+                                data={divisionEvents}
                                 keyExtractor={(item) => item.uid}
-                                renderItem={({ item }) => (
-                                    <RallyItem rally={item} />
+                                renderItem={({ item, key }) => (
+                                    <DivisionRallyItem key={key} rally={item} />
                                 )}
                             />
                         </View>
