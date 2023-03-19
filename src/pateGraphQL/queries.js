@@ -380,6 +380,163 @@ export const listAffiliations = /* GraphQL */ `
         }
     }
 `;
+export const getCoordinatorEvents = /* GraphQL */ `
+    query GetUser($id: ID!) {
+        getUser(id: $id) {
+            id
+            sub
+            username
+            firstName
+            lastName
+            email
+            phone
+            defaultDivision {
+                id
+                code
+                divCompKey
+                organization {
+                    id
+                    appName
+                    available
+                    category
+                    code
+                    description
+                    exposure
+                    label
+                    name
+                    title
+                    value
+                    createdAt
+                    updatedAt
+                }
+                events {
+                    nextToken
+                }
+                affiliations {
+                    nextToken
+                }
+                defaultUsers {
+                    nextToken
+                }
+                createdAt
+                updatedAt
+                organizationDivisionsId
+            }
+            residence {
+                id
+                street
+                city
+                stateProv
+                postalCode
+                latitude
+                longitude
+                residents {
+                    nextToken
+                }
+                createdAt
+                updatedAt
+            }
+            events {
+                items {
+                    id
+                    eventDate
+                    eventCompKey
+                    status
+                    plannedCount
+                    actualCount
+                    mealPlannedCount
+                    mealActualCount
+                    startTime
+                    endTime
+                    message
+                    name
+                    graphic
+                    createdAt
+                    updatedAt
+                    divisionEventsId
+                    eventLocationEventsId
+                    eventContactEventsId
+                    userEventsId
+                    eventMealId
+                }
+                nextToken
+            }
+            registrations {
+                items {
+                    id
+                    attendanceCount
+                    mealCount
+                    createdAt
+                    updatedAt
+                    eventRegistrationsId
+                    userRegistrationsId
+                }
+                nextToken
+            }
+            affiliations {
+                items {
+                    id
+                    role
+                    status
+                    createdAt
+                    updatedAt
+                    divisionAffiliationsId
+                    userAffiliationsId
+                }
+                nextToken
+            }
+            createdAt
+            updatedAt
+            divisionDefaultUsersId
+            residenceResidentsId
+        }
+    }
+`;
+export const getCoordinatorEvents2 = /* GraphQL */ `
+    query GetUser($id: ID!) {
+        getUser(id: $id) {
+            events {
+            items {
+                id
+                eventDate
+                name
+                location{
+                    id
+                    street
+                    city
+                    stateProv
+                    postalCode
+                    latitude
+                    longitude
+                }
+                message
+                        status
+                startTime
+                endTime
+                plannedCount
+                actualCount
+                mealPlannedCount
+                mealActualCount
+                meal{
+                    id
+                    message
+                    startTime
+                    cost
+                    deadline
+                    plannedCount
+                    actualCount
+                }
+                contact{
+                    id
+                    firstName
+                    lastName
+                    phone
+                    email
+                }
+            }
+        }
+    }
+`;
 export const getEvent = /* GraphQL */ `
     query GetEvent($id: ID!) {
         getEvent(id: $id) {

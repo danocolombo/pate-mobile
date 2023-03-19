@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import ServeEventsMyScreen from '../screens/Serve/ServeEventsMyScreen';
+import ServeMyEventsScreen from '../screens/Serve/ServeMyEventsScreen';
 import ServeEventsStateScreen from '../screens/Serve/ServeEventsStateScreen';
 import ServeEventsRegionScreen from '../screens/Serve/ServeEventsRegionScreen';
 const BottomTab = createBottomTabNavigator();
@@ -22,7 +23,7 @@ const ServeConfig = () => {
         >
             <BottomTab.Screen
                 name='ServeMy'
-                component={ServeEventsMyScreen}
+                component={ServeMyEventsScreen}
                 options={{
                     title: feo.appName,
                     tabBarLabel: 'MINE',

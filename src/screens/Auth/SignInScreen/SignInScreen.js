@@ -283,6 +283,7 @@ const SignInScreen = () => {
         //* get the graphql divisional events
         try {
             async function getDivEvents() {
+                //todo HARDCODE-HARDCODE
                 const variables = {
                     divId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
                     startDate: '2023-01-16',
