@@ -1,5 +1,4 @@
 /* eslint-disable */
-// this is an auto generated file. This will be overwritten
 
 export const getOrganization = /* GraphQL */ `
     query GetOrganization($id: ID!) {
@@ -492,6 +491,7 @@ export const getCoordinatorEvents = /* GraphQL */ `
         }
     }
 `;
+
 export const getCoordinatorEvents2 = /* GraphQL */ `
     query GetUser($id: ID!) {
         getUser(id: $id) {
@@ -537,6 +537,7 @@ export const getCoordinatorEvents2 = /* GraphQL */ `
         }
     }
 `;
+
 export const getEvent = /* GraphQL */ `
     query GetEvent($id: ID!) {
         getEvent(id: $id) {
@@ -1094,6 +1095,22 @@ export const getRegistration = /* GraphQL */ `
     query GetRegistration($id: ID!) {
         getRegistration(id: $id) {
             id
+            attendanceCount
+            attendeeId
+            attendeeFirstName
+            attendeeLastName
+            attendeeEmail
+            attendeePhone
+            attendeeStreet
+            attendeeCity
+            attendeeStateProv
+            attendeePostalCode
+            mealCount
+            membershipName
+            membershipStreet
+            membershipCity
+            membershipStateProv
+            membershipPostalCode
             event {
                 id
                 eventDate
@@ -1102,12 +1119,7 @@ export const getRegistration = /* GraphQL */ `
                     id
                     code
                     divCompKey
-                    createdAt
-                    updatedAt
                     organizationDivisionsId
-                }
-                registrations {
-                    nextToken
                 }
                 coordinator {
                     id
@@ -1117,8 +1129,6 @@ export const getRegistration = /* GraphQL */ `
                     lastName
                     email
                     phone
-                    createdAt
-                    updatedAt
                     divisionDefaultUsersId
                     residenceResidentsId
                 }
@@ -1140,8 +1150,6 @@ export const getRegistration = /* GraphQL */ `
                     postalCode
                     latitude
                     longitude
-                    createdAt
-                    updatedAt
                 }
                 contact {
                     id
@@ -1153,8 +1161,6 @@ export const getRegistration = /* GraphQL */ `
                     city
                     stateProv
                     postalCode
-                    createdAt
-                    updatedAt
                 }
                 meal {
                     id
@@ -1164,20 +1170,14 @@ export const getRegistration = /* GraphQL */ `
                     actualCount
                     startTime
                     message
-                    createdAt
-                    updatedAt
                     mealEventId
                 }
-                createdAt
-                updatedAt
                 divisionEventsId
                 eventLocationEventsId
                 eventContactEventsId
                 userEventsId
                 eventMealId
             }
-            attendanceCount
-            mealCount
             registrar {
                 id
                 sub
@@ -1219,8 +1219,6 @@ export const getRegistration = /* GraphQL */ `
                 divisionDefaultUsersId
                 residenceResidentsId
             }
-            createdAt
-            updatedAt
             eventRegistrationsId
             userRegistrationsId
         }
@@ -1263,6 +1261,11 @@ export const listRegistrations = /* GraphQL */ `
                 }
                 attendanceCount
                 mealCount
+                membershipName
+                membershipStreet
+                membershipCity
+                membershipStateProv
+                membershipPostalCode
                 registrar {
                     id
                     sub
@@ -1427,6 +1430,11 @@ export const getUser = /* GraphQL */ `
                     id
                     attendanceCount
                     mealCount
+                    membershipName
+                    membershipStreet
+                    membershipCity
+                    membershipStateProv
+                    membershipPostalCode
                     createdAt
                     updatedAt
                     eventRegistrationsId
@@ -1502,6 +1510,766 @@ export const listUsers = /* GraphQL */ `
                 residenceResidentsId
             }
             nextToken
+        }
+    }
+`;
+export const getRepRallies = /* GraphQL */ `
+    query MyQuery($divisionId: ID!, $coordinatorId: ID!) {
+        listDivisions(filter: { id: { eq: $divisionId } }) {
+            items {
+                events(filter: { userEventsId: { eq: $coordinatorId } }) {
+                    items {
+                        id
+                        eventDate
+                        startTime
+                        endTime
+                        status
+                        name
+                        actualCount
+                        plannedCount
+                        mealActualCount
+                        mealPlannedCount
+                        location {
+                            street
+                            city
+                            stateProv
+                            postalCode
+                        }
+                        coordinator {
+                            id
+                            firstName
+                            lastName
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export const getAllDivisionEvents2 = /* GraphQL */ `
+    query MyQuery($id: ID!) {
+        getDivision(id: $id) {
+            events {
+                items {
+                    id
+                    name
+                    eventDate
+                    startTime
+                    endTime
+                    status
+                    plannedCount
+                    actualCount
+                    mealPlannedCount
+                    mealActualCount
+                    graphic
+                    location {
+                        id
+                        street
+                        city
+                        stateProv
+                        postalCode
+                        latitude
+                        longitude
+                    }
+                    meal {
+                        id
+                        deadline
+                        startTime
+                        cost
+                        message
+                        plannedCount
+                        actualCount
+                    }
+                    contact {
+                        id
+                        firstName
+                        lastName
+                        street
+                        city
+                        stateProv
+                        postalCode
+                        email
+                        phone
+                    }
+                    coordinator {
+                        id
+                        sub
+                        firstName
+                        lastName
+                        username
+                    }
+                }
+            }
+        }
+    }
+`;
+//      GET ACTIVE DIVISION RALLIES
+export const getDivisionEventsByDateStatus = /* GraphQL */ `
+    query MyQuery($id: ID!, $eq: String!, $ge: String!) {
+        getDivision(id: $id) {
+            events(filter: { status: { eq: $eq }, eventDate: { ge: $ge } }) {
+                items {
+                    id
+                    name
+                    eventDate
+                    startTime
+                    endTime
+                    status
+                    plannedCount
+                    actualCount
+                    mealPlannedCount
+                    mealActualCount
+                    location {
+                        id
+                        street
+                        city
+                        stateProv
+                        postalCode
+                        latitude
+                        longitude
+                    }
+                    meal {
+                        id
+                        deadline
+                        startTime
+                        cost
+                        message
+                        plannedCount
+                        actualCount
+                    }
+                    contact {
+                        id
+                        firstName
+                        lastName
+                        street
+                        city
+                        stateProv
+                        postalCode
+                        email
+                        phone
+                    }
+                    coordinator {
+                        id
+                        sub
+                        firstName
+                        lastName
+                        username
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export const getAllDivisionEvents = /* GraphQL */ `
+    query MyQuery($divId: ID!) {
+        getDivision(id: $divId) {
+            code
+            events(sortDirection: ASC) {
+                items {
+                    id
+                    name
+                    eventCompKey
+                    eventDate
+                    startTime
+                    endTime
+                    status
+                    message
+                    graphic
+                    plannedCount
+                    actualCount
+                    mealPlannedCount
+                    mealActualCount
+                    meal {
+                        id
+                        message
+                        deadline
+                        cost
+                        startTime
+                        plannedCount
+                        actualCount
+                    }
+                    location {
+                        id
+                        street
+                        city
+                        stateProv
+                        postalCode
+                        latitude
+                        longitude
+                    }
+                    contact {
+                        id
+                        firstName
+                        lastName
+                        phone
+                        email
+                    }
+                    coordinator {
+                        id
+                        firstName
+                        lastName
+                        email
+                        phone
+                    }
+                }
+            }
+        }
+    }
+`;
+export const getProfileBySub = /* GraphQL */ `
+    query MyQuery($id: String) {
+        listUsers(filter: { sub: { eq: $id } }) {
+            items {
+                id
+                sub
+                firstName
+                lastName
+                username
+                email
+                phone
+                residence {
+                    id
+                    street
+                    city
+                    stateProv
+                    postalCode
+                }
+                registrations {
+                    items {
+                        id
+                        attendanceCount
+                        attendeeId
+                        attendeeFirstName
+                        attendeeLastName
+                        attendeeStreet
+                        attendeeCity
+                        attendeeStateProv
+                        attendeePostalCode
+                        mealCount
+                        membershipName
+                        membershipStreet
+                        membershipCity
+                        membershipStateProv
+                        membershipPostalCode
+                        event {
+                            id
+                            name
+                            eventDate
+                            plannedCount
+                            actualCount
+                            mealPlannedCount
+                            mealActualCount
+                            location {
+                                city
+                                stateProv
+                            }
+                            meal {
+                                id
+                            }
+                        }
+                        registrar {
+                            id
+                            firstName
+                            lastName
+                        }
+                    }
+                }
+                affiliations {
+                    items {
+                        id
+                        role
+                        status
+                        divisionAffiliationsId
+                    }
+                }
+                defaultDivision {
+                    id
+                    code
+                }
+                memberships {
+                    items {
+                        id
+                        name
+                        street
+                        city
+                        stateProv
+                        postalCode
+                        division {
+                            id
+                            code
+                            organization {
+                                code
+                            }
+                        }
+                    }
+                }
+                events(
+                    filter: {
+                        divisionEventsId: {
+                            eq: "fffedde6-5d5a-46f0-a3ac-882a350edc64"
+                        }
+                    }
+                ) {
+                    items {
+                        id
+                        status
+                        eventDate
+                        startTime
+                        endTime
+                        name
+                        location {
+                            city
+                            stateProv
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export const getEventDetails = /* GraphQL */ `
+    query GetEvent($id: ID!) {
+        getEvent(id: $id) {
+            id
+            status
+            name
+            eventDate
+            startTime
+            endTime
+            graphic
+            message
+            actualCount
+            plannedCount
+            mealActualCount
+            mealPlannedCount
+            location {
+                id
+                street
+                city
+                stateProv
+                postalCode
+                latitude
+                longitude
+            }
+            contact {
+                id
+                firstName
+                lastName
+                email
+                phone
+                street
+                city
+                stateProv
+                postalCode
+            }
+            eventMealId
+            meal {
+                id
+                message
+                cost
+                deadline
+                startTime
+                plannedCount
+                actualCount
+            }
+            coordinator {
+                id
+                firstName
+                lastName
+                email
+                phone
+            }
+            division {
+                id
+                code
+                organization {
+                    id
+                    code
+                }
+            }
+            registrations {
+                items {
+                    id
+                    attendanceCount
+                    attendeeId
+                    attendeeFirstName
+                    attendeeLastName
+                    mealCount
+                    membershipName
+                    membershipStreet
+                    membershipCity
+                    membershipStateProv
+                    membershipPostalCode
+                    registrar {
+                        id
+                        firstName
+                        lastName
+                        email
+                        phone
+                        residence {
+                            street
+                            city
+                            stateProv
+                            postalCode
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export const getEventDetailsNoRegistrations = /* GraphQL */ `
+    query GetEvent($id: ID!) {
+        getEvent(id: $id) {
+            id
+            eventDate
+            eventCompKey
+            division {
+                id
+                code
+                divCompKey
+                organization {
+                    id
+                    appName
+                    available
+                    category
+                    code
+                    description
+                    exposure
+                    label
+                    name
+                    title
+                    value
+                    createdAt
+                    updatedAt
+                }
+                organizationDivisionsId
+            }
+            coordinator {
+                id
+                sub
+                username
+                firstName
+                lastName
+                email
+                phone
+                residence {
+                    id
+                    street
+                    city
+                    stateProv
+                    postalCode
+                    latitude
+                    longitude
+                    createdAt
+                    updatedAt
+                }
+                divisionDefaultUsersId
+                residenceResidentsId
+            }
+            status
+            plannedCount
+            actualCount
+            mealPlannedCount
+            mealActualCount
+            startTime
+            endTime
+            message
+            name
+            graphic
+            location {
+                id
+                street
+                city
+                stateProv
+                postalCode
+                latitude
+                longitude
+            }
+            contact {
+                id
+                firstName
+                lastName
+                email
+                phone
+                street
+                city
+                stateProv
+                postalCode
+            }
+            meal {
+                id
+                deadline
+                cost
+                plannedCount
+                actualCount
+                startTime
+                message
+                mealEventId
+            }
+            divisionEventsId
+            eventLocationEventsId
+            eventContactEventsId
+            userEventsId
+            eventMealId
+        }
+    }
+`;
+export const getCurrentUser = /* GraphQL */ `
+    query GetUser($id: ID!) {
+        getUser(id: $id) {
+            id
+            sub
+            username
+            firstName
+            lastName
+            email
+            phone
+            residence {
+                id
+                street
+                city
+                stateProv
+                postalCode
+            }
+            affiliations {
+                items {
+                    divisionAffiliationsId
+                    id
+                    role
+                    status
+                }
+            }
+            defaultDivision {
+                code
+                id
+            }
+            events {
+                items {
+                    id
+                }
+            }
+            memberships {
+                items {
+                    id
+                    name
+                    street
+                    city
+                    stateProv
+                    postalCode
+                    division {
+                        id
+                        code
+                    }
+                }
+            }
+            registrations {
+                items {
+                    id
+                    attendanceCount
+                    mealCount
+                    membershipName
+                    membershipStreet
+                    membershipCity
+                    membershipStateProv
+                    membershipPostalCode
+                    event {
+                        id
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export const getCurrentUserRegistrations = /* GraphQL */ `
+    query ListRegistrations($id: ID!) {
+        listRegistrations(filter: { userRegistrationsId: { eq: $id } }) {
+            items {
+                id
+                attendanceCount
+                attendeeId
+                attendeeFirstName
+                attendeeLastName
+                attendeePhone
+                attendeeEmail
+                attendeeStreet
+                attendeeCity
+                attendeeStateProv
+                attendeePostalCode
+                mealCount
+                membershipName
+                membershipStreet
+                membershipCity
+                membershipStateProv
+                membershipPostalCode
+                event {
+                    id
+                    eventDate
+                    eventCompKey
+                    division {
+                        id
+                        code
+                        divCompKey
+                        organizationDivisionsId
+                    }
+                    coordinator {
+                        id
+                        sub
+                        username
+                        firstName
+                        lastName
+                        email
+                        phone
+                        divisionDefaultUsersId
+                        residenceResidentsId
+                    }
+                    status
+                    plannedCount
+                    actualCount
+                    mealPlannedCount
+                    mealActualCount
+                    startTime
+                    endTime
+                    message
+                    name
+                    graphic
+                    location {
+                        id
+                        street
+                        city
+                        stateProv
+                        postalCode
+                        latitude
+                        longitude
+                    }
+                    contact {
+                        id
+                        firstName
+                        lastName
+                        email
+                        phone
+                        street
+                        city
+                        stateProv
+                        postalCode
+                    }
+                    meal {
+                        id
+                        deadline
+                        cost
+                        plannedCount
+                        actualCount
+                        startTime
+                        message
+                        mealEventId
+                    }
+                    divisionEventsId
+                    eventLocationEventsId
+                    eventContactEventsId
+                    userEventsId
+                    eventMealId
+                }
+            }
+        }
+    }
+`;
+export const getCurrentUserRegistrations2 = /* GraphQL */ `
+    query ListRegistrations($id: ID!) {
+        listRegistrations(filter: { userRegistrationsId: { eq: $id } }) {
+            items {
+                id
+                sub
+                username
+                firstName
+                lastName
+                email
+                phone
+                residence {
+                    id
+                    street
+                    city
+                    stateProv
+                    postalCode
+                }
+                affiliations {
+                    items {
+                        divisionAffiliationsId
+                        id
+                        role
+                        status
+                    }
+                }
+                defaultDivision {
+                    code
+                    id
+                }
+                events {
+                    items {
+                        id
+                    }
+                }
+                memberships {
+                    items {
+                        id
+                        name
+                        street
+                        city
+                        stateProv
+                        postalCode
+                        division {
+                            id
+                            code
+                        }
+                    }
+                }
+                registrations {
+                    items {
+                        id
+                        attendanceCount
+                        mealCount
+                        event {
+                            id
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export const listMigrationUsers = /* GraphQL */ `
+    query ListUsers($id: ID!) {
+        listUsers(filter: { divisionDefaultUsersId: { eq: $id } }, limit: 10) {
+            items {
+                id
+                sub
+                username
+                firstName
+                lastName
+                email
+                phone
+            }
+            nextToken
+        }
+    }
+`;
+export const getDivUsers = /* GraphQL */ `
+    query MyQuery($id: ID!) {
+        listUsers(filter: { divisionDefaultUsersId: { eq: $id } }) {
+            items {
+                id
+                sub
+                username
+                firstName
+                lastName
+                email
+                phone
+            }
         }
     }
 `;

@@ -21,6 +21,7 @@ import { useDispatch } from 'react-redux';
 import { updateCurrentUser } from '../../../features/users/usersSlice';
 import { loadDivisionInfo } from '../../../features/division/divisionSlice';
 import { getProfile } from '../../../providers/users';
+import { getGQLProfile } from '../../../providers/profile.provider';
 import { getAffiliate } from '../../../providers/system';
 import { loadRallies } from '../../../features/rallies/ralliesSlice';
 import { loadRegistrations } from '../../../features/users/usersSlice';
@@ -65,7 +66,7 @@ const SignInScreen = () => {
         let setAlert = {};
         await Auth.signIn(username, password)
             .then((user) => {
-                printObject('SIS:66-->user:\n', user);
+                printObject('SIS:66-->Auth.signIn response:\n', user);
                 if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
                     const { requiredAttributes } = user.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
                     Auth.completeNewPassword(
@@ -156,6 +157,8 @@ const SignInScreen = () => {
         let region = '';
         //let eventRegion = 'east'; //todo: necessary?
         let eventRegion = ''; //todo: necessary?
+        //todo  1. getGQLProfile
+        //todo  2.
         await getProfile(theUser.uid).then((profileResponse) => {
             // console.log('profileResponse', profileResponse);
             switch (profileResponse.statusCode) {
@@ -167,13 +170,59 @@ const SignInScreen = () => {
                         'SIS:164-->DDB resulting profile:\n',
                         fullUserInfo
                     );
+                    const getGQLProfileInfo = async () => {
+                        const variables = {
+                            id: theUser.uid,
+                        };
+                        try {
+                            const gqlProfile = await API.graphql(
+                                graphqlOperation(
+                                    queries.getProfileBySub,
+                                    variables
+                                )
+                            );
+                            let returnValue = {};
+                            if (gqlProfile?.data?.listUsers?.items[0]) {
+                                printObject(
+                                    'gqlProfile return:',
+                                    gqlProfile?.data?.listUsers?.items[0]
+                                );
+                            } else {
+                                printObject('no data returned:\n', gqlProfile);
+                            }
+                        } catch (error) {
+                            printObject('gqlProfile TRY error:\n', error);
+                        }
+                    };
+                    getGQLProfileInfo();
+
                     async function getGQLProfile() {
                         try {
-                            const gqlProfileData = await API.graphql({
-                                query: queries.getUserBySub,
-                                variables: { cognito: fullUserInfo.uid },
-                            });
-                            printObject('SIS:175-->userBySub', gqlProfileData);
+                            const variables = {
+                                id: theUser.uid,
+                            };
+                            const gqlProfile = await API.graphql(
+                                graphqlOperation(
+                                    queries.getProfileBySub,
+                                    variables
+                                )
+                            );
+                            let returnValue = {};
+                            if (gqlProfile?.data?.listUsers?.items[0]) {
+                                printObject(
+                                    'GQL-profile:\n',
+                                    gqlProfile?.data?.listUsers?.items[0]
+                                );
+                            } else {
+                                printObject('DID not get response...');
+                            }
+
+                            // printObject('variables:\n', variables);
+                            // const gqlProfileData = await API.graphql({
+                            //     query: queries.getProfileBySub,
+                            //     variables,
+                            // });
+                            // printObject('SIS:175-->userBySub', gqlProfileData);
                         } catch (error) {
                             printObject(
                                 'SIS:176->>error getting gqlProfile:\n',
@@ -181,7 +230,7 @@ const SignInScreen = () => {
                             );
                         }
                     }
-                    getGQLProfile();
+                    // getGQLProfile();
                     fullUserInfo.profile = true;
                     break;
                 case 404:
