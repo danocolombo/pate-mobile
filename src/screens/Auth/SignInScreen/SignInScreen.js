@@ -66,7 +66,7 @@ const SignInScreen = () => {
         let setAlert = {};
         await Auth.signIn(username, password)
             .then((user) => {
-                printObject('SIS:66-->Auth.signIn response:\n', user);
+                // printObject('SIS:66-->Auth.signIn response:\n', user);
                 if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
                     const { requiredAttributes } = user.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
                     Auth.completeNewPassword(
@@ -128,13 +128,24 @@ const SignInScreen = () => {
         }
         let currentUserInfo = {};
         let currentSession = {};
+        let graphQLProfile = {};
         await Auth.currentUserInfo().then((u) => {
             currentUserInfo = u;
         });
         await Auth.currentSession().then((data) => {
             currentSession = data;
         });
-
+        //save JWT token to currentUser
+        dispatch(
+            updateCurrentUser({ jwtToken: currentSession?.idToken?.jwtToken })
+        );
+        graphQLProfile = {
+            ...graphQLProfile,
+            // authSession: currentSession,
+            authUserInfo: currentUserInfo,
+            role: 'guest',
+            status: 'undefined',
+        };
         //   WAIT
         let i = currentSession?.idToken?.payload?.sub;
         let u = currentSession?.idToken?.payload['cognito:username'];
@@ -158,325 +169,349 @@ const SignInScreen = () => {
         //let eventRegion = 'east'; //todo: necessary?
         let eventRegion = ''; //todo: necessary?
         //todo  1. getGQLProfile
-        //todo  2.
-        await getProfile(theUser.uid).then((profileResponse) => {
-            // console.log('profileResponse', profileResponse);
-            switch (profileResponse.statusCode) {
-                case 200:
-                    // profile found
-                    let profileInfo = profileResponse.userProfile;
-                    fullUserInfo = { ...theUser, ...profileInfo };
-                    printObject(
-                        'SIS:164-->DDB resulting profile:\n',
-                        fullUserInfo
-                    );
-                    const getGQLProfileInfo = async () => {
-                        const variables = {
-                            id: theUser.uid,
-                        };
-                        try {
-                            const gqlProfile = await API.graphql(
-                                graphqlOperation(
-                                    queries.getProfileBySub,
-                                    variables
-                                )
-                            );
-                            let returnValue = {};
-                            if (gqlProfile?.data?.listUsers?.items[0]) {
-                                printObject(
-                                    'gqlProfile return:',
-                                    gqlProfile?.data?.listUsers?.items[0]
-                                );
-                            } else {
-                                printObject('no data returned:\n', gqlProfile);
-                            }
-                        } catch (error) {
-                            printObject('gqlProfile TRY error:\n', error);
-                        }
-                    };
-                    getGQLProfileInfo();
-
-                    async function getGQLProfile() {
-                        try {
-                            const variables = {
-                                id: theUser.uid,
+        //  ********************************************
+        //      get the profile information from graphql
+        //  ********************************************
+        const getGQLProfileInfo = async () => {
+            const variables = {
+                id: theUser.uid,
+            };
+            try {
+                await API.graphql(
+                    graphqlOperation(queries.getProfileBySub, variables)
+                )
+                    .then((gqlProfileResponse) => {
+                        //  *************************************
+                        //      got graphQL profile response
+                        //  *************************************
+                        if (gqlProfileResponse?.data?.listUsers?.items[0]) {
+                            graphQLProfile = {
+                                ...graphQLProfile,
+                                ...gqlProfileResponse?.data?.listUsers
+                                    ?.items[0],
                             };
-                            const gqlProfile = await API.graphql(
-                                graphqlOperation(
-                                    queries.getProfileBySub,
-                                    variables
-                                )
-                            );
-                            let returnValue = {};
-                            if (gqlProfile?.data?.listUsers?.items[0]) {
-                                printObject(
-                                    'GQL-profile:\n',
-                                    gqlProfile?.data?.listUsers?.items[0]
-                                );
-                            } else {
-                                printObject('DID not get response...');
-                            }
-
-                            // printObject('variables:\n', variables);
-                            // const gqlProfileData = await API.graphql({
-                            //     query: queries.getProfileBySub,
-                            //     variables,
-                            // });
-                            // printObject('SIS:175-->userBySub', gqlProfileData);
-                        } catch (error) {
-                            printObject(
-                                'SIS:176->>error getting gqlProfile:\n',
-                                error
-                            );
-                        }
-                    }
-                    // getGQLProfile();
-                    fullUserInfo.profile = true;
-                    break;
-                case 404:
-                    // no profile for uid
-                    fullUserInfo = theUser;
-                    fullUserInfo.profile = false;
-                    break;
-                default:
-                    // we should get the error code, message and error
-                    console.log('StatusCode: ', profileResponse.statusCode);
-                    console.log('Message: ', profileResponse.message);
-                    console.log('Error:', profileResponse.error);
-                    // Alert.alert('Error getting the profile information');
-                    fullUserInfo = theUser;
-                    fullUserInfo.profile = false;
-                    break;
-            }
-            // printObject('SIS:168:--fullUserInfo:', fullUserInfo);
-            // if profile does not have affiliations, set default to FEO
-            if (!fullUserInfo?.affiliations) {
-                let defaultAff = {
-                    options: [
-                        {
-                            value: 'FEO',
-                            label: 'FEO Testing',
-                            region: 'us#east#south',
-                            role: 'guest',
-                            divisionId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
-                        },
-                        {
-                            value: 'CRP8',
-                            label: 'CR P8 Rallies',
-                            region: 'us#east#south',
-                            role: 'guest',
-                            divisionId: 'fffedde6-5d5a-46f0-a3ac-882a350edc64',
-                        },
-                    ],
-                    active: {
-                        value: 'FEO',
-                        label: 'FEO Testing',
-                        region: 'us#east#south',
-                        role: 'guest',
-                        divisionId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
-                    },
-                };
-                fullUserInfo = { ...fullUserInfo, affiliations: defaultAff };
-                //fullUserInfo = { ...fullUserInfo, affiliate: 'FEO' };
-            }
-            dispatch(updateCurrentUser(fullUserInfo));
-            //   get/set system.region and system.eventRegion
-            getAffiliate(fullUserInfo.affiliations.active.value)
-                .then((response) => {
-                    if (response.statusCode === 200) {
-                        dispatch(
-                            updateAffiliationString(
-                                fullUserInfo.affiliations.active.value
-                            )
-                        );
-                        dispatch(updateAffiliate(response.body[0]));
-                        dispatch(updateAppName(response.body[0].appName));
-                        dispatch(
-                            updateAffiliateTitle(
-                                fullUserInfo?.affiliations?.active?.label
-                            )
-                        );
-                        dispatch(
-                            updateStateProv(fullUserInfo?.residence?.stateProv)
-                        );
-                        if (fullUserInfo?.affiliations?.active?.role) {
-                            dispatch(
-                                updateUserRole(
-                                    fullUserInfo?.affiliations?.active?.role
-                                )
-                            );
+                            currentUser.affiliations.active = {
+                                value: graphQLProfile.defaultDivision
+                                    ?.organization?.code,
+                            };
+                            return gqlProfileResponse;
+                            // printObject(
+                            //     'gqlProfile return:',
+                            //     gqlProfile?.data?.listUsers?.items[0]
+                            // );
                         } else {
-                            dispatch(updateUserRole('guest'));
+                            printObject(
+                                'no data returned:\n',
+                                gqlProfileResponse
+                            );
                         }
-                        dispatch(setRegion(response.body[0].regions[0]));
-                        dispatch(
-                            setEventRegion(response.body[0].eventRegions[0])
-                        );
-                    } else {
-                        console.log(
-                            'response.statusCode:',
-                            response.statusCode
-                        );
-                    }
-                })
-                .catch((err) => {
-                    console.log('OH SNAP\n', err);
-                });
-        });
+                    })
+                    .then((gqlProfileResponse) => {
+                        //  ***********************************************
+                        //      DEFINE THE ROLE & STATUS
+                        //  ***********************************************
+                        //set defaults
+                        console.log('vvvvvvvvv');
+                        printObject('graphQLProfile:\n', graphQLProfile);
+                        console.log('^^^^^^^^^^^');
+                        if (graphQLProfile?.affiliations?.items.count > 0) {
+                            // we have affiliations
+                            //check if we have defaultDivision defined
+                            if (graphQLProfile?.defaultDivision?.id) {
+                                // we have defaultDivision and Affiliations, get role
+                                graphQLProfile.affiliations.items.forEach(
+                                    (aff) => {
+                                        if (
+                                            aff?.division?.id ===
+                                                graphQLProfile?.defaultDivision
+                                                    ?.id &&
+                                            aff?.division?.organization?.id ===
+                                                graphQLProfile?.defaultDivision
+                                                    ?.organization?.id
+                                        ) {
+                                            graphQLProfile.role = aff?.role;
+                                            graphQLProfile.status = aff?.status;
+                                            currentUser.affiliations.active = {
+                                                value: graphQLProfile
+                                                    .defaultDivision
+                                                    ?.organization?.code,
+                                            };
+                                        }
+                                    }
+                                );
+                            }
+                        }
+                        dispatch(updateCurrentUser(graphQLProfile));
+                    })
+                    .catch((e) => {
+                        console.log('ERRROROROROROROR ', e);
+                    });
+            } catch (error) {
+                printObject('SIS:230->>error getting try failure:\n', error);
+            }
+        };
+
+        getGQLProfileInfo();
+
+        //todo  2.
+        // await getProfile(theUser.uid).then((profileResponse) => {
+        //     // console.log('profileResponse', profileResponse);
+        //     switch (profileResponse.statusCode) {
+        //         case 200:
+        //             // profile found
+        //             let profileInfo = profileResponse.userProfile;
+        //             fullUserInfo = { ...theUser, ...profileInfo };
+        //             // printObject(
+        //             //     'SIS:164-->DDB resulting profile:\n',
+        //             //     fullUserInfo
+        //             // );
+
+        //             fullUserInfo.profile = true;
+        //             break;
+        //         case 404:
+        //             // no profile for uid
+        //             fullUserInfo = theUser;
+        //             fullUserInfo.profile = false;
+        //             break;
+        //         default:
+        //             // we should get the error code, message and error
+        //             console.log('StatusCode: ', profileResponse.statusCode);
+        //             console.log('Message: ', profileResponse.message);
+        //             console.log('Error:', profileResponse.error);
+        //             // Alert.alert('Error getting the profile information');
+        //             fullUserInfo = theUser;
+        //             fullUserInfo.profile = false;
+        //             break;
+        //     }
+        //     // printObject('SIS:168:--fullUserInfo:', fullUserInfo);
+        //     // if profile does not have affiliations, set default to FEO
+        //     if (!fullUserInfo?.affiliations) {
+        //         let defaultAff = {
+        //             options: [
+        //                 {
+        //                     value: 'FEO',
+        //                     label: 'FEO Testing',
+        //                     region: 'us#east#south',
+        //                     role: 'guest',
+        //                     divisionId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
+        //                 },
+        //                 {
+        //                     value: 'CRP8',
+        //                     label: 'CR P8 Rallies',
+        //                     region: 'us#east#south',
+        //                     role: 'guest',
+        //                     divisionId: 'fffedde6-5d5a-46f0-a3ac-882a350edc64',
+        //                 },
+        //             ],
+        //             active: {
+        //                 value: 'FEO',
+        //                 label: 'FEO Testing',
+        //                 region: 'us#east#south',
+        //                 role: 'guest',
+        //                 divisionId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
+        //             },
+        //         };
+        //         fullUserInfo = { ...fullUserInfo, affiliations: defaultAff };
+        //         //fullUserInfo = { ...fullUserInfo, affiliate: 'FEO' };
+        //     }
+        // dispatch(updateCurrentUser(fullUserInfo));
+        //     //   get/set system.region and system.eventRegion
+        //     getAffiliate(fullUserInfo.affiliations.active.value)
+        //         .then((response) => {
+        //             if (response.statusCode === 200) {
+        //                 dispatch(
+        //                     updateAffiliationString(
+        //                         fullUserInfo.affiliations.active.value
+        //                     )
+        //                 );
+        //                 dispatch(updateAffiliate(response.body[0]));
+        //                 dispatch(updateAppName(response.body[0].appName));
+        //                 dispatch(
+        //                     updateAffiliateTitle(
+        //                         fullUserInfo?.affiliations?.active?.label
+        //                     )
+        //                 );
+        //                 dispatch(
+        //                     updateStateProv(fullUserInfo?.residence?.stateProv)
+        //                 );
+        //                 if (fullUserInfo?.affiliations?.active?.role) {
+        //                     dispatch(
+        //                         updateUserRole(
+        //                             fullUserInfo?.affiliations?.active?.role
+        //                         )
+        //                     );
+        //                 } else {
+        //                     dispatch(updateUserRole('guest'));
+        //                 }
+        //                 dispatch(setRegion(response.body[0].regions[0]));
+        //                 dispatch(
+        //                     setEventRegion(response.body[0].eventRegions[0])
+        //                 );
+        //             } else {
+        //                 console.log(
+        //                     'response.statusCode:',
+        //                     response.statusCode
+        //                 );
+        //             }
+        //         })
+        //         .catch((err) => {
+        //             console.log('OH SNAP\n', err);
+        //         });
+        // });
         // let's load redux with rallies.
 
         //   ====================================
         //   START RALLY LOADING
         //   ====================================
-        const tDay = getPateDate(getToday());
-        //* get the graphql divisional events
-        try {
-            async function getDivEvents() {
-                //todo HARDCODE-HARDCODE
-                const variables = {
-                    divId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
-                    startDate: '2023-01-16',
-                };
-                API.graphql(
-                    graphqlOperation(queries.getDivisionEvents, variables)
-                )
-                    .then((divisionEvents) => {
-                        if (
-                            divisionEvents?.data?.getDivision?.events.items
-                                .length > 0
-                        ) {
-                            dispatch(
-                                loadDivisionInfo(
-                                    divisionEvents?.data?.getDivision?.events
-                                        .items
-                                )
-                            );
-                        } else {
-                            console.log('NOPE');
-                        }
-                    })
-                    .catch((error) => {
-                        printObject(
-                            'error getting division events from graphql',
-                            error
-                        );
-                    });
-            }
-            getDivEvents();
-        } catch (error) {
-            printObject('ERROR GETTING GRAPHQL DATA---->:\n', error);
-        }
-        const config = {
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-        };
-        let obj = {
-            operation: 'getAllEvents',
-        };
-        let body = JSON.stringify(obj);
+        // const tDay = getPateDate(getToday());
+        // //* get the graphql divisional events
+        // try {
+        //     async function getDivEvents() {
+        //         //todo HARDCODE-HARDCODE
+        //         const variables = {
+        //             divId: graphQLProfile?.defaultDivision?.id,
+        //             startDate: '2023-03-19',
+        //         };
+        //         API.graphql(
+        //             graphqlOperation(queries.getDivisionEvents, variables)
+        //         )
+        //             .then((divisionEvents) => {
+        //                 if (
+        //                     divisionEvents?.data?.getDivision?.events.items
+        //                         .length > 0
+        //                 ) {
+        //                     dispatch(
+        //                         loadDivisionInfo(
+        //                             divisionEvents?.data?.getDivision?.events
+        //                                 .items
+        //                         )
+        //                     );
+        //                 } else {
+        //                     console.log('NOPE');
+        //                 }
+        //             })
+        //             .catch((error) => {
+        //                 printObject(
+        //                     'error getting division events from graphql',
+        //                     error
+        //                 );
+        //             });
+        //     }
+        //     getDivEvents();
+        // } catch (error) {
+        //     printObject('ERROR GETTING GRAPHQL DATA---->:\n', error);
+        // }
+        // const config = {
+        //     headers: {
+        //         'Content-type': 'application/json; charset=UTF-8',
+        //     },
+        // };
+        // let obj = {
+        //     operation: 'getAllEvents',
+        // };
+        // let body = JSON.stringify(obj);
 
-        let api2use = process.env.AWS_API_ENDPOINT + '/events';
-        //let dbRallies = await axios.post(api2use, body, config);
+        // let api2use = process.env.AWS_API_ENDPOINT + '/events';
+        // //let dbRallies = await axios.post(api2use, body, config);
 
-        axios
-            .post(api2use, body, config)
-            .then((response) => {
-                //printObject('SIS:298-->response:', response);
-                //   SAVE ALL RALLIES TO REDUX
-                dispatch(loadRallies(response.data.body.Items));
-            })
-            .catch((err) => {
-                console.log('MS-60: error:', err);
-                navigation.navigate('ErrorMsg', {
-                    id: 'MS-60',
-                    message:
-                        'Cannot connect to server. Please check internet connection and try again.',
-                });
-            });
+        // axios
+        //     .post(api2use, body, config)
+        //     .then((response) => {
+        //         //printObject('SIS:298-->response:', response);
+        //         //   SAVE ALL RALLIES TO REDUX
+        //         dispatch(loadRallies(response.data.body.Items));
+        //     })
+        //     .catch((err) => {
+        //         console.log('MS-60: error:', err);
+        //         navigation.navigate('ErrorMsg', {
+        //             id: 'MS-60',
+        //             message:
+        //                 'Cannot connect to server. Please check internet connection and try again.',
+        //         });
+        //     });
         //   ================================================
         //    now get all the registrations for the user
         //   ================================================
         // printObject('MS:128--> entireRallyList', entireRallyList);
-        obj = {
-            operation: 'getAllUserRegistrations',
-            payload: {
-                rid: theUser.uid,
-            },
-        };
-        body = JSON.stringify(obj);
+        // obj = {
+        //     operation: 'getAllUserRegistrations',
+        //     payload: {
+        //         rid: theUser.uid,
+        //     },
+        // };
+        // body = JSON.stringify(obj);
 
-        api2use = process.env.AWS_API_ENDPOINT + '/registrations';
+        // api2use = process.env.AWS_API_ENDPOINT + '/registrations';
         //let dbRallies = await axios.post(api2use, body, config);
-        try {
-            axios
-                .post(api2use, body, config)
-                .then((regResponse) => {
-                    //printObject('SIS:258-->response', response.data);
-                    let respData = regResponse.data.body;
-                    if (respData) {
-                        function asc_sort(a, b) {
-                            return b.eventDate - a.eventDate;
-                        }
-                        let newRegList = respData.sort(asc_sort);
-                        // printObject('SIS:256-->regList', newRegList);
-                        //todo ------------------------------------
-                        //todo now get the events
-                        //todo ------------------------------------
-                        obj = {
-                            operation: 'getAllEvents',
-                        };
-                        body = JSON.stringify(obj);
-                        api2use = process.env.AWS_API_ENDPOINT + '/events';
-                        try {
-                            axios
-                                .post(api2use, body, config)
-                                .then((eResponse) => {
-                                    let eventData = eResponse.data.body.Items;
-                                    //   ------------------------------------------
-                                    //   now match up the event with registrations
-                                    //   ------------------------------------------
-                                    const bigList = newRegList.map((reg) => {
-                                        const eFound = eventData.filter(
-                                            (e) => e.uid === reg.eid
-                                        );
-                                        const newReg = {
-                                            ...reg,
-                                            eventInfo: eFound[0],
-                                        };
-                                        return newReg;
-                                    });
-                                    dispatch(loadRegistrations(bigList));
-                                })
-                                .catch((err) => {
-                                    console.log('SIS:255: error:', err);
-                                    navigation.navigate('ErrorMsg', {
-                                        id: 'SIS-376',
-                                        message: 'Cannot blend events',
-                                    });
-                                });
-                        } catch (error) {
-                            console.log('SIS:381: error:', err);
-                            navigation.navigate('ErrorMsg', {
-                                id: 'SIS-383',
-                                message:
-                                    'Cannot connect to get registrations. Please check internet connection and try again.',
-                            });
-                        }
-                        // dispatch(loadRegistrations(newRegList));
-                    }
-                })
-                .catch((err) => {
-                    console.log('SIS:392: error:', err);
-                    navigation.navigate('ErrorMsg', {
-                        id: 'SIS-394',
-                        message:
-                            'Cannot connect to server. Please check internet connection and try again.',
-                    });
-                });
-        } catch (error) {
-            console.log('SIS:400-->Axios errror.');
-        }
+        // try {
+        //     axios
+        //         .post(api2use, body, config)
+        //         .then((regResponse) => {
+        //             //printObject('SIS:258-->response', response.data);
+        //             let respData = regResponse.data.body;
+        //             if (respData) {
+        //                 function asc_sort(a, b) {
+        //                     return b.eventDate - a.eventDate;
+        //                 }
+        //                 let newRegList = respData.sort(asc_sort);
+        //                 // printObject('SIS:256-->regList', newRegList);
+        //                 //todo ------------------------------------
+        //                 //todo now get the events
+        //                 //todo ------------------------------------
+        //                 obj = {
+        //                     operation: 'getAllEvents',
+        //                 };
+        //                 body = JSON.stringify(obj);
+        //                 api2use = process.env.AWS_API_ENDPOINT + '/events';
+        //                 try {
+        //                     axios
+        //                         .post(api2use, body, config)
+        //                         .then((eResponse) => {
+        //                             let eventData = eResponse.data.body.Items;
+        //                             //   ------------------------------------------
+        //                             //   now match up the event with registrations
+        //                             //   ------------------------------------------
+        //                             const bigList = newRegList.map((reg) => {
+        //                                 const eFound = eventData.filter(
+        //                                     (e) => e.uid === reg.eid
+        //                                 );
+        //                                 const newReg = {
+        //                                     ...reg,
+        //                                     eventInfo: eFound[0],
+        //                                 };
+        //                                 return newReg;
+        //                             });
+        //                             dispatch(loadRegistrations(bigList));
+        //                         })
+        //                         .catch((err) => {
+        //                             console.log('SIS:255: error:', err);
+        //                             navigation.navigate('ErrorMsg', {
+        //                                 id: 'SIS-376',
+        //                                 message: 'Cannot blend events',
+        //                             });
+        //                         });
+        //                 } catch (error) {
+        //                     console.log('SIS:381: error:', err);
+        //                     navigation.navigate('ErrorMsg', {
+        //                         id: 'SIS-383',
+        //                         message:
+        //                             'Cannot connect to get registrations. Please check internet connection and try again.',
+        //                     });
+        //                 }
+        //                 // dispatch(loadRegistrations(newRegList));
+        //             }
+        //         })
+        //         .catch((err) => {
+        //             console.log('SIS:392: error:', err);
+        //             navigation.navigate('ErrorMsg', {
+        //                 id: 'SIS-394',
+        //                 message:
+        //                     'Cannot connect to server. Please check internet connection and try again.',
+        //             });
+        //         });
+        // } catch (error) {
+        //     console.log('SIS:400-->Axios errror.');
+        // }
 
         setLoading(false);
         return;

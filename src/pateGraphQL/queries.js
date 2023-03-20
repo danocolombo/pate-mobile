@@ -1779,14 +1779,25 @@ export const getProfileBySub = /* GraphQL */ `
                 affiliations {
                     items {
                         id
-                        role
                         status
-                        divisionAffiliationsId
+                        role
+                        division {
+                            id
+                            code
+                            organization {
+                                id
+                                code
+                            }
+                        }
                     }
                 }
                 defaultDivision {
                     id
                     code
+                    organization {
+                        id
+                        code
+                    }
                 }
                 memberships {
                     items {

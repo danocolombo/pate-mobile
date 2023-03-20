@@ -124,7 +124,8 @@ export default function LandingScreen(props) {
                             Welcome {user.firstName} {user.lastName}
                         </Text>
                         <Text style={{ textAlign: 'center' }}>
-                            Affiliation: {user?.affiliations?.active.value}
+                            Affiliation:{' '}
+                            {user?.defaultDivision?.organization?.code}
                         </Text>
                         <Text style={{ textAlign: 'center' }}>
                             Region:{' '}
