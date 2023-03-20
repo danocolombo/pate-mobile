@@ -190,10 +190,16 @@ const SignInScreen = () => {
                                 ...gqlProfileResponse?.data?.listUsers
                                     ?.items[0],
                             };
-                            currentUser.affiliations.active = {
-                                value: graphQLProfile.defaultDivision
-                                    ?.organization?.code,
+                            graphQLProfile.affiliations.active = {
+                                label: 'TBD',
+                                role: 'guest',
+                                region: 'TBD',
+                                value: 'TBD',
                             };
+                            // currentUser.affiliations.active = {
+                            //     value: graphQLProfile.defaultDivision
+                            //         ?.organization?.code,
+                            // };
                             return gqlProfileResponse;
                             // printObject(
                             //     'gqlProfile return:',

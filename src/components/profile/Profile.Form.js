@@ -1453,7 +1453,7 @@ const ProfileForm = (props) => {
                                                         </Surface>
                                                     </List.Accordion>
                                                 </List.Section>
-                                                {user?.affiliations.options
+                                                {user?.affiliations.items
                                                     .length > 1 && (
                                                     <List.Section>
                                                         <List.Accordion
