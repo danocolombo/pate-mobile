@@ -551,7 +551,7 @@ const ProfileForm = (props) => {
                             <Text style={styles.modalText}>
                                 Cannot change the affiliate information and
                                 attempt to change the affiliation definitions at
-                                the same time.
+                                this same time.
                             </Text>
                         </View>
                         <View style={styles.modalInfoWrapper}>

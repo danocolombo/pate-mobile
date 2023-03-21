@@ -1787,6 +1787,7 @@ export const getProfileBySub = /* GraphQL */ `
                             organization {
                                 id
                                 code
+                                title
                             }
                         }
                     }
@@ -1797,6 +1798,7 @@ export const getProfileBySub = /* GraphQL */ `
                     organization {
                         id
                         code
+                        title
                     }
                 }
                 memberships {

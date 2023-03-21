@@ -216,17 +216,14 @@ const SignInScreen = () => {
                         //  ***********************************************
                         //      DEFINE THE ROLE & STATUS
                         //  ***********************************************
-                        //set defaults
-                        console.log('vvvvvvvvv');
-                        printObject('graphQLProfile:\n', graphQLProfile);
-                        console.log('^^^^^^^^^^^');
-                        if (graphQLProfile?.affiliations?.items.count > 0) {
+
+                        if (graphQLProfile?.affiliations?.items.length > 0) {
                             // we have affiliations
                             //check if we have defaultDivision defined
                             if (graphQLProfile?.defaultDivision?.id) {
                                 // we have defaultDivision and Affiliations, get role
                                 graphQLProfile.affiliations.items.forEach(
-                                    (aff) => {
+                                    (aff, index) => {
                                         if (
                                             aff?.division?.id ===
                                                 graphQLProfile?.defaultDivision
@@ -237,16 +234,24 @@ const SignInScreen = () => {
                                         ) {
                                             graphQLProfile.role = aff?.role;
                                             graphQLProfile.status = aff?.status;
-                                            currentUser.affiliations.active = {
-                                                value: graphQLProfile
-                                                    .defaultDivision
-                                                    ?.organization?.code,
-                                            };
+                                            graphQLProfile.affiliations.active =
+                                                {
+                                                    label: aff.division
+                                                        ?.organization?.title,
+                                                    region: aff.division?.code,
+                                                    role: aff?.role,
+                                                    value: aff?.division
+                                                        ?.organization?.code,
+                                                };
                                         }
                                     }
                                 );
                             }
                         }
+                        //set defaults
+                        console.log('vvvvvvvvv');
+                        printObject('graphQLProfile:\n', graphQLProfile);
+                        console.log('^^^^^^^^^^^');
                         dispatch(updateCurrentUser(graphQLProfile));
                     })
                     .catch((e) => {
@@ -321,6 +326,17 @@ const SignInScreen = () => {
         //         //fullUserInfo = { ...fullUserInfo, affiliate: 'FEO' };
         //     }
         // dispatch(updateCurrentUser(fullUserInfo));
+
+        //  *************************************
+        //      need to set system variables
+        //  *************************************
+        dispatch(
+            updateAffiliationString(graphQLProfile?.affiliations?.active?.value)
+        );
+
+        //----------------------------------------------------------------
+        //----------------------------------------------------------------
+        //----------------------------------------------------------------
         //     //   get/set system.region and system.eventRegion
         //     getAffiliate(fullUserInfo.affiliations.active.value)
         //         .then((response) => {
