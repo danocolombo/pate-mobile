@@ -19,13 +19,12 @@ const ServeMyRallies = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [rally, setRally] = useState();
     const dispatch = useDispatch();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     let me = useSelector((state) => state.users.currentUser);
-    let rallies = useSelector((state) => state.rallies.allRallies);
-    // printObject('SR20 rallies:', rallies);
-    const myRalliesRAW = rallies.filter(
-        (r) => r.coordinator.id === me.uid && r.affiliate === feo.affiliation
-    );
+    printObject('SMR:24-->me:\n', me);
+    let rallies = useSelector((state) => state.division.gatherings);
+    printObject('SMR:26 rallies:', rallies);
+    const myRalliesRAW = rallies.filter((r) => r.coordinator.id === me.id);
     // now sort the rallies
     function asc_sort(a, b) {
         return b.eventDate - a.eventDate;

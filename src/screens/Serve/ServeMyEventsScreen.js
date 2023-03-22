@@ -49,8 +49,11 @@ const ServeMyEventsScreen = () => {
                             variables
                         )
                     )
-                        .then((coordinatorEvents) => {
-                            printObject('SMES:48-->CE:\n', coordinatorEvents);
+                        .then((coordinatorEventsResponse) => {
+                            printObject(
+                                'SMES:48-->CE:\n',
+                                coordinatorEventsResponse
+                            );
                             // if (
                             //     divisionEvents?.data?.getDivision?.events.items
                             //         .length > 0
@@ -72,7 +75,7 @@ const ServeMyEventsScreen = () => {
                             );
                         });
                 }
-                getMyEvents();
+                //getMyEvents();
             } catch (error) {
                 printObject(
                     'SMES:70-->ERROR GETTING GRAPHQL DATA---->:\n',

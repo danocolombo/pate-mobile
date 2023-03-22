@@ -4,6 +4,9 @@
         "slug": "FortsonEventOrganizer",
         "ios": {
             "bundleIdentifier": "guru.fortson.eor"
-        }
+        }    
+    },
+    "packagerOpts": {
+        "sourceMap": true
     }
 }

@@ -18,21 +18,16 @@ const ServeMyRallies = () => {
             return s.name;
         }
     });
-    let feo = useSelector((state) => state.system);
-    let rallies = useSelector((state) => state.rallies.allRallies);
-    const stateRalliesRAW = useSelector((state) =>
-        state.rallies.allRallies.filter(
-            (r) =>
-                r.stateProv === me.residence.stateProv &&
-                r.affiliate === feo.affiliation
-        )
-    );
+    let feo = useSelector((state) => state.division);
+    let rallies = useSelector((state) => state.division.gatherings);
+    printObject('SSR:23 rallies:', rallies);
 
     function asc_sort(a, b) {
         return b.eventDate - a.eventDate;
     }
-    let displayData = stateRalliesRAW.sort(asc_sort);
-
+    // let displayData = stateRalliesRAW.sort(asc_sort);
+    let displayData = rallies;
+    printObject('SSR:30-->displayData:\n', displayData);
     const navigation = useNavigation();
     const handleEventPress = (e) => {
         printObject('event', e);
@@ -57,15 +52,15 @@ const ServeMyRallies = () => {
             <ScrollView>
                 <View>
                     {displayData.map((ral) => (
-                        <View key={ral.uid} style={{ margin: 10 }}>
+                        <View key={ral.id} style={{ margin: 10 }}>
                             <Pressable
                                 onPress={() =>
                                     navigation.navigate('RallyInfo', {
-                                        rallyId: ral.uid,
+                                        rallyId: ral.id,
                                     })
                                 }
                             >
-                                <EventListCard key={ral.uid} rally={ral} />
+                                <EventListCard key={ral.id} rally={ral} />
                             </Pressable>
                         </View>
                     ))}

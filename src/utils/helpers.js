@@ -53,6 +53,22 @@ export function getToday() {
     const target = yr + '-' + mn + '-' + da;
     return target;
 }
+export function prettyTime(t) {
+    const [hourStr, minuteStr] = t.split(':').slice(0, 2);
+    const hours = parseInt(hourStr);
+    const minutes = parseInt(minuteStr);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    const period = hours >= 12 ? 'pm' : 'am';
+    const formattedHours = (hours % 12 || 12)
+        .toString()
+        .padStart(2, '0')
+        .replace(/^0/, '');
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    const finalizedTime = `${formattedHours}:${formattedMinutes}${period}`;
+    return finalizedTime;
+}
 export function printObject(label, target) {
     // const util = require('util');
     const util = require('util');

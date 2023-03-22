@@ -19,7 +19,11 @@ import * as queries from '../../../pateGraphQL/queries';
 import { useDispatch } from 'react-redux';
 // import { ALL_EVENTS } from '../../../../data/getRegionalEvents';
 import { updateCurrentUser } from '../../../features/users/usersSlice';
-import { loadDivisionInfo } from '../../../features/division/divisionSlice';
+import {
+    initializeDivision,
+    getDivisionInfo,
+    loadDivisionInfo,
+} from '../../../features/division/divisionSlice';
 import { getProfile } from '../../../providers/users';
 import { getGQLProfile } from '../../../providers/profile.provider';
 import { getAffiliate } from '../../../providers/system';
@@ -236,6 +240,54 @@ const SignInScreen = () => {
                                             graphQLProfile.status = aff?.status;
                                             graphQLProfile.affiliations.active =
                                                 {
+                                                    affiliationId: aff.id,
+                                                    status: aff.status,
+                                                    role: aff.role,
+                                                    divisionId: aff.division.id,
+                                                    divisionCode:
+                                                        aff.division.code,
+                                                    organizationId:
+                                                        aff.division
+                                                            .organization.id,
+                                                    organizationId:
+                                                        aff.division
+                                                            .organization.id,
+                                                    organizationAppName:
+                                                        aff.division
+                                                            .organization
+                                                            .appName,
+                                                    organizationAvailable:
+                                                        aff.division
+                                                            .organization
+                                                            .available,
+                                                    organizationCategory:
+                                                        aff.division
+                                                            .organization
+                                                            .category,
+                                                    organizationDescription:
+                                                        aff.division
+                                                            .organization
+                                                            .description,
+                                                    organizationExposure:
+                                                        aff.division
+                                                            .organization
+                                                            .exposure,
+                                                    organizationLabel:
+                                                        aff.division
+                                                            .organization.label,
+                                                    organizationName:
+                                                        aff.division
+                                                            .organization.name,
+                                                    organizationValue:
+                                                        aff.division
+                                                            .organization.value,
+                                                    organizationCode:
+                                                        aff.division
+                                                            .organization.code,
+                                                    organizationTitle:
+                                                        aff.division
+                                                            .organization.title,
+
                                                     label: aff.division
                                                         ?.organization?.title,
                                                     region: aff.division?.code,
@@ -253,6 +305,62 @@ const SignInScreen = () => {
                         printObject('graphQLProfile:\n', graphQLProfile);
                         console.log('^^^^^^^^^^^');
                         dispatch(updateCurrentUser(graphQLProfile));
+                        //  ******************************************
+                        //      get the divisionEvents
+                        //  ******************************************
+                        const variables = {
+                            divId: graphQLProfile?.defaultDivision?.id,
+                        };
+                        if (variables.divId) {
+                            const getDivisionalEvents = async () => {
+                                //  ******************************************
+                                //      get the divisionEvents
+                                //  ******************************************
+
+                                try {
+                                    await API.graphql(
+                                        graphqlOperation(
+                                            queries.getAllDivisionEvents,
+                                            variables
+                                        )
+                                    )
+                                        .then((divEventsResponse) => {
+                                            //  *************************************
+                                            //      got graphQL divEvents response
+                                            //  *************************************
+                                            printObject(
+                                                'SIS:331-->eventCount:\n',
+                                                divEventsResponse?.data
+                                                    ?.getDivision?.events?.items
+                                                    .length
+                                            );
+                                            if (
+                                                divEventsResponse?.data
+                                                    ?.getDivision?.id
+                                            ) {
+                                                dispatch(
+                                                    initializeDivision(
+                                                        divEventsResponse.data
+                                                            .getDivision
+                                                    )
+                                                );
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            printObject(
+                                                'SIS:284--> divEventRequest error:\n',
+                                                error
+                                            );
+                                        });
+                                } catch (error) {
+                                    printObject(
+                                        'SIS:287--> divEventRequest try/catch error:\n',
+                                        error
+                                    );
+                                }
+                            };
+                            getDivisionalEvents();
+                        }
                     })
                     .catch((e) => {
                         console.log('ERRROROROROROROR ', e);

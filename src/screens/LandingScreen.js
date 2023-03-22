@@ -18,12 +18,14 @@ import { Surface } from 'react-native-paper';
 import { loadDisplayRallies } from '../features/rallies/ralliesSlice';
 import { printObject } from '../utils/helpers';
 import { getPateDate, getToday } from '../utils/date';
+import { getDivisionInfo } from '../features/division/divisionSlice';
 import { getAvailableEvents } from '../features/rallies/ralliesSlice';
 
 export default function LandingScreen(props) {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
+    // const divisionInformation = getDivisionInfo();
     // const expoVersion = Constants.expoConfig.version;
     // const feoVersion = Application.nativeBuildVersion;
     const description = Constants?.manifest?.extra?.feo;
@@ -32,11 +34,10 @@ export default function LandingScreen(props) {
     const divEvents = useSelector((state) => state.division.allRallies);
     // printObject('LS:29-->user:', user);
     const feo = useSelector((state) => state.system);
-
+    const divSlice = useSelector((state) => state.division);
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
     );
-
     // useEffect(() => {
     //     dispatch(getAvailableEvents({ name, today: today }));
     // }, [props, isFocused]);

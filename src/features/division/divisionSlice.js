@@ -6,6 +6,8 @@ import { getPateDate } from '../../utils/date';
 //   this is url for all meetings
 
 const initialState = {
+    gatherings: [],
+    info: {},
     allRallies: [],
     userRallies: [],
     displayRallies: [],
@@ -14,9 +16,18 @@ const initialState = {
 };
 
 export const divisionSlice = createSlice({
-    name: 'rallies',
+    name: 'division',
     initialState,
     reducers: {
+        initializeDivision: (state, action) => {
+            state.gatherings = action?.payload?.events?.items;
+            state.info = {
+                id: action?.payload?.id,
+                code: action?.payload?.code,
+                divCompKey: action?.payload?.divCompKey || '',
+            };
+            return state;
+        },
         createTmp: (state, action) => {
             state.tmpRally = {};
             state.tmpRally = action.payload;
@@ -191,7 +202,9 @@ export const divisionSlice = createSlice({
         getAllRallies: (state, action) => {
             return state.allRallies;
         },
-
+        getDivisionInfo: (state, action) => {
+            return state.info;
+        },
         logout: (state) => {
             state.allRallies = [];
             state.displayRallies = [];
@@ -224,6 +237,8 @@ export const divisionSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
+    initializeDivision,
+    getDivisionInfo,
     loadDivisionInfo,
     getRally,
     addNewRally,

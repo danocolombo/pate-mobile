@@ -89,7 +89,7 @@ const ProfileForm = (props) => {
         useState(false);
     const { colors } = props.theme;
     const dispatch = useDispatch();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     const originalUser = useSelector((state) => state.users.currentUser);
     let user = useSelector((state) => state.users.currentUser);
     const [affiliationSelected, setAffiliationSelected] = useState(
@@ -1239,7 +1239,10 @@ const ProfileForm = (props) => {
                                                 <List.Section>
                                                     <List.Accordion
                                                         title={`${capitalize(
-                                                            feo.affiliate.label
+                                                            originalUser
+                                                                .affiliations
+                                                                .active
+                                                                .organizationLabel
                                                         )} Information`}
                                                         expanded={
                                                             affiliationAccordionIsOpen
@@ -1293,9 +1296,10 @@ const ProfileForm = (props) => {
                                                                         }
                                                                     >
                                                                         {capitalize(
-                                                                            feo
-                                                                                .affiliate
-                                                                                .label
+                                                                            originalUser
+                                                                                .affiliations
+                                                                                .active
+                                                                                .organizationLabel
                                                                         ) + ' '}
                                                                         Name
                                                                     </Text>
@@ -1305,9 +1309,10 @@ const ProfileForm = (props) => {
                                                                         styles.input
                                                                     }
                                                                     placeholder={`${capitalize(
-                                                                        feo
-                                                                            .affiliate
-                                                                            .label
+                                                                        originalUser
+                                                                            .affiliations
+                                                                            .active
+                                                                            .organizationLabel
                                                                     )} Name`}
                                                                     onChangeText={formikProps.handleChange(
                                                                         'affiliateName'
@@ -1453,8 +1458,8 @@ const ProfileForm = (props) => {
                                                         </Surface>
                                                     </List.Accordion>
                                                 </List.Section>
-                                                {user?.affiliations.items
-                                                    .length > 1 && (
+                                                {originalUser?.affiliations
+                                                    .items.length > 1 && (
                                                     <List.Section>
                                                         <List.Accordion
                                                             title='Affiliation Information'
@@ -1545,9 +1550,9 @@ const ProfileForm = (props) => {
                                                                             setAffiliationSelected
                                                                         }
                                                                         list={
-                                                                            user
+                                                                            originalUser
                                                                                 .affiliations
-                                                                                .options
+                                                                                .items
                                                                         }
                                                                     />
                                                                 </View>

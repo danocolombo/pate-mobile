@@ -1665,7 +1665,9 @@ export const getDivisionEventsByDateStatus = /* GraphQL */ `
 export const getAllDivisionEvents = /* GraphQL */ `
     query MyQuery($divId: ID!) {
         getDivision(id: $divId) {
+            id
             code
+            divCompKey
             events(sortDirection: ASC) {
                 items {
                     id
@@ -1786,6 +1788,14 @@ export const getProfileBySub = /* GraphQL */ `
                             code
                             organization {
                                 id
+                                appName
+                                available
+                                category
+                                description
+                                exposure
+                                label
+                                name
+                                value
                                 code
                                 title
                             }

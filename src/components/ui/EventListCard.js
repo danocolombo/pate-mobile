@@ -5,7 +5,7 @@ import { Chip } from '@react-native-material/core';
 import { Card } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import CardDate from './RallyCardDateStack';
-import { printObject } from '../../utils/helpers';
+import { printObject, prettyTime } from '../../utils/helpers';
 import { convertPateTime } from '../../utils/date';
 
 // function EventListCard({ date, locationName, city, stateProv, eventTime }) {
@@ -47,7 +47,8 @@ function EventListCard({ rally, deletePress }) {
                         </View>
                         <View style={styles.geoWrapper}>
                             <Text style={styles.geo}>
-                                {rally.city}, {rally.stateProv}
+                                {rally.location.city},{' '}
+                                {rally.location.stateProv}
                             </Text>
                         </View>
                     </View>
@@ -55,7 +56,7 @@ function EventListCard({ rally, deletePress }) {
                         <View>
                             <View style={styles.stateToken}>
                                 <Text style={styles.stateTokenText}>
-                                    {rally.stateProv}
+                                    {rally.location.stateProv}
                                 </Text>
                             </View>
                         </View>
@@ -64,12 +65,12 @@ function EventListCard({ rally, deletePress }) {
                 <View style={styles.cardRow}>
                     <View style={styles.timeWrapper}>
                         <Text style={styles.timeText}>
-                            {convertPateTime(rally.startTime)}
+                            {prettyTime(rally.startTime)}
                             {' - '}
-                            {convertPateTime(rally.endTime)}
+                            {prettyTime(rally.endTime)}
                         </Text>
                     </View>
-                    {rally.meal.offered ? (
+                    {rally.meal.id ? (
                         <View style={styles.mealOfferedWrapper}>
                             <Text style={styles.mealOfferedText}>
                                 Meal offered
@@ -79,7 +80,8 @@ function EventListCard({ rally, deletePress }) {
                 </View>
                 <View style={styles.cardStatusRow}>
                     <View>
-                        {rally.approved === true ? (
+                        {rally.status === 'approved' ||
+                        rally.status === 'done' ? (
                             <Ionicons
                                 name='checkmark-circle-outline'
                                 size={32}
@@ -110,19 +112,20 @@ function EventListCard({ rally, deletePress }) {
                             </>
                         )}
                     </View>
-                    {rally.approved === true ? (
+                    {rally.status === 'approved' || rally.status === 'done' ? (
                         <View style={styles.registrationsWrapper}>
                             <Text style={styles.registrationsText}>
-                                Registrations: {rally?.registrations}
+                                Registrations: {rally?.plannedCount}
                             </Text>
                         </View>
                     ) : null}
-                    {rally.approved === true && rally?.meal?.offered ? (
+                    {(rally.status === 'approved' || rally.status === 'done') &&
+                    rally?.meal?.id ? (
                         <View style={styles.mealsWrapper}>
                             <Text style={styles.mealsText}>
                                 Meals:{' '}
-                                {rally?.meal?.mealCount
-                                    ? rally?.meal?.mealCount
+                                {rally?.mealPlannedCount
+                                    ? rally?.mealPlannedCount
                                     : 0}
                             </Text>
                         </View>

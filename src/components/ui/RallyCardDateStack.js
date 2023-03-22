@@ -11,8 +11,8 @@ function CardDate({ date }) {
     let day;
     if (date) {
         yr = date.slice(0, 4);
-        mo = date.slice(4, 6);
-        da = date.slice(6, 8);
+        mo = date.slice(5, 7);
+        da = date.slice(8, 10);
 
         switch (mo) {
             case '01':

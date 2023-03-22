@@ -19,12 +19,14 @@ const ServeMyEvents = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [rally, setRally] = useState();
     const dispatch = useDispatch();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     let me = useSelector((state) => state.users.currentUser);
-    let rallies = useSelector((state) => state.rallies.allRallies);
+    let rallies = useSelector((state) => state.division.gatherings);
+    printObject('SME:25-->me:\n', me);
+    printObject('SME:26-->ralles:\n', rallies);
     // printObject('SR20 rallies:', rallies);
     const myRalliesRAW = rallies.filter(
-        (r) => r.coordinator.id === me.uid && r.affiliate === feo.affiliation
+        (r) => r?.coordinator?.id === me.uid && r.affiliate === feo.affiliation
     );
 
     // now sort the rallies
