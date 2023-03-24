@@ -1749,6 +1749,16 @@ export const getAllDivisionEvents = /* GraphQL */ `
                         email
                         phone
                     }
+                    division {
+                        id
+                        code
+                        divCompKey
+                        organization {
+                            id
+                            code
+                            description
+                        }
+                    }
                 }
             }
         }

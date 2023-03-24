@@ -12,7 +12,7 @@ const RallyEdit = ({ rallyId, stage }) => {
     const navigation = useNavigation();
     const feo = useSelector((state) => state.system);
     // console.log('stage', stage);
-    // console.log('rallyId', rallyId);
+    console.log('RE:15==>rallyId', rallyId);
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,

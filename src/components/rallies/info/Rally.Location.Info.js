@@ -17,14 +17,19 @@ const RallyLocationInfo = ({ rally, title }) => {
                             <Text style={styles.text}>{rally?.name}</Text>
                         ) : null}
                         {rally?.street ? (
-                            <Text style={styles.text}>{rally?.street}</Text>
+                            <Text style={styles.text}>
+                                {rally?.location?.street}
+                            </Text>
                         ) : null}
                         {rally?.city ? (
-                            <Text style={styles.text}>{rally?.city}</Text>
-                        ) : null}
-                        {rally?.stateProv || rally?.postalCode ? (
                             <Text style={styles.text}>
-                                {rally?.stateProv}, {rally?.postalCode}
+                                {rally?.location?.city}
+                            </Text>
+                        ) : null}
+                        {rally?.stateProv || rally?.location?.postalCode ? (
+                            <Text style={styles.text}>
+                                {rally?.location?.stateProv},{' '}
+                                {rally?.location?.postalCode}
                             </Text>
                         ) : null}
                     </View>

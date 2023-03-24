@@ -44,7 +44,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 // import ServeRegDetailModal from '../../serve/ServeRegDetailModal';
 import { Colors } from '../../../constants/colors';
 import { CONFIG, transformPatePhone } from '../../../utils/helpers';
-import { printObject } from '../../../utils/helpers';
+import { printObject, prettyName } from '../../../utils/helpers';
 //import { ScrollView } from 'react-native-gesture-handler';
 import { updateRally } from '../../../features/rallies/ralliesSlice';
 import { getRegistrarsForEvent } from '../../../providers/registrations';
@@ -73,6 +73,9 @@ const RallyDetails = ({ rallyId }) => {
         state.division.gatherings.filter((r) => r.id === rallyId)
     );
     let rally = rallyEntry[0];
+    console.log('vvvvvvvvvvvvvvvvvvv');
+    printObject('RI:77-->rally:', rally);
+    console.log('^^^^^^^^^^^^^^^^^^^');
     const dispatch = useDispatch();
     //modal stuff
     let statusValues = [];
@@ -95,7 +98,7 @@ const RallyDetails = ({ rallyId }) => {
                 <Button
                     onPress={() =>
                         navigation.navigate('RallyEditFlow', {
-                            rallyId: rally.uid,
+                            rallyId: rally.id,
                             stage: 1,
                         })
                     }
@@ -215,45 +218,43 @@ const RallyDetails = ({ rallyId }) => {
                         </View>
                         <View>
                             <Text style={[styles.modalText, { marginTop: 20 }]}>
-                                {regInquiry?.registrar?.firstName}{' '}
-                                {regInquiry?.registrar?.lastName}
+                                {prettyName(regInquiry?.attendeeFirstName)}{' '}
+                                {prettyName(regInquiry?.attendeeLastName)}
                             </Text>
                         </View>
                         <View>
                             <Text style={styles.modalText}>
-                                {regInquiry?.registrar?.residence?.street}
+                                {regInquiry?.attendeeStreet}
                             </Text>
                         </View>
                         <View>
                             <Text style={styles.modalText}>
-                                {regInquiry?.registrar?.residence?.city}
+                                {regInquiry?.attendeeCity}
                             </Text>
                         </View>
                         <View>
                             <Text style={styles.modalText}>
-                                {regInquiry?.registrar?.residence?.stateProv}
+                                {regInquiry?.attendeeStateProv}
                                 {', '}
-                                {regInquiry?.registrar?.residence?.postalCode}
+                                {regInquiry?.attendeePostalCode}
                             </Text>
                         </View>
 
                         <View>
                             <Text style={[styles.modalText, { marginTop: 10 }]}>
-                                {transformPatePhone(
-                                    regInquiry?.registrar?.phone
-                                )}
+                                {transformPatePhone(regInquiry?.attendeePhone)}
                             </Text>
                         </View>
 
                         <View>
                             <Text style={styles.modalText}>
-                                {regInquiry?.registrar?.email}
+                                {regInquiry?.attendeeEmail}
                             </Text>
                         </View>
 
                         <View>
                             <Text style={[styles.modalText, { marginTop: 20 }]}>
-                                Registrations: {regInquiry?.attendeeCount}
+                                Registrations: {regInquiry?.attendanceCount}
                             </Text>
                         </View>
 
@@ -264,12 +265,12 @@ const RallyDetails = ({ rallyId }) => {
                         </View>
                         <View>
                             <Text style={[styles.modalText, { marginTop: 20 }]}>
-                                {regInquiry?.church?.name}
+                                {regInquiry?.membershipName}
                             </Text>
                             <Text style={styles.modalText}>
-                                {regInquiry?.church?.city}
+                                {regInquiry?.membershipCity}
                                 {', '}
-                                {regInquiry?.church?.stateProv}
+                                {regInquiry?.membershipStateProv}
                             </Text>
                         </View>
 
@@ -527,7 +528,7 @@ const RallyDetails = ({ rallyId }) => {
                                                       }
                                                   >
                                                       <RegScrollItem
-                                                          key={r.uid}
+                                                          key={r.id}
                                                           reg={r}
                                                       />
                                                   </Pressable>
@@ -538,8 +539,7 @@ const RallyDetails = ({ rallyId }) => {
                             </View>
                             <View style={styles.detailsContainer}>
                                 <Surface style={[styles.detailsSurface]}>
-                                    {user.affiliations.active.role ===
-                                        'lead' && (
+                                    {user.role === 'lead' && (
                                         <View style={styles.detailsView}>
                                             <Pressable
                                                 onPress={() =>
@@ -554,8 +554,8 @@ const RallyDetails = ({ rallyId }) => {
                                             </Pressable>
                                         </View>
                                     )}
-                                    {user.affiliations.active.role === 'rep' &&
-                                        rally.coordinator.id === user.uid && (
+                                    {user.role === 'rep' &&
+                                        rally.coordinator.id === user.id && (
                                             <View style={styles.detailsView}>
                                                 <Pressable
                                                     onPress={() =>

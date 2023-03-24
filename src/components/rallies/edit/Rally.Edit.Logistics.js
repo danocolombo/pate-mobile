@@ -25,7 +25,7 @@ export default function RallyLogisticsForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
-
+    printObject('REL:28-->LOGISTICS-->tmpRally', tmp);
     const [defaultDateString, setDefaultDateString] = useState();
     const [eventDate, setEventDate] = useState();
     const [eventDateString, setEventDateString] = useState();
@@ -42,29 +42,51 @@ export default function RallyLogisticsForm({ rallyId }) {
     useEffect(() => {
         if (rallyId !== 0) {
             // console.log('-->', tmp.startTime);
-            const yr = parseInt(tmp.eventDate.substr(0, 4));
-            const mo = parseInt(tmp.eventDate.substr(4, 2));
-            const da = parseInt(tmp.eventDate.substr(6, 2));
-            const shr = parseInt(tmp.startTime.substr(0, 2));
-            const smi = parseInt(tmp.startTime.substr(2, 2));
-            const ehr = parseInt(tmp.endTime.substr(0, 2));
-            const emi = parseInt(tmp.endTime.substr(2, 2));
-            let tmpDate = new Date(yr, mo - 1, da, shr, smi, 0);
-            setEventDate(tmpDate);
-            setEventDateString(tmpDate.toDateString());
-            setDefaultDateString(tmpDate.toDateString());
-            setStartTime(tmpDate);
-            let stime = makeDateString(tmpDate);
-            setStartTimeString(stime);
-            tmpDate = new Date(yr, mo - 1, da, ehr, emi, 0);
-            let etime = makeDateString(tmpDate);
-            setEndTime(tmpDate);
-            setEndTimeString(etime);
+            console.log('eventDate:>', tmp.eventDate, '<');
+            console.log('stateTime:>', tmp.startTime, '<');
+            console.log('endTime:>', tmp.endTime, '<');
+
+            const [year, month, day] = tmp?.eventDate.split('-');
+            const startDateObject = new Date(year, month - 1, day);
+
+            // Outputs: Sat Jun 04 2022 00:00:00 GMT-0700 (Pacific Daylight Time)
+            let stDate = new Date(`1970-01-01T${tmp?.startTime}Z`);
+            const formattedStartTime = stDate.toLocaleTimeString([], {
+                hour: 'numeric',
+                minute: '2-digit',
+            });
+
+            // Outputs: "1:00 PM" (in the user's locale)
+            let etDate = new Date(`1970-01-01T${tmp?.endTime}Z`);
+            const formattedEndTime = etDate.toLocaleTimeString([], {
+                hour: 'numeric',
+                minute: '2-digit',
+            });
+            // let tmpDate = new Date(yr, mo - 1, da, shr, smi, 0);
+            console.log('AFTER...');
+            console.log('8888888888888888888888888888888888');
+
+            console.log('startDateObject:', startDateObject);
+            console.log('startTime:', stDate);
+            console.log('endTime:', etDate);
+            console.log('8888888888888888888888888888888888');
+
+            setEventDate(startDateObject);
+            setEventDateString(startDateObject.toDateString());
+            setDefaultDateString(startDateObject.toDateString());
+            setStartTime(stDate.toTimeString());
+            let stime = makeDateString(formattedStartTime);
+            setStartTimeString(etDate);
+
+            setEndTime(formattedEndTime);
+            let eTime = makeDateString(formattedStartTime);
+            setEndTimeString(eTime);
         } else {
             const yr = feo.today.substr(0, 4);
-            const mo = feo.today.substr(4, 2);
-            const da = feo.today.substr(6, 2);
+            const mo = feo.today.substr(5, 2);
+            const da = feo.today.substr(8, 2);
             let tmpDate = new Date(yr, mo - 1, da, 13, 0, 0, 0);
+            console.log('tmpDate2:', tmpDate);
             setEventDate(tmpDate);
             setEventDateString(tmpDate.toDateString());
             setStartTime(tmpDate);
@@ -169,6 +191,8 @@ export default function RallyLogisticsForm({ rallyId }) {
         return;
     };
     const makeDateString = (data) => {
+        console.log('makeDateString(data)', data);
+        return data;
         const yr = parseInt(data.getFullYear());
         const mo = parseInt(data.getMonth());
         const da = parseInt(data.getDate());

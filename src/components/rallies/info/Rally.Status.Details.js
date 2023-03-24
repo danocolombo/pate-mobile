@@ -9,7 +9,7 @@ import Collapsible from 'react-native-collapsible';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from '../../../constants/colors';
-import { printObject } from '../../../utils/helpers';
+import { prettyName, printObject } from '../../../utils/helpers';
 import { ScrollView } from 'react-native-gesture-handler';
 const RallyStatusDetails = ({ rally, onCoordinatorPress }) => {
     const navigation = useNavigation();
@@ -19,6 +19,9 @@ const RallyStatusDetails = ({ rally, onCoordinatorPress }) => {
         onCoordinatorPress();
     };
     const displayEventCompKey = () => {
+        if (!rally.eventCompKey) {
+            return;
+        }
         let parts = rally.eventCompKey.split('#');
         let results =
             'Year: ' +
@@ -57,24 +60,35 @@ const RallyStatusDetails = ({ rally, onCoordinatorPress }) => {
                                 <View style={styles.statusRow}>
                                     <View>
                                         <Text style={{ fontSize: 18 }}>
-                                            Region:{' '}
+                                            Division/Region:{' '}
                                         </Text>
                                     </View>
                                     <View>
                                         <Text style={{ fontSize: 18 }}>
-                                            {rally?.region}
+                                            {rally?.division?.code}
                                         </Text>
                                     </View>
                                 </View>
                                 <View style={styles.statusRow}>
                                     <View>
                                         <Text style={{ fontSize: 18 }}>
-                                            EventRegion:{' '}
+                                            Organization:{' '}
                                         </Text>
                                     </View>
                                     <View>
                                         <Text style={{ fontSize: 18 }}>
-                                            {rally?.eventRegion}
+                                            {
+                                                rally?.division?.organization
+                                                    ?.description
+                                            }
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text style={{ fontSize: 18 }}>
+                                            {
+                                                rally?.division?.organization
+                                                    ?.code
+                                            }
                                         </Text>
                                     </View>
                                 </View>
@@ -87,17 +101,20 @@ const RallyStatusDetails = ({ rally, onCoordinatorPress }) => {
                                     </View>
                                     <View>
                                         <Text style={{ fontSize: 18 }}>
-                                            {rally?.coordinator?.name}
+                                            {prettyName(
+                                                rally?.coordinator?.firstName
+                                            )}{' '}
+                                            {prettyName(
+                                                rally?.coordinator?.lastName
+                                            )}
                                         </Text>
                                     </View>
-                                    {(user.affiliations.active.role ===
-                                        'lead' ||
-                                        user.affiliations.active.role ===
-                                            'director' ||
-                                        user.role === 'superuser') && (
+                                    {(user.role === 'lead' ||
+                                        user.role === 'director' ||
+                                        user.role === 'guru') && (
                                         <View style={{ paddingLeft: 10 }}>
                                             <TouchableOpacity
-                                                key={rally.uid}
+                                                key={rally.id}
                                                 onPress={() =>
                                                     onCoordinatorClick()
                                                 }
@@ -117,7 +134,7 @@ const RallyStatusDetails = ({ rally, onCoordinatorPress }) => {
                                         'rep' && (
                                         <View style={{ paddingLeft: 10 }}>
                                             <TouchableOpacity
-                                                key={rally.uid}
+                                                key={rally.id}
                                                 onPress={() =>
                                                     setShowTranferModal(true)
                                                 }
@@ -137,7 +154,7 @@ const RallyStatusDetails = ({ rally, onCoordinatorPress }) => {
                                 <View style={styles.statusRow}>
                                     <View>
                                         <Text style={{ fontSize: 14 }}>
-                                            Event ID: {rally?.uid}
+                                            Event ID: {rally?.id}
                                         </Text>
                                     </View>
                                 </View>
@@ -145,7 +162,7 @@ const RallyStatusDetails = ({ rally, onCoordinatorPress }) => {
                                     <View>
                                         <Text style={{ fontSize: 14 }}>
                                             {displayEventCompKey(
-                                                rally.displayEventCompKey
+                                                rally?.eventCompKey
                                             )}
                                         </Text>
                                     </View>

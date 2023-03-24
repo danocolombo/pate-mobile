@@ -26,11 +26,11 @@ const RallyNewConfirmation = () => {
     const tmp = useSelector((state) => state.rallies.tmpRally);
     const systemRegion = useSelector((state) => state.system.region);
     // let rally = useSelector((state) => state.rallies.tmpRally);
-    // printObject('CONFIRMING rally ++++++++++++++++++++++++', rally);
+    printObject('CONFIRMING rally ++++++++++++++++++++++++', tmp);
     let rallyBasic = {};
     // printObject('REC:29 rally', rally);
     // need to determine if this is new or edit
-    if (!tmp.uid) {
+    if (!tmp.id) {
         // this is new entry
         rallyBasic.status = 'draft';
         rallyBasic.id = '';
@@ -38,7 +38,7 @@ const RallyNewConfirmation = () => {
     // we will always update with latest rep info
     const me = {
         name: user.firstName + ' ' + user.lastName,
-        id: user.uid,
+        id: user.id,
         phone: user.phone,
         email: user.email,
     };

@@ -40,13 +40,13 @@ export default function RallyLocationForm({ rallyId }) {
     let rallyEntry;
     if (!rallyEntry) {
         rallyEntry = useSelector((state) =>
-            state.rallies.allRallies.filter((r) => r.uid === rallyId)
+            state.division.gatherings.filter((r) => r.id === rallyId)
         );
     }
     const rally = rallyEntry[0];
-    console.log('rally.uid:', rally?.uid);
+    console.log('rally.id:', rally?.id);
     useEffect(() => {
-        if (rally?.uid) {
+        if (rally?.id) {
             //save existing values to tmpEntry
             dispatch(createTmp(rally));
         }
@@ -55,7 +55,7 @@ export default function RallyLocationForm({ rallyId }) {
     const handleNext = (values) => {
         // gather data
         // console.log('in handleNext');
-        if (rally?.uid) {
+        if (rally?.id) {
             dispatch(updateTmp(values));
         } else {
             dispatch(createTmp(values));
@@ -74,14 +74,20 @@ export default function RallyLocationForm({ rallyId }) {
                         <ScrollView>
                             <Formik
                                 initialValues={{
-                                    name: rally?.name ? rally.name : '',
-                                    street: rally?.street ? rally.street : '',
-                                    city: rally?.city ? rally.city : '',
-                                    stateProv: rally?.stateProv
-                                        ? rally.stateProv
+                                    name: rally?.location.name
+                                        ? rally.location.name
                                         : '',
-                                    postalCode: rally?.postalCode
-                                        ? rally.postalCode
+                                    street: rally?.location?.street
+                                        ? rally.location.street
+                                        : '',
+                                    city: rally?.location?.city
+                                        ? rally.location.city
+                                        : '',
+                                    stateProv: rally?.location?.stateProv
+                                        ? rally.location.stateProv
+                                        : '',
+                                    postalCode: rally?.location?.postalCode
+                                        ? rally.location.postalCode
                                         : '',
                                 }}
                                 validationSchema={rallyLocationSchema}

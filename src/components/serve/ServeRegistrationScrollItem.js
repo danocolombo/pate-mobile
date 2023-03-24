@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
+import { prettyName } from '../../utils/helpers';
 
 const RegScrollItem = ({ reg }) => {
     return (
@@ -7,12 +8,13 @@ const RegScrollItem = ({ reg }) => {
             <View style={styles.itemBox}>
                 <View style={{ flex: 1 }}>
                     <Text>
-                        {reg?.registrar?.firstName} {reg?.registrar?.lastName}
+                        {prettyName(reg?.attendeeFirstName)}{' '}
+                        {prettyName(reg?.attendeeLastName)}
                     </Text>
                 </View>
                 <View>
                     <Text>
-                        {reg?.attendeeCount}/{reg?.mealCount}
+                        {reg?.attendanceCount}/{reg?.mealCount}
                     </Text>
                 </View>
             </View>

@@ -53,6 +53,25 @@ export function getToday() {
     const target = yr + '-' + mn + '-' + da;
     return target;
 }
+export function prettyName(str) {
+    if (!str) {
+        return;
+    }
+    // convert the string to lowercase and split into an array of words
+    const words = str.toLowerCase().split(' ');
+
+    // iterate over the words array and capitalize the first letter of each word
+    const capitalizedWords = words.map((word) => {
+        const firstLetter = word.charAt(0).toUpperCase();
+        const restOfWord = word.slice(1);
+        return `${firstLetter}${restOfWord}`;
+    });
+
+    // join the capitalized words array into a string
+    const capitalizedString = capitalizedWords.join(' ');
+
+    return capitalizedString;
+}
 export function prettyTime(t) {
     if (!t ?? t.length < 7) {
         return t;

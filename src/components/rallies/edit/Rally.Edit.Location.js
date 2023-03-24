@@ -31,12 +31,13 @@ const rallyLocationSchema = yup.object({
     street: yup.string(),
     city: yup.string().required().min(2),
     stateProv: yup.string().required().min(2).max(2),
-    postalCode: yup
-        .string()
-        .required()
-        .test('is-postalCode-numeric', 'required (10000 - 99999)', (val) => {
-            return parseInt(val) > 9999 && parseInt(val) < 100000;
-        }),
+    postalCode: yup.string().required().min(5).max(5),
+    // postalCode: yup
+    //     .string()
+    //     .required()
+    //     .test('is-postalCode-numeric', 'required (10000 - 99999)', (val) => {
+    //         return parseInt(val) > 9999 && parseInt(val) < 100000;
+    //     }),
 });
 
 export default function RallyLocationForm({ rallyId }) {
@@ -48,21 +49,22 @@ export default function RallyLocationForm({ rallyId }) {
     let rallyEntry;
     if (rallyId !== 0) {
         rallyEntry = useSelector((state) =>
-            state.rallies.allRallies.filter((r) => r.uid === rallyId)
+            state.division.gatherings.filter((r) => r.id === rallyId)
         );
     }
     let rally;
     if (rallyEntry) {
         rally = rallyEntry[0];
     }
-    // console.log('REL:50 rally.uid:', rally?.uid);
-    // printObject('REL:51--> rally', rally);
+    console.log('REL:58 rallyId:', rallyId);
+    console.log('REL:59 rally.id:', rally?.id);
+    printObject('REL:60--> rally', rally);
     useEffect(() => {
-        if (rally?.uid) {
+        if (rally?.id) {
             //save existing values to tmpEntry
             dispatch(createTmp(rally));
         }
-        if (parseInt(rally?.registrations) > 0) {
+        if (parseInt(rally?.plannedCount) > 0) {
             setShowEditWarningConfirm((prevState) => true);
         }
     }, []);
@@ -70,7 +72,7 @@ export default function RallyLocationForm({ rallyId }) {
     const handleNext = async (values) => {
         // gather data
         // console.log('in handleNext');
-        if (rally?.uid) {
+        if (rally?.id) {
             dispatch(updateTmp(values));
         } else {
             dispatch(createTmp(values));
@@ -140,14 +142,15 @@ export default function RallyLocationForm({ rallyId }) {
                             <Formik
                                 initialValues={{
                                     name: rally?.name ? rally.name : '',
-                                    street: rally?.street ? rally.street : '',
-                                    city: rally?.city ? rally.city : '',
-                                    stateProv: rally?.stateProv
-                                        ? rally.stateProv
+                                    street: rally?.location?.street
+                                        ? rally.location?.street
                                         : '',
-                                    postalCode: rally?.postalCode
-                                        ? rally.postalCode
+                                    city: rally?.location?.city
+                                        ? rally.location.city
                                         : '',
+                                    stateProv:
+                                        rally?.location?.stateProv?.toString() ??
+                                        '',
                                 }}
                                 validationSchema={rallyLocationSchema}
                                 onSubmit={async (values, actions) => {
