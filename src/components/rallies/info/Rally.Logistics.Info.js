@@ -3,6 +3,7 @@ import React from 'react';
 import { Surface, Headline } from 'react-native-paper';
 import { Colors } from '../../../constants/colors';
 import { convertPateDate, convertPateTime } from '../../../utils/date';
+import { prettyTime, prettyDate } from '../../../utils/helpers';
 const RallyLogisticsInfo = ({ rally, customStyle }) => {
     return (
         <>
@@ -22,14 +23,14 @@ const RallyLogisticsInfo = ({ rally, customStyle }) => {
                     </View>
                     <View style={styles.textWrapper}>
                         <Text style={styles.text}>
-                            {convertPateDate(rally?.eventDate)}
+                            {prettyDate(rally?.eventDate, 'day-date')}
                         </Text>
 
                         {rally?.startTime ? (
                             <Text style={styles.text}>
-                                {convertPateTime(rally?.startTime)}
+                                {prettyTime(rally?.startTime)}
                                 {' - '}
-                                {convertPateTime(rally?.endTime)}
+                                {prettyTime(rally?.endTime)}
                             </Text>
                         ) : null}
                     </View>

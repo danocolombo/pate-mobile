@@ -21,10 +21,14 @@ const RallyMap = ({ rally, mapHeight, mapWidth }) => {
     const [theLocation, setTheLocation] = useState(null);
     //default coordinates: Atlanta, GA
     const [geoLat, setGeoLat] = useState(
-        rally?.geolocation?.lat ? parseFloat(rally.geolocation.lat) : 33.7676931
+        rally?.location?.latitude
+            ? parseFloat(rally.location.latitude)
+            : 33.7676931
     );
     const [geoLng, setGeoLng] = useState(
-        rally?.geolocation?.lng ? parseFloat(rally.geolocation.lng) : 33.7676931
+        rally?.location?.longitude
+            ? parseFloat(rally.location.longitude)
+            : 33.7676931
     );
     const [eventCoordinates, setEventCoordinates] = useState({
         latitude: parseFloat(geoLat),
@@ -36,16 +40,16 @@ const RallyMap = ({ rally, mapHeight, mapWidth }) => {
     useEffect(() => {
         //printObject('RM:28-->rally:', rally);
         // if rally does not have lat and lng, get from address
-        if (!rally?.geolocation?.lat || !rally?.geolocation.lng) {
+        if (!rally?.location?.latitude || !rally?.location.longitude) {
             //build the address
             let address =
-                rally.street.replace(/ /g, '+') +
+                rally?.location.street.replace(/ /g, '+') +
                 ',+' +
-                rally.city.replace(/ /g, '+') +
+                rally?.location?.city.replace(/ /g, '+') +
                 ',+' +
-                rally.stateProv +
+                rally?.location?.stateProv +
                 '+' +
-                rally.postalCode;
+                rally?.location?.postalCode;
             setTheLocation(address);
             const geoRequestString =
                 'https://maps.googleapis.com/maps/api/geocode/xml?address=' +
@@ -55,8 +59,8 @@ const RallyMap = ({ rally, mapHeight, mapWidth }) => {
             console.log('geoRequestString:\n', geoRequestString);
             //todo ---->>> NEED TO DO API CALL AND GET LOCATION
         } else {
-            setGeoLat(parseFloat(rally.geolocation.lat));
-            setGeoLng(parseFloat(rally.geolocation.lng));
+            setGeoLat(parseFloat(rally.location.latitude));
+            setGeoLng(parseFloat(rally.location.longitude));
             // console.log('RM:51-->lat', rally.geolocation.lat);
             // console.log('RM:52-->lng', rally.geolocation.lng);
         }

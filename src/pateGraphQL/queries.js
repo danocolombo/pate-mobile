@@ -1091,6 +1091,7 @@ export const listMeals = /* GraphQL */ `
         }
     }
 `;
+
 export const getRegistration = /* GraphQL */ `
     query GetRegistration($id: ID!) {
         getRegistration(id: $id) {
@@ -1221,6 +1222,39 @@ export const getRegistration = /* GraphQL */ `
             }
             eventRegistrationsId
             userRegistrationsId
+        }
+    }
+`;
+export const getRegistrations = /* GraphQL */ `
+    query GetRegistrations($id: ID!) {
+        getEvent(id: $id) {
+            registrations {
+                items {
+                    id
+                    attendeeFirstName
+                    attendeeLastName
+                    attendeeEmail
+                    attendeePhone
+                    attendeeStreet
+                    attendeeCity
+                    attendeeStateProv
+                    attendeePostalCode
+                    attendanceCount
+                    mealCount
+                    membershipName
+                    membershipStreet
+                    membershipCity
+                    membershipStateProv
+                    membershipPostalCode
+                    registrar {
+                        id
+                        firstName
+                        lastName
+                        email
+                        phone
+                    }
+                }
+            }
         }
     }
 `;

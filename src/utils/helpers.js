@@ -54,6 +54,9 @@ export function getToday() {
     return target;
 }
 export function prettyTime(t) {
+    if (!t ?? t.length < 7) {
+        return t;
+    }
     const [hourStr, minuteStr] = t.split(':').slice(0, 2);
     const hours = parseInt(hourStr);
     const minutes = parseInt(minuteStr);
@@ -69,6 +72,25 @@ export function prettyTime(t) {
     const finalizedTime = `${formattedHours}:${formattedMinutes}${period}`;
     return finalizedTime;
 }
+export function prettyDate(dateString, format) {
+    const date = new Date(dateString);
+    const dayOfWeek = date.toLocaleString('en-US', { weekday: 'long' });
+    const month = date.toLocaleString('en-US', { month: 'long' });
+    const dayOfMonth = date.toLocaleString('en-US', { day: 'numeric' });
+    const year = date.getFullYear();
+
+    switch (format) {
+        case 'day-date':
+            return `${dayOfWeek} ${month} ${dayOfMonth}, ${year}`;
+        case 'month-date':
+            return `${month} ${dayOfMonth}, ${year}`;
+        case 'numbers-date':
+            return `${date.getMonth() + 1}/${dayOfMonth}/${year}`;
+        default:
+            return dateString;
+    }
+}
+
 export function printObject(label, target) {
     // const util = require('util');
     const util = require('util');

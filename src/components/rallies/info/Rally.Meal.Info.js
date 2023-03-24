@@ -3,6 +3,7 @@ import React from 'react';
 import { convertPateDate, convertPateTime } from '../../../utils/date';
 import { Surface, Headline, Subheading } from 'react-native-paper';
 import { Colors } from '../../../constants/colors';
+import { prettyTime, prettyDate } from '../../../utils/helpers';
 const RallyMealInfo = ({ rally }) => {
     return (
         <>
@@ -18,11 +19,11 @@ const RallyMealInfo = ({ rally }) => {
                             Meal Information
                         </Headline>
                     </View>
-                    {rally?.meal?.offered ? (
+                    {rally?.meal?.id ? (
                         <View style={styles.textWrapper}>
                             <View style={styles.timeCostWrapper}>
                                 <Text style={styles.mealTimeText}>
-                                    {convertPateTime(rally?.meal?.startTime)}
+                                    {prettyTime(rally?.meal?.startTime)}
                                 </Text>
                                 <Text style={styles.costText}>
                                     $
@@ -36,7 +37,10 @@ const RallyMealInfo = ({ rally }) => {
                                 <View style={styles.mealDeadlineWrapper}>
                                     <Text>
                                         DEADLINE:{' '}
-                                        {convertPateDate(rally?.meal?.deadline)}
+                                        {prettyDate(
+                                            rally?.meal?.deadline,
+                                            'month-date'
+                                        )}
                                     </Text>
                                 </View>
                             ) : null}

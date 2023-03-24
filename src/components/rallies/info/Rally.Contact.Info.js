@@ -37,7 +37,10 @@ const RallyContactInfo = ({ rally }) => {
                         </Headline>
                     </View>
                     <View style={styles.textWrapper}>
-                        <Text style={styles.text}>{rally?.contact?.name}</Text>
+                        <Text style={styles.text}>
+                            {rally?.contact?.firstName}{' '}
+                            {rally?.contact?.lastName}
+                        </Text>
 
                         <Text style={styles.text}>{phoneValueToDisplay}</Text>
 

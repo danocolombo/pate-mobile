@@ -5,6 +5,9 @@ import React, {
     useMemo,
     useLayoutEffect,
 } from 'react';
+import { Auth, API, graphqlOperation } from 'aws-amplify';
+import * as queries from '../../../pateGraphQL/queries';
+
 import axios from 'axios';
 import {
     View,
@@ -64,10 +67,10 @@ const RallyDetails = ({ rallyId }) => {
     // const [statusRally, setStatusRally] = useState();
     const [newStatus, setNewStatus] = useState();
     // const navigation = useNavigation();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     const user = useSelector((state) => state.users.currentUser);
     const rallyEntry = useSelector((state) =>
-        state.rallies.allRallies.filter((r) => r.id === rallyId)
+        state.division.gatherings.filter((r) => r.id === rallyId)
     );
     let rally = rallyEntry[0];
     const dispatch = useDispatch();
@@ -105,33 +108,20 @@ const RallyDetails = ({ rallyId }) => {
     useEffect(() => {
         const fetchData = async () => {
             // console.log('RI:54-->rallyId:', rallyId);
-            getRegistrarsForEvent(rallyId)
-                .then((regs) => {
-                    let justRegs = regs.data.body.Items;
-                    // printObject('RI:69 --> justRegs', justRegs);
-                    // sort by last name
-                    function asc_sort(a, b) {
-                        // Use toUpperCase() to ignore character casing
-                        // printObject('RI:61-->a:', a);
-                        // printObject('RI:62-->b:', b);
-                        const regA = a.registrar.lastName.toUpperCase();
-                        const regB = b.registrar.lastName.toUpperCase();
-
-                        let comparison = 0;
-                        if (regA > regB) {
-                            comparison = 1;
-                        } else if (regA < regB) {
-                            comparison = -1;
-                        }
-                        return comparison;
-                    }
-                    let displayData = justRegs.sort(asc_sort);
-                    setRegistrations(displayData);
-                })
-                .catch((error) => {
-                    console.log('RI:83 --> error getting registrations');
-                    console.log(error);
+            const variables = {
+                id: rallyId,
+            };
+            try {
+                await API.graphql(
+                    graphqlOperation(queries.getRegistrations, variables)
+                ).then((eventRegistrations) => {
+                    setRegistrations(
+                        eventRegistrations?.data?.getEvent?.registrations?.items
+                    );
                 });
+            } catch (error) {
+                printObject('RI:114-->error getting registrations', error);
+            }
         };
         fetchData()
             // make sure to catch any error
@@ -527,7 +517,7 @@ const RallyDetails = ({ rallyId }) => {
                                               //   );
                                               return (
                                                   <Pressable
-                                                      key={r.uid}
+                                                      key={r.id}
                                                       onPress={() =>
                                                           handleRegRequest(r)
                                                       }
@@ -597,24 +587,41 @@ const RallyDetails = ({ rallyId }) => {
                             marginBottom: 0,
                         }}
                     >
-                        <Text
-                            style={{
-                                fontSize: 20,
-                                fontWeight: '600',
-                                letterSpacing: 0.5,
-                                paddingBottom: 5,
-                            }}
-                        >
-                            See Map Location
-                        </Text>
+                        {rally?.location?.latitude &&
+                        rally?.location?.longitude ? (
+                            <Text
+                                style={{
+                                    fontSize: 20,
+                                    fontWeight: '600',
+                                    letterSpacing: 0.5,
+                                    paddingBottom: 5,
+                                }}
+                            >
+                                See Map Location
+                            </Text>
+                        ) : (
+                            <Text
+                                style={{
+                                    fontSize: 20,
+                                    fontWeight: '600',
+                                    letterSpacing: 0.5,
+                                    paddingBottom: 5,
+                                }}
+                            >
+                                Geolocations Needed
+                            </Text>
+                        )}
                     </View>
                     <View>
                         <View style={styles.mapContainer}>
-                            <RallyMap
-                                rally={rally}
-                                mapHeight={0.5}
-                                mapWidth={0.9}
-                            />
+                            {rally?.location?.latitude &&
+                                rally?.location?.longitude && (
+                                    <RallyMap
+                                        rally={rally}
+                                        mapHeight={0.5}
+                                        mapWidth={0.9}
+                                    />
+                                )}
                         </View>
                     </View>
                 </BottomSheet>
