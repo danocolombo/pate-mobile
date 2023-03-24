@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import EventListCard from '../ui/EventListCard';
@@ -12,6 +12,8 @@ import { printObject, asc_sort_raw, desc_sort_raw } from '../../utils/helpers';
 // import { sl } from 'date-fns/locale';
 const ServeMyRallies = () => {
     const dispatch = useDispatch();
+    const navigation = useNavigation();
+    const [displayData, setDisplayData] = useState([]);
     let me = useSelector((state) => state.users.currentUser);
     const stateName = StateProvs.map((s) => {
         if (s.symbol === me.residence.stateProv) {
@@ -20,23 +22,24 @@ const ServeMyRallies = () => {
     });
     let feo = useSelector((state) => state.division);
     let rallies = useSelector((state) => state.division.gatherings);
-    printObject('SSR:23 rallies:', rallies);
 
-    function asc_sort(a, b) {
-        return b.eventDate - a.eventDate;
-    }
-    // let displayData = stateRalliesRAW.sort(asc_sort);
-    let displayData = rallies;
-    printObject('SSR:30-->displayData:\n', displayData);
-    const navigation = useNavigation();
     const handleEventPress = (e) => {
         printObject('event', e);
     };
     useLayoutEffect(() => {
-        navigation.setOptions({
-            title: feo.appName,
-        });
-    }, [navigation, feo]);
+        const sortAndLoadEvents = async () => {
+            if (rallies.length > 1) {
+                const sortedRallies = [...rallies].sort((a, b) => {
+                    return new Date(b.eventDate) - new Date(a.eventDate);
+                });
+
+                setDisplayData(sortedRallies);
+                printObject('useLayoutEffect__sorted:\n', sortedRallies);
+            }
+        };
+        sortAndLoadEvents();
+    }, [rallies]);
+
     let sliceRallies = getStateRallies();
     // printObject('SSR:43-->sliceRallies', sliceRallies);
     return (
@@ -51,19 +54,20 @@ const ServeMyRallies = () => {
             </View>
             <ScrollView>
                 <View>
-                    {displayData.map((ral) => (
-                        <View key={ral.id} style={{ margin: 10 }}>
-                            <Pressable
-                                onPress={() =>
-                                    navigation.navigate('RallyInfo', {
-                                        rallyId: ral.id,
-                                    })
-                                }
-                            >
-                                <EventListCard key={ral.id} rally={ral} />
-                            </Pressable>
-                        </View>
-                    ))}
+                    {displayData &&
+                        displayData?.map((ral) => (
+                            <View key={ral.id} style={{ margin: 10 }}>
+                                <Pressable
+                                    onPress={() =>
+                                        navigation.navigate('RallyInfo', {
+                                            rallyId: ral.id,
+                                        })
+                                    }
+                                >
+                                    <EventListCard key={ral.id} rally={ral} />
+                                </Pressable>
+                            </View>
+                        ))}
                 </View>
             </ScrollView>
         </View>

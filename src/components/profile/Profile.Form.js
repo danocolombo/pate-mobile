@@ -107,6 +107,7 @@ const ProfileForm = (props) => {
     const [registrationSegregation, setRegistrationSegregation] = useState(
         user?.registrationSegregation
     );
+    printObject('PF:110==>user:\n', user);
     console.log('registrationSegregation:', user.registrationSegregation);
     useEffect(() => {
         //setHeaderUser(user);

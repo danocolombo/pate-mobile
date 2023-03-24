@@ -67,7 +67,7 @@ const RallyDetails = ({ rallyId }) => {
     const feo = useSelector((state) => state.system);
     const user = useSelector((state) => state.users.currentUser);
     const rallyEntry = useSelector((state) =>
-        state.rallies.allRallies.filter((r) => r.uid === rallyId)
+        state.rallies.allRallies.filter((r) => r.id === rallyId)
     );
     let rally = rallyEntry[0];
     const dispatch = useDispatch();
@@ -164,7 +164,7 @@ const RallyDetails = ({ rallyId }) => {
     const APPROVED = { backgroundColor: 'green', color: 'white' };
     const COMPLETE = { backgroundColor: 'black', color: 'white' };
     let statusColor = {};
-    switch (rally.status) {
+    switch (rally?.status) {
         case 'pending':
             statusColor = PENDING;
             break;
@@ -326,44 +326,50 @@ const RallyDetails = ({ rallyId }) => {
                             )}
                         </View>
                         <View style={styles.radioButtonContainer}>
-                            <SelectDropdown
-                                data={statusValues}
-                                // defaultValueByIndex={1}
-                                defaultValue={rally.status}
-                                onSelect={(selectedItem, index) => {
-                                    setNewStatus(selectedItem);
-                                    console.log(selectedItem, index);
-                                }}
-                                defaultButtonText={rally?.status}
-                                buttonTextAfterSelection={(
-                                    selectedItem,
-                                    index
-                                ) => {
-                                    return selectedItem;
-                                }}
-                                rowTextForSelection={(item, index) => {
-                                    return item;
-                                }}
-                                buttonStyle={styles.dropdown1BtnStyle}
-                                buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                                renderDropdownIcon={(isOpened) => {
-                                    return (
-                                        <Ionicons
-                                            name={
-                                                isOpened
-                                                    ? 'chevron-up-sharp'
-                                                    : 'chevron-down-sharp'
-                                            }
-                                            color={'black'}
-                                            size={24}
-                                        />
-                                    );
-                                }}
-                                dropdownIconPosition={'right'}
-                                dropdownStyle={styles.dropdown1DropdownStyle}
-                                rowStyle={styles.dropdown1RowStyle}
-                                rowTextStyle={styles.dropdown1RowTxtStyle}
-                            />
+                            {rally?.status && (
+                                <SelectDropdown
+                                    data={statusValues}
+                                    // defaultValueByIndex={1}
+                                    defaultValue={rally.status}
+                                    onSelect={(selectedItem, index) => {
+                                        setNewStatus(selectedItem);
+                                        console.log(selectedItem, index);
+                                    }}
+                                    defaultButtonText={rally?.status}
+                                    buttonTextAfterSelection={(
+                                        selectedItem,
+                                        index
+                                    ) => {
+                                        return selectedItem;
+                                    }}
+                                    rowTextForSelection={(item, index) => {
+                                        return item;
+                                    }}
+                                    buttonStyle={styles.dropdown1BtnStyle}
+                                    buttonTextStyle={
+                                        styles.dropdown1BtnTxtStyle
+                                    }
+                                    renderDropdownIcon={(isOpened) => {
+                                        return (
+                                            <Ionicons
+                                                name={
+                                                    isOpened
+                                                        ? 'chevron-up-sharp'
+                                                        : 'chevron-down-sharp'
+                                                }
+                                                color={'black'}
+                                                size={24}
+                                            />
+                                        );
+                                    }}
+                                    dropdownIconPosition={'right'}
+                                    dropdownStyle={
+                                        styles.dropdown1DropdownStyle
+                                    }
+                                    rowStyle={styles.dropdown1RowStyle}
+                                    rowTextStyle={styles.dropdown1RowTxtStyle}
+                                />
+                            )}
                         </View>
                         <View style={styles.modalButtonContainer}>
                             <View style={styles.modalButtonWrapper}>
@@ -461,7 +467,7 @@ const RallyDetails = ({ rallyId }) => {
                                                 { paddingHorizontal: 2 },
                                             ]}
                                         >
-                                            {rally.status.toUpperCase()}
+                                            {rally?.status.toUpperCase()}
                                         </Text>
                                     </View>
                                 </Pressable>

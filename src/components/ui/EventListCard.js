@@ -62,7 +62,7 @@ function EventListCard({ rally, deletePress }) {
                         </View>
                     )}
                 </View>
-                <View style={styles.cardRow}>
+                <View style={styles.cardRowSpread}>
                     <View style={styles.timeWrapper}>
                         <Text style={styles.timeText}>
                             {prettyTime(rally.startTime)}
@@ -160,6 +160,11 @@ const styles = StyleSheet.create({
     },
     cardRow: {
         flexDirection: 'row',
+        flex: 1,
+    },
+    cardRowSpread: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         flex: 1,
     },
     dateWrapper: {},
