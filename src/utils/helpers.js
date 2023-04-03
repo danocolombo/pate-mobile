@@ -72,7 +72,23 @@ export function prettyName(str) {
 
     return capitalizedString;
 }
+export function prettyTimeUTC(t) {
+    if (!t || t.length < 7) {
+        return t;
+    }
+    const [hourStr, minuteStr] = t.split(':').slice(0, 2);
+    const hours = parseInt(hourStr);
+    const minutes = parseInt(minuteStr);
+    const date = new Date();
+    date.setUTCHours(hours);
+    date.setUTCMinutes(minutes);
+    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+    const finalizedTime = date.toLocaleTimeString(undefined, options);
+    return finalizedTime;
+}
+
 export function prettyTime(t) {
+    //this receives a UTC time (no timezone and converts to local/browser time zone)
     if (!t ?? t.length < 7) {
         return t;
     }
@@ -92,11 +108,22 @@ export function prettyTime(t) {
     return finalizedTime;
 }
 export function prettyDate(dateString, format) {
-    const date = new Date(dateString);
-    const dayOfWeek = date.toLocaleString('en-US', { weekday: 'long' });
-    const month = date.toLocaleString('en-US', { month: 'long' });
-    const dayOfMonth = date.toLocaleString('en-US', { day: 'numeric' });
-    const year = date.getFullYear();
+    // console.log('input date:', dateString);
+    // console.log('format style:', format);
+    const date = new Date(
+        Date.UTC(
+            parseInt(dateString.slice(0, 4)),
+            parseInt(dateString.slice(5, 7)) - 1,
+            parseInt(dateString.slice(8, 10))
+        )
+    );
+    const localDate = new Date(
+        date.toLocaleString('en-US', { timeZone: 'UTC' })
+    );
+    const dayOfWeek = localDate.toLocaleString('en-US', { weekday: 'long' });
+    const month = localDate.toLocaleString('en-US', { month: 'long' });
+    const dayOfMonth = localDate.toLocaleString('en-US', { day: 'numeric' });
+    const year = localDate.getFullYear();
 
     switch (format) {
         case 'day-date':
@@ -104,7 +131,7 @@ export function prettyDate(dateString, format) {
         case 'month-date':
             return `${month} ${dayOfMonth}, ${year}`;
         case 'numbers-date':
-            return `${date.getMonth() + 1}/${dayOfMonth}/${year}`;
+            return `${localDate.getMonth() + 1}/${dayOfMonth}/${year}`;
         default:
             return dateString;
     }

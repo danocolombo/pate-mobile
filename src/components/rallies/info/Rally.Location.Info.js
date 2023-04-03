@@ -21,7 +21,7 @@ const RallyLocationInfo = ({ rally, title }) => {
                                 {rally?.location?.street}
                             </Text>
                         ) : null}
-                        {rally?.city ? (
+                        {rally?.location?.city ? (
                             <Text style={styles.text}>
                                 {rally?.location?.city}
                             </Text>

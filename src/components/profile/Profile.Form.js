@@ -23,6 +23,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import Checkbox from 'expo-checkbox';
+import { FontAwesome5 } from '@expo/vector-icons';
 import DropDown from 'react-native-paper-dropdown';
 // import PhoneInput from '../ui/PhoneInput';
 import { Formik } from 'formik';
@@ -69,9 +70,6 @@ const profileSchema = yup.object({
     city: yup.string().min(2),
     stateProv: yup.string().min(2).max(2),
     postalCode: yup.string(),
-    // .test('is-postalCode-numeric', 'required (10000 - 99999)', (val) => {
-    //     return parseInt(val) > 9999 && parseInt(val) < 100000;
-    // }),
     affiliateName: yup.string().min(2),
     affiliateity: yup.string().min(2),
     affiliateStateProv: yup.string().min(2).max(2),
@@ -92,8 +90,9 @@ const ProfileForm = (props) => {
     const feo = useSelector((state) => state.division);
     const originalUser = useSelector((state) => state.users.currentUser);
     let user = useSelector((state) => state.users.currentUser);
+    const [hasProfileChanged, setHasProfileChanged] = useState(false);
     const [affiliationSelected, setAffiliationSelected] = useState(
-        user?.affiliations?.active.value
+        user?.affiliations?.active.organizationName
     );
 
     const onDismissSnackBar = () => setSnackbarVisible(false);
@@ -108,7 +107,11 @@ const ProfileForm = (props) => {
         user?.registrationSegregation
     );
     printObject('PF:110==>user:\n', user);
-    console.log('registrationSegregation:', user.registrationSegregation);
+    console.log(
+        'PF:111==>user.registrationSegregation:',
+        user.registrationSegregation
+    );
+    printObject('PF:114-->affiliations:\n', user.affiliations.items);
     useEffect(() => {
         //setHeaderUser(user);
         if (originalUser.firstName !== user.firstName) {
@@ -118,6 +121,11 @@ const ProfileForm = (props) => {
             setLName = user.lastName;
         }
         // setFName = user.firstName
+    }, [user]);
+    useEffect(() => {
+        setHasProfileChanged(
+            JSON.stringify(originalUser) === JSON.stringify(user)
+        );
     }, [user]);
 
     let phoneDisplayValue;
@@ -474,11 +482,12 @@ const ProfileForm = (props) => {
                 ...newCurrentUser,
                 affiliate: updatedAffiliate,
             };
-
+            printObject('PF:477==>newCurrentUser:\n', newCurrentUser);
             //===============================
             // need to set profile = true and
             // update user region and affliations active
             // valuse
+            printObject('PF:405==>values.stateProv:', values.stateProv);
             if (values.stateProv.length === 2) {
                 //get region from system.states
                 const theRegion = feo.affiliate.states.filter(
@@ -686,10 +695,10 @@ const ProfileForm = (props) => {
                                             : '',
                                         stateProv: user?.residence?.stateProv
                                             ? user.residence.stateProv
-                                            : '',
+                                            : '12234',
                                         postalCode: user?.residence?.postalCode
-                                            ? user.residence.postalCode
-                                            : '',
+                                            ? user.residence.postalCode.toString()
+                                            : '11111',
                                         affiliateName: user?.affiliate?.name
                                             ? user.affiliate.name
                                             : '',
@@ -1225,15 +1234,42 @@ const ProfileForm = (props) => {
                                                                     </View>
                                                                 </View>
                                                             </View>
-                                                            <FAB
-                                                                icon='check'
-                                                                style={
-                                                                    styles.FAB
-                                                                }
-                                                                onPress={
-                                                                    formikProps.handleSubmit
-                                                                }
-                                                            />
+                                                            {hasProfileChanged && (
+                                                                <FAB
+                                                                    icon={() => (
+                                                                        <FontAwesome5
+                                                                            name='save'
+                                                                            size={
+                                                                                24
+                                                                            }
+                                                                            color='black'
+                                                                        />
+                                                                    )}
+                                                                    style={{
+                                                                        position:
+                                                                            'absolute',
+                                                                        marginRight: 16,
+                                                                        right: 0,
+                                                                        bottom: 0,
+                                                                        backgroundColor:
+                                                                            'yellow',
+                                                                    }}
+                                                                    onPress={
+                                                                        formikProps.handleSubmit
+                                                                    }
+                                                                />
+                                                            )}
+                                                            {!hasProfileChanged && (
+                                                                <FAB
+                                                                    icon='circle'
+                                                                    style={
+                                                                        styles.FAB
+                                                                    }
+                                                                    onPress={
+                                                                        formikProps.handleSubmit
+                                                                    }
+                                                                />
+                                                            )}
                                                         </Surface>
                                                     </List.Accordion>
                                                 </List.Section>

@@ -18,6 +18,7 @@ import CustomNavButton from '../../ui/CustomNavButton';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { getPateDate, getPateTime } from '../../../utils/date';
 import { compareAsc } from 'date-fns';
+import moment from 'moment';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyLogisticsForm({ rallyId }) {
@@ -26,78 +27,66 @@ export default function RallyLogisticsForm({ rallyId }) {
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
     // printObject('REL:28-->LOGISTICS-->tmpRally', tmp);
+    const [eventDate, setEventDate] = useState(tmp?.eventDate);
+    const [eventDateObject, setEventDateObject] = useState();
+    const [eventStartTime, setEventStartTime] = useState(tmp?.startTime);
+    const [eventEndTime, setEventEndTime] = useState(tmp?.endTime);
     const [defaultDateString, setDefaultDateString] = useState();
-    const [eventDate, setEventDate] = useState();
-    const [eventDateString, setEventDateString] = useState();
-    const [startTime, setStartTime] = useState();
-    const [startTimeString, setStartTimeString] = useState();
-    const [endTime, setEndTime] = useState();
-    const [endTimeString, setEndTimeString] = useState();
+    // const [eventDateString, setEventDateString] = useState();
+    // const [startTime, setStartTime] = useState();
+    // const [startTimeString, setStartTimeString] = useState();
+    // const [endTime, setEndTime] = useState();
+    // const [endTimeString, setEndTimeString] = useState();
     const [modalEventDateVisible, setModalEventDateVisible] = useState(false);
-    const [modalStartTimeVisible, setModalStartTimeVisisble] = useState(false);
-    const [modalEndTimeVisible, setModalEndTimeVisisble] = useState(false);
-
-    const [finishDateError, setFinishDateError] = useState(false);
+    const [modalStartTimeVisible, setModalStartTimeVisible] = useState(false);
+    const [modalEndTimeVisible, setModalEndTimeVisible] = useState(false);
 
     useEffect(() => {
         if (rallyId !== 0) {
-            // console.log('-->', tmp.startTime);
             console.log('eventDate:>', tmp.eventDate, '<');
-            console.log('stateTime:>', tmp.startTime, '<');
+            console.log('startTime:>', tmp.startTime, '<');
             console.log('endTime:>', tmp.endTime, '<');
 
+            const [hours, minutes, seconds, milliseconds] = tmp.startTime
+                .split(/[:.]/)
+                .map(Number);
+
             const [year, month, day] = tmp?.eventDate.split('-');
-            const startDateObject = new Date(year, month - 1, day);
+            const startDateObject = new Date(year, parseInt(month) - 1, day);
+            const startDate = new Date(startDateObject); // convert to Date object
 
-            // Outputs: Sat Jun 04 2022 00:00:00 GMT-0700 (Pacific Daylight Time)
-            let stDate = new Date(`1970-01-01T${tmp?.startTime}Z`);
-            const formattedStartTime = stDate.toLocaleTimeString([], {
+            setEventDate(startDate);
+
+            //      START TIME
+            // let tmp = { startTime: '17:00:00.000' };
+            const startTime = new Date(
+                Date.UTC(1970, 0, 1, hours, minutes, seconds, milliseconds)
+            );
+            const timeZone = 'America/New_York'; // Change this to the timezone you want to display the time in
+            const options = {
                 hour: 'numeric',
-                minute: '2-digit',
-            });
+                minute: 'numeric',
+                hour12: true,
+                timeZone,
+            };
+            const eventStartTimeString = startTime.toLocaleString(
+                'en-US',
+                options
+            );
+            setEventStartTime(eventStartTimeString);
 
-            // Outputs: "1:00 PM" (in the user's locale)
-            let etDate = new Date(`1970-01-01T${tmp?.endTime}Z`);
-            const formattedEndTime = etDate.toLocaleTimeString([], {
-                hour: 'numeric',
-                minute: '2-digit',
-            });
-            // let tmpDate = new Date(yr, mo - 1, da, shr, smi, 0);
-            console.log('AFTER...');
-            console.log('8888888888888888888888888888888888');
-
-            console.log('startDateObject:', startDateObject);
-            console.log('startTime:', stDate);
-            console.log('endTime:', etDate);
-            console.log('8888888888888888888888888888888888');
-
-            setEventDate(startDateObject);
-            setEventDateString(startDateObject.toDateString());
-            setDefaultDateString(startDateObject.toDateString());
-            setStartTime(stDate.toTimeString());
-            let stime = makeDateString(formattedStartTime);
-            setStartTimeString(etDate);
-
-            setEndTime(formattedEndTime);
-            let eTime = makeDateString(formattedStartTime);
-            setEndTimeString(eTime);
-        } else {
-            const yr = feo.today.substr(0, 4);
-            const mo = feo.today.substr(5, 2);
-            const da = feo.today.substr(8, 2);
-            let tmpDate = new Date(yr, mo - 1, da, 13, 0, 0, 0);
-            console.log('tmpDate2:', tmpDate);
-            setEventDate(tmpDate);
-            setEventDateString(tmpDate.toDateString());
-            setStartTime(tmpDate);
-            let stime = makeDateString(tmpDate);
-            setStartTimeString(stime);
-            tmpDate = new Date(yr, mo - 1, da, 17, 0, 0, 0);
-            setEndTime(tmpDate);
-            let etime = makeDateString(tmpDate);
-            setEndTimeString(etime);
+            //      END TIME
+            const [ehours, eminutes, eseconds, emilliseconds] = tmp.endTime
+                .split(/[:.]/)
+                .map(Number);
+            const endTime = new Date(
+                Date.UTC(1970, 0, 1, ehours, eminutes, eseconds, emilliseconds)
+            );
+            const eventEndTimeString = endTime.toLocaleString('en-US', options);
+            setEventEndTime(eventEndTimeString);
         }
     }, []);
+
     const handleNext = () => {
         let ed = Date.parse(eventDate);
         let pDate = getPateDate(ed);
@@ -130,96 +119,24 @@ export default function RallyLogisticsForm({ rallyId }) {
         });
     };
     const onEventDateConfirm = (data) => {
-        FormatEventDate(data);
+        console.log('data:', data);
+        setEventDate(data);
         setModalEventDateVisible(false);
     };
-    const FormatEventDate = (data) => {
-        let dateString =
-            data.getMonth() +
-            1 +
-            '-' +
-            data.getDate() +
-            '-' +
-            data.getFullYear() +
-            ' ';
-        const yr = parseInt(data.getFullYear());
-        const mo = parseInt(data.getMonth());
-        const da = parseInt(data.getDate());
-        const tmp = new Date(yr, mo, da, 0, 0, 0);
-        setEventDate(tmp);
-        setEventDateString(tmp.toDateString());
-        return;
-    };
+
     const onStartTimeConfirm = (data) => {
-        FormatTime(data, 'START');
-        setModalStartTimeVisisble(false);
+        setEventStartTime(data);
+        setModalStartTimeVisible(false);
     };
     const onEndTimeConfirm = (data) => {
-        FormatTime(data, 'END');
-        setModalEndTimeVisisble(false);
+        console.log('CONFIRMED:', data);
+        // FormatTime(data, 'END');
+        setModalEndTimeVisible(false);
     };
-    const FormatTime = (data, target) => {
-        const yr = parseInt(data.getFullYear());
-        const mo = parseInt(data.getMonth());
-        const da = parseInt(data.getDate());
-        const hr = parseInt(data.getHours());
-        const mi = parseInt(data.getMinutes());
-        const tmpDate = new Date(yr, mo, da, hr, mi, 0, 0);
-        let str;
-        if (Platform === 'android') {
-            str =
-                (hr > 12 ? hr - 12 : hr).toString() +
-                ':' +
-                ('0' + mi.toString()).slice(-2) +
-                ' ' +
-                (hr > 11 ? 'PM' : 'AM');
-        } else {
-            str =
-                (hr > 12 ? hr - 12 : hr).toString() +
-                ':' +
-                ('0' + mi.toString()).slice(-2) +
-                ' ' +
-                (hr > 11 ? 'PM' : 'AM');
-        }
-        if (target === 'START') {
-            setStartTime(tmpDate);
-            setStartTimeString(str);
-        } else {
-            setEndTime(tmpDate);
-            setEndTimeString(str);
-        }
-        return;
-    };
-    const makeDateString = (data) => {
-        console.log('makeDateString(data)', data);
-        return data;
-        const yr = parseInt(data.getFullYear());
-        const mo = parseInt(data.getMonth());
-        const da = parseInt(data.getDate());
-        const hr = parseInt(data.getHours());
-        const mi = parseInt(data.getMinutes());
 
-        let str;
-        if (Platform === 'android') {
-            str =
-                (hr > 12 ? hr - 12 : hr).toString() +
-                ':' +
-                ('0' + mi.toString()).slice(-2) +
-                ' ' +
-                (hr > 11 ? 'PM' : 'AM');
-        } else {
-            str =
-                (hr > 12 ? hr - 12 : hr).toString() +
-                ':' +
-                ('0' + mi.toString()).slice(-2) +
-                ' ' +
-                (hr > 11 ? 'PM' : 'AM');
-        }
-        return str;
-    };
     const onEventCancel = (data) => setModalEventDateVisible(false);
-    const onStartTimeCancel = (data) => setModalStartTimeVisisble(false);
-    const onEndTimeCancel = (data) => setModalEndTimeVisisble(false);
+    const onStartTimeCancel = (data) => setModalStartTimeVisible(false);
+    const onEndTimeCancel = (data) => setModalEndTimeVisible(false);
     return (
         <>
             <ImageBackground
@@ -260,32 +177,26 @@ export default function RallyLogisticsForm({ rallyId }) {
                                                     fontSize: 25,
                                                 }}
                                             >
-                                                {eventDateString
-                                                    ? eventDateString
-                                                    : defaultDateString}
+                                                <Text
+                                                    style={{
+                                                        padding: 15,
+                                                        fontSize: 25,
+                                                    }}
+                                                >
+                                                    {eventDate
+                                                        ? moment(
+                                                              eventDate
+                                                          ).format(
+                                                              'ddd MMM DD, YYYY'
+                                                          )
+                                                        : defaultDateString}
+                                                </Text>
                                             </Text>
                                         </View>
                                     </Pressable>
-                                </View>
-                                <View
-                                    style={{
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        marginTop: 15,
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            fontSize: 24,
-                                            fontWeight: '400',
-                                            letterSpacing: 0.6,
-                                        }}
-                                    >
-                                        START TIME
-                                    </Text>
                                     <Pressable
                                         onPress={() =>
-                                            setModalStartTimeVisisble(true)
+                                            setModalStartTimeVisible(true)
                                         }
                                     >
                                         <View style={styles.dateTimeDisplay}>
@@ -295,32 +206,18 @@ export default function RallyLogisticsForm({ rallyId }) {
                                                     fontSize: 25,
                                                 }}
                                             >
-                                                {startTimeString
-                                                    ? startTimeString
+                                                {eventStartTime
+                                                    ? `${moment(
+                                                          eventStartTime,
+                                                          'HH:mm'
+                                                      ).format('h:mm A')}`
                                                     : defaultDateString}
                                             </Text>
                                         </View>
                                     </Pressable>
-                                </View>
-                                <View
-                                    style={{
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        marginTop: 15,
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            fontSize: 24,
-                                            fontWeight: '400',
-                                            letterSpacing: 0.6,
-                                        }}
-                                    >
-                                        FINISH TIME
-                                    </Text>
                                     <Pressable
                                         onPress={() =>
-                                            setModalEndTimeVisisble(true)
+                                            setModalEndTimeVisible(true)
                                         }
                                     >
                                         <View style={styles.dateTimeDisplay}>
@@ -330,8 +227,11 @@ export default function RallyLogisticsForm({ rallyId }) {
                                                     fontSize: 25,
                                                 }}
                                             >
-                                                {endTimeString
-                                                    ? endTimeString
+                                                {eventEndTime
+                                                    ? `${moment(
+                                                          eventEndTime,
+                                                          'HH:mm'
+                                                      ).format('h:mm A')}`
                                                     : defaultDateString}
                                             </Text>
                                         </View>
@@ -340,27 +240,36 @@ export default function RallyLogisticsForm({ rallyId }) {
 
                                 <DateTimePickerModal
                                     isVisible={modalEventDateVisible}
-                                    date={eventDate}
                                     mode='date'
+                                    date={eventDate}
                                     value={eventDate}
                                     onConfirm={onEventDateConfirm}
                                     onCancel={onEventCancel}
+                                    timeZoneOffsetInMinutes={new Date().getTimezoneOffset()}
                                 />
                                 <DateTimePickerModal
                                     isVisible={modalStartTimeVisible}
-                                    date={startTime}
                                     mode='time'
-                                    value={startTime}
+                                    date={moment(
+                                        eventStartTime,
+                                        'HH:mm'
+                                    ).toDate()}
+                                    value={eventStartTime}
                                     onConfirm={onStartTimeConfirm}
                                     onCancel={onStartTimeCancel}
+                                    timeZoneOffsetInMinutes={new Date().getTimezoneOffset()}
                                 />
                                 <DateTimePickerModal
                                     isVisible={modalEndTimeVisible}
-                                    date={endTime}
                                     mode='time'
-                                    value={endTime}
+                                    date={moment(
+                                        eventEndTime,
+                                        'HH:mm'
+                                    ).toDate()}
+                                    value={eventEndTime}
                                     onConfirm={onEndTimeConfirm}
                                     onCancel={onEndTimeCancel}
+                                    timeZoneOffsetInMinutes={new Date().getTimezoneOffset()}
                                 />
                             </View>
                         </ScrollView>

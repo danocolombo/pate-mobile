@@ -30,7 +30,8 @@ import CustomNavButton from '../../ui/CustomNavButton';
 
 // create validation schema for yup to pass to formik
 const rallyContactSchema = yup.object({
-    contactName: yup.string(),
+    contactFirstName: yup.string(),
+    contactLastName: yup.string(),
     contactPhone: yup.string(),
     contactEmail: yup.string().email(),
 });
@@ -109,7 +110,8 @@ export default function RallyContactForm({ rallyId }) {
         // console.log('handleNext contactPhone(after):', contactPhone);
         let contact = {
             contact: {
-                name: values.name,
+                firstName: values.firstName,
+                lastName: values.lastName,
                 phone: phoneToPass,
                 email: values.email,
             },
@@ -131,7 +133,12 @@ export default function RallyContactForm({ rallyId }) {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <Formik
                         initialValues={{
-                            name: tmp?.contact?.name ? tmp.contact.name : '',
+                            firstName: tmp?.contact?.firstName
+                                ? tmp.contact.firstName
+                                : '',
+                            lastName: tmp?.contact?.lastName
+                                ? tmp.contact.lastName
+                                : '',
                             email: tmp?.contact?.email ? tmp.contact.email : '',
                         }}
                         validationSchema={rallyContactSchema}
@@ -154,16 +161,30 @@ export default function RallyContactForm({ rallyId }) {
                                                 <View>
                                                     <TextInput
                                                         style={styles.input}
-                                                        placeholder='Contact Name'
+                                                        placeholder='First Name'
                                                         onChangeText={formikProps.handleChange(
-                                                            'name'
+                                                            'firstName'
                                                         )}
                                                         value={
                                                             formikProps.values
-                                                                .name
+                                                                .firstName
                                                         }
                                                         onBlur={formikProps.handleBlur(
-                                                            'name'
+                                                            'firstName'
+                                                        )}
+                                                    />
+                                                    <TextInput
+                                                        style={styles.input}
+                                                        placeholder='Last Name'
+                                                        onChangeText={formikProps.handleChange(
+                                                            'lastName'
+                                                        )}
+                                                        value={
+                                                            formikProps.values
+                                                                .lastName
+                                                        }
+                                                        onBlur={formikProps.handleBlur(
+                                                            'lastName'
                                                         )}
                                                     />
                                                     <Text

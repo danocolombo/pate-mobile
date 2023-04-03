@@ -33,7 +33,7 @@ export default function LandingScreen(props) {
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const divEvents = useSelector((state) => state.division.allRallies);
     // printObject('LS:29-->user:', user);
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     const divSlice = useSelector((state) => state.division);
     const [showProfileNeededModal, setShowProfileNeededModal] = useState(
         !user.profile
@@ -43,7 +43,7 @@ export default function LandingScreen(props) {
     // }, [props, isFocused]);
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: feo.appName,
+            title: user?.affiliations?.active?.organizationAppName,
         });
     }, [navigation, feo]);
     const handleProfileAcknowledge = () => {
@@ -94,7 +94,7 @@ export default function LandingScreen(props) {
                 <Surface style={styles.welcomeSurface}>
                     <View style={styles.mainTextContainer}>
                         <Text style={styles.mainTitle}>
-                            {feo.affiliate.title}
+                            {user?.affiliations?.active?.organizationTitle}
                         </Text>
                     </View>
 
@@ -126,7 +126,7 @@ export default function LandingScreen(props) {
                         </Text>
                         <Text style={{ textAlign: 'center' }}>
                             Affiliation:{' '}
-                            {user?.defaultDivision?.organization?.code}
+                            {user?.affiliations?.active?.organizationCode}
                         </Text>
                         <Text style={{ textAlign: 'center' }}>
                             Region:{' '}

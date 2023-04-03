@@ -2,17 +2,17 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import React, { useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import RallyLocationForm from './Rally.Edit.Location';
+import RallyLocationForm from './Rally.Edit.Location2';
 import RallyLocationConfirm from './Rally.Edit.Location.Confirm';
-import RallyLogisticsForm from './Rally.Edit.Logistics';
+import RallyLogisticsForm from './Rally.Edit.LogisticsMin';
 import RallyContactForm from './Rally.Edit.Contact';
-import RallyMealForm from './Rally.Edit.Meal';
+import RallyMealForm from './Rally.Edit.Meal2';
 import RallyNewConfirmation from './Rally.Edit.Confirm';
 const RallyEdit = ({ rallyId, stage }) => {
     const navigation = useNavigation();
     const feo = useSelector((state) => state.system);
     // console.log('stage', stage);
-    console.log('RE:15==>rallyId', rallyId);
+    // console.log('RE:15==>rallyId', rallyId);
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,

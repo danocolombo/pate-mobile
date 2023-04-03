@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -24,6 +24,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import CustomNavButton from '../../ui/CustomNavButton';
 import { printObject } from '../../../utils/helpers';
+import { string } from 'prop-types';
 
 // create validation schema for yup to pass to formik
 const rallyLocationSchema = yup.object({
@@ -46,6 +47,7 @@ export default function RallyLocationForm({ rallyId }) {
     const [showEditWarningConfirm, setShowEditWarningConfirm] = useState(
         !!rally?.registrations > 0
     );
+    const [displayRally, setDisplayRally] = useState({});
     let rallyEntry;
     if (rallyId !== 0) {
         rallyEntry = useSelector((state) =>
@@ -56,13 +58,25 @@ export default function RallyLocationForm({ rallyId }) {
     if (rallyEntry) {
         rally = rallyEntry[0];
     }
-    console.log('REL:58 rallyId:', rallyId);
-    console.log('REL:59 rally.id:', rally?.id);
-    printObject('REL:60--> rally', rally);
-    useEffect(() => {
+    // console.log('REL:58 rallyId:', rallyId);
+    // console.log('REL:59 rally.id:', rally?.id);
+    // printObject('REL:60--> rally', rally);
+    useLayoutEffect(() => {
         if (rally?.id) {
             //save existing values to tmpEntry
-            dispatch(createTmp(rally));
+            //change the postalCode to string
+            const newLocationValues = {
+                ...rally.location,
+                postalCode: rally.location.postalCode.toString(),
+            };
+            const tmpRally = { ...rally, location: newLocationValues };
+            // console.log('postalCode STRING: ', tmpRally.location.postalCode);
+            // console.log(typeof tmpRally?.location?.postalCode);
+            // console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
+            // printObject('tmpRally:\n', tmpRally);
+            // console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
+            setDisplayRally(tmpRally);
+            dispatch(createTmp(tmpRally));
         }
         if (parseInt(rally?.plannedCount) > 0) {
             setShowEditWarningConfirm((prevState) => true);
@@ -141,15 +155,19 @@ export default function RallyLocationForm({ rallyId }) {
                         <ScrollView contentContainerStyle={styles.root}>
                             <Formik
                                 initialValues={{
-                                    name: rally?.name ? rally.name : '',
-                                    street: rally?.location?.street
-                                        ? rally.location?.street
+                                    name: displayRally?.name
+                                        ? displayRally.name
                                         : '',
-                                    city: rally?.location?.city
-                                        ? rally.location.city
+                                    street: displayRally?.location?.street
+                                        ? displayRally.location?.street
+                                        : '',
+                                    city: displayRally?.location?.city
+                                        ? displayRally.location.city
                                         : '',
                                     stateProv:
-                                        rally?.location?.stateProv?.toString() ??
+                                        displayRally?.location?.stateProv ?? '',
+                                    postalCode:
+                                        displayRally?.location?.postalCode ??
                                         '',
                                 }}
                                 validationSchema={rallyLocationSchema}

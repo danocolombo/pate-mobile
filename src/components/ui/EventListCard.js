@@ -13,13 +13,13 @@ function EventListCard({ rally, deletePress }) {
     // printObject('C.U.RLC:13==>rally', rally);
     const user = useSelector((state) => state.users.currentUser);
     let bgStyle;
-    if (user.uid === rally.coordinator.id) {
+    if (user.id === rally.coordinator.id) {
         bgStyle = 'styles.cardBackGroundMine';
     } else {
         bgStyle = 'styles.cardBackGroundNotMine';
     }
     let mine;
-    if (rally.coordinator.id === user.uid) {
+    if (rally.coordinator.id === user.id) {
         mine = true;
     } else {
         mine = false;
@@ -70,7 +70,7 @@ function EventListCard({ rally, deletePress }) {
                             {prettyTime(rally.endTime)}
                         </Text>
                     </View>
-                    {rally.meal.id ? (
+                    {rally?.meal?.id ? (
                         <View style={styles.mealOfferedWrapper}>
                             <Text style={styles.mealOfferedText}>
                                 Meal offered

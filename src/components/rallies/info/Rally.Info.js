@@ -73,9 +73,9 @@ const RallyDetails = ({ rallyId }) => {
         state.division.gatherings.filter((r) => r.id === rallyId)
     );
     let rally = rallyEntry[0];
-    console.log('vvvvvvvvvvvvvvvvvvv');
-    printObject('RI:77-->rally:', rally);
-    console.log('^^^^^^^^^^^^^^^^^^^');
+    // console.log('vvvvvvvvvvvvvvvvvvv');
+    // printObject('RI:77-->rally:', rally);
+    // console.log('^^^^^^^^^^^^^^^^^^^');
     const dispatch = useDispatch();
     //modal stuff
     let statusValues = [];
@@ -324,7 +324,7 @@ const RallyDetails = ({ rallyId }) => {
                                     defaultValue={rally.status}
                                     onSelect={(selectedItem, index) => {
                                         setNewStatus(selectedItem);
-                                        console.log(selectedItem, index);
+                                        // console.log(selectedItem, index);
                                     }}
                                     defaultButtonText={rally?.status}
                                     buttonTextAfterSelection={(

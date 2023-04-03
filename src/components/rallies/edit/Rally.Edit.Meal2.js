@@ -20,6 +20,7 @@ import CurrencyInput from 'react-native-currency-input';
 import { Switch } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
+import moment from 'moment';
 import {
     getPateDate,
     getPateTime,
@@ -31,12 +32,9 @@ import CustomNavButton from '../../ui/CustomNavButton';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyMealForm({ rallyId }) {
-    // let dateNow = new Date(2022, 6, 23);
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const feo = useSelector((state) => state.division);
     const tmp = useSelector((state) => state.rallies.tmpRally);
-    let dateNow = new Date();
 
     const [defaultDateTime, setDefaultDateTime] = useState();
     const [defaultDateTimeString, setDefaultDateTimeString] = useState();
@@ -51,6 +49,7 @@ export default function RallyMealForm({ rallyId }) {
         parseInt(tmp?.meal?.mealCount) > 0 ? true : false
     );
     let mealSetting = true;
+    // check if meal has any settings...
     if (!tmp.meal) {
         // if (tmp?.meal) {
         mealSetting = false;
@@ -92,65 +91,52 @@ export default function RallyMealForm({ rallyId }) {
         return str;
     };
     useState(() => {
-        // get mealStartTime and deadline, or set default
-        // printObject('feo', feo);
-        // let yr = feo.today.substr(0, 4);
-        // let mo = feo.today.substr(4, 2);
-        // let da = feo.today.substr(6, 2);
         if (!mealSetting) {
             // default of today at noon
             // let tmpDate = new Date(yr, mo - 1, da, 12, 0, 0, 0);
             let tmpDate = new Date();
+            tmpDate.setHours(12, 0, 0, 0);
             setDefaultDateTime(tmpDate);
-            let yr = parseInt(tmp.eventDate.substr(0, 4));
-            let mo = parseInt(tmp.eventDate.substr(4, 2));
-            let da = parseInt(tmp.eventDate.substr(6, 2));
             setDeadlineDate(tmpDate);
-            setDeadlineDateString(tmpDate.toDateString());
-        } else {
-            let hr = 12;
-            let mi = 0;
-            if (tmp.uid) {
-                hr = parseInt(tmp.meal.startTime.substr(0, 2));
-                mi = parseInt(tmp.meal.startTime.substr(3, 2));
-            }
-            // console.log('yr', yr);
-            // console.log('mo', mo);
-            // console.log('da', da);
-            // console.log('hr', hr);
-            // console.log('mi', mi);
-            let tmpDate = new Date();
             setMealStartTime(tmpDate);
-            let t = makeTimeString(tmpDate);
-            setMealStartTimeString(t);
+            setDeadlineDateString(tmpDate.toDateString());
+            // let t = makeTimeString(tmpDate);
+            // setMealStartTimeString(t);
+
+            //default the deadline to be the date of the event
+            const [yr, mo, da] = tmp.eventDate.split(/-/).map(Number);
+            const dLineDate = new Date(yr, mo - 1, da, 12, 0, 0, 0);
+            setDeadlineDate(dLineDate);
+            setDeadlineDateString(dLineDate.toDateString());
+        } else {
+            // get the tmp.meal.startTime value into Date object
+            if (!tmp?.meal?.startTime) {
+                // there is meal, but no start time, default to noon
+                const date = new Date();
+                date.setHours(12, 0, 0, 0);
+                setMealStartTime(date);
+            } else {
+                const [hours, minutes, seconds, milliseconds] =
+                    tmp?.meal?.startTime.split(/[:.]/).map(Number);
+                const date = new Date();
+                date.setHours(hours, minutes, seconds, milliseconds);
+                printObject('REM2:122->startTIme:', date);
+                setMealStartTime(date);
+            }
+            //      DEADLINE DATE
             let yr = 0;
             let mo = 0;
             let da = 0;
-            //now set deadline
-            if (tmp?.meal?.deadline) {
-                yr = parseInt(tmp.meal.deadline.substr(0, 4));
-                mo = parseInt(tmp.meal.deadline.substr(4, 2));
-                da = parseInt(tmp.meal.deadline.substr(6, 2));
+            if (!tmp?.meal?.deadline) {
+                // this is meal, but no deadline, default to eventDate
+                [yr, mo, da] = [...tmp.eventDate.split(/-/)].map(Number);
             } else {
-                //set t o eventDate
-                yr = parseInt(tmp.eventDate.substr(0, 4));
-                mo = parseInt(tmp.eventDate.substr(4, 2));
-                da = parseInt(tmp.eventDate.substr(6, 2));
+                //use the tmp.meal.deadline
+                [yr, mo, da] = [...tmp.meal.deadline.split(/-/)].map(Number);
             }
+
             // can use start times, since the values are not used
-            tmpDate = new Date(yr, mo - 1, da, hr, mi, 0);
-            setDeadlineDate(tmpDate);
-            setDeadlineDateString(tmpDate.toDateString());
-        }
-        if (tmp?.meal?.offered === false) {
-            let tmpDate = new Date(yr, mo - 1, da, 12, 0, 0);
-            setMealStartTime(tmpDate);
-            let t = makeTimeString(tmpDate);
-            setMealStartTimeString(t);
-            //default the deadline to be the date of the event
-            yr = parseInt(tmp.eventDate.substr(0, 4));
-            mo = parseInt(tmp.eventDate.substr(4, 2));
-            da = parseInt(tmp.eventDate.substr(6, 2));
+            const tmpDate = new Date(yr, mo - 1, da, 0, 0, 0);
             setDeadlineDate(tmpDate);
             setDeadlineDateString(tmpDate.toDateString());
         }
@@ -217,51 +203,47 @@ export default function RallyMealForm({ rallyId }) {
     const onDeadlineDateCancel = (data) => setModalDeadlineVisible(false);
     const handleNext = () => {
         try {
-            console.log('REM:220-->TRY------------------!!!');
-            let mealOffered = offerMeal;
-            let theDateObject = '';
-            let mTime = '';
-            let mDeadline = '';
-            let mCost = '';
-            let mMessage = mealMessage;
-            if (mealOffered === true) {
-                // theDateObject = mealTime;
-                let mt = Date.parse(mealStartTime);
-                mTime = getPateTime(mt);
-                // theDateObject = deadline;
-                let mealDeadline = Date.parse(deadlineDate);
-                mDeadline = getPateDate(mealDeadline);
-                mCost = cost;
-                mMessage = mealMessage;
-            }
+            console.log('REM:2205-->TRY------------------!!!');
+            printObject('tmp:\n', tmp);
+            const newMealDeadline = deadlineDate.toISOString().substring(0, 10);
+            let hours = mealStartTime.getHours().toString().padStart(2, '0');
+            let minutes = mealStartTime
+                .getMinutes()
+                .toString()
+                .padStart(2, '0');
+
+            const newMealStartTime = `${hours}:${minutes}:00.000`;
+
+            // let mealOffered = offerMeal;
+            // let mTime = newMealTime.toString();
+            // let mDeadline = newMealDeadline.toString();
+            // let mCost = cost;
+            // let mMessage = mealMessage;
 
             // build a meal object
             let meal = {
                 meal: {
-                    id: tmp?.meal?.id,
-                    offered: mealOffered,
-                    startTime: mTime,
-                    cost: mCost,
-                    deadline: mDeadline,
-                    mealCount: tmp?.meal?.mealCount,
-                    mealServed: tmp?.meal?.mealsServed,
+                    id: tmp.meal.id,
                     message: mealMessage,
+                    startTime: newMealStartTime,
+                    deadline: newMealDeadline,
+                    cost: cost,
+                    plannedCount: tmp?.meal?.plannedCount,
+                    actualCount: tmp?.meal?.actualCount,
                 },
             };
-            console.log('++++++++++++++++++++++++++++++++');
-            printObject('REM:249--> meal:', meal);
-            console.log('++++++++++++++++++++++++++++++++');
+            printObject('REM:235--> updateTmp(meal):', meal);
             dispatch(updateTmp(meal));
             navigation.navigate('RallyEditFlow', {
                 rallyId: rallyId,
                 stage: 6,
             });
         } catch (error) {
-            printObject('REM:259--> error on Next:\n', error);
+            printObject('REM:241--> error on Next:\n', error);
         }
     };
     // const dispatch = useDispatch();
-    printObject('REM:263-->tmp BEFORE:\n', tmp);
+    printObject('REM:251-->tmp:\n', tmp);
     return (
         <>
             <Modal visible={showMealCountConfirm} animationStyle='slide'>
@@ -364,9 +346,9 @@ export default function RallyMealForm({ rallyId }) {
                                                         : styles.disabledDateTimeTextString
                                                 }
                                             >
-                                                {mealStartTimeString
-                                                    ? mealStartTimeString
-                                                    : defaultDateTimeString}
+                                                {moment(mealStartTime).format(
+                                                    'h:mm A'
+                                                )}
                                             </Text>
                                         </View>
                                     </Pressable>

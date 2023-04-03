@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, ImageBackground, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import ProfileForm from '../components/profile/Profile.Form';
+import ProfileForm from '../components/profile/Profile2.Form';
 // import PersonalDetails from '../components/Profile.Form';
 import PersonalHeader from '../components/profile/personalHeader';
 
