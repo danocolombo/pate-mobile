@@ -12,7 +12,7 @@ function TeamScreen(props) {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     const leaderList = useSelector((state) => state.profiles.leaders);
     const guestList = useSelector((state) => state.profiles.guests);
     const [isLoading, setIsLoading] = useState(true);

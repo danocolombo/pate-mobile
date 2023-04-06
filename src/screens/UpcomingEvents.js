@@ -21,7 +21,7 @@ export default function UpcomingEventsScreen(props) {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const divisionEvents = useSelector((state) => state.division.allRallies);
     const { eventRegion, affiliateHeader, today, affiliation } = useSelector(
@@ -52,7 +52,7 @@ export default function UpcomingEventsScreen(props) {
     if (isLoading) {
         return <ActivityIndicator />;
     }
-
+    printObject('rallyCOUNT------->', allRallies.count);
     return (
         <ImageBackground
             source={require('../components/images/background.png')}

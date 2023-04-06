@@ -48,7 +48,7 @@ const Stack = createNativeStackNavigator();
 // }
 
 function PateStack() {
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     return (
         <Stack.Navigator>
             {/* <Stack.Screen name='ServeList' options={{ headerShown: false }} /> */}

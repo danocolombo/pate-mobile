@@ -18,7 +18,7 @@ import { convertPateTime, displayAWSTime } from '../../utils/date';
 function DivisionRallyItem(rally) {
     const navigation = useNavigation();
     const registrations = useSelector((state) => state.users.registrations);
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     const { uid, eventDate, name, city, stateProv, startTime } = rally.rally;
     const theEvent = rally.rally;
     let registered = false;

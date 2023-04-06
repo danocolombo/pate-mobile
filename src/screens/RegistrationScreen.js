@@ -8,7 +8,7 @@ import RegistrationDetails from '../components/registrations/Registration.Detail
 function RegistrationScreen({ route }) {
     const reg = route.params.reg;
     const navigation = useNavigation();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,

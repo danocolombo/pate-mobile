@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import ServeRegionRallies from '../../components/serve/ServeRegionRallies';
 const ServeEventsRegionScreen = () => {
     const navigation = useNavigation();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,

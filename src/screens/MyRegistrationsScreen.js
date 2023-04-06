@@ -24,7 +24,7 @@ import { Colors } from '../constants/colors';
 const MyRegistrationsScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     const user = useSelector((state) => state.users.currentUser);
     const allRallies = useSelector((state) => state.rallies.allRallies);
     const registrations = useSelector((state) => state.users.registrations);

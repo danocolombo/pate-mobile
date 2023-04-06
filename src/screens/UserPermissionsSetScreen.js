@@ -14,7 +14,7 @@ import { printObject } from '../utils/helpers';
 const UserPermissionsSet = ({ route }) => {
     const profile = route.params.profile;
     const navigation = useNavigation();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,

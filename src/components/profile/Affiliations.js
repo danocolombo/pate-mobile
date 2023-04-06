@@ -1,38 +1,64 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Modal } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../pateGraphQL/queries';
+import * as mutations from '../../pateGraphQL/mutations';
 import { initializeDivision } from '../../features/division/divisionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import DropDown from 'react-native-paper-dropdown';
+import CustomButton from '../ui/CustomButton';
+import { Colors } from '../../constants/colors';
+import { updateGQLUser } from '../../providers/users';
 import { printObject } from '../../utils/helpers';
-import { updateAffiliationActive } from '../../features/users/usersSlice';
+import {
+    updateAffiliationActive,
+    updateCurrentUser,
+} from '../../features/users/usersSlice';
+import AffiliationDropDown from './AffiliationDropDown';
 const Affiliations = () => {
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.users.currentUser);
     const affiliations = useSelector(
         (state) => state.users.currentUser.affiliations.items
     );
-    const [testValue, setTestValue] = useState();
     const [showAffiliationDropdown, setShowAffiliationDropdown] =
         useState(false);
+    const [showDefaultAffiliationDropdown, setShowDefaultAffiliationDropdown] =
+        useState(false);
     const [affiliationList, setAffiliationList] = useState([]);
+    const [defaultAffiliationList, setDefaultAffiliationList] = useState([]);
     const [activeAffiliation, setActiveAffiliation] = useState(
         useSelector((state) => state.users.currentUser.affiliations.active)
     );
-    printObject('A:5-->affiliations:', affiliations);
+    const [defaultAffiliationId, setDefaultAffiliationId] = useState();
+    const [defaultAffiliation, setDefaultAffiliation] = useState(
+        useSelector((state) => state.users.currentUser.defaultDivision)
+    );
+    const [showDefaultChangedModal, setShowDefaultChangedModal] =
+        useState(false);
+    const [showAffiliationChangedModal, setShowAffiliationChangedModal] =
+        useState(false);
+    // printObject('A:5-->affiliations:', affiliations);
     useLayoutEffect(() => {
         //load the affiliationsList
 
         let theList = [];
         affiliations.forEach((a) => {
+            // check for default
+            if (currentUser.defaultDivision.id === a.division.id) {
+                setDefaultAffiliationId(a.id);
+            }
             let aff = {};
             (aff.value = a.id),
                 (aff.label = a.division.organization.description);
             theList.push(aff);
         });
         setAffiliationList(theList);
+        setDefaultAffiliationList(theList);
+        printObject('A:42=>list:', theList);
+
+        printObject('defaultAffiliation:', defaultAffiliation);
     }, []);
     const setAffiliationValue = (affValue) => {
         console.log('A:35-->setAffiliationValue(1)');
@@ -118,31 +144,108 @@ const Affiliations = () => {
         //todo =====================================================
         return;
     };
+    const setDefaultValue = async (value) => {
+        // this function saves the selected affiliation as default for user
+        // get the affiliation from the aff list...
+        const selectedAff = affiliations.find((a) => a.id === value);
+        setDefaultAffiliationId(value);
+        const newDefaultDivision = {
+            defaultDivision: {
+                id: selectedAff.division.id,
+                code: selectedAff.division.code,
+                organization: {
+                    id: selectedAff.division.organization.id,
+                    code: selectedAff.division.organization.code,
+                    title: selectedAff.division.organization.title,
+                },
+            },
+        };
+        try {
+            dispatch(updateCurrentUser(newDefaultDivision));
+            //todo ---> graphql
+            try {
+                console.log('BEFORE');
+                const userUpdateResults = await updateGQLUser({
+                    id: currentUser.id,
+                    divisionDefaultUsersId: selectedAff.division.id,
+                });
+                console.log('AFTER');
+                console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+                printObject('A:174-->userUpdateResults:', userUpdateResults);
+                console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+                setShowDefaultChangedModal(true);
+            } catch (error) {
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                printObject('A:178==>error:\n', error);
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            }
+        } catch (error) {
+            console.log('error tryiing to update active affiliation in redux');
+            printObject('error:\n', error);
+        }
+        printObject('A158-->currentUser:', currentUser);
+    };
     printObject('A:81==>currentUser: \n', currentUser);
     return (
         <>
-            <Surface style={styles.affiliateSurfaceContainer}>
-                <View style={styles.inputContainer}>
+            <Modal visible={showDefaultChangedModal} animationStyle='slide'>
+                <Surface style={styles.modalSurface}>
                     <View>
-                        <Text>AFFILIATIONS HERE</Text>
+                        <View style={{ marginTop: 5, alignItems: 'center' }}>
+                            <Text style={styles.modalTitle}>
+                                Default Changed
+                            </Text>
+                        </View>
+                        <View style={styles.modalInfoWrapper}>
+                            <Text style={styles.modalText}>
+                                Your default affiliation has been changed and
+                                will be in effect the next time you login.
+                            </Text>
+                        </View>
+                        <View style={styles.modalButtonContainer}>
+                            <View style={styles.modalButton}>
+                                <CustomButton
+                                    title='Dismiss'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: Colors.gray35,
+                                        color: 'black',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() =>
+                                        setShowDefaultChangedModal(false)
+                                    }
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Surface>
+            </Modal>
+            <Surface style={styles.affiliateSurfaceContainer}>
+                <View style={{ paddingLeft: 5 }}>
+                    <View>
+                        <Text>Select your affiliation</Text>
                     </View>
                 </View>
-                <View style={styles.labelContainer}>
-                    <Text style={styles.labelText}>
-                        {activeAffiliation.organizationDescription}
-                    </Text>
-                </View>
+
                 <View>
-                    <DropDown
-                        // label={'Gender'}
-                        mode={'outlined'}
-                        dense='true'
-                        visible={showAffiliationDropdown}
-                        showDropDown={() => setShowAffiliationDropdown(true)}
-                        onDismiss={() => setShowAffiliationDropdown(false)}
-                        value={activeAffiliation.affiliationId}
-                        setValue={(value) => setAffiliationValue(value)}
+                    <AffiliationDropDown
                         list={affiliationList}
+                        activeValue={activeAffiliation.affiliationId}
+                        setValue={setAffiliationValue}
+                    />
+                </View>
+                <View style={{ paddingLeft: 5, marginTop: 20 }}>
+                    <View>
+                        <Text>Set your default affiliation</Text>
+                    </View>
+                </View>
+
+                <View>
+                    <AffiliationDropDown
+                        list={defaultAffiliationList}
+                        activeValue={defaultAffiliationId}
+                        setValue={setDefaultValue}
                     />
                 </View>
             </Surface>

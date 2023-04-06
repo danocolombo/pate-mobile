@@ -1,11 +1,67 @@
 import axios from 'axios';
+import { API, graphqlOperation } from 'aws-amplify';
 import { printObject } from '../utils/helpers';
+import * as mutations from '../pateGraphQL/mutations';
 const config = {
     headers: {
         'Content-type': 'application/json; charset=UTF-8',
     },
 };
-export async function updateProfile(profile) {
+export const updateGQLUser = async (userInfo) => {
+    if (!userInfo) {
+        return {
+            status: 400,
+            data: 'updateGQLUser: userInfo is required',
+        };
+    }
+    if (!userInfo.id) {
+        return {
+            status: 400,
+            data: 'updateGQLUser: id is required to update record',
+        };
+    }
+
+    let DANO = false;
+    if (DANO) {
+        printObject('userInfo:\n', userInfo);
+        return {
+            status: 200,
+            data: userInfo,
+        };
+    }
+    // const inputVariables = {
+    //     id: user.id,
+    //     street: userInfo.street,
+    //     city: profileInfo.city,
+    //     stateProv: userInfo.stateProv,
+    //     postalCode: userInfo.postalCode,
+    // };
+    try {
+        let returnValue = {};
+        const updateUserResults = await API.graphql({
+            query: mutations.updateUser,
+            variables: { input: userInfo },
+        });
+        if (updateUserResults?.data?.updateUser?.id) {
+            //==========================================
+            // update REDUX
+            //==========================================
+            return {
+                status: 200,
+                data: updateUserResults?.data?.updateUser,
+            };
+        } else {
+            return {
+                status: 404,
+                data: updateUserResults,
+            };
+        }
+    } catch (error) {
+        return { status: 400, data: error, line: 28 };
+    }
+};
+
+export async function updateProfileDDB(profile) {
     let obj = {
         operation: 'updateUser',
         payload: {

@@ -70,7 +70,7 @@ const SignInScreen = () => {
         let setAlert = {};
         await Auth.signIn(username, password)
             .then((user) => {
-                // printObject('SIS:66-->Auth.signIn response:\n', user);
+                printObject('SIS:73-->Auth.signIn response:\n', user);
                 if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
                     const { requiredAttributes } = user.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
                     Auth.completeNewPassword(
@@ -140,6 +140,8 @@ const SignInScreen = () => {
             currentSession = data;
         });
         //save JWT token to currentUser
+        printObject('SIS:143==>currentUserInfo:\n', currentUserInfo);
+
         dispatch(
             updateCurrentUser({ jwtToken: currentSession?.idToken?.jwtToken })
         );
@@ -174,12 +176,12 @@ const SignInScreen = () => {
                                 ...gqlProfileResponse?.data?.listUsers
                                     ?.items[0],
                             };
-                            graphQLProfile.affiliations.active = {
-                                label: 'TBD',
-                                role: 'guest',
-                                region: 'TBD',
-                                value: 'TBD',
-                            };
+                            // graphQLProfile.affiliations.active = {
+                            //     label: 'TBD',
+                            //     role: 'guest',
+                            //     region: 'TBD',
+                            //     value: 'TBD',
+                            // };
                             // currentUser.affiliations.active = {
                             //     value: graphQLProfile.defaultDivision
                             //         ?.organization?.code,
@@ -289,7 +291,8 @@ const SignInScreen = () => {
                         //      get the divisionEvents
                         //  ******************************************
                         const variables = {
-                            divId: graphQLProfile?.affiliations?.active?.id,
+                            divId: graphQLProfile?.affiliations?.active
+                                ?.divisionId,
                         };
                         if (variables.divId) {
                             const getDivisionalEvents = async () => {

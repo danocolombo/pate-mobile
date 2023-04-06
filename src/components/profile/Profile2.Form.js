@@ -1,83 +1,25 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react';
 import {
     StyleSheet,
-    TextInput,
     View,
     Text,
     TouchableWithoutFeedback,
     TouchableOpacity,
     Keyboard,
     ScrollView,
-    Pressable,
     Modal,
-    Platform,
 } from 'react-native';
-import {
-    List,
-    Surface,
-    Button,
-    withTheme,
-    Snackbar,
-    FAB,
-} from 'react-native-paper';
+import { List, Surface, withTheme, Snackbar } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import Checkbox from 'expo-checkbox';
-import { FontAwesome5 } from '@expo/vector-icons';
-import DropDown from 'react-native-paper-dropdown';
-// import PhoneInput from '../ui/PhoneInput';
-import { Formik } from 'formik';
-import * as yup from 'yup';
 import CustomButton from '../ui/CustomButton';
-import {
-    updateCurrentUser,
-    updateAffiliationActive,
-    updateAffiliateActiveAndReference,
-} from '../../features/users/usersSlice';
-import {
-    updateRegion,
-    updateAppName,
-    updateAffiliate,
-    updateAffiliateTitle,
-    updateStateProv,
-    updateAffiliation,
-} from '../../features/system/systemSlice';
-import PersonalHeader from './personalHeader';
-import PhoneInput from '../ui/PhoneInput';
+
 import Affiliations from './Affiliations';
 import Membership from './Membership';
 import UserSection from './User';
-import { updateProfile } from '../../providers/users';
-import { getAffiliate } from '../../providers/system';
-import { clearLeadersAndGuests } from '../../features/profiles/profilesSlice';
 import { Colors } from '../../constants/colors';
-import {
-    printObject,
-    capitalize,
-    getPhoneType,
-    createPatePhone,
-} from '../../utils/helpers';
+import { printObject, capitalize } from '../../utils/helpers';
 import { Ionicons } from '@expo/vector-icons';
-// import { select } from '@react-native-material/core';
-// import { or } from 'ramda';
-import { original } from '@reduxjs/toolkit';
-import { setMilliseconds } from 'date-fns';
-
-// import { validate } from 'react-native-web/dist/cjs/exports/StyleSheet/validate';
-
-// create validation schema for yup to pass to formik
-const profileSchema = yup.object({
-    firstName: yup.string().required('first name is required').min(2),
-    lastName: yup.string().required('last name is required'),
-    email: yup.string().email(),
-    street: yup.string(),
-    city: yup.string().min(2),
-    stateProv: yup.string().min(2).max(2),
-    postalCode: yup.string(),
-    affiliateName: yup.string().min(2),
-    affiliateity: yup.string().min(2),
-    affiliateStateProv: yup.string().min(2).max(2),
-});
 
 const ProfileForm = (props) => {
     const navigation = useNavigation();
@@ -91,14 +33,9 @@ const ProfileForm = (props) => {
     const [affiliationsAccordionIsOpen, setAffiliationsAccordionIsOpen] =
         useState(false);
     const { colors } = props.theme;
-    const dispatch = useDispatch();
     const feo = useSelector((state) => state.division);
     const originalUser = useSelector((state) => state.users.currentUser);
     let user = useSelector((state) => state.users.currentUser);
-    const [hasProfileChanged, setHasProfileChanged] = useState(false);
-    const [affiliationSelected, setAffiliationSelected] = useState(
-        user?.affiliations?.active.organizationName
-    );
 
     const onDismissSnackBar = () => setSnackbarVisible(false);
     useEffect(() => {
@@ -117,7 +54,7 @@ const ProfileForm = (props) => {
                 console.log('Screen unfocused');
                 setContactAccordionIsOpen(false);
                 setMembershipAccordionIsOpen(false);
-                setAffiliationSelected(false);
+                setAffiliationsAccordionIsOpen(false);
             };
         }, [])
     );
@@ -151,7 +88,7 @@ const ProfileForm = (props) => {
     };
 
     const handleErrorReset = () => {
-        setAffiliationSelected(originalUser.affiliations.active.value);
+        setAffiliationsAccordionIsOpen(originalUser.affiliations.active.value);
         // values.affiliateName = originalUser.affiliate.name;
         // values.affiliateCity = originalUser.affiliate.city;
         // values.affiliateStateProv = originalUser.affiliate.stateProv;

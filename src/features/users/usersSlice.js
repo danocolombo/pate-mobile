@@ -16,6 +16,8 @@ export const usersSlice = createSlice({
         },
 
         updateCurrentUser: (state, action) => {
+            // console.log('ININININININININ');
+            // printObject('US:20-->payload:', action.payload);
             const newValues = action.payload;
             const updates = { ...state.currentUser, ...newValues };
             state.currentUser = updates;

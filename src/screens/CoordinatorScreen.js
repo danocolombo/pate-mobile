@@ -21,7 +21,7 @@ function CoordinatorScreen({ route }) {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
 
     const [isLoading, setIsLoading] = useState(true);
     const [availableCoordinators, setAvailableCoordinators] = useState([]);

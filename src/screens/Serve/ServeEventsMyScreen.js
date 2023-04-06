@@ -12,7 +12,7 @@ import ServeMyRallies from '../../components/serve/ServeMyRallies';
 
 const ServeEventsMyScreen = () => {
     const navigation = useNavigation();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     useLayoutEffect(() => {
         navigation.setOptions({
             title: <feo className='appName'></feo>,

@@ -22,7 +22,7 @@ import moment from 'moment';
 import { printObject } from '../../../utils/helpers';
 
 export default function RallyLogisticsForm({ rallyId }) {
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);

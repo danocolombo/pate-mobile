@@ -21,7 +21,7 @@ const RallyNewConfirmation = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const REGION = useSelector((state) => state.system.region);
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     const user = useSelector((state) => state.users.currentUser);
     const tmp = useSelector((state) => state.rallies.tmpRally);
     const systemRegion = useSelector((state) => state.system.region);

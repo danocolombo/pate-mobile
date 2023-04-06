@@ -23,7 +23,7 @@ import UserDisplayDetailsModal from './UserDisplayDetailsModal';
 const UserDisplay = ({ profile }) => {
     const dispatch = useDispatch();
     const navigate = useNavigation();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     const user = useSelector((state) => state.users.currentUser);
     const [showMoreDetail, setShowMoreDetail] = useState(false);
     const [showCompletionModal, setShowCompletionModal] = useState(false);

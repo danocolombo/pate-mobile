@@ -7,7 +7,7 @@ import { printObject } from '../../utils/helpers';
 const ServeRallyFormScreen = ({ route, navigation }) => {
     const rally = route.params.rally;
 
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,

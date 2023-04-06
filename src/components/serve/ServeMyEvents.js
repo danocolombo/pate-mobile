@@ -167,7 +167,7 @@ const ServeMyEvents = () => {
                     <Text> </Text>
                 </View>
                 <View style={styles.screenHeader}>
-                    <Text style={styles.screenHeaderText}>Your Events</Text>
+                    <Text style={styles.screenHeaderText}>Your Eventz</Text>
                 </View>
                 <View style={{ marginRight: 10 }}>
                     <Ionicons

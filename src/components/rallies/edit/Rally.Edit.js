@@ -10,7 +10,7 @@ import RallyMealForm from './Rally.Edit.Meal2';
 import RallyNewConfirmation from './Rally.Edit.Confirm';
 const RallyEdit = ({ rallyId, stage }) => {
     const navigation = useNavigation();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     // console.log('stage', stage);
     // console.log('RE:15==>rallyId', rallyId);
     useLayoutEffect(() => {

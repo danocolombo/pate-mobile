@@ -18,7 +18,7 @@ const Stack = createNativeStackNavigator();
 
 const AuthDrawer = (navigation) => {
     const user = useSelector((state) => state.users.currentUser);
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     // printObject('PF:17-->user', user);
     let manager = false;
     if (

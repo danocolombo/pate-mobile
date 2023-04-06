@@ -22,7 +22,7 @@ import RenderHtml from 'react-native-render-html';
 
 const LegalScreen = (props) => {
     const navigation = useNavigation();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     const [termsCollapsed, setTermsCollapsed] = useState(true); //collapsible
     const [privacyCollapsed, setPrivacyCollapsed] = useState(true); //collapsible
     const { width } = useWindowDimensions();

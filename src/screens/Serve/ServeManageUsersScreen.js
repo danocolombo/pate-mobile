@@ -14,7 +14,7 @@ import UsersDisplay from '../../components/serve/UsersDisplay';
 // const ServeEventsHistoryScreen = () => {
 const ServeManageUsersScreen = () => {
     const navigation = useNavigation();
-    const feo = useSelector((state) => state.system);
+    const feo = useSelector((state) => state.division);
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName,
