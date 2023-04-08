@@ -73,9 +73,6 @@ const RallyDetails = ({ rallyId }) => {
         state.division.gatherings.filter((r) => r.id === rallyId)
     );
     let rally = rallyEntry[0];
-    // console.log('vvvvvvvvvvvvvvvvvvv');
-    // printObject('RI:77-->rally:', rally);
-    // console.log('^^^^^^^^^^^^^^^^^^^');
     const dispatch = useDispatch();
     //modal stuff
     let statusValues = [];

@@ -1,124 +1,298 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { List, Surface, Text, TextInput } from 'react-native-paper';
+import { List, Surface, Text, TextInput, FAB } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { printObject } from '../../utils/helpers';
-import DropDown from 'react-native-paper-dropdown';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { STATELABELVALUES } from '../../constants/pate';
+import SimpleDropDown from '../ui/DropDown/SimpleDropDown';
 
 const UserSection = (affiliations, colors) => {
     const currentUser = useSelector((state) => state.users.currentUser);
-    const [affiliationAccordionIsOpen, setAffiliationAccordionIsOpen] =
-        useState(false);
-    const [showStateProvDropdown, setShowStateProvDropdown] = useState(false);
-    const [residence, setResidence] = useState({
-        id: '0',
-        street: '',
-        city: '',
-        stateProv: 'AL',
-        postalCode: '',
-    });
+    const [firstName, setFirstName] = useState(currentUser?.firstName || '');
+    const [firstNameError, setFirstNameError] = useState('');
+    const [lastName, setLastName] = useState(currentUser?.lastName || '');
+    const [lastNameError, setLastNameError] = useState('');
+    const [street, setStreet] = useState(currentUser?.residence?.street || '');
+    const [streetError, setStreetError] = useState('');
+    const [city, setCity] = useState(currentUser?.residence?.city || '');
+    const [cityError, setCityError] = useState('');
+    const [postalCode, setPostalCode] = useState(
+        currentUser?.residence?.postalCode.toString() || ''
+    );
+    const [stateProv, setStateProv] = useState(
+        currentUser?.residence?.stateProv.toString() || 'AL'
+    );
+    const [postalCodeError, setPostalCodeError] = useState('');
+    const [originals, setOriginals] = useState(true);
+    const changes = useRef(false);
     useLayoutEffect(() => {
-        if (currentUser?.residence) {
-            setResidence({
-                ...residence,
-                id: currentUser?.residence?.id || '',
-                street: currentUser?.residence?.street || '',
-                city: currentUser?.residence?.city || '',
-                stateProv: currentUser?.residence?.stateProv || 'GA',
-                postalCode: currentUser?.residence?.postalCode.toString() || '',
-            });
-        }
+        // if (currentUser?.residence) {
+        //     setResidence({
+        //         ...residence,
+        //         id: currentUser?.residence?.id || '',
+        //         street: currentUser?.residence?.street || '',
+        //         city: currentUser?.residence?.city || '',
+        //         stateProv: currentUser?.residence?.stateProv || 'GA',
+        //         postalCode: currentUser?.residence?.postalCode.toString() || '',
+        //     });
+        // }
     }, []),
-        printObject('A:5-->affiliations:', affiliations);
-    const handleAffiliationPress = () => {
-        setAffiliationAccordionIsOpen(!affiliationAccordionIsOpen);
+        useEffect(() => {
+            if (
+                firstName !== currentUser.firstName ||
+                lastName !== currentUser.lastName ||
+                street !== currentUser.residence.street ||
+                city !== currentUser.residence.city ||
+                stateProv !== currentUser.residence.stateProv ||
+                postalCode !== currentUser.residence.postalCode.toString()
+            ) {
+                changes.current = true;
+                setOriginals(false);
+            } else {
+                changes.current = false;
+                setOriginals(true);
+            }
+        }, [firstName, lastName, street, city, stateProv, postalCode]);
+    printObject('A:5-->affiliations:', affiliations);
+
+    // const setStateProv = (stateProv) => {
+    //     const newResidence = { ...residence, stateProv: stateProv };
+    //     setResidence(newResidence);
+    // };
+    const validateFirstName = (value) => {
+        // 2-50 chars, apostrophe with alpha permitted
+        const testRegex = /^[a-zA-Z]{2,20}$/;
+        if (!testRegex.test(value)) {
+            return '2-20 characters';
+        } else {
+            return '';
+        }
     };
-    const setStateProv = (stateProv) => {
-        const newResidence = { ...residence, stateProv: stateProv };
-        setResidence(newResidence);
+    const validateLastName = (value) => {
+        // 2-20 chars, apostrophe with alpha permitted
+        const testRegex = /^[a-zA-Z.\- ]{2,20}$/;
+        if (!testRegex.test(value)) {
+            return '2-20 characters';
+        } else {
+            return '';
+        }
     };
-    printObject('STATES:\n', STATELABELVALUES);
+    const validateStreet = (value) => {
+        // 2-20 chars, apostrophe with alpha permitted
+        const testRegex = /^[a-zA-Z.\- ]{2,20}$/;
+        if (!testRegex.test(value)) {
+            return '2-20 characters';
+        } else {
+            return '';
+        }
+    };
+    const validateCity = (value) => {
+        // 2-15 chars, apostrophe with alpha permitted
+        const testRegex = /^[a-zA-Z.\- ]{2,15}$/;
+        if (!testRegex.test(value)) {
+            return '2-15 characters';
+        } else {
+            return '';
+        }
+    };
+    const validatePostalCode = (value) => {
+        // string with 00000-99999
+        const testRegex = /^[0-9]{5}$/;
+        if (!testRegex.test(value)) {
+            return '5 digits required';
+        } else {
+            return '';
+        }
+    };
+    const handleSavePress = async () => {
+        console.log('SAVE+SAVE+SAVE');
+    };
     return (
         <>
             <Surface style={styles.affiliateSurfaceContainer}>
                 <View style={styles.inputContainer}>
                     <View style={{ padding: 10 }}>
-                        <View style={styles.labelContainer}>
-                            <Text style={styles.labelText}>First Name</Text>
-                        </View>
                         <TextInput
-                            style={styles.input}
+                            label='First Name'
                             placeholder='First Name'
+                            autoCapitalize='words'
+                            autoCorrect={false}
+                            type='text'
+                            required
+                            size='small'
                             dense='true'
-                            // onChangeText={formikProps.handleChange('affiliateCity')}
-                            value={currentUser.firstName}
-                            // onBlur={formikProps.handleBlur('affiliateCity')}
-                        />
-                        <View style={styles.labelContainer}>
-                            <Text style={styles.labelText}>Last Name</Text>
-                        </View>
-                        <TextInput
                             style={styles.input}
+                            onChange={(e) => {
+                                const inputText = e.nativeEvent.text;
+                                setFirstName(inputText);
+                                setFirstNameError(validateFirstName(inputText));
+                            }}
+                            value={firstName}
+                            error={firstNameError !== ''}
+                            helperText={firstNameError}
+                        />
+                        {firstNameError && (
+                            <View
+                                style={{
+                                    color: 'red',
+                                    fontSize: 12,
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                <Text>{firstNameError}</Text>
+                            </View>
+                        )}
+                        <TextInput
+                            label='Last Name'
                             placeholder='Last Name'
+                            autoCapitalize='words'
+                            autoCorrect={false}
+                            type='text'
+                            required
+                            size='small'
                             dense='true'
-                            // onChangeText={formikProps.handleChange('affiliateCity')}
-                            value={currentUser.lastName}
-                            // onBlur={formikProps.handleBlur('affiliateCity')}
-                        />
-                        <View style={styles.labelContainer}>
-                            <Text style={styles.labelText}>Street</Text>
-                        </View>
-                        <TextInput
                             style={styles.input}
+                            onChange={(e) => {
+                                const inputText = e.nativeEvent.text;
+                                setLastName(inputText);
+                                setLastNameError(validateLastName(inputText));
+                            }}
+                            value={lastName}
+                            error={lastNameError !== ''}
+                            helperText={lastNameError}
+                        />
+                        {lastNameError && (
+                            <View
+                                style={{
+                                    color: 'red',
+                                    fontSize: 12,
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                <Text>{lastNameError}</Text>
+                            </View>
+                        )}
+                        <TextInput
+                            label='Street'
                             placeholder='Street'
+                            autoCapitalize='words'
+                            autoCorrect={false}
+                            type='text'
                             dense='true'
-                            // onChangeText={formikProps.handleChange('affiliateCity')}
-                            value={residence?.street}
-                            // onBlur={formikProps.handleBlur('affiliateCity')}
-                        />
-                        <View style={styles.labelContainer}>
-                            <Text style={styles.labelText}>City</Text>
-                        </View>
-                        <TextInput
+                            required
+                            size='small'
                             style={styles.input}
-                            placeholder='City'
-                            dense='true'
-                            // onChangeText={formikProps.handleChange('affiliateCity')}
-                            value={residence?.city}
-                            // onBlur={formikProps.handleBlur('affiliateCity')}
+                            onChange={(e) => {
+                                const inputText = e.nativeEvent.text;
+                                setStreet(inputText);
+                                setStreetError(validateStreet(inputText));
+                            }}
+                            value={street}
+                            error={streetError !== ''}
+                            helperText={streetError}
                         />
-                        <View style={styles.labelContainer}>
-                            <Text style={styles.labelText}>State</Text>
-                        </View>
+                        {streetError && (
+                            <View
+                                style={{
+                                    color: 'red',
+                                    fontSize: 12,
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                <Text>{streetError}</Text>
+                            </View>
+                        )}
+                        <TextInput
+                            label='City'
+                            placeholder='City'
+                            autoCapitalize='words'
+                            autoCorrect={false}
+                            type='text'
+                            required
+                            size='small'
+                            dense='true'
+                            style={styles.input}
+                            onChange={(e) => {
+                                const inputText = e.nativeEvent.text;
+                                setCity(inputText);
+                                setCityError(validateCity(inputText));
+                            }}
+                            value={city}
+                            error={cityError !== ''}
+                            helperText={cityError}
+                        />
+                        {cityError && (
+                            <View
+                                style={{
+                                    color: 'red',
+                                    fontSize: 12,
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                <Text>{cityError}</Text>
+                            </View>
+                        )}
                         <View>
-                            <DropDown
-                                // label={'Gender'}
-                                mode={'outlined'}
-                                dense='true'
-                                visible={showStateProvDropdown}
-                                showDropDown={() =>
-                                    setShowStateProvDropdown(true)
-                                }
-                                onDismiss={() =>
-                                    setShowStateProvDropdown(false)
-                                }
-                                value={residence?.stateProv}
-                                setValue={setStateProv}
+                            <SimpleDropDown
                                 list={STATELABELVALUES}
+                                activeValue={stateProv}
+                                setValue={setStateProv}
                             />
                         </View>
-                        <View style={styles.labelContainer}>
-                            <Text style={styles.labelText}>Postal Code</Text>
-                        </View>
                         <TextInput
-                            style={styles.inputPostalCode}
+                            label='Postal Code'
                             placeholder='Postal Code'
+                            autoCapitalize='words'
+                            autoCorrect={false}
+                            type='text'
                             dense='true'
-                            // onChangeText={formikProps.handleChange('affiliateCity')}
-                            value={residence?.postalCode}
-                            // onBlur={formikProps.handleBlur('affiliateCity')}
+                            required
+                            size='small'
+                            style={styles.input}
+                            onChange={(e) => {
+                                const inputText = e.nativeEvent.text;
+                                setPostalCode(inputText);
+                                setPostalCodeError(
+                                    validatePostalCode(inputText)
+                                );
+                            }}
+                            value={postalCode}
+                            error={postalCodeError !== ''}
+                            helperText={postalCodeError}
                         />
+                        {postalCodeError && (
+                            <View
+                                style={{
+                                    color: 'red',
+                                    fontSize: 12,
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                <Text>{postalCodeError}</Text>
+                            </View>
+                        )}
+                    </View>
+                    <View>
+                        {!originals && (
+                            <FAB
+                                icon={() => (
+                                    <FontAwesome5
+                                        name='save'
+                                        size={24}
+                                        color='black'
+                                    />
+                                )}
+                                style={{
+                                    position: 'absolute',
+                                    marginRight: 16,
+                                    right: 0,
+                                    bottom: 0,
+                                    backgroundColor: 'yellow',
+                                }}
+                                //onPress={handleSavePress}
+                            />
+                        )}
                     </View>
                 </View>
             </Surface>

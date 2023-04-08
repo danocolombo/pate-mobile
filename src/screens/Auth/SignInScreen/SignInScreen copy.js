@@ -301,9 +301,9 @@ const SignInScreen = () => {
                             }
                         }
                         //set defaults
-                        console.log('vvvvvvvvv');
-                        printObject('graphQLProfile:\n', graphQLProfile);
-                        console.log('^^^^^^^^^^^');
+                        // console.log('vvvvvvvvv');
+                        // printObject('graphQLProfile:\n', graphQLProfile);
+                        // console.log('^^^^^^^^^^^');
                         dispatch(updateCurrentUser(graphQLProfile));
                         //  ******************************************
                         //      get the divisionEvents

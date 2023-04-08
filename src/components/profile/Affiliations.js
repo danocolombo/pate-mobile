@@ -16,6 +16,7 @@ import {
     updateCurrentUser,
 } from '../../features/users/usersSlice';
 import AffiliationDropDown from './AffiliationDropDown';
+import AffiliationAdd from './AffiliationAdd';
 const Affiliations = () => {
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.users.currentUser);
@@ -63,10 +64,6 @@ const Affiliations = () => {
     const setAffiliationValue = (affValue) => {
         console.log('A:35-->setAffiliationValue(1)');
         //check if the value is already selected.
-        // if (affValue === activeAffiliation.affiliationId) {
-        //     // no change necessary
-        //     return;
-        // }
         // butild new active values.
         //* 1. get the new affiliation values
         const selectedAff = affiliations.find((a) => a.id === affValue);
@@ -94,17 +91,12 @@ const Affiliations = () => {
             value: selectedAff.division.organization.value,
         };
         setActiveAffiliation(newValue);
-        //todo - need to update the redux currentUser
-        //todo =====================================================
         try {
             dispatch(updateAffiliationActive(newValue));
         } catch (error) {
             console.log('error tryiing to update active affiliation in redux');
             printObject('error:\n', error);
         }
-        //todo --------------------------------------------
-        //todo update divisionEvents
-        //todo --------------------------------------------
         const getDivisionalEvents = async () => {
             try {
                 const variables = {
@@ -140,8 +132,6 @@ const Affiliations = () => {
             }
         };
         getDivisionalEvents();
-        //todo - need to update the DB.
-        //todo =====================================================
         return;
     };
     const setDefaultValue = async (value) => {
@@ -162,26 +152,18 @@ const Affiliations = () => {
         };
         try {
             dispatch(updateCurrentUser(newDefaultDivision));
-            //todo ---> graphql
             try {
                 console.log('BEFORE');
                 const userUpdateResults = await updateGQLUser({
                     id: currentUser.id,
                     divisionDefaultUsersId: selectedAff.division.id,
                 });
-                console.log('AFTER');
-                console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-                printObject('A:174-->userUpdateResults:', userUpdateResults);
-                console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
                 setShowDefaultChangedModal(true);
             } catch (error) {
-                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                 printObject('A:178==>error:\n', error);
-                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
             }
         } catch (error) {
             console.log('error tryiing to update active affiliation in redux');
-            printObject('error:\n', error);
         }
         printObject('A158-->currentUser:', currentUser);
     };
@@ -224,7 +206,7 @@ const Affiliations = () => {
             <Surface style={styles.affiliateSurfaceContainer}>
                 <View style={{ paddingLeft: 5 }}>
                     <View>
-                        <Text>Select your affiliation</Text>
+                        <Text>Set active affiliation</Text>
                     </View>
                 </View>
 
@@ -237,7 +219,7 @@ const Affiliations = () => {
                 </View>
                 <View style={{ paddingLeft: 5, marginTop: 20 }}>
                     <View>
-                        <Text>Set your default affiliation</Text>
+                        <Text>Set default affiliation</Text>
                     </View>
                 </View>
 
@@ -247,6 +229,9 @@ const Affiliations = () => {
                         activeValue={defaultAffiliationId}
                         setValue={setDefaultValue}
                     />
+                </View>
+                <View>
+                    <AffiliationAdd />
                 </View>
             </Surface>
         </>
