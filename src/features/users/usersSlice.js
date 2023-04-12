@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { printObject } from '../../utils/helpers';
+import { updateOrganization } from '../../pateGraphQL/mutations';
 
 const initialState = {
     value: 0,
@@ -17,10 +18,37 @@ export const usersSlice = createSlice({
 
         updateCurrentUser: (state, action) => {
             // console.log('ININININININININ');
-            // printObject('US:20-->payload:', action.payload);
+            // printObject('US:20-->state.currentUser:\n', state.currentUser);
+            // printObject('US:21-->payload:', action.payload);
             const newValues = action.payload;
             const updates = { ...state.currentUser, ...newValues };
             state.currentUser = updates;
+            // printObject('US:25-->state.currentUser:\n', state.currentUser);
+            return state;
+        },
+        updateCurrentUserMembership: (state, action) => {
+            console.log('ININININININININ');
+            // printObject('US:20-->state.currentUser:\n', state.currentUser);
+            printObject('US:32-->payload:', action.payload);
+            //* get existing memberships push new
+            let memberships = state.currentUser.memberships.items;
+
+            let found = false;
+            for (let i = 0; i < memberships.length; i++) {
+                if (memberships[i].id === action.payload.id) {
+                    Object.assign(memberships[i], action.payload);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                memberships.push(action.payload);
+            }
+
+            printObject('US:48-->memberships:', memberships);
+            const updates = { ...state.currentUser, ...memberships };
+            state.currentUser = updates;
+            // printObject('US:25-->state.currentUser:\n', state.currentUser);
             return state;
         },
         updateAffiliateActiveAndReference: (state, action) => {
@@ -47,6 +75,14 @@ export const usersSlice = createSlice({
         },
         loadRegistrations: (state, action) => {
             state.registrations = action.payload;
+            return state;
+        },
+        updateResidence: (state, action) => {
+            const newResidenceValues = {
+                residence: action.payload,
+            };
+            const updates = { ...state.currentUser, ...newResidenceValues };
+            state.currentUser = updates;
             return state;
         },
         updateRegistration: (state, action) => {
@@ -131,11 +167,13 @@ export const usersSlice = createSlice({
 export const {
     getCurrentUser,
     updateCurrentUser,
+    updateCurrentUserMembership,
     saveCurrentUser,
     loadRegistrations,
     deleteRegistration,
     updateRegistration,
     addNewRegistration,
+    updateResidence,
     updateAffiliationActive,
     updateAffiliateActiveAndReference,
     terminate,

@@ -137,6 +137,21 @@ export const getDivision = /* GraphQL */ `
         }
         nextToken
       }
+      memberships {
+        items {
+          id
+          name
+          street
+          city
+          stateProv
+          postalCode
+          createdAt
+          updatedAt
+          divisionMembershipsId
+          userMembershipsId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       organizationDivisionsId
@@ -176,6 +191,9 @@ export const listDivisions = /* GraphQL */ `
           nextToken
         }
         defaultUsers {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -228,6 +246,9 @@ export const getAffiliation = /* GraphQL */ `
         affiliations {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         divisionDefaultUsersId
@@ -259,6 +280,9 @@ export const getAffiliation = /* GraphQL */ `
           nextToken
         }
         defaultUsers {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -347,6 +371,9 @@ export const getEvent = /* GraphQL */ `
         defaultUsers {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         organizationDivisionsId
@@ -354,8 +381,22 @@ export const getEvent = /* GraphQL */ `
       registrations {
         items {
           id
+          attendeeId
+          attendeeFirstName
+          attendeeLastName
+          attendeeStreet
+          attendeeCity
+          attendeeStateProv
+          attendeePostalCode
+          attendeeEmail
+          attendeePhone
           attendanceCount
           mealCount
+          membershipName
+          membershipStreet
+          membershipCity
+          membershipStateProv
+          membershipPostalCode
           createdAt
           updatedAt
           eventRegistrationsId
@@ -397,6 +438,9 @@ export const getEvent = /* GraphQL */ `
           nextToken
         }
         affiliations {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -862,6 +906,15 @@ export const getRegistration = /* GraphQL */ `
   query GetRegistration($id: ID!) {
     getRegistration(id: $id) {
       id
+      attendeeId
+      attendeeFirstName
+      attendeeLastName
+      attendeeStreet
+      attendeeCity
+      attendeeStateProv
+      attendeePostalCode
+      attendeeEmail
+      attendeePhone
       event {
         id
         eventDate
@@ -946,6 +999,11 @@ export const getRegistration = /* GraphQL */ `
       }
       attendanceCount
       mealCount
+      membershipName
+      membershipStreet
+      membershipCity
+      membershipStateProv
+      membershipPostalCode
       registrar {
         id
         sub
@@ -982,6 +1040,9 @@ export const getRegistration = /* GraphQL */ `
         affiliations {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         divisionDefaultUsersId
@@ -1003,6 +1064,15 @@ export const listRegistrations = /* GraphQL */ `
     listRegistrations(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        attendeeId
+        attendeeFirstName
+        attendeeLastName
+        attendeeStreet
+        attendeeCity
+        attendeeStateProv
+        attendeePostalCode
+        attendeeEmail
+        attendeePhone
         event {
           id
           eventDate
@@ -1027,6 +1097,11 @@ export const listRegistrations = /* GraphQL */ `
         }
         attendanceCount
         mealCount
+        membershipName
+        membershipStreet
+        membershipCity
+        membershipStateProv
+        membershipPostalCode
         registrar {
           id
           sub
@@ -1143,6 +1218,9 @@ export const getUser = /* GraphQL */ `
         defaultUsers {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         organizationDivisionsId
@@ -1189,8 +1267,22 @@ export const getUser = /* GraphQL */ `
       registrations {
         items {
           id
+          attendeeId
+          attendeeFirstName
+          attendeeLastName
+          attendeeStreet
+          attendeeCity
+          attendeeStateProv
+          attendeePostalCode
+          attendeeEmail
+          attendeePhone
           attendanceCount
           mealCount
+          membershipName
+          membershipStreet
+          membershipCity
+          membershipStateProv
+          membershipPostalCode
           createdAt
           updatedAt
           eventRegistrationsId
@@ -1207,6 +1299,21 @@ export const getUser = /* GraphQL */ `
           updatedAt
           divisionAffiliationsId
           userAffiliationsId
+        }
+        nextToken
+      }
+      memberships {
+        items {
+          id
+          name
+          street
+          city
+          stateProv
+          postalCode
+          createdAt
+          updatedAt
+          divisionMembershipsId
+          userMembershipsId
         }
         nextToken
       }
@@ -1260,10 +1367,152 @@ export const listUsers = /* GraphQL */ `
         affiliations {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         divisionDefaultUsersId
         residenceResidentsId
+      }
+      nextToken
+    }
+  }
+`;
+export const getMembership = /* GraphQL */ `
+  query GetMembership($id: ID!) {
+    getMembership(id: $id) {
+      id
+      name
+      street
+      city
+      stateProv
+      postalCode
+      member {
+        id
+        sub
+        username
+        firstName
+        lastName
+        email
+        phone
+        defaultDivision {
+          id
+          code
+          divCompKey
+          createdAt
+          updatedAt
+          organizationDivisionsId
+        }
+        residence {
+          id
+          street
+          city
+          stateProv
+          postalCode
+          latitude
+          longitude
+          createdAt
+          updatedAt
+        }
+        events {
+          nextToken
+        }
+        registrations {
+          nextToken
+        }
+        affiliations {
+          nextToken
+        }
+        memberships {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        divisionDefaultUsersId
+        residenceResidentsId
+      }
+      division {
+        id
+        code
+        divCompKey
+        organization {
+          id
+          appName
+          available
+          category
+          code
+          description
+          exposure
+          label
+          name
+          title
+          value
+          createdAt
+          updatedAt
+        }
+        events {
+          nextToken
+        }
+        affiliations {
+          nextToken
+        }
+        defaultUsers {
+          nextToken
+        }
+        memberships {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        organizationDivisionsId
+      }
+      createdAt
+      updatedAt
+      divisionMembershipsId
+      userMembershipsId
+    }
+  }
+`;
+export const listMemberships = /* GraphQL */ `
+  query ListMemberships(
+    $filter: ModelMembershipFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listMemberships(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        street
+        city
+        stateProv
+        postalCode
+        member {
+          id
+          sub
+          username
+          firstName
+          lastName
+          email
+          phone
+          createdAt
+          updatedAt
+          divisionDefaultUsersId
+          residenceResidentsId
+        }
+        division {
+          id
+          code
+          divCompKey
+          createdAt
+          updatedAt
+          organizationDivisionsId
+        }
+        createdAt
+        updatedAt
+        divisionMembershipsId
+        userMembershipsId
       }
       nextToken
     }

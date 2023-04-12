@@ -23,19 +23,13 @@ export const updateGQLUser = async (userInfo) => {
 
     let DANO = false;
     if (DANO) {
-        printObject('userInfo:\n', userInfo);
+        printObject('U:26-(PROVIDER)userInfo:\n', userInfo);
         return {
             status: 200,
             data: userInfo,
         };
     }
-    // const inputVariables = {
-    //     id: user.id,
-    //     street: userInfo.street,
-    //     city: profileInfo.city,
-    //     stateProv: userInfo.stateProv,
-    //     postalCode: userInfo.postalCode,
-    // };
+
     try {
         let returnValue = {};
         const updateUserResults = await API.graphql({

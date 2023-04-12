@@ -1,14 +1,30 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { List, Surface, Text, TextInput, FAB } from 'react-native-paper';
+import {
+    List,
+    Surface,
+    Text,
+    TextInput,
+    FAB,
+    ActivityIndicator,
+} from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { printObject } from '../../utils/helpers';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { updateGQLUser } from '../../providers/users';
+import { updateGQLResidence } from '../../providers/residence.provider';
 import { STATELABELVALUES } from '../../constants/pate';
+import {
+    updateCurrentUser,
+    updateResidence,
+} from '../../features/users/usersSlice';
+
 import SimpleDropDown from '../ui/DropDown/SimpleDropDown';
 
 const UserSection = (affiliations, colors) => {
+    const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.users.currentUser);
+    const [isUpdating, setIsUpdating] = useState(false);
     const [firstName, setFirstName] = useState(currentUser?.firstName || '');
     const [firstNameError, setFirstNameError] = useState('');
     const [lastName, setLastName] = useState(currentUser?.lastName || '');
@@ -24,8 +40,7 @@ const UserSection = (affiliations, colors) => {
         currentUser?.residence?.stateProv.toString() || 'AL'
     );
     const [postalCodeError, setPostalCodeError] = useState('');
-    const [originals, setOriginals] = useState(true);
-    const changes = useRef(false);
+    const [canSave, setCanSave] = useState(false);
     useLayoutEffect(() => {
         // if (currentUser?.residence) {
         //     setResidence({
@@ -40,26 +55,30 @@ const UserSection = (affiliations, colors) => {
     }, []),
         useEffect(() => {
             if (
-                firstName !== currentUser.firstName ||
-                lastName !== currentUser.lastName ||
-                street !== currentUser.residence.street ||
-                city !== currentUser.residence.city ||
-                stateProv !== currentUser.residence.stateProv ||
-                postalCode !== currentUser.residence.postalCode.toString()
+                firstName !== currentUser?.firstName ||
+                lastName !== currentUser?.lastName ||
+                street !== currentUser?.residence?.street ||
+                city !== currentUser?.residence?.city ||
+                stateProv !== currentUser?.residence?.stateProv ||
+                postalCode !== currentUser?.residence?.postalCode.toString()
             ) {
-                changes.current = true;
-                setOriginals(false);
+                //there is a change is the values, are there errors?
+                if (
+                    firstNameError ||
+                    lastNameError ||
+                    streetError ||
+                    cityError ||
+                    postalCodeError
+                ) {
+                    setCanSave(false);
+                } else {
+                    setCanSave(true);
+                }
             } else {
-                changes.current = false;
-                setOriginals(true);
+                setCanSave(false);
             }
         }, [firstName, lastName, street, city, stateProv, postalCode]);
-    printObject('A:5-->affiliations:', affiliations);
 
-    // const setStateProv = (stateProv) => {
-    //     const newResidence = { ...residence, stateProv: stateProv };
-    //     setResidence(newResidence);
-    // };
     const validateFirstName = (value) => {
         // 2-50 chars, apostrophe with alpha permitted
         const testRegex = /^[a-zA-Z]{2,20}$/;
@@ -80,7 +99,7 @@ const UserSection = (affiliations, colors) => {
     };
     const validateStreet = (value) => {
         // 2-20 chars, apostrophe with alpha permitted
-        const testRegex = /^[a-zA-Z.\- ]{2,20}$/;
+        const testRegex = /^[0-9a-zA-Z.\- ]{2,20}$/;
         if (!testRegex.test(value)) {
             return '2-20 characters';
         } else {
@@ -106,8 +125,96 @@ const UserSection = (affiliations, colors) => {
         }
     };
     const handleSavePress = async () => {
-        console.log('SAVE+SAVE+SAVE');
+        setIsUpdating(true);
+        const DANO = true;
+
+        //update graphQL, if successful, udpate redux
+        try {
+            //check user values
+            if (
+                firstName !== currentUser.firstName ||
+                lastName !== currentUser.lastName
+            ) {
+                //update the user
+                const userUpdate = {
+                    id: currentUser.id,
+                    firstName,
+                    lastName,
+                };
+
+                const userUpdateResults = await updateGQLUser(userUpdate);
+                if (!userUpdateResults?.status) {
+                    console.log('Cannot update profile at this time');
+                    setIsUpdating(false);
+                    return;
+                }
+                if (userUpdateResults.status === 200) {
+                    // gql updated, update redux
+
+                    dispatch(updateCurrentUser(userUpdate));
+                } else {
+                    // non-200 on user update
+                    console.log('Error updating User profile.Try again later.');
+                    console.log({
+                        status: userUpdateResults.status,
+                        data: userUpdateResults.data,
+                    });
+                    setIsUpdating(false);
+
+                    return;
+                }
+                if (
+                    street !== currentUser?.residence?.street ||
+                    city !== currentUser?.residence?.city ||
+                    stateProv !== currentUser?.residence?.stateProv ||
+                    postalCode !== currentUser?.residence?.postalCode.toString()
+                ) {
+                    //update residence
+                    const residenceUpdate = {
+                        id: currentUser.residence.id,
+                        street,
+                        city,
+                        stateProv,
+                        postalCode,
+                    };
+                    const residenceUpdateResults = await updateGQLResidence(
+                        residenceUpdate
+                    );
+                    if (!residenceUpdateResults?.status) {
+                        console.log('Cannot update residence at this time');
+                        setIsUpdating(false);
+                        return;
+                    }
+                    if (residenceUpdateResults.status === 200) {
+                        //residence updated...
+                        dispatch(updateResidence(residenceUpdate));
+                        // console.warn('Residence updated');
+                    } else {
+                        // non-200 on user update
+                        console.log(
+                            'Error updating User residence.Try again later.'
+                        );
+                        console.log({
+                            status: residenceUpdateResults.status,
+                            data: residenceUpdateResults.data,
+                        });
+                        setIsUpdating(false);
+                        return;
+                    }
+                    setIsUpdating(false);
+                }
+            }
+        } catch (error) {
+            window.alert('ERROR trying to update..\n', error);
+        }
+        setCanSave(false);
     };
+    printObject('U:229-->currentUser', currentUser);
+    if (isUpdating) {
+        <View>
+            <ActivityIndicator />
+        </View>;
+    }
     return (
         <>
             <Surface style={styles.affiliateSurfaceContainer}>
@@ -274,7 +381,7 @@ const UserSection = (affiliations, colors) => {
                         )}
                     </View>
                     <View>
-                        {!originals && (
+                        {canSave && (
                             <FAB
                                 icon={() => (
                                     <FontAwesome5
@@ -290,7 +397,7 @@ const UserSection = (affiliations, colors) => {
                                     bottom: 0,
                                     backgroundColor: 'yellow',
                                 }}
-                                //onPress={handleSavePress}
+                                onPress={handleSavePress}
                             />
                         )}
                     </View>

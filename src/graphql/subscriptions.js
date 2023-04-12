@@ -174,6 +174,21 @@ export const onCreateDivision = /* GraphQL */ `
         }
         nextToken
       }
+      memberships {
+        items {
+          id
+          name
+          street
+          city
+          stateProv
+          postalCode
+          createdAt
+          updatedAt
+          divisionMembershipsId
+          userMembershipsId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       organizationDivisionsId
@@ -254,6 +269,21 @@ export const onUpdateDivision = /* GraphQL */ `
           updatedAt
           divisionDefaultUsersId
           residenceResidentsId
+        }
+        nextToken
+      }
+      memberships {
+        items {
+          id
+          name
+          street
+          city
+          stateProv
+          postalCode
+          createdAt
+          updatedAt
+          divisionMembershipsId
+          userMembershipsId
         }
         nextToken
       }
@@ -340,6 +370,21 @@ export const onDeleteDivision = /* GraphQL */ `
         }
         nextToken
       }
+      memberships {
+        items {
+          id
+          name
+          street
+          city
+          stateProv
+          postalCode
+          createdAt
+          updatedAt
+          divisionMembershipsId
+          userMembershipsId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       organizationDivisionsId
@@ -390,6 +435,9 @@ export const onCreateAffiliation = /* GraphQL */ `
         affiliations {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         divisionDefaultUsersId
@@ -421,6 +469,9 @@ export const onCreateAffiliation = /* GraphQL */ `
           nextToken
         }
         defaultUsers {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -478,6 +529,9 @@ export const onUpdateAffiliation = /* GraphQL */ `
         affiliations {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         divisionDefaultUsersId
@@ -509,6 +563,9 @@ export const onUpdateAffiliation = /* GraphQL */ `
           nextToken
         }
         defaultUsers {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -566,6 +623,9 @@ export const onDeleteAffiliation = /* GraphQL */ `
         affiliations {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         divisionDefaultUsersId
@@ -597,6 +657,9 @@ export const onDeleteAffiliation = /* GraphQL */ `
           nextToken
         }
         defaultUsers {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -644,6 +707,9 @@ export const onCreateEvent = /* GraphQL */ `
         defaultUsers {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         organizationDivisionsId
@@ -651,8 +717,22 @@ export const onCreateEvent = /* GraphQL */ `
       registrations {
         items {
           id
+          attendeeId
+          attendeeFirstName
+          attendeeLastName
+          attendeeStreet
+          attendeeCity
+          attendeeStateProv
+          attendeePostalCode
+          attendeeEmail
+          attendeePhone
           attendanceCount
           mealCount
+          membershipName
+          membershipStreet
+          membershipCity
+          membershipStateProv
+          membershipPostalCode
           createdAt
           updatedAt
           eventRegistrationsId
@@ -694,6 +774,9 @@ export const onCreateEvent = /* GraphQL */ `
           nextToken
         }
         affiliations {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -819,6 +902,9 @@ export const onUpdateEvent = /* GraphQL */ `
         defaultUsers {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         organizationDivisionsId
@@ -826,8 +912,22 @@ export const onUpdateEvent = /* GraphQL */ `
       registrations {
         items {
           id
+          attendeeId
+          attendeeFirstName
+          attendeeLastName
+          attendeeStreet
+          attendeeCity
+          attendeeStateProv
+          attendeePostalCode
+          attendeeEmail
+          attendeePhone
           attendanceCount
           mealCount
+          membershipName
+          membershipStreet
+          membershipCity
+          membershipStateProv
+          membershipPostalCode
           createdAt
           updatedAt
           eventRegistrationsId
@@ -869,6 +969,9 @@ export const onUpdateEvent = /* GraphQL */ `
           nextToken
         }
         affiliations {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -994,6 +1097,9 @@ export const onDeleteEvent = /* GraphQL */ `
         defaultUsers {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         organizationDivisionsId
@@ -1001,8 +1107,22 @@ export const onDeleteEvent = /* GraphQL */ `
       registrations {
         items {
           id
+          attendeeId
+          attendeeFirstName
+          attendeeLastName
+          attendeeStreet
+          attendeeCity
+          attendeeStateProv
+          attendeePostalCode
+          attendeeEmail
+          attendeePhone
           attendanceCount
           mealCount
+          membershipName
+          membershipStreet
+          membershipCity
+          membershipStateProv
+          membershipPostalCode
           createdAt
           updatedAt
           eventRegistrationsId
@@ -1044,6 +1164,9 @@ export const onDeleteEvent = /* GraphQL */ `
           nextToken
         }
         affiliations {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -1693,6 +1816,15 @@ export const onCreateRegistration = /* GraphQL */ `
   ) {
     onCreateRegistration(filter: $filter) {
       id
+      attendeeId
+      attendeeFirstName
+      attendeeLastName
+      attendeeStreet
+      attendeeCity
+      attendeeStateProv
+      attendeePostalCode
+      attendeeEmail
+      attendeePhone
       event {
         id
         eventDate
@@ -1777,6 +1909,11 @@ export const onCreateRegistration = /* GraphQL */ `
       }
       attendanceCount
       mealCount
+      membershipName
+      membershipStreet
+      membershipCity
+      membershipStateProv
+      membershipPostalCode
       registrar {
         id
         sub
@@ -1811,6 +1948,9 @@ export const onCreateRegistration = /* GraphQL */ `
           nextToken
         }
         affiliations {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -1831,6 +1971,15 @@ export const onUpdateRegistration = /* GraphQL */ `
   ) {
     onUpdateRegistration(filter: $filter) {
       id
+      attendeeId
+      attendeeFirstName
+      attendeeLastName
+      attendeeStreet
+      attendeeCity
+      attendeeStateProv
+      attendeePostalCode
+      attendeeEmail
+      attendeePhone
       event {
         id
         eventDate
@@ -1915,6 +2064,11 @@ export const onUpdateRegistration = /* GraphQL */ `
       }
       attendanceCount
       mealCount
+      membershipName
+      membershipStreet
+      membershipCity
+      membershipStateProv
+      membershipPostalCode
       registrar {
         id
         sub
@@ -1949,6 +2103,9 @@ export const onUpdateRegistration = /* GraphQL */ `
           nextToken
         }
         affiliations {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -1969,6 +2126,15 @@ export const onDeleteRegistration = /* GraphQL */ `
   ) {
     onDeleteRegistration(filter: $filter) {
       id
+      attendeeId
+      attendeeFirstName
+      attendeeLastName
+      attendeeStreet
+      attendeeCity
+      attendeeStateProv
+      attendeePostalCode
+      attendeeEmail
+      attendeePhone
       event {
         id
         eventDate
@@ -2053,6 +2219,11 @@ export const onDeleteRegistration = /* GraphQL */ `
       }
       attendanceCount
       mealCount
+      membershipName
+      membershipStreet
+      membershipCity
+      membershipStateProv
+      membershipPostalCode
       registrar {
         id
         sub
@@ -2087,6 +2258,9 @@ export const onDeleteRegistration = /* GraphQL */ `
           nextToken
         }
         affiliations {
+          nextToken
+        }
+        memberships {
           nextToken
         }
         createdAt
@@ -2238,6 +2412,9 @@ export const onCreateUser = /* GraphQL */ `
         defaultUsers {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         organizationDivisionsId
@@ -2284,8 +2461,22 @@ export const onCreateUser = /* GraphQL */ `
       registrations {
         items {
           id
+          attendeeId
+          attendeeFirstName
+          attendeeLastName
+          attendeeStreet
+          attendeeCity
+          attendeeStateProv
+          attendeePostalCode
+          attendeeEmail
+          attendeePhone
           attendanceCount
           mealCount
+          membershipName
+          membershipStreet
+          membershipCity
+          membershipStateProv
+          membershipPostalCode
           createdAt
           updatedAt
           eventRegistrationsId
@@ -2302,6 +2493,21 @@ export const onCreateUser = /* GraphQL */ `
           updatedAt
           divisionAffiliationsId
           userAffiliationsId
+        }
+        nextToken
+      }
+      memberships {
+        items {
+          id
+          name
+          street
+          city
+          stateProv
+          postalCode
+          createdAt
+          updatedAt
+          divisionMembershipsId
+          userMembershipsId
         }
         nextToken
       }
@@ -2350,6 +2556,9 @@ export const onUpdateUser = /* GraphQL */ `
         defaultUsers {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         organizationDivisionsId
@@ -2396,8 +2605,22 @@ export const onUpdateUser = /* GraphQL */ `
       registrations {
         items {
           id
+          attendeeId
+          attendeeFirstName
+          attendeeLastName
+          attendeeStreet
+          attendeeCity
+          attendeeStateProv
+          attendeePostalCode
+          attendeeEmail
+          attendeePhone
           attendanceCount
           mealCount
+          membershipName
+          membershipStreet
+          membershipCity
+          membershipStateProv
+          membershipPostalCode
           createdAt
           updatedAt
           eventRegistrationsId
@@ -2414,6 +2637,21 @@ export const onUpdateUser = /* GraphQL */ `
           updatedAt
           divisionAffiliationsId
           userAffiliationsId
+        }
+        nextToken
+      }
+      memberships {
+        items {
+          id
+          name
+          street
+          city
+          stateProv
+          postalCode
+          createdAt
+          updatedAt
+          divisionMembershipsId
+          userMembershipsId
         }
         nextToken
       }
@@ -2462,6 +2700,9 @@ export const onDeleteUser = /* GraphQL */ `
         defaultUsers {
           nextToken
         }
+        memberships {
+          nextToken
+        }
         createdAt
         updatedAt
         organizationDivisionsId
@@ -2508,8 +2749,22 @@ export const onDeleteUser = /* GraphQL */ `
       registrations {
         items {
           id
+          attendeeId
+          attendeeFirstName
+          attendeeLastName
+          attendeeStreet
+          attendeeCity
+          attendeeStateProv
+          attendeePostalCode
+          attendeeEmail
+          attendeePhone
           attendanceCount
           mealCount
+          membershipName
+          membershipStreet
+          membershipCity
+          membershipStateProv
+          membershipPostalCode
           createdAt
           updatedAt
           eventRegistrationsId
@@ -2529,10 +2784,316 @@ export const onDeleteUser = /* GraphQL */ `
         }
         nextToken
       }
+      memberships {
+        items {
+          id
+          name
+          street
+          city
+          stateProv
+          postalCode
+          createdAt
+          updatedAt
+          divisionMembershipsId
+          userMembershipsId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       divisionDefaultUsersId
       residenceResidentsId
+    }
+  }
+`;
+export const onCreateMembership = /* GraphQL */ `
+  subscription OnCreateMembership(
+    $filter: ModelSubscriptionMembershipFilterInput
+  ) {
+    onCreateMembership(filter: $filter) {
+      id
+      name
+      street
+      city
+      stateProv
+      postalCode
+      member {
+        id
+        sub
+        username
+        firstName
+        lastName
+        email
+        phone
+        defaultDivision {
+          id
+          code
+          divCompKey
+          createdAt
+          updatedAt
+          organizationDivisionsId
+        }
+        residence {
+          id
+          street
+          city
+          stateProv
+          postalCode
+          latitude
+          longitude
+          createdAt
+          updatedAt
+        }
+        events {
+          nextToken
+        }
+        registrations {
+          nextToken
+        }
+        affiliations {
+          nextToken
+        }
+        memberships {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        divisionDefaultUsersId
+        residenceResidentsId
+      }
+      division {
+        id
+        code
+        divCompKey
+        organization {
+          id
+          appName
+          available
+          category
+          code
+          description
+          exposure
+          label
+          name
+          title
+          value
+          createdAt
+          updatedAt
+        }
+        events {
+          nextToken
+        }
+        affiliations {
+          nextToken
+        }
+        defaultUsers {
+          nextToken
+        }
+        memberships {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        organizationDivisionsId
+      }
+      createdAt
+      updatedAt
+      divisionMembershipsId
+      userMembershipsId
+    }
+  }
+`;
+export const onUpdateMembership = /* GraphQL */ `
+  subscription OnUpdateMembership(
+    $filter: ModelSubscriptionMembershipFilterInput
+  ) {
+    onUpdateMembership(filter: $filter) {
+      id
+      name
+      street
+      city
+      stateProv
+      postalCode
+      member {
+        id
+        sub
+        username
+        firstName
+        lastName
+        email
+        phone
+        defaultDivision {
+          id
+          code
+          divCompKey
+          createdAt
+          updatedAt
+          organizationDivisionsId
+        }
+        residence {
+          id
+          street
+          city
+          stateProv
+          postalCode
+          latitude
+          longitude
+          createdAt
+          updatedAt
+        }
+        events {
+          nextToken
+        }
+        registrations {
+          nextToken
+        }
+        affiliations {
+          nextToken
+        }
+        memberships {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        divisionDefaultUsersId
+        residenceResidentsId
+      }
+      division {
+        id
+        code
+        divCompKey
+        organization {
+          id
+          appName
+          available
+          category
+          code
+          description
+          exposure
+          label
+          name
+          title
+          value
+          createdAt
+          updatedAt
+        }
+        events {
+          nextToken
+        }
+        affiliations {
+          nextToken
+        }
+        defaultUsers {
+          nextToken
+        }
+        memberships {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        organizationDivisionsId
+      }
+      createdAt
+      updatedAt
+      divisionMembershipsId
+      userMembershipsId
+    }
+  }
+`;
+export const onDeleteMembership = /* GraphQL */ `
+  subscription OnDeleteMembership(
+    $filter: ModelSubscriptionMembershipFilterInput
+  ) {
+    onDeleteMembership(filter: $filter) {
+      id
+      name
+      street
+      city
+      stateProv
+      postalCode
+      member {
+        id
+        sub
+        username
+        firstName
+        lastName
+        email
+        phone
+        defaultDivision {
+          id
+          code
+          divCompKey
+          createdAt
+          updatedAt
+          organizationDivisionsId
+        }
+        residence {
+          id
+          street
+          city
+          stateProv
+          postalCode
+          latitude
+          longitude
+          createdAt
+          updatedAt
+        }
+        events {
+          nextToken
+        }
+        registrations {
+          nextToken
+        }
+        affiliations {
+          nextToken
+        }
+        memberships {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        divisionDefaultUsersId
+        residenceResidentsId
+      }
+      division {
+        id
+        code
+        divCompKey
+        organization {
+          id
+          appName
+          available
+          category
+          code
+          description
+          exposure
+          label
+          name
+          title
+          value
+          createdAt
+          updatedAt
+        }
+        events {
+          nextToken
+        }
+        affiliations {
+          nextToken
+        }
+        defaultUsers {
+          nextToken
+        }
+        memberships {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        organizationDivisionsId
+      }
+      createdAt
+      updatedAt
+      divisionMembershipsId
+      userMembershipsId
     }
   }
 `;

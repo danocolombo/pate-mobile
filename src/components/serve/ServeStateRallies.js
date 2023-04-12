@@ -14,12 +14,9 @@ const ServeMyRallies = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const [displayData, setDisplayData] = useState([]);
-    let me = useSelector((state) => state.users.currentUser);
-    const stateName = StateProvs.map((s) => {
-        if (s.symbol === me.residence.stateProv) {
-            return s.name;
-        }
-    });
+    let currentUser = useSelector((state) => state.users.currentUser);
+    const [stateName, setStateName] = useState(null);
+
     let feo = useSelector((state) => state.division);
     let rallies = useSelector((state) => state.division.gatherings);
 
@@ -27,6 +24,14 @@ const ServeMyRallies = () => {
         printObject('event', e);
     };
     useLayoutEffect(() => {
+        const stateName = StateProvs.map((s) => {
+            if (s.symbol === currentUser?.residence?.stateProv) {
+                return s.name;
+            }
+        });
+        if (stateName !== null) {
+            setStateName(stateName);
+        }
         const sortAndLoadEvents = async () => {
             if (rallies.length > 1) {
                 const sortedRallies = [...rallies].sort((a, b) => {

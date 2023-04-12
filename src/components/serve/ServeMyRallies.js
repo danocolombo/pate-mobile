@@ -197,18 +197,18 @@ const ServeMyRallies = () => {
                     </Surface>
                 )}
                 <View>
-                    {displayData.map((ral) => (
-                        <View key={ral.uid} style={{ margin: 10 }}>
+                    {displayData.map((ral, index) => (
+                        <View key={index} style={{ margin: 10 }}>
                             <Pressable
                                 onPress={() =>
                                     navigation.navigate('RallyInfo', {
                                         rallyId: ral.uid,
                                     })
                                 }
-                                key={ral.uid}
+                                key={index}
                             >
                                 <EventListCard
-                                    key={ral.uid}
+                                    key={index}
                                     // rallyId={ral.uid}
                                     rally={ral}
                                     deletePress={handleDeleteRequest}

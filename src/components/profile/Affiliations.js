@@ -38,6 +38,8 @@ const Affiliations = () => {
     );
     const [showDefaultChangedModal, setShowDefaultChangedModal] =
         useState(false);
+    const [showAffiliationSwitchModal, setShowAffiliationSwitchModal] =
+        useState(false);
     const [showAffiliationChangedModal, setShowAffiliationChangedModal] =
         useState(false);
     // printObject('A:5-->affiliations:', affiliations);
@@ -130,6 +132,7 @@ const Affiliations = () => {
                     error
                 );
             }
+            setShowAffiliationSwitchModal(true);
         };
         getDivisionalEvents();
         return;
@@ -196,6 +199,44 @@ const Affiliations = () => {
                                     txtColor='white'
                                     onPress={() =>
                                         setShowDefaultChangedModal(false)
+                                    }
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Surface>
+            </Modal>
+            <Modal visible={showAffiliationSwitchModal} animationStyle='slide'>
+                <Surface style={styles.modalSurface}>
+                    <View>
+                        <View style={{ marginTop: 5, alignItems: 'center' }}>
+                            <Text style={styles.modalTitle}>
+                                Affiliation Changed
+                            </Text>
+                        </View>
+                        <View style={styles.modalInfoWrapper}>
+                            <Text style={styles.modalText}>
+                                Your application is now pointing to{' '}
+                            </Text>
+                            <Text style={styles.modalAffiliationDescription}>
+                                {
+                                    currentUser?.affiliations?.active
+                                        ?.organizationDescription
+                                }
+                            </Text>
+                        </View>
+                        <View style={styles.modalButtonContainer}>
+                            <View style={styles.modalButton}>
+                                <CustomButton
+                                    title='Dismiss'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: Colors.gray35,
+                                        color: 'black',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() =>
+                                        setShowAffiliationSwitchModal(false)
                                     }
                                 />
                             </View>
@@ -408,10 +449,18 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         width: '100%',
     },
+    modalAffiliationDescription: {
+        fontSize: 20,
+        textAlign: 'center',
+        fontWeight: 'bold',
+        color: Colors.primary,
+    },
     modalText: {
         fontSize: 24,
         textAlign: 'center',
         letterSpacing: 0.7,
+        marginHorizontal: 10,
+        marginVertical: 5,
     },
     modalButtonContainer: {
         marginVertical: 20,
