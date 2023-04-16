@@ -108,6 +108,9 @@ const Membership = () => {
             // return;
             setCanSave(false);
         }
+        if (membershipName.length < 1) {
+            setCanSave(false);
+        }
     }, [
         membershipName,
         membershipStreet,
@@ -166,11 +169,25 @@ const Membership = () => {
     };
 
     const handleSavePress = async () => {
+        printObject('BEFORE MAKING UPDATE/INSERT\n', currentUser);
         setIsUpdating(true);
         let membershipUpdate = {};
         //*  1. check if we have membershipId
         if (currentUser?.memberships?.items?.length !== 0) {
-            membershipUpdate = { ...membershipUpdate, id: membershipId };
+            // see if there is a entry for the current division
+            const thisMembership = currentUser.memberships.items.find((m) => {
+                return (
+                    m.division.id === currentUser.affiliations.active.divisionId
+                );
+            });
+            if (thisMembership) {
+                membershipUpdate = {
+                    ...membershipUpdate,
+                    id: thisMembership.id,
+                };
+            } else {
+                membershipUpdate = { ...membershipUpdate, id: 0 };
+            }
         }
         //*  2. check other values
         if (membershipName !== savedMembershipName) {
@@ -253,15 +270,26 @@ const Membership = () => {
             //* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         };
         let userMembershipResults = {};
-        if (currentUser?.memberships?.items?.length === 0) {
+        if (membershipUpdate.id === 0) {
             //      new membership entry
             //      add userMembershipId & divisionMembershipsId & stateProv
-            membershipUpdate.userMembershipsId = currentUser.id;
+            delete membershipUpdate.id;
             membershipUpdate.divisionMembershipsId =
                 currentUser.affiliations.active.divisionId;
-            membershipUpdate.stateProv = membershipStateProv;
+            membershipUpdate.userMembershipsId = currentUser.id;
+            // if no stateProv, use currentUser residence stateProv or default to GA
+            if (!membershipUpdate?.stateProv) {
+                membershipUpdate.stateProv =
+                    currentUser?.residence?.stateProv || 'AL';
+            }
+            // printObject('READY TO INSERT\n', membershipUpdate);
+
             userMembershipResults = await createGQLMembership(membershipUpdate);
             if (userMembershipResults.status === 200) {
+                printObject(
+                    'M:289-->userMembershipResults:\n',
+                    userMembershipResults
+                );
                 await updateReduxMembership(userMembershipResults.data);
             } else {
                 //      GQL create fail, notify & exit

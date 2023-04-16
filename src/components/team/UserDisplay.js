@@ -156,7 +156,7 @@ const UserDisplay = ({ profile }) => {
             </Modal>
             <Modal visible={showMoreDetail} animationStyle='slide'>
                 <UserDisplayDetailsModal
-                    user={profile}
+                    profile={profile}
                     handleDismiss={handleDismiss}
                 />
             </Modal>

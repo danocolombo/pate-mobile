@@ -1785,6 +1785,19 @@ export const getDivisionAffiliations = /* GraphQL */ `
                             stateProv
                             postalCode
                         }
+                        memberships(
+                            filter: { divisionMembershipsId: { eq: $divId } }
+                        ) {
+                            items {
+                                id
+                                name
+                                street
+                                city
+                                stateProv
+                                postalCode
+                                divisionMembershipsId
+                            }
+                        }
                     }
                 }
             }

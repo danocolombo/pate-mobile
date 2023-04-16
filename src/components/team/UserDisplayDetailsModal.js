@@ -1,3 +1,5 @@
+import ModalResidence from './ModalResidence';
+import ModalMembership from './ModalMembership';
 import { StyleSheet, Text, View, Linking } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
@@ -6,6 +8,7 @@ import CustomButton from '../ui/CustomButton';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from '../../constants/colors';
 import { printObject, transformPatePhone } from '../../utils/helpers';
+import { styles } from './styles';
 const UserDisplayDetailsModal = ({ profile, handleDismiss }) => {
     printObject('UDDM:9-->profile', profile);
     return (
@@ -13,54 +16,33 @@ const UserDisplayDetailsModal = ({ profile, handleDismiss }) => {
             <View style={styles.modalTitleWrapper}>
                 <Text style={styles.modalTitle}>User Details</Text>
             </View>
-            <View style={styles.modalProfileDetailsWrapper}>
-                <View style={styles.modalProfileDetailsRow}>
-                    <View style={styles.modalProfileDetailsTopic}>
-                        <Text style={styles.modalProfileDetailsTopic}>ID:</Text>
-                    </View>
-                    <View style={styles.modalProfileDetailsTopicTextWrapper}>
-                        <Text
-                            style={
-                                (styles.modalProfileDetailsTopicText,
-                                { fontSize: 14 })
-                            }
-                        >
-                            {profile?.user?.id}
-                        </Text>
+            <View style={styles.modalDataContainer}>
+                <View style={styles.modalTeamRow}>
+                    <View
+                        style={[
+                            styles.modalDataContainer,
+                            { marginBottom: 10 },
+                        ]}
+                    >
+                        <View style={styles.modalTeamRow}>
+                            <Text style={styles.modalDataText}>ID:</Text>
+                            <Text style={styles.modalDataTextSmall}>
+                                {profile?.user?.id}
+                            </Text>
+                        </View>
                     </View>
                 </View>
-
-                <View style={styles.modalProfileDetailsRow}>
-                    <View style={styles.modalProfileDetailsTopic}>
-                        <Text style={styles.modalProfileDetailsTopic}>
-                            name:
-                        </Text>
-                    </View>
-                    <View style={styles.modalProfileDetailsTopicTextWrapper}>
-                        <Text style={styles.modalProfileDetailsTopicText}>
+                <View style={styles.modalTeamRow}>
+                    <View style={styles.modalDataContainer}>
+                        <Text style={styles.modalUserName}>
                             {profile?.user?.firstName} {profile?.user?.lastName}
                         </Text>
                     </View>
                 </View>
-                <View style={styles.modalProfileDetailsRow}>
-                    <View style={styles.modalProfileDetailsTopic}>
-                        <Text style={styles.modalProfileDetailsTopic}>
-                            Email:
-                        </Text>
-                    </View>
-                    <View style={styles.modalProfileDetailsTopicTextWrapper}>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <Text
-                                style={
-                                    (styles.modalProfileDetailsTopicText,
-                                    { paddingRight: 10 })
-                                }
-                            >
+                <View style={styles.modalTeamRow}>
+                    <View style={styles.modalDataContainer}>
+                        <View style={styles.modalTeamRow}>
+                            <Text style={styles.modalDataText}>
                                 {profile?.user?.email}
                             </Text>
 
@@ -73,116 +55,44 @@ const UserDisplayDetailsModal = ({ profile, handleDismiss }) => {
                         </View>
                     </View>
                 </View>
-                <View style={styles.modalProfileDetailsRow}>
-                    <View style={styles.modalProfileDetailsTopic}>
-                        <Text style={styles.modalProfileDetailsTopic}>
-                            Phone:
-                        </Text>
+                <View style={styles.modalTeamRow}>
+                    <View style={styles.modalDataContainer}>
+                        <Text style={styles.modalDataText}>Phone:</Text>
                     </View>
-                    <View style={styles.modalProfileDetailsTopicTextWrapper}>
-                        <Text style={styles.modalProfileDetailsTopicText}>
+                    <View style={styles.modalDataText}>
+                        <Text style={styles.modalDataText}>
                             {transformPatePhone(profile?.user?.phone)}
                         </Text>
                     </View>
                 </View>
-                <View style={styles.modalProfileDetailsRow}>
+                {profile?.user?.residence && (
+                    <View style={[styles.modalTeamRow, { marginTop: 5 }]}>
+                        <ModalResidence profile={profile} />
+                    </View>
+                )}
+                <View style={styles.modalTeamRow}>
+                    <View style={styles.modalDataContainer}>
+                        <Text style={styles.modalSectionHeader}>
+                            Membership:
+                        </Text>
+                    </View>
+                </View>
+                {profile?.user?.memberships.items.length > 0 && (
+                    <ModalMembership profile={profile} />
+                )}
+
+                <View style={styles.modalTeamRow}>
                     <View
-                        style={
-                            (styles.modalProfileDetailsTopic,
-                            { marginLeft: 20 })
-                        }
+                        style={[
+                            styles.modalDataContainer,
+                            { marginVertical: 10 },
+                        ]}
                     >
-                        <Text style={styles.modalProfileDetailsTopicText}>
-                            {'TBD' || user.affiliate.name}
+                        <Text style={styles.modalDataTextLargeBold}>
+                            ROLE: {profile?.role.toUpperCase()}
                         </Text>
-                    </View>
-                </View>
-                <View style={styles.modalProfileDetailsRow}>
-                    <View
-                        style={
-                            (styles.modalProfileDetailsTopic,
-                            { marginLeft: 20 })
-                        }
-                    >
-                        <Text style={styles.modalProfileDetailsTopicText}>
-                            {'TBD' || profile?.user?.affiliate?.city},{' '}
-                            {'TBD' || profile?.user?.affiliate?.stateProv}
-                        </Text>
-                    </View>
-                </View>
-                <View style={styles.modalProfileDetailsRow}>
-                    <View
-                        style={
-                            (styles.modalProfileDetailsTopic, { marginTop: 5 })
-                        }
-                    >
-                        <Text
-                            style={
-                                (styles.modalProfileDetailsTopic,
-                                { fontWeight: '500', fontSize: 18 })
-                            }
-                        >
-                            Active Affiliations:
-                        </Text>
-                    </View>
-                </View>
-                <View style={styles.modalProfileDetailsRow}>
-                    <View
-                        style={
-                            (styles.modalProfileDetailsTopic,
-                            { marginLeft: 20 })
-                        }
-                    >
-                        <Text style={styles.modalProfileDetailsTopicText}>
-                            VALUE:{profile?.user?.affiliations?.active?.value}
-                        </Text>
-                    </View>
-                </View>
-                <View style={styles.modalProfileDetailsRow}>
-                    <View
-                        style={
-                            (styles.modalProfileDetailsTopic,
-                            { marginLeft: 20 })
-                        }
-                    >
-                        <Text style={styles.modalProfileDetailsTopicText}>
-                            LABEL:{profile?.user?.affiliations?.active?.label}
-                        </Text>
-                    </View>
-                </View>
-                <View style={styles.modalProfileDetailsRow}>
-                    <View
-                        style={
-                            (styles.modalProfileDetailsTopic,
-                            { marginLeft: 20 })
-                        }
-                    >
-                        <Text style={styles.modalProfileDetailsTopicText}>
-                            ROLE:{profile?.user?.affiliations?.active?.role}
-                        </Text>
-                    </View>
-                </View>
-                <View style={styles.modalProfileDetailsRow}>
-                    <View style={styles.modalProfileDetailsTopic}>
-                        <Text style={styles.modalProfileDetailsTopic}>
-                            Region:
-                        </Text>
-                    </View>
-                    <View style={styles.modalProfileDetailsTopicTextWrapper}>
-                        <Text style={styles.modalProfileDetailsTopicText}>
-                            {profile?.user?.region}
-                        </Text>
-                    </View>
-                </View>
-                <View style={styles.modalProfileDetailsRow}>
-                    <View style={styles.modalProfileDetailsTopic}>
-                        <Text style={styles.modalProfileDetailsTopic}>
-                            Role:
-                        </Text>
-                    </View>
-                    <View style={styles.modalProfileDetailsTopicTextWrapper}>
-                        <Text style={styles.modalProfileDetailsTopicText}>
-                            {profile?.user?.affiliations?.active?.role}
+                        <Text style={styles.modalDataTextLargeBold}>
+                            STATUS: {profile?.status.toUpperCase()}
                         </Text>
                     </View>
                 </View>
@@ -206,40 +116,3 @@ const UserDisplayDetailsModal = ({ profile, handleDismiss }) => {
 };
 
 export default UserDisplayDetailsModal;
-
-const styles = StyleSheet.create({
-    modalSurface: {
-        marginTop: 80,
-        marginHorizontal: 0,
-        elevation: 5,
-    },
-    modalTitleWrapper: {
-        alignItems: 'center',
-    },
-    modalTitle: {
-        marginTop: 15,
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-    modalProfileDetailsWrapper: {
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        marginLeft: 20,
-    },
-    modalProfileDetailsRow: { flexDirection: 'row', alignItems: 'center' },
-    modalProfileDetailsTopicWrapper: {},
-    modalProfileDetailsTopic: {
-        fontSize: 18,
-        fontWeight: '400',
-        letterSpacing: 0.7,
-    },
-    modalProfileDetailsTopicTextWrapper: { padding: 5 },
-    modalProfileDetailsTopicText: {
-        fontSize: 16,
-    },
-    modalButtonWrapper: {
-        marginHorizontal: 10,
-        marginVertical: 25,
-        alignItems: 'center',
-    },
-});
