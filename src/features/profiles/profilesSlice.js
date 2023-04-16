@@ -1,106 +1,53 @@
 import { createAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { printObject } from '../../utils/helpers';
+import { printObject, getToday } from '../../utils/helpers';
+import { getPateDate } from '../../utils/date';
+import { getDivisionProfiles } from '../../providers/profiles.provider';
+//   this is url for all meetings
 
 const initialState = {
-    allProfiles: [],
-    leaders: [],
+    actives: [],
+    team: [],
     guests: [],
+    nonActives: [],
+    profileCount: 0,
     isLoading: false,
 };
-export const getProfiles = createAsyncThunk(
-    'rallies/getProfiles',
-    async (affiliateCode, thunkAPI) => {
-        try {
-            console.log('trying...');
-            console.log('affiliate:', affiliateCode);
-            return affiliateCode;
-        } catch (error) {
-            return thunkAPI.rejectWithValue(
-                'PS:16-->>> something went wrong in createAsyncThunk'
-            );
-        }
-    }
-);
+
 export const profilesSlice = createSlice({
     name: 'profiles',
     initialState,
     reducers: {
-        loadProfiles: (state, action) => {
-            // state.publicRallies = action.payload;
-            state.allProfiles = action.payload;
-            return state;
-        },
-        updateProfile: (state, action) => {
-            const updates = state.allProfiles.map((pro) => {
-                if (pro.uid === action.payload.uid) {
-                    return action.payload;
-                } else {
-                    return pro;
-                }
-            });
-            state.allProfiles = updates;
-            return state;
-        },
-        updateAndMoveProfile: (state, action) => {
-            // printObject('action', action);
-            if (action.payload.target === 'rep') {
-                const reducedGuests = state.guests.filter(
-                    (g) => g.uid !== action.payload.newProfile.uid
-                );
-                state.guests = reducedGuests;
-                const before = state.leaders;
-                const newProfile = action.payload.newProfile;
-                before.push(newProfile);
-                state.leaders = before;
-            } else {
-                const reducedLeaders = state.leaders.filter(
-                    (l) => l.uid !== action.payload.newProfile.uid
-                );
-                state.leaders = reducedLeaders;
-
-                const before = state.guests;
-                const newProfile = action.payload.newProfile;
-                before.push(newProfile);
-                state.guests = before;
-            }
-        },
-        loadLeaders: (state, action) => {
-            state.leaders = action.payload;
-            return state;
-        },
-        loadGuests: (state, action) => {
-            state.guests = action.payload;
-            return state;
-        },
-        clearLeadersAndGuests: (state) => {
-            state.leaders = [];
+        clearProfiles: (state) => {
+            state.actives = [];
+            state.team = [];
             state.guests = [];
+            state.nonActives = [];
+            state.count = 0;
+            state.isLoading = false;
         },
         logout: (state) => {
-            state.allProfiles = [];
-            state.leaders = [];
+            state.actives = [];
+            state.team = [];
             state.guests = [];
-            return state;
+            state.nonActives = [];
+            state.count = 0;
+            state.isLoading = false;
         },
     },
     extraReducers: {
-        [getProfiles.pending]: (state) => {
+        [getDivisionProfiles.pending]: (state) => {
             state.isLoading = true;
         },
-        [getProfiles.fulfilled]: (state, action) => {
-            // console.log(action);
-            // printObject('RS:70-->results...affiliate:', action);
+        [getDivisionProfiles.fulfilled]: (state, action) => {
+            console.log(action);
             state.isLoading = false;
-            // printObject('RS:223--> action', action);
-            // state.displayRallies = state.allRallies.filter(
-            //     (r) =>
-            //         r.eventDate >= action.payload &&
-            //         r.eventRegion === 'test' &&
-            //         r.approved === true
-            // );
+            state.actives = action.payload?.actives || [];
+            state.team = action.payload?.team || [];
+            state.guests = action.payload?.guests || [];
+            state.nonActives = action.payload?.nonActives || [];
         },
-        [getProfiles.rejected]: (state, action) => {
+        [getDivisionProfiles.rejected]: (state, action) => {
             console.log(action);
             state.isLoading = false;
         },
@@ -108,14 +55,6 @@ export const profilesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const {
-    clearLeadersAndGuests,
-    loadGuests,
-    loadLeaders,
-    loadProfiles,
-    updateProfile,
-    updateAndMoveProfile,
-    logout,
-} = profilesSlice.actions;
+export const { clearProfiles, logout } = profilesSlice.actions;
 
 export default profilesSlice.reducer;

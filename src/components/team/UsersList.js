@@ -39,14 +39,14 @@ const UsersList = (props) => {
                         ? profiles.map((p) => {
                               return (
                                   <View
-                                      key={p.uid}
+                                      key={p.id}
                                       style={{
                                           width: '100%',
                                           marginLeft: '20%',
                                       }}
                                   >
                                       <TouchableOpacity
-                                          key={p.uid}
+                                          key={p.id}
                                           onPress={() =>
                                               navigation.navigate(
                                                   'UserPermissionsSet',
@@ -59,7 +59,7 @@ const UsersList = (props) => {
                                               pressed && styles.pressed
                                           }
                                       >
-                                          <UserCard user={p} key={p.uid} />
+                                          <UserCard user={p} key={p.id} />
                                       </TouchableOpacity>
                                   </View>
                               );

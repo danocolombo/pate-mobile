@@ -18,8 +18,14 @@ import { printObject } from '../../utils/helpers';
 
 const Members = (props) => {
     const [isLoading, setIsLoading] = useState(true);
-    const leaders = useSelector((state) => state.profiles.leaders);
-    const guests = useSelector((state) => state.profiles.guests);
+    const { actives, team, guests, nonActives } = useSelector(
+        (state) => state.profiles
+    );
+    printObject('M:24-->actives:\n', actives);
+    printObject('M:24-->team:\n', team);
+    printObject('M:24-->guests:\n', guests);
+    printObject('M:24-->nonActives:\n', nonActives);
+
     if (isLoading) {
         <View>
             <ActivityIndicator />
@@ -29,9 +35,9 @@ const Members = (props) => {
         <View style={{ flex: 1 }}>
             <ScrollView style={{ marginBottom: 10 }}>
                 <UsersList
-                    data={leaders}
+                    data={team}
                     key={1}
-                    title='LEADERS'
+                    title='TEAM'
                     customStyle={{
                         backgroundColor: Colors.primary,
                         borderTopStartRadius: 20,
@@ -43,7 +49,7 @@ const Members = (props) => {
                 <UsersList
                     data={guests}
                     key={2}
-                    title='USERS'
+                    title='GUESTS'
                     customStyle={{
                         backgroundColor: Colors.secondary,
                         borderBottomStartRadius: 20,

@@ -24,11 +24,7 @@ import {
     getDivisionInfo,
     loadDivisionInfo,
 } from '../../../features/division/divisionSlice';
-import { getProfile } from '../../../providers/users';
-import { getGQLProfile } from '../../../providers/profile.provider';
-import { getAffiliate } from '../../../providers/system';
-import { loadRallies } from '../../../features/rallies/ralliesSlice';
-import { loadRegistrations } from '../../../features/users/usersSlice';
+
 import {
     updateAppName,
     setRegion,

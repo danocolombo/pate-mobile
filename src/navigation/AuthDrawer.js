@@ -24,7 +24,8 @@ const AuthDrawer = (navigation) => {
     if (
         user?.affiliations?.active?.role === 'lead' ||
         user?.affiliations?.active?.role === 'director' ||
-        user?.affiliations?.active?.role === 'superuser'
+        user?.affiliations?.active?.role === 'superuser' ||
+        user?.affiliations?.active?.role === 'guru'
     ) {
         manager = true;
     }
@@ -33,6 +34,7 @@ const AuthDrawer = (navigation) => {
         user?.affiliations?.active?.role === 'rep' ||
         user?.affiliations?.active?.role === 'lead' ||
         user?.affiliations?.active?.role === 'director' ||
+        user?.affiliations?.active?.role === 'guru' ||
         user?.affiliations?.active?.role === 'superuser'
     ) {
         patron = true;

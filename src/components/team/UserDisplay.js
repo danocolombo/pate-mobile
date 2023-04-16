@@ -34,22 +34,20 @@ const UserDisplay = ({ profile }) => {
         // need to check to see if user has adequate profile, if not
         // we will prompt to request updates.
         if (
-            !profile?.residence?.city ||
-            !profile?.residence?.stateProv ||
-            !profile?.phone
+            !profile?.user?.residence?.city ||
+            !profile?.user?.residence?.stateProv ||
+            !profile?.user?.phone
         ) {
             setShowCompletionModal(true);
         }
         let role = null;
-        const ref = profile.affiliations.options.filter(
-            (o) => o.value === feo.affiliation
-        );
-        role = ref[0].role;
-        if (role === 'rep') {
-            role = 'leader';
-        }
-        console.log('ROLE:', role);
-        setUserStatus(role);
+
+        // if (profile?.role === 'rep') {
+        //     profile.role = 'leader';
+
+        // }
+        console.log('ROLE:', profile?.role);
+        setUserStatus(profile?.role);
     }, []);
     const handleDismiss = () => {
         setShowMoreDetail(false);
@@ -180,35 +178,36 @@ const UserDisplay = ({ profile }) => {
                 </View>
                 <View>
                     <Text style={styles.userName}>
-                        {profile.firstName} {profile.lastName}
+                        {profile?.user?.firstName} {profile?.user?.lastName}
                     </Text>
                 </View>
                 <View>
                     <Text style={styles.userResidence}>
-                        {profile?.residence?.street}
+                        {profile?.user?.residence?.street}
                     </Text>
                 </View>
-                {profile?.residence?.city && profile?.residence?.stateProv && (
-                    <View>
-                        <Text style={styles.userResidence}>
-                            {profile.residence.city},{' '}
-                            {profile?.residence?.stateProv}
-                            {'  '}
-                            {profile.residence.postalCode}
-                        </Text>
-                    </View>
-                )}
+                {profile?.user?.residence?.city &&
+                    profile?.user?.residence?.stateProv && (
+                        <View>
+                            <Text style={styles.userResidence}>
+                                {profile?.user?.residence?.city},{' '}
+                                {profile?.user?.residence?.stateProv}
+                                {'  '}
+                                {profile?.user?.residence?.postalCode}
+                            </Text>
+                        </View>
+                    )}
                 {profile?.phone && (
                     <View>
                         <Text style={styles.userPhone}>
-                            {profile?.phone
-                                ? transformPatePhone(profile.phone)
+                            {profile?.user?.phone
+                                ? transformPatePhone(profile?.user?.phone)
                                 : null}
                         </Text>
                     </View>
                 )}
                 <View>
-                    <Text style={styles.userEmail}>{profile.email}</Text>
+                    <Text style={styles.userEmail}>{profile?.user?.email}</Text>
                 </View>
             </Surface>
             <Surface style={styles.manageWrapper}>

@@ -1764,6 +1764,33 @@ export const getAllDivisionEvents = /* GraphQL */ `
         }
     }
 `;
+export const getDivisionAffiliations = /* GraphQL */ `
+    query MyQuery($divId: ID!) {
+        getDivision(id: $divId) {
+            id
+            affiliations {
+                items {
+                    id
+                    role
+                    status
+                    user {
+                        id
+                        firstName
+                        lastName
+                        email
+                        phone
+                        residence {
+                            street
+                            city
+                            stateProv
+                            postalCode
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
 export const getProfileBySub = /* GraphQL */ `
     query MyQuery($id: String) {
         listUsers(filter: { sub: { eq: $id } }) {

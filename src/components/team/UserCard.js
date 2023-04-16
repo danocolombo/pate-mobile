@@ -3,18 +3,18 @@ import React from 'react';
 import { printObject } from '../../utils/helpers';
 
 const UserCard = (props) => {
-    const user = props.user;
-    // printObject('UC:07-->user', user);
+    const profile = props.user;
     return (
         <View style={styles.userWrapper}>
             <View>
                 <Text style={[styles.userText, styles.userName]}>
-                    {user.firstName} {user.lastName}
+                    {profile?.user?.firstName} {profile?.user?.lastName}
                 </Text>
             </View>
             <View>
                 <Text style={[styles.userText, styles.userLocation]}>
-                    {user?.residence?.city} {user?.residence?.stateProv}
+                    {profile?.user?.residence?.city}{' '}
+                    {profile?.user?.residence?.stateProv}
                 </Text>
             </View>
         </View>

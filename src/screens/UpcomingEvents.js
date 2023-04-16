@@ -52,7 +52,7 @@ export default function UpcomingEventsScreen(props) {
     if (isLoading) {
         return <ActivityIndicator />;
     }
-    printObject('rallyCOUNT------->', allRallies.count);
+
     return (
         <ImageBackground
             source={require('../components/images/background.png')}

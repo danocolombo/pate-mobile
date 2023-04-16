@@ -6,8 +6,8 @@ import CustomButton from '../ui/CustomButton';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from '../../constants/colors';
 import { printObject, transformPatePhone } from '../../utils/helpers';
-const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
-    // printObject('UDDM:9-->user', user);
+const UserDisplayDetailsModal = ({ profile, handleDismiss }) => {
+    printObject('UDDM:9-->profile', profile);
     return (
         <Surface style={styles.modalSurface}>
             <View style={styles.modalTitleWrapper}>
@@ -16,9 +16,7 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
             <View style={styles.modalProfileDetailsWrapper}>
                 <View style={styles.modalProfileDetailsRow}>
                     <View style={styles.modalProfileDetailsTopic}>
-                        <Text style={styles.modalProfileDetailsTopic}>
-                            UID:
-                        </Text>
+                        <Text style={styles.modalProfileDetailsTopic}>ID:</Text>
                     </View>
                     <View style={styles.modalProfileDetailsTopicTextWrapper}>
                         <Text
@@ -27,7 +25,7 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                                 { fontSize: 14 })
                             }
                         >
-                            {user.uid}
+                            {profile?.user?.id}
                         </Text>
                     </View>
                 </View>
@@ -40,7 +38,7 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                     </View>
                     <View style={styles.modalProfileDetailsTopicTextWrapper}>
                         <Text style={styles.modalProfileDetailsTopicText}>
-                            {user.firstName} {user.lastName}
+                            {profile?.user?.firstName} {profile?.user?.lastName}
                         </Text>
                     </View>
                 </View>
@@ -63,7 +61,7 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                                     { paddingRight: 10 })
                                 }
                             >
-                                {user.email}
+                                {profile?.user?.email}
                             </Text>
 
                             <MaterialCommunityIcons
@@ -83,7 +81,7 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                     </View>
                     <View style={styles.modalProfileDetailsTopicTextWrapper}>
                         <Text style={styles.modalProfileDetailsTopicText}>
-                            {transformPatePhone(user.phone)}
+                            {transformPatePhone(profile?.user?.phone)}
                         </Text>
                     </View>
                 </View>
@@ -95,7 +93,7 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                         }
                     >
                         <Text style={styles.modalProfileDetailsTopicText}>
-                            {user.affiliate.name}
+                            {'TBD' || user.affiliate.name}
                         </Text>
                     </View>
                 </View>
@@ -107,7 +105,8 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                         }
                     >
                         <Text style={styles.modalProfileDetailsTopicText}>
-                            {user.affiliate.city}, {user.affiliate.stateProv}
+                            {'TBD' || profile?.user?.affiliate?.city},{' '}
+                            {'TBD' || profile?.user?.affiliate?.stateProv}
                         </Text>
                     </View>
                 </View>
@@ -135,7 +134,7 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                         }
                     >
                         <Text style={styles.modalProfileDetailsTopicText}>
-                            VALUE:{user?.affiliations?.active?.value}
+                            VALUE:{profile?.user?.affiliations?.active?.value}
                         </Text>
                     </View>
                 </View>
@@ -147,7 +146,7 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                         }
                     >
                         <Text style={styles.modalProfileDetailsTopicText}>
-                            LABEL:{user?.affiliations?.active?.label}
+                            LABEL:{profile?.user?.affiliations?.active?.label}
                         </Text>
                     </View>
                 </View>
@@ -159,7 +158,7 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                         }
                     >
                         <Text style={styles.modalProfileDetailsTopicText}>
-                            ROLE:{user?.affiliations?.active?.role}
+                            ROLE:{profile?.user?.affiliations?.active?.role}
                         </Text>
                     </View>
                 </View>
@@ -171,7 +170,7 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                     </View>
                     <View style={styles.modalProfileDetailsTopicTextWrapper}>
                         <Text style={styles.modalProfileDetailsTopicText}>
-                            {user.region}
+                            {profile?.user?.region}
                         </Text>
                     </View>
                 </View>
@@ -183,7 +182,7 @@ const UserDisplayDetailsModal = ({ user, handleDismiss }) => {
                     </View>
                     <View style={styles.modalProfileDetailsTopicTextWrapper}>
                         <Text style={styles.modalProfileDetailsTopicText}>
-                            {user?.affiliations?.active?.role}
+                            {profile?.user?.affiliations?.active?.role}
                         </Text>
                     </View>
                 </View>

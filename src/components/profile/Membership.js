@@ -59,21 +59,25 @@ const Membership = () => {
             const membership = currentUser.memberships.items.find((m) => {
                 return m.division.id === currentUser.defaultDivision.id;
             });
-            setMembershipId(membership.id);
-            setTest(membership?.name || '');
-            setMembershipName(membership?.name || '');
-            setSavedMembershipName(membership?.name || '');
-            setMembershipStreet(membership?.street || '');
-            setSavedMembershipStreet(membership?.street || '');
-            setMembershipCity(membership?.city || '');
-            setSavedMembershipCity(membership?.city || '');
-            console.log('stateProv:#' + membership?.stateProv + '#');
-            setMembershipStateProv(membership?.stateProv || 'AL');
-            setSavedMembershipStateProv(membership?.stateProv || 'AL');
-            setMembershipPostalCode(membership?.postalCode?.toString() || '');
-            setSavedMembershipPostalCode(
-                membership?.postalCode?.toString() || ''
-            );
+            if (membership) {
+                setMembershipId(membership.id);
+                setTest(membership?.name || '');
+                setMembershipName(membership?.name || '');
+                setSavedMembershipName(membership?.name || '');
+                setMembershipStreet(membership?.street || '');
+                setSavedMembershipStreet(membership?.street || '');
+                setMembershipCity(membership?.city || '');
+                setSavedMembershipCity(membership?.city || '');
+                console.log('stateProv:#' + membership?.stateProv + '#');
+                setMembershipStateProv(membership?.stateProv || 'AL');
+                setSavedMembershipStateProv(membership?.stateProv || 'AL');
+                setMembershipPostalCode(
+                    membership?.postalCode?.toString() || ''
+                );
+                setSavedMembershipPostalCode(
+                    membership?.postalCode?.toString() || ''
+                );
+            }
         }
     }, []);
     useEffect(() => {
