@@ -17,13 +17,9 @@ import { transformPatePhone } from '../../utils/helpers';
 import { updateAndMoveProfile } from '../../features/profiles/profilesSlice';
 import { updateProfile as DDBUpdateProfile } from '../../providers/users';
 import { Colors } from '../../constants/colors';
-//import { colors } from '@material-ui/core';
+import { colors } from '@material-ui/core';
 import { printObject } from '../../utils/helpers';
 import UserDisplayDetailsModal from './UserDisplayDetailsModal';
-import UserRoles from './UserRoles.component';
-import { USERROLES } from '../../constants/pate';
-import SimpleDropDown from '../ui/DropDown/SimpleDropDown';
-const roles = [];
 const UserDisplay = ({ profile }) => {
     const dispatch = useDispatch();
     const navigate = useNavigation();
@@ -33,7 +29,6 @@ const UserDisplay = ({ profile }) => {
     const [showCompletionModal, setShowCompletionModal] = useState(false);
     const [userStatus, setUserStatus] = useState('');
     const [newStatus, setNewStatus] = useState(profile?.role);
-    const [userRole, setUserRole] = useState('guest');
     const statusValues = ['guest', 'leader'];
     const [okToUpdate, setOkToUpdate] = useState(false);
     useEffect(() => {
@@ -236,7 +231,78 @@ const UserDisplay = ({ profile }) => {
                     <Text style={styles.userEmail}>{profile?.user?.email}</Text>
                 </View>
             </Surface>
-            <UserRoles userRole={profile?.role} setUserRole={setUserRole} />
+            <Surface style={styles.manageWrapper}>
+                <View style={styles.manageContainer}>
+                    <SelectDropdown
+                        data={statusValues}
+                        defaultValue={userStatus}
+                        onSelect={(selectedItem, index) => {
+                            setNewStatus(selectedItem);
+                            console.log(selectedItem, index);
+                        }}
+                        defaultButtonText={userStatus}
+                        buttonTextAfterSelection={(selectedItem, index) => {
+                            return selectedItem;
+                        }}
+                        rowTextForSelection={(item, index) => {
+                            return item;
+                        }}
+                        buttonStyle={styles.dropdown1BtnStyle}
+                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                        renderDropdownIcon={(isOpened) => {
+                            return (
+                                <Ionicons
+                                    name={
+                                        isOpened
+                                            ? 'chevron-up-sharp'
+                                            : 'chevron-down-sharp'
+                                    }
+                                    color={'black'}
+                                    size={24}
+                                />
+                            );
+                        }}
+                        dropdownIconPosition={'right'}
+                        dropdownStyle={styles.dropdown1DropdownStyle}
+                        rowStyle={styles.dropdown1RowStyle}
+                        rowTextStyle={styles.dropdown1RowTxtStyle}
+                    />
+                </View>
+                <View style={styles.customButtonContainer}>
+                    {/* <View style={styles.modalConfirmButton}>
+                        <CustomButton
+                            title='CANCEL'
+                            graphic={null}
+                            cbStyles={{
+                                backgroundColor: Colors.gray35,
+                                color: 'black',
+                            }}
+                            txtColor='white'
+                            onPress={() => setShowStatusModal(false)}
+                        />
+                    </View> */}
+
+                    <View style={styles.customButton}>
+                        <CustomButton
+                            key={profile.id}
+                            title='UPDATE'
+                            graphic={null}
+                            enabled={okToUpdate}
+                            cbStyles={{
+                                backgroundColor: Colors.primary,
+                                color: 'white',
+                            }}
+                            txtColor='white'
+                            onPress={() => {
+                                handleRoleChange();
+                            }}
+                        />
+                    </View>
+                    <View>
+                        <Text>okToUpdate:{okToUpdate ? 'YES' : 'NO'}</Text>
+                    </View>
+                </View>
+            </Surface>
         </>
     );
 };
@@ -252,7 +318,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     detailsSurface: {
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: colors.blueGrey,
         elevation: 5,
     },
     detailsView: {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View } from 'react-native';
 import DropDown from 'react-native-paper-dropdown';
 
-function SimpleDropDown({ list, activeValue, setValue }) {
+function SimpleDropDown({ list, activeValue, setValue, styles = {} }) {
     const [showDropdown, setShowDropdown] = useState(false);
 
     return (
@@ -16,6 +16,7 @@ function SimpleDropDown({ list, activeValue, setValue }) {
                 value={activeValue}
                 setValue={(value) => setValue(value)}
                 list={list}
+                {...styles}
             />
         </View>
     );

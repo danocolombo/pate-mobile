@@ -98,6 +98,7 @@ const AffiliationAdd = () => {
                             <View style={styles.modalButton}>
                                 <CustomButton
                                     title='Dismiss'
+                                    enabled='true'
                                     graphic={null}
                                     cbStyles={{
                                         backgroundColor: Colors.gray35,
@@ -129,6 +130,7 @@ const AffiliationAdd = () => {
                             <View style={styles.modalButton}>
                                 <CustomButton
                                     title='Dismiss'
+                                    enabled='true'
                                     graphic={null}
                                     cbStyles={{
                                         backgroundColor: Colors.gray35,

@@ -83,6 +83,25 @@ export const styles = StyleSheet.create({
         borderBottomColor: '#C5C5C5',
     },
     dropdown1RowTxtStyle: { color: '#444', textAlign: 'left' },
+
+    //      STANDARD STYLES
+    standardRow: { flexDirection: 'row', alignItems: 'center' },
+    standardTitleWrapper: {
+        alignItems: 'center',
+    },
+    standardSurfaceContainer: {
+        padding: 5,
+        marginHorizontal: 20,
+        paddingVertical: 10,
+        marginBottom: 0,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+    },
+    standardTitle: {
+        marginTop: 15,
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
     customButton: {
         // width: '100%',
     },

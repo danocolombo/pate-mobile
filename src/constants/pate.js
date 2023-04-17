@@ -31,6 +31,11 @@ export const DEFAULT_AFFILIATIONS = Object.freeze({
         ],
     },
 });
+export const USERROLES = [
+    { label: 'Guest', value: 'guest' },
+    { label: 'Rep', value: 'rep' },
+    { label: 'Lead', value: 'lead' },
+];
 export const SHIRTSIZESBYWORDS = [
     { label: 'Small', value: 'S' },
     { label: 'Medim', value: 'M' },
