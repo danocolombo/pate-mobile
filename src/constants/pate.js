@@ -33,8 +33,10 @@ export const DEFAULT_AFFILIATIONS = Object.freeze({
 });
 export const USERROLES = [
     { label: 'Guest', value: 'guest' },
-    { label: 'Rep', value: 'rep' },
+    { label: 'Representative', value: 'rep' },
     { label: 'Lead', value: 'lead' },
+    { label: 'Director', value: 'director' },
+    { label: 'Owner', value: 'owner' },
 ];
 export const SHIRTSIZESBYWORDS = [
     { label: 'Small', value: 'S' },

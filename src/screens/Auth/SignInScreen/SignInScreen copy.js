@@ -211,7 +211,7 @@ const SignInScreen = () => {
                             // );
                         } else {
                             printObject(
-                                'no data returned:\n',
+                                'SIS:213--> no GQL profile:\n',
                                 gqlProfileResponse
                             );
                         }

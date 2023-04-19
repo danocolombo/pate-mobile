@@ -28,7 +28,7 @@ const UserDisplay = ({ profile }) => {
     const dispatch = useDispatch();
     const navigate = useNavigation();
     const feo = useSelector((state) => state.division);
-    const user = useSelector((state) => state.users.currentUser);
+    const currentUser = useSelector((state) => state.users.currentUser);
     const [showMoreDetail, setShowMoreDetail] = useState(false);
     const [showCompletionModal, setShowCompletionModal] = useState(false);
     const [userStatus, setUserStatus] = useState('');
@@ -236,7 +236,11 @@ const UserDisplay = ({ profile }) => {
                     <Text style={styles.userEmail}>{profile?.user?.email}</Text>
                 </View>
             </Surface>
-            <UserRoles userRole={profile?.role} setUserRole={setUserRole} />
+            <UserRoles
+                userRole={profile?.role}
+                setUserRole={setUserRole}
+                activeUserRole={currentUser.role}
+            />
         </>
     );
 };

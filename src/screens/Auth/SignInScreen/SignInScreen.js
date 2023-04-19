@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { Auth, API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../../pateGraphQL/queries';
+import * as mutations from '../../../pateGraphQL/mutations';
 import { useDispatch } from 'react-redux';
 // import { ALL_EVENTS } from '../../../../data/getRegionalEvents';
 import { updateCurrentUser } from '../../../features/users/usersSlice';
@@ -186,10 +187,142 @@ const SignInScreen = () => {
                             //     gqlProfile?.data?.listUsers?.items[0]
                             // );
                         } else {
-                            printObject(
-                                'no data returned:\n',
-                                gqlProfileResponse
-                            );
+                            //  ***********************************************
+                            //      CREATE NEW GQL PROFILE
+                            // at this point the person has authenticated and
+                            // no profile is in gql database. enter one.
+                            //  ***********************************************
+                            const newProfile = {
+                                sub: currentUserInfo?.attributes?.sub,
+                                username: currentUserInfo?.username,
+                                firstName: '',
+                                lastName: '',
+                                email: currentUserInfo?.attributes?.email,
+                                phone: '',
+                                divisionDefaultUsersId:
+                                    '271a8cbb-15b4-4f90-ba9f-a5d348206493',
+                            };
+                            printObject('SIS:204-->new profile\n', newProfile);
+                            try {
+                                API.graphql({
+                                    query: mutations.createUser,
+                                    variables: { input: newProfile },
+                                })
+                                    .then((createUserResponse) => {
+                                        printObject(
+                                            'SIS:211-->createUserResponse:\n',
+                                            createUserResponse
+                                        );
+                                        //check if we have new id returned from the request
+                                        if (
+                                            createUserResponse?.data?.createUser
+                                                ?.id
+                                        ) {
+                                            // new user record created
+                                            return createUserResponse?.data
+                                                .createUser.id;
+                                        } else {
+                                            throw new Error(
+                                                'Could not create new GQL user record.'
+                                            );
+                                        }
+                                    })
+                                    .then((newUserId) => {
+                                        // now create affiliation
+                                        printObject(
+                                            'SIS-228-->newUserId',
+                                            newUserId
+                                        );
+                                        const newAff = {
+                                            role: 'guest',
+                                            status: 'new',
+                                            divisionAffiliationsId:
+                                                '271a8cbb-15b4-4f90-ba9f-a5d348206493',
+                                            userAffiliationsId: newUserId,
+                                        };
+                                        API.graphql({
+                                            query: mutations.createAffiliation,
+                                            variables: { input: newAff },
+                                        }).then((createAffResponse) => {
+                                            printObject(
+                                                'SIS:240-->createAffResults:\n',
+                                                createAffResponse
+                                            );
+                                            //**************************** */
+                                            //    now get the official profile to save
+                                            //**************************** */
+                                            const variables = {
+                                                id: currentSession?.idToken
+                                                    ?.payload?.sub,
+                                            };
+                                            API.graphql(
+                                                graphqlOperation(
+                                                    queries.getProfileBySub,
+                                                    variables
+                                                )
+                                            )
+                                                .then((gqlProfileResponse) => {
+                                                    //  *************************************
+                                                    //      got graphQL profile response
+                                                    //  *************************************
+                                                    if (
+                                                        gqlProfileResponse?.data
+                                                            ?.listUsers
+                                                            ?.items[0]
+                                                    ) {
+                                                        graphQLProfile = {
+                                                            ...graphQLProfile,
+                                                            ...gqlProfileResponse
+                                                                ?.data
+                                                                ?.listUsers
+                                                                ?.items[0],
+                                                        };
+
+                                                        return gqlProfileResponse;
+                                                    } else {
+                                                        console.log(
+                                                            'COULD NOT CREATE AND RETRIEVE NEW USER'
+                                                        );
+                                                        printObject(
+                                                            'SIS:275==>gqlProfileResponse:\n',
+                                                            gqlProfileResponse
+                                                        );
+                                                    }
+                                                })
+                                                .catch((error) => {
+                                                    printObject(
+                                                        'SIS:251:==>then error when adding profile and affiliations\n',
+                                                        error
+                                                    );
+                                                });
+                                            console.log(
+                                                '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
+                                            );
+                                            printObject(
+                                                'SIS:245-->newProfile',
+                                                newProfile
+                                            );
+                                            printObject(
+                                                'SIS:245-->newAff',
+                                                newAff
+                                            );
+                                            console.log(
+                                                '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
+                                            );
+                                        });
+                                    })
+                                    .catch((error) => {
+                                        printObject(
+                                            'SIS:251:==>then error when adding profile and affiliations\n',
+                                            error
+                                        );
+                                    });
+                            } catch (error) {
+                                printObject(
+                                    'SIS:252-->error from try\n',
+                                    error
+                                );
+                            }
                         }
                     })
                     .then((gqlProfileResponse) => {

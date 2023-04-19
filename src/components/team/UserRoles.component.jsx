@@ -6,11 +6,43 @@ import SimpleDropDown from '../../components/ui/DropDown/SimpleDropDown';
 import { USERROLES } from '../../constants/pate';
 import { styles } from './styles';
 import { printObject } from '../../utils/helpers';
-const UserRoles = ({ userRole, setUserRole }) => {
+const UserRoles = ({ userRole, setUserRole, activeUserRole }) => {
     printObject('userRole[IIN]', userRole);
     printObject('setUserRole[IN]', setUserRole);
     const [role, setRole] = useState(userRole.toString());
+    const [roleList, setRoleList] = useState([]);
+    useEffect(() => {
+        const trimRoles = async () => {
+            let theList = USERROLES;
+            switch (activeUserRole) {
+                case 'guru':
+                    break;
+                case 'owner':
+                    theList = theList.filter((role) => role.label !== 'Owner');
+                    break;
+                case 'director':
+                    theList = theList.filter(
+                        (role) =>
+                            role.label !== 'Owner' && role.label !== 'Director'
+                    );
+                    break;
+                case 'lead':
+                    theList = theList.filter(
+                        (role) =>
+                            role.label !== 'Owner' &&
+                            role.label !== 'Director' &&
+                            role.label !== 'Lead'
+                    );
+                    break;
+                default:
+                    theList = [];
+                    break;
+            }
 
+            setRoleList(theList);
+        };
+        trimRoles();
+    }, []);
     const handleRoleChange = () => {
         window.alert('clicked');
     };
@@ -21,7 +53,7 @@ const UserRoles = ({ userRole, setUserRole }) => {
             </View>
             <View>
                 <SimpleDropDown
-                    list={USERROLES}
+                    list={roleList}
                     activeValue={userRole}
                     setValue={setUserRole}
                     styles={{
