@@ -147,335 +147,288 @@ const SignInScreen = () => {
             status: 'undefined',
         };
 
-        //   ########################
-        //   get user profile
-        //   ########################
-        //  ********************************************
-        //      get the profile information from graphql
-        //  ********************************************
-        const getGQLProfileInfo = async () => {
+        //  ***********************************************
+        //      FUNCTION: GET PROFILE BY SUB
+        //  ***********************************************
+        const getUserBySub = async (sub) => {
+            console.log('sub: ', sub);
             const variables = {
-                id: currentSession?.idToken?.payload?.sub,
+                id: sub,
             };
-            try {
-                await API.graphql(
-                    graphqlOperation(queries.getProfileBySub, variables)
-                )
-                    .then((gqlProfileResponse) => {
-                        //  *************************************
-                        //      got graphQL profile response
-                        //  *************************************
-                        if (gqlProfileResponse?.data?.listUsers?.items[0]) {
-                            graphQLProfile = {
-                                ...graphQLProfile,
-                                ...gqlProfileResponse?.data?.listUsers
-                                    ?.items[0],
-                            };
-                            // graphQLProfile.affiliations.active = {
-                            //     label: 'TBD',
-                            //     role: 'guest',
-                            //     region: 'TBD',
-                            //     value: 'TBD',
-                            // };
-                            // currentUser.affiliations.active = {
-                            //     value: graphQLProfile.defaultDivision
-                            //         ?.organization?.code,
-                            // };
-                            return gqlProfileResponse;
-                            // printObject(
-                            //     'gqlProfile return:',
-                            //     gqlProfile?.data?.listUsers?.items[0]
-                            // );
-                        } else {
-                            //  ***********************************************
-                            //      CREATE NEW GQL PROFILE
-                            // at this point the person has authenticated and
-                            // no profile is in gql database. enter one.
-                            //  ***********************************************
-                            const newProfile = {
-                                sub: currentUserInfo?.attributes?.sub,
-                                username: currentUserInfo?.username,
-                                firstName: '',
-                                lastName: '',
-                                email: currentUserInfo?.attributes?.email,
-                                phone: '',
-                                divisionDefaultUsersId:
-                                    '271a8cbb-15b4-4f90-ba9f-a5d348206493',
-                            };
-                            printObject('SIS:204-->new profile\n', newProfile);
-                            try {
-                                API.graphql({
-                                    query: mutations.createUser,
-                                    variables: { input: newProfile },
-                                })
-                                    .then((createUserResponse) => {
-                                        printObject(
-                                            'SIS:211-->createUserResponse:\n',
-                                            createUserResponse
-                                        );
-                                        //check if we have new id returned from the request
-                                        if (
-                                            createUserResponse?.data?.createUser
-                                                ?.id
-                                        ) {
-                                            // new user record created
-                                            return createUserResponse?.data
-                                                .createUser.id;
-                                        } else {
-                                            throw new Error(
-                                                'Could not create new GQL user record.'
-                                            );
-                                        }
-                                    })
-                                    .then((newUserId) => {
-                                        // now create affiliation
-                                        printObject(
-                                            'SIS-228-->newUserId',
-                                            newUserId
-                                        );
-                                        const newAff = {
-                                            role: 'guest',
-                                            status: 'new',
-                                            divisionAffiliationsId:
-                                                '271a8cbb-15b4-4f90-ba9f-a5d348206493',
-                                            userAffiliationsId: newUserId,
-                                        };
-                                        API.graphql({
-                                            query: mutations.createAffiliation,
-                                            variables: { input: newAff },
-                                        }).then((createAffResponse) => {
-                                            printObject(
-                                                'SIS:240-->createAffResults:\n',
-                                                createAffResponse
-                                            );
-                                            //**************************** */
-                                            //    now get the official profile to save
-                                            //**************************** */
-                                            const variables = {
-                                                id: currentSession?.idToken
-                                                    ?.payload?.sub,
-                                            };
-                                            API.graphql(
-                                                graphqlOperation(
-                                                    queries.getProfileBySub,
-                                                    variables
-                                                )
-                                            )
-                                                .then((gqlProfileResponse) => {
-                                                    //  *************************************
-                                                    //      got graphQL profile response
-                                                    //  *************************************
-                                                    if (
-                                                        gqlProfileResponse?.data
-                                                            ?.listUsers
-                                                            ?.items[0]
-                                                    ) {
-                                                        graphQLProfile = {
-                                                            ...graphQLProfile,
-                                                            ...gqlProfileResponse
-                                                                ?.data
-                                                                ?.listUsers
-                                                                ?.items[0],
-                                                        };
-
-                                                        return gqlProfileResponse;
-                                                    } else {
-                                                        console.log(
-                                                            'COULD NOT CREATE AND RETRIEVE NEW USER'
-                                                        );
-                                                        printObject(
-                                                            'SIS:275==>gqlProfileResponse:\n',
-                                                            gqlProfileResponse
-                                                        );
-                                                    }
-                                                })
-                                                .catch((error) => {
-                                                    printObject(
-                                                        'SIS:251:==>then error when adding profile and affiliations\n',
-                                                        error
-                                                    );
-                                                });
-                                            console.log(
-                                                '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
-                                            );
-                                            printObject(
-                                                'SIS:245-->newProfile',
-                                                newProfile
-                                            );
-                                            printObject(
-                                                'SIS:245-->newAff',
-                                                newAff
-                                            );
-                                            console.log(
-                                                '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
-                                            );
-                                        });
-                                    })
-                                    .catch((error) => {
-                                        printObject(
-                                            'SIS:251:==>then error when adding profile and affiliations\n',
-                                            error
-                                        );
-                                    });
-                            } catch (error) {
-                                printObject(
-                                    'SIS:252-->error from try\n',
-                                    error
-                                );
-                            }
-                        }
-                    })
-                    .then((gqlProfileResponse) => {
-                        //  ***********************************************
-                        //      DEFINE THE ROLE & STATUS
-                        //  ***********************************************
-
-                        if (graphQLProfile?.affiliations?.items.length > 0) {
-                            // we have affiliations
-                            //check if we have defaultDivision defined
-                            if (graphQLProfile?.defaultDivision?.id) {
-                                // we have defaultDivision and Affiliations, get role
-                                graphQLProfile.affiliations.items.forEach(
-                                    (aff, index) => {
-                                        if (
-                                            aff?.division?.id ===
-                                                graphQLProfile?.defaultDivision
-                                                    ?.id &&
-                                            aff?.division?.organization?.id ===
-                                                graphQLProfile?.defaultDivision
-                                                    ?.organization?.id
-                                        ) {
-                                            graphQLProfile.role = aff?.role;
-                                            graphQLProfile.status = aff?.status;
-                                            graphQLProfile.affiliations.active =
-                                                {
-                                                    affiliationId: aff.id,
-                                                    status: aff.status,
-                                                    role: aff.role,
-                                                    divisionId: aff.division.id,
-                                                    divisionCode:
-                                                        aff.division.code,
-                                                    organizationId:
-                                                        aff.division
-                                                            .organization.id,
-                                                    organizationId:
-                                                        aff.division
-                                                            .organization.id,
-                                                    organizationAppName:
-                                                        aff.division
-                                                            .organization
-                                                            .appName,
-                                                    organizationAvailable:
-                                                        aff.division
-                                                            .organization
-                                                            .available,
-                                                    organizationCategory:
-                                                        aff.division
-                                                            .organization
-                                                            .category,
-                                                    organizationDescription:
-                                                        aff.division
-                                                            .organization
-                                                            .description,
-                                                    organizationExposure:
-                                                        aff.division
-                                                            .organization
-                                                            .exposure,
-                                                    organizationLabel:
-                                                        aff.division
-                                                            .organization.label,
-                                                    organizationName:
-                                                        aff.division
-                                                            .organization.name,
-                                                    organizationValue:
-                                                        aff.division
-                                                            .organization.value,
-                                                    organizationCode:
-                                                        aff.division
-                                                            .organization.code,
-                                                    organizationTitle:
-                                                        aff.division
-                                                            .organization.title,
-
-                                                    label: aff.division
-                                                        ?.organization?.title,
-                                                    region: aff.division?.code,
-                                                    role: aff?.role,
-                                                    value: aff?.division
-                                                        ?.organization?.code,
-                                                };
-                                        }
-                                    }
-                                );
-                            }
-                        }
-                        //set defaults
-                        // console.log('vvvvvvvvv');
-                        // printObject('graphQLProfile:\n', graphQLProfile);
-                        // console.log('^^^^^^^^^^^');
-                        dispatch(updateCurrentUser(graphQLProfile));
-                        //  ******************************************
-                        //      get the divisionEvents
-                        //  ******************************************
-                        const variables = {
-                            divId: graphQLProfile?.affiliations?.active
-                                ?.divisionId,
-                        };
-                        if (variables.divId) {
-                            const getDivisionalEvents = async () => {
-                                //  ******************************************
-                                //      get the divisionEvents
-                                //  ******************************************
-
-                                try {
-                                    await API.graphql(
-                                        graphqlOperation(
-                                            queries.getAllDivisionEvents,
-                                            variables
-                                        )
-                                    )
-                                        .then((divEventsResponse) => {
-                                            //  *************************************
-                                            //      got graphQL divEvents response
-                                            //  *************************************
-
-                                            if (
-                                                divEventsResponse?.data
-                                                    ?.getDivision?.id
-                                            ) {
-                                                dispatch(
-                                                    initializeDivision(
-                                                        divEventsResponse.data
-                                                            .getDivision
-                                                    )
-                                                );
-                                            }
-                                        })
-                                        .catch((error) => {
-                                            printObject(
-                                                'SIS:284--> divEventRequest error:\n',
-                                                error
-                                            );
-                                        });
-                                } catch (error) {
-                                    printObject(
-                                        'SIS:287--> divEventRequest try/catch error:\n',
-                                        error
-                                    );
-                                }
-                            };
-                            getDivisionalEvents();
-                        }
-                    })
-                    .catch((e) => {
-                        console.log('ERRROROROROROROR ', e);
-                    });
-            } catch (error) {
-                printObject('SIS:230->>error getting try failure:\n', error);
+            const getProfileResponse = await API.graphql(
+                graphqlOperation(queries.getProfileBySub, variables)
+            );
+            printObject(
+                'SIS:165-->getProfileResponse.data.listUsers.items[0]:\n',
+                getProfileResponse.data.listUsers.items[0]
+            );
+            if (getProfileResponse?.data?.listUsers?.items[0]) {
+                return getProfileResponse.data.listUsers.items[0];
+            } else {
+                return null;
             }
         };
 
-        getGQLProfileInfo();
+        //  ***********************************************
+        //      FUNCTION: CREATE NEW GQL USER
+        // at this point the person has authenticated and
+        // no profile is in gql database. enter one.
+        //  ***********************************************
+        const createNewUser = async () => {
+            const newProfile = {
+                sub: currentUserInfo?.attributes?.sub,
+                username: currentUserInfo?.username,
+                firstName: '',
+                lastName: '',
+                email: currentUserInfo?.attributes?.email,
+                phone: '',
+                divisionDefaultUsersId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
+            };
+            try {
+                const createUserResponse = await API.graphql({
+                    query: mutations.createUser,
+                    variables: { input: newProfile },
+                });
+                if (createUserResponse.data.createUser.id) {
+                    return createUserResponse.data.createUser;
+                } else {
+                    return null;
+                }
+            } catch (error) {
+                return error;
+            }
+        };
+        //  ***********************************************
+        //   FUNCTION: CREATE NEW GQL AFFILIATION
+        //  ***********************************************
+        const createNewAffiliation = async (userId) => {
+            const newAff = {
+                role: 'guest',
+                status: 'new',
+                divisionAffiliationsId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
+                userAffiliationsId: userId,
+            };
+            try {
+                const createAffResponse = await API.graphql({
+                    query: mutations.createAffiliation,
+                    variables: { input: newAff },
+                });
+                if (createAffResponse.data.createAffiliation.id) {
+                    return createAffResponse.data.createAffiliation;
+                } else {
+                    return null;
+                }
+            } catch (error) {
+                return error;
+            }
+        };
+        //  ***********************************************
+        //      EXECUTE EXECUTE EXECUTE EXECUTE EXECUTE
+        //      EXECUTE EXECUTE EXECUTE EXECUTE EXECUTE
+        //  ***********************************************
+        await getUserBySub(currentSession.idToken.payload.sub)
+            .then((subResponse) => {
+                // We got a profile response
+                // printObject(
+                //     'SIS:234-->back from getUSserBySub:\n',
+                //     subResponse
+                // );
+                if (!subResponse) {
+                    // no profile need to create....
+                    // printObject('SIS:240-->subResponse:\n', subResponse);
+                    return createNewUser().then(
+                        async (newUser) =>
+                            await createNewAffiliation(newUser.id).then(
+                                (newAffiliation) => {
+                                    console.log('newUser:', newUser);
+                                    console.log(
+                                        'newAffiliation:',
+                                        newAffiliation
+                                    );
+                                    //make array for affiliations
+                                    let affiliationArray = [];
+                                    let theAffiliation = {
+                                        id: newAffiliation.id,
+                                        status: newAffiliation.status,
+                                        role: newAffiliation.role,
+                                        division: {
+                                            id: newAffiliation.division.id,
+                                            code: newAffiliation.division.code,
+                                            organization: {
+                                                id: newAffiliation.division
+                                                    .organization.id,
+                                                appName:
+                                                    newAffiliation.division
+                                                        .organization.appName ||
+                                                    '',
+                                                available:
+                                                    newAffiliation.division
+                                                        .organization
+                                                        .available || false,
+                                                category:
+                                                    newAffiliation.division
+                                                        .organization
+                                                        .category || '',
+                                                description:
+                                                    newAffiliation.division
+                                                        .organization
+                                                        .description || '',
+                                                exposure:
+                                                    newAffiliation.division
+                                                        .organization
+                                                        .exposure || '',
+                                                label:
+                                                    newAffiliation.division
+                                                        .organization.label ||
+                                                    '',
+                                                name:
+                                                    newAffiliation.division
+                                                        .organization.name ||
+                                                    '',
+                                                value:
+                                                    newAffiliation.division
+                                                        .organization.value ||
+                                                    '',
+                                                code:
+                                                    newAffiliation.division
+                                                        .organization.code ||
+                                                    '',
+                                                title:
+                                                    newAffiliation.division
+                                                        .organization.title ||
+                                                    '',
+                                            },
+                                        },
+                                    };
+                                    affiliationArray.push(theAffiliation);
+                                    const newProfile = {
+                                        ...newUser,
+                                        affiliations: affiliationArray,
+                                    };
+
+                                    return newProfile;
+                                }
+                            )
+                    );
+                } else {
+                    // printObject('SIS:240-->subResponse:\n', subResponse);
+                    // the user was found by sub
+                    return subResponse;
+                }
+            })
+            .then((result) => {
+                graphQLProfile = {
+                    ...graphQLProfile,
+                    ...result,
+                };
+                // printObject('SIS:254-->graphQLProfile:\n', graphQLProfile);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+        console.log('SIS:259-->now DEFINING ROLE & STATUS');
+        printObject('graphQLProfile:\n', graphQLProfile);
+        //  ***********************************************
+        //      DEFINE THE ROLE & STATUS
+        //  ***********************************************
+
+        if (graphQLProfile?.affiliations?.items.length > 0) {
+            // we have affiliations
+            //check if we have defaultDivision defined
+            if (graphQLProfile?.defaultDivision?.id) {
+                // we have defaultDivision and Affiliations, get role
+                graphQLProfile.affiliations.items.forEach((aff, index) => {
+                    if (
+                        aff?.division?.id ===
+                            graphQLProfile?.defaultDivision?.id &&
+                        aff?.division?.organization?.id ===
+                            graphQLProfile?.defaultDivision?.organization?.id
+                    ) {
+                        graphQLProfile.role = aff?.role;
+                        graphQLProfile.status = aff?.status;
+                        graphQLProfile.affiliations.active = {
+                            affiliationId: aff.id,
+                            status: aff.status,
+                            role: aff.role,
+                            divisionId: aff.division.id,
+                            divisionCode: aff.division.code,
+                            organizationId: aff.division.organization.id,
+                            organizationId: aff.division.organization.id,
+                            organizationAppName:
+                                aff.division.organization.appName,
+                            organizationAvailable:
+                                aff.division.organization.available,
+                            organizationCategory:
+                                aff.division.organization.category,
+                            organizationDescription:
+                                aff.division.organization.description,
+                            organizationExposure:
+                                aff.division.organization.exposure,
+                            organizationLabel: aff.division.organization.label,
+                            organizationName: aff.division.organization.name,
+                            organizationValue: aff.division.organization.value,
+                            organizationCode: aff.division.organization.code,
+                            organizationTitle: aff.division.organization.title,
+
+                            label: aff.division?.organization?.title,
+                            region: aff.division?.code,
+                            role: aff?.role,
+                            value: aff?.division?.organization?.code,
+                        };
+                    }
+                });
+            }
+        }
+
+        dispatch(updateCurrentUser(graphQLProfile));
+        //  ******************************************
+        //      get the divisionEvents
+        //  ******************************************
+        const variables = {
+            divId: graphQLProfile?.affiliations?.active?.divisionId,
+        };
+        if (variables.divId) {
+            const getDivisionalEvents = async () => {
+                //  ******************************************
+                //      get the divisionEvents
+                //  ******************************************
+
+                try {
+                    await API.graphql(
+                        graphqlOperation(
+                            queries.getAllDivisionEvents,
+                            variables
+                        )
+                    )
+                        .then((divEventsResponse) => {
+                            //  *************************************
+                            //      got graphQL divEvents response
+                            //  *************************************
+
+                            if (divEventsResponse?.data?.getDivision?.id) {
+                                dispatch(
+                                    initializeDivision(
+                                        divEventsResponse.data.getDivision
+                                    )
+                                );
+                            }
+                        })
+                        .catch((error) => {
+                            printObject(
+                                'SIS:284--> divEventRequest error:\n',
+                                error
+                            );
+                        });
+                } catch (error) {
+                    printObject(
+                        'SIS:287--> divEventRequest try/catch error:\n',
+                        error
+                    );
+                }
+            };
+            getDivisionalEvents();
+        }
         dispatch(
             updateAffiliationString(graphQLProfile?.affiliations?.active?.value)
         );
