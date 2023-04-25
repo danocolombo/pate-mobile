@@ -21,10 +21,10 @@ const Members = (props) => {
     const { actives, team, guests, nonActives } = useSelector(
         (state) => state.profiles
     );
-    printObject('M:24-->actives:\n', actives);
-    printObject('M:24-->team:\n', team);
-    printObject('M:24-->guests:\n', guests);
-    printObject('M:24-->nonActives:\n', nonActives);
+    // printObject('M:24-->actives:\n', actives);
+    // printObject('M:24-->team:\n', team);
+    // printObject('M:24-->guests:\n', guests);
+    // printObject('M:24-->nonActives:\n', nonActives);
 
     if (isLoading) {
         <View>
@@ -49,7 +49,7 @@ const Members = (props) => {
                 <UsersList
                     data={guests}
                     key={2}
-                    title='GUESTS'
+                    title='VISITORS'
                     customStyle={{
                         backgroundColor: Colors.secondary,
                         borderBottomStartRadius: 20,

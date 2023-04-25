@@ -7,13 +7,21 @@ import { USERROLES } from '../../constants/pate';
 import { styles } from './styles';
 import { printObject } from '../../utils/helpers';
 const UserRoles = ({ userRole, setUserRole, activeUserRole }) => {
-    printObject('userRole[IIN]', userRole);
-    printObject('setUserRole[IN]', setUserRole);
+    printObject('UR:10-->userRole[IN]', userRole);
+    printObject('UR:11-->activeUserRole:', activeUserRole);
+    printObject('UR:11-->setUserRole[IN]', setUserRole);
     const [role, setRole] = useState(userRole.toString());
     const [roleList, setRoleList] = useState([]);
     useEffect(() => {
         const trimRoles = async () => {
             let theList = USERROLES;
+            /*   
+                { label: 'Guest', value: 'guest' },
+                { label: 'Representative', value: 'rep' },
+                { label: 'Lead', value: 'lead' },
+                { label: 'Director', value: 'director' },
+                { label: 'Owner', value: 'owner' },
+            */
             switch (activeUserRole) {
                 case 'guru':
                     break;
@@ -38,7 +46,7 @@ const UserRoles = ({ userRole, setUserRole, activeUserRole }) => {
                     theList = [];
                     break;
             }
-
+            printObject('UR:49-->theList:\n', theList);
             setRoleList(theList);
         };
         trimRoles();

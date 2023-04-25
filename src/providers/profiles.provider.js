@@ -43,7 +43,7 @@ export const getDivisionProfiles = createAsyncThunk(
                     actives: activeProfiles,
                     team: team,
                     guests: guests,
-                    nonActive: nonActives,
+                    nonActives: nonActives,
                 };
                 return payload;
             }

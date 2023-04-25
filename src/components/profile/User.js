@@ -12,7 +12,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { printObject } from '../../utils/helpers';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { updateGQLUser } from '../../providers/users';
-import { updateGQLResidence } from '../../providers/residence.provider';
+import {
+    updateGQLResidence,
+    createGQLResidence,
+} from '../../providers/residence.provider';
 import { STATELABELVALUES } from '../../constants/pate';
 import {
     updateCurrentUser,
@@ -34,10 +37,10 @@ const UserSection = (affiliations, colors) => {
     const [city, setCity] = useState(currentUser?.residence?.city || '');
     const [cityError, setCityError] = useState('');
     const [postalCode, setPostalCode] = useState(
-        currentUser?.residence?.postalCode.toString() || ''
+        currentUser?.residence?.postalCode?.toString() || ''
     );
     const [stateProv, setStateProv] = useState(
-        currentUser?.residence?.stateProv.toString() || 'AL'
+        currentUser?.residence?.stateProv?.toString() || 'AL'
     );
     const [postalCodeError, setPostalCodeError] = useState('');
     const [canSave, setCanSave] = useState(false);
@@ -60,7 +63,7 @@ const UserSection = (affiliations, colors) => {
                 street !== currentUser?.residence?.street ||
                 city !== currentUser?.residence?.city ||
                 stateProv !== currentUser?.residence?.stateProv ||
-                postalCode !== currentUser?.residence?.postalCode.toString()
+                postalCode !== currentUser?.residence?.postalCode?.toString()
             ) {
                 //there is a change is the values, are there errors?
                 if (
@@ -128,7 +131,7 @@ const UserSection = (affiliations, colors) => {
         setIsUpdating(true);
         const DANO = true;
 
-        //update graphQL, if successful, udpate redux
+        //update graphQL, if successful, update redux
         try {
             //check user values
             if (
@@ -163,12 +166,14 @@ const UserSection = (affiliations, colors) => {
 
                     return;
                 }
-                if (
-                    street !== currentUser?.residence?.street ||
-                    city !== currentUser?.residence?.city ||
-                    stateProv !== currentUser?.residence?.stateProv ||
-                    postalCode !== currentUser?.residence?.postalCode.toString()
-                ) {
+            }
+            if (
+                street !== currentUser?.residence?.street ||
+                city !== currentUser?.residence?.city ||
+                stateProv !== currentUser?.residence?.stateProv ||
+                postalCode !== currentUser?.residence?.postalCode.toString()
+            ) {
+                if (currentUser?.residence) {
                     //update residence
                     const residenceUpdate = {
                         id: currentUser.residence.id,
@@ -177,6 +182,7 @@ const UserSection = (affiliations, colors) => {
                         stateProv,
                         postalCode,
                     };
+
                     const residenceUpdateResults = await updateGQLResidence(
                         residenceUpdate
                     );
@@ -197,6 +203,67 @@ const UserSection = (affiliations, colors) => {
                         console.log({
                             status: residenceUpdateResults.status,
                             data: residenceUpdateResults.data,
+                        });
+                        setIsUpdating(false);
+                        return;
+                    }
+                    setIsUpdating(false);
+                } else {
+                    //      need to insert new residence
+                    let newResidence = {};
+                    if (street) {
+                        newResidence = { ...newResidence, street: street };
+                    }
+                    if (city) {
+                        newResidence = { ...newResidence, city: city };
+                    }
+                    if (stateProv) {
+                        newResidence = {
+                            ...newResidence,
+                            stateProv: stateProv,
+                        };
+                    }
+                    if (postalCode) {
+                        newResidence = {
+                            ...newResidence,
+                            postalCode: parseInt(stateProv),
+                        };
+                    }
+
+                    console.log('333333333333333333333333333333333');
+                    printObject('newResidence:\n', newResidence);
+                    console.log('333333333333333333333333333333333');
+                    const residenceCreateResults = await createGQLResidence(
+                        newResidence,
+                        currentUser.id
+                    );
+                    console.log('#########################');
+                    printObject(
+                        'residenceCreateResults:\n',
+                        residenceCreateResults
+                    );
+                    console.log('#########################');
+                    if (!residenceCreateResults?.status) {
+                        console.log('Cannot create residence at this time');
+                        setIsUpdating(false);
+                        return;
+                    }
+                    if (residenceCreateResults.status === 200) {
+                        //residence updated...
+                        newResidence = {
+                            ...newResidence,
+                            id: residenceCreateResults.data.id,
+                        };
+                        dispatch(updateResidence(newResidence));
+                        // console.warn('Residence updated');
+                    } else {
+                        // non-200 on user update
+                        console.log(
+                            'Error creating User residence.Try again later.'
+                        );
+                        console.log({
+                            status: residenceCreateResults.status,
+                            data: residenceCreateResults.data,
                         });
                         setIsUpdating(false);
                         return;

@@ -1775,6 +1775,7 @@ export const getDivisionAffiliations = /* GraphQL */ `
                     status
                     user {
                         id
+                        username
                         firstName
                         lastName
                         email

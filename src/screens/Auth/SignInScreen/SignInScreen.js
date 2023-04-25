@@ -143,8 +143,8 @@ const SignInScreen = () => {
         graphQLProfile = {
             ...graphQLProfile,
             authUserInfo: currentUserInfo,
-            role: 'guest',
-            status: 'undefined',
+            role: 'unknown',
+            status: 'unknown',
         };
 
         //  ***********************************************
@@ -204,7 +204,7 @@ const SignInScreen = () => {
         const createNewAffiliation = async (userId) => {
             const newAff = {
                 role: 'guest',
-                status: 'new',
+                status: 'active',
                 divisionAffiliationsId: '271a8cbb-15b4-4f90-ba9f-a5d348206493',
                 userAffiliationsId: userId,
             };
@@ -245,7 +245,7 @@ const SignInScreen = () => {
                                         'newAffiliation:',
                                         newAffiliation
                                     );
-                                    //make array for affiliations
+                                    //make array for affiliation
                                     let affiliationArray = [];
                                     let theAffiliation = {
                                         id: newAffiliation.id,
@@ -301,9 +301,13 @@ const SignInScreen = () => {
                                         },
                                     };
                                     affiliationArray.push(theAffiliation);
+                                    // create items container for the array...
+                                    const theAffiliations = {
+                                        items: affiliationArray,
+                                    };
                                     const newProfile = {
                                         ...newUser,
-                                        affiliations: affiliationArray,
+                                        affiliations: theAffiliations,
                                     };
 
                                     return newProfile;

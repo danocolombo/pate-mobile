@@ -33,7 +33,7 @@ const UserDisplay = ({ profile }) => {
     const [showCompletionModal, setShowCompletionModal] = useState(false);
     const [userStatus, setUserStatus] = useState('');
     const [newStatus, setNewStatus] = useState(profile?.role);
-    const [userRole, setUserRole] = useState('guest');
+    const [userRole, setUserRole] = useState(profile?.role || 'guest');
     const statusValues = ['guest', 'leader'];
     const [okToUpdate, setOkToUpdate] = useState(false);
     useEffect(() => {
@@ -237,7 +237,7 @@ const UserDisplay = ({ profile }) => {
                 </View>
             </Surface>
             <UserRoles
-                userRole={profile?.role}
+                userRole={userRole}
                 setUserRole={setUserRole}
                 activeUserRole={currentUser.role}
             />

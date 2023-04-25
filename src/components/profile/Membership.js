@@ -186,7 +186,7 @@ const Membership = () => {
                     id: thisMembership.id,
                 };
             } else {
-                membershipUpdate = { ...membershipUpdate, id: 0 };
+                membershipUpdate = { ...membershipUpdate };
             }
         }
         //*  2. check other values
@@ -270,10 +270,9 @@ const Membership = () => {
             //* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         };
         let userMembershipResults = {};
-        if (membershipUpdate.id === 0) {
+        if (!membershipUpdate?.id) {
             //      new membership entry
             //      add userMembershipId & divisionMembershipsId & stateProv
-            delete membershipUpdate.id;
             membershipUpdate.divisionMembershipsId =
                 currentUser.affiliations.active.divisionId;
             membershipUpdate.userMembershipsId = currentUser.id;
