@@ -44,18 +44,7 @@ const UserSection = (affiliations, colors) => {
     );
     const [postalCodeError, setPostalCodeError] = useState('');
     const [canSave, setCanSave] = useState(false);
-    useLayoutEffect(() => {
-        // if (currentUser?.residence) {
-        //     setResidence({
-        //         ...residence,
-        //         id: currentUser?.residence?.id || '',
-        //         street: currentUser?.residence?.street || '',
-        //         city: currentUser?.residence?.city || '',
-        //         stateProv: currentUser?.residence?.stateProv || 'GA',
-        //         postalCode: currentUser?.residence?.postalCode.toString() || '',
-        //     });
-        // }
-    }, []),
+    useLayoutEffect(() => {}, []),
         useEffect(() => {
             if (
                 firstName !== currentUser?.firstName ||

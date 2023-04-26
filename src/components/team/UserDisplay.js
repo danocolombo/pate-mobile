@@ -31,11 +31,11 @@ const UserDisplay = ({ profile }) => {
     const currentUser = useSelector((state) => state.users.currentUser);
     const [showMoreDetail, setShowMoreDetail] = useState(false);
     const [showCompletionModal, setShowCompletionModal] = useState(false);
+    const [showRoleChange, setShowRoleChange] = useState(false);
     const [userStatus, setUserStatus] = useState('');
     const [newStatus, setNewStatus] = useState(profile?.role);
-    const [userRole, setUserRole] = useState(profile?.role || 'guest');
-    const statusValues = ['guest', 'leader'];
     const [okToUpdate, setOkToUpdate] = useState(false);
+
     useEffect(() => {
         // need to check to see if user has adequate profile, if not
         // we will prompt to request updates.
@@ -47,41 +47,56 @@ const UserDisplay = ({ profile }) => {
             setShowCompletionModal(true);
         }
         let role = null;
-
-        // if (profile?.role === 'rep') {
-        //     profile.role = 'leader';
-
-        // }
-        console.log('ROLE:', profile?.role);
         setUserStatus(profile?.role);
+        // determine if role change is supported.
+        console.log('UD:51*****>currentUser.role:', currentUser.role);
+        console.log('UD:52*****>profile.role:', profile.role);
+        console.log('UD:53*****>okToUpdate:', okToUpdate);
+        switch (currentUser.role) {
+            case 'guru':
+                setShowRoleChange(true);
+                break;
+            case 'owner':
+                setShowRoleChange(true);
+                break;
+            case 'director':
+                console.log('UD:63___>profile.role:', profile.role);
+                if (profile.role === 'guru' || profile.role === 'owner') {
+                    setShowRoleChange(false);
+                } else {
+                    setShowRoleChange(true);
+                }
+                break;
+            case 'lead':
+                console.log('UD:68___>profile.role:', profile.role);
+                if (
+                    profile.role === 'guru' ||
+                    profile.role === 'owner' ||
+                    profile.role === 'director'
+                ) {
+                    setShowRoleChange(false);
+                } else {
+                    setShowRoleChange(true);
+                }
+                break;
+
+            default:
+                setOkToUpdate(false);
+                break;
+        }
     }, []);
-    // useEffect(() => {
-    //     console.log(newStatus + ' vs ' + userStatus);
-    //     if (newStatus !== userStatus) {
-    //         setOkToUpdate(true);
-    //     } else {
-    //         setOkToUpdate(false);
-    //     }
-    // }, [newStatus]);
+
     const handleDismiss = () => {
         setShowMoreDetail(false);
     };
     const handleRoleChange = () => {
         console.log('newStatus:#', newStatus, '#');
-        if (userStatus !== newStatus) {
-            setOkToUpdate(false);
-            return;
-        }
+
         console.log('they are different');
         window.alert('CLICKED');
     };
     const handleStatusChange = () => {
-        let originalProfile = profile;
         let newProfile = { ...profile };
-        // printObject('UD:36originalProfile:', originalProfile);
-        // printObject('UD:37---newProfile:', newProfile);
-        // console.log('UD38:--newStatus:', newStatus);
-        // console.log('UD:39--userStatus:', userStatus);
 
         let newProfileType = '';
         if (newStatus !== userStatus) {
@@ -148,9 +163,7 @@ const UserDisplay = ({ profile }) => {
     const handleProfileAcknowledge = () => {
         setShowCompletionModal(false);
     };
-    console.log('UD:140->okToUpdate:', okToUpdate);
-    console.log('userStatus:', userStatus);
-    console.log('newStatus:', newStatus);
+
     return (
         <>
             <Modal visible={showCompletionModal} animationStyle='slide'>
@@ -236,11 +249,14 @@ const UserDisplay = ({ profile }) => {
                     <Text style={styles.userEmail}>{profile?.user?.email}</Text>
                 </View>
             </Surface>
-            <UserRoles
-                userRole={userRole}
-                setUserRole={setUserRole}
-                activeUserRole={currentUser.role}
-            />
+
+            {showRoleChange && (
+                <UserRoles
+                    //userRole={userRole}
+                    //setUserRole={setUserRole}
+                    activeUser={profile}
+                />
+            )}
         </>
     );
 };

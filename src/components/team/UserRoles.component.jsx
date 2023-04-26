@@ -1,16 +1,17 @@
 import { View, Text } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Surface } from 'react-native-paper';
 import CustomButton from '../../components/ui/CustomSimpleButton';
 import SimpleDropDown from '../../components/ui/DropDown/SimpleDropDown';
 import { USERROLES } from '../../constants/pate';
 import { styles } from './styles';
 import { printObject } from '../../utils/helpers';
-const UserRoles = ({ userRole, setUserRole, activeUserRole }) => {
-    printObject('UR:10-->userRole[IN]', userRole);
-    printObject('UR:11-->activeUserRole:', activeUserRole);
-    printObject('UR:11-->setUserRole[IN]', setUserRole);
-    const [role, setRole] = useState(userRole.toString());
+const UserRoles = ({ activeUser }) => {
+    printObject('UR:10-->activeUser:\n', activeUser);
+    printObject('UR:11-->activeUser.role:', activeUser.role);
+    const currentUser = useSelector((state) => state.users.currentUser);
+    const [role, setRole] = useState(activeUser.role.toString());
     const [roleList, setRoleList] = useState([]);
     useEffect(() => {
         const trimRoles = async () => {
@@ -22,7 +23,8 @@ const UserRoles = ({ userRole, setUserRole, activeUserRole }) => {
                 { label: 'Director', value: 'director' },
                 { label: 'Owner', value: 'owner' },
             */
-            switch (activeUserRole) {
+            console.log('URC:26-->ROLE:', activeUser.role);
+            switch (currentUser.role) {
                 case 'guru':
                     break;
                 case 'owner':
@@ -42,6 +44,22 @@ const UserRoles = ({ userRole, setUserRole, activeUserRole }) => {
                             role.label !== 'Lead'
                     );
                     break;
+                case 'rep':
+                    theList = theList.filter(
+                        (role) =>
+                            role.label !== 'Owner' &&
+                            role.label !== 'Director' &&
+                            role.label !== 'Lead'
+                    );
+                    break;
+                case 'guest':
+                    theList = theList.filter(
+                        (role) =>
+                            role.label !== 'Owner' &&
+                            role.label !== 'Director' &&
+                            role.label !== 'Lead'
+                    );
+                    break;
                 default:
                     theList = [];
                     break;
@@ -52,6 +70,8 @@ const UserRoles = ({ userRole, setUserRole, activeUserRole }) => {
         trimRoles();
     }, []);
     const handleRoleChange = () => {
+        console.log('activeUserRole.role:', activeUser.role);
+
         window.alert('clicked');
     };
     return (
@@ -62,8 +82,8 @@ const UserRoles = ({ userRole, setUserRole, activeUserRole }) => {
             <View>
                 <SimpleDropDown
                     list={roleList}
-                    activeValue={userRole}
-                    setValue={setUserRole}
+                    activeValue={role}
+                    setValue={setRole}
                     styles={{
                         dropDownItemSelectedTextStyle: {
                             fontWeight: 'bold',
