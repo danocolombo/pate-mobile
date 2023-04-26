@@ -48,7 +48,7 @@ const Members = (props) => {
             </View>
         );
     }
-    printObject('M:53:-->divisionMembers:\n', divisionMembers);
+    // printObject('M:53:-->divisionMembers:\n', divisionMembers);
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={{ marginBottom: 10 }}>

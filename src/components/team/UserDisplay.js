@@ -49,9 +49,9 @@ const UserDisplay = ({ profile }) => {
         let role = null;
         setUserStatus(profile?.role);
         // determine if role change is supported.
-        console.log('UD:51*****>currentUser.role:', currentUser.role);
-        console.log('UD:52*****>profile.role:', profile.role);
-        console.log('UD:53*****>okToUpdate:', okToUpdate);
+        // console.log('UD:51*****>currentUser.role:', currentUser.role);
+        // console.log('UD:52*****>profile.role:', profile.role);
+        // console.log('UD:53*****>okToUpdate:', okToUpdate);
         switch (currentUser.role) {
             case 'guru':
                 setShowRoleChange(true);
@@ -68,7 +68,7 @@ const UserDisplay = ({ profile }) => {
                 }
                 break;
             case 'lead':
-                console.log('UD:68___>profile.role:', profile.role);
+                // console.log('UD:68___>profile.role:', profile.role);
                 if (
                     profile.role === 'guru' ||
                     profile.role === 'owner' ||
@@ -89,77 +89,7 @@ const UserDisplay = ({ profile }) => {
     const handleDismiss = () => {
         setShowMoreDetail(false);
     };
-    const handleRoleChange = () => {
-        console.log('newStatus:#', newStatus, '#');
 
-        console.log('they are different');
-        window.alert('CLICKED');
-    };
-    const handleStatusChange = () => {
-        let newProfile = { ...profile };
-
-        let newProfileType = '';
-        if (newStatus !== userStatus) {
-            if (newStatus === 'leader') {
-                newProfileType = 'rep';
-            } else {
-                newProfileType = 'guest';
-            }
-            //todo == WHEN IMPLEMENTING DIRECTOR ASSIGNING LEAD,
-            //todo  TO UPDATE P8Affiliates.maagers WITH NEW LEAD
-            //todo  OR REMOVE THE LEAD BEING DEMOTED.
-
-            //todo == need to update active if feo.affiliation
-            let origActive = profile.affiliations.active;
-            if (origActive.value === feo.affiliation) {
-                origActive = { ...origActive, role: newProfileType };
-                origActive.role = newProfileType;
-            }
-            const optionUpdates = profile.affiliations.options.map((o) => {
-                if (o.value === feo.affiliation) {
-                    let newValues = { ...o, role: newProfileType };
-                    return newValues;
-                }
-                return o;
-            });
-
-            let affiliations = {
-                options: optionUpdates,
-                active: origActive,
-            };
-
-            newProfile = {
-                ...profile,
-                affiliations,
-                role: newProfileType,
-            };
-            if (newProfileType !== 'rep') {
-                delete newProfile['stateRep'];
-                newProfile['role'] = 'guest';
-            }
-            //   update REDUX
-            dispatch(
-                updateAndMoveProfile({
-                    target: newProfileType,
-                    newProfile: newProfile,
-                })
-            );
-
-            //   update DDB p8Users with
-            DDBUpdateProfile(newProfile)
-                .then((response) => {
-                    // printObject('DDB response:', response);
-                    console.log('DDBUpdateProfile successful');
-                })
-                .catch((err) =>
-                    console.log('Error trying to update profile in DDB\n', err)
-                );
-        }
-        Alert.alert(
-            'NOTE: changes not in effect until user logs out and back in.'
-        );
-        navigate.goBack();
-    };
     const handleProfileAcknowledge = () => {
         setShowCompletionModal(false);
     };
@@ -250,13 +180,7 @@ const UserDisplay = ({ profile }) => {
                 </View>
             </Surface>
 
-            {showRoleChange && (
-                <UserRoles
-                    //userRole={userRole}
-                    //setUserRole={setUserRole}
-                    activeUser={profile}
-                />
-            )}
+            {showRoleChange && <UserRoles activeUser={profile} />}
         </>
     );
 };

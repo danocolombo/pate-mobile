@@ -1,15 +1,20 @@
 import { View, Text } from 'react-native';
 import React, { useState, useEffect } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { Surface } from 'react-native-paper';
 import CustomButton from '../../components/ui/CustomSimpleButton';
 import SimpleDropDown from '../../components/ui/DropDown/SimpleDropDown';
 import { USERROLES } from '../../constants/pate';
 import { styles } from './styles';
+import { updateAffiliation } from '../../providers/profiles.provider';
 import { printObject } from '../../utils/helpers';
+import { useNavigation } from '@react-navigation/native';
 const UserRoles = ({ activeUser }) => {
-    printObject('UR:10-->activeUser:\n', activeUser);
-    printObject('UR:11-->activeUser.role:', activeUser.role);
+    const dispatch = useDispatch();
+    const navigate = useNavigation();
+    // printObject('UR:10-->activeUser:\n', activeUser);
+    // printObject('UR:11-->activeUser.role:', activeUser.role);
     const currentUser = useSelector((state) => state.users.currentUser);
     const [role, setRole] = useState(activeUser.role.toString());
     const [roleList, setRoleList] = useState([]);
@@ -23,7 +28,7 @@ const UserRoles = ({ activeUser }) => {
                 { label: 'Director', value: 'director' },
                 { label: 'Owner', value: 'owner' },
             */
-            console.log('URC:26-->ROLE:', activeUser.role);
+            // console.log('URC:26-->ROLE:', activeUser.role);
             switch (currentUser.role) {
                 case 'guru':
                     break;
@@ -64,16 +69,27 @@ const UserRoles = ({ activeUser }) => {
                     theList = [];
                     break;
             }
-            printObject('UR:49-->theList:\n', theList);
+            // printObject('UR:49-->theList:\n', theList);
             setRoleList(theList);
         };
         trimRoles();
     }, []);
     const handleRoleChange = () => {
-        console.log('activeUserRole.role:', activeUser.role);
-
-        window.alert('clicked');
+        // printObject('URC:73-->activeUser:\n', activeUser);
+        // console.log('role:', role);
+        const newAffiliation = {
+            id: activeUser.id,
+            divisionAffiliationsId: currentUser.affiliations.active.divisionId,
+            userAffiliationsId: activeUser.user.id,
+            role: role,
+            status: activeUser.status,
+        };
+        printObject('URC:73-->newAffiliation:\n', newAffiliation);
+        dispatch(updateAffiliation(newAffiliation));
+        navigate.goBack();
     };
+    printObject('currentUser:\n', currentUser);
+    printObject('activeUser:\n', activeUser);
     return (
         <Surface style={styles.standardSurfaceContainer}>
             <View style={styles.standardTitleWrapper}>

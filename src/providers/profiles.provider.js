@@ -61,44 +61,43 @@ export const updateAffiliation = createAsyncThunk(
     'profiles/updateProfiles',
     async (affiliation, thunkAPI) => {
         try {
-            const variables = {
-                affiliation,
-            };
-            const affResponse = await API.graphql(
-                graphqlOperation(mutations.updateAffiliation, variables)
-            );
+            const affResponse = await API.graphql({
+                query: mutations.updateAffiliation,
+                variables: { input: affiliation },
+            });
             //  *************************************
             //      got graphQL division affiliations response
             //  *************************************
-            let profiles = {};
-            if (affResponse?.data?.updateAffiliation?.id) {
-                const divProfiles =
-                    affResponse?.data?.getDivision?.affiliations?.items;
-                // there are multiple roles that we want to organize
-                // allProfiles: all the profiles that have status = active
-                const activeProfiles = divProfiles.filter((a) => {
-                    return a.status === 'active';
-                });
-                // team: all the profiles with status = active and role != guest
-                const team = activeProfiles.filter((a) => {
-                    return a.role !== 'guest';
-                });
-                // guests: all the profiles with status = active and role = guest
-                const guests = activeProfiles.filter((a) => {
-                    return a.role === 'guest';
-                });
-                // nonActives: all the profiles with status != active
-                const nonActives = divProfiles.filter((a) => {
-                    return a.status !== 'active';
-                });
-                const payload = {
-                    actives: activeProfiles,
-                    team: team,
-                    guests: guests,
-                    nonActives: nonActives,
-                };
-                return payload;
-            }
+            // printObject('affResponse:\n', affResponse);
+            // let profiles = {};
+            // if (affResponse?.data?.updateAffiliation?.id) {
+            //     const divProfiles =
+            //         affResponse?.data?.updateAffiliation?.affiliations?.items;
+            //     // there are multiple roles that we want to organize
+            //     // allProfiles: all the profiles that have status = active
+            //     const activeProfiles = divProfiles.filter((a) => {
+            //         return a.status === 'active';
+            //     });
+            //     // team: all the profiles with status = active and role != guest
+            //     const team = activeProfiles.filter((a) => {
+            //         return a.role !== 'guest';
+            //     });
+            //     // guests: all the profiles with status = active and role = guest
+            //     const guests = activeProfiles.filter((a) => {
+            //         return a.role === 'guest';
+            //     });
+            //     // nonActives: all the profiles with status != active
+            //     const nonActives = divProfiles.filter((a) => {
+            //         return a.status !== 'active';
+            //     });
+            //     const payload = {
+            //         actives: activeProfiles,
+            //         team: team,
+            //         guests: guests,
+            //         nonActives: nonActives,
+            //     };
+            //     return payload;
+            // }
             return {};
         } catch (error) {
             console.log('ERROR:', error);
