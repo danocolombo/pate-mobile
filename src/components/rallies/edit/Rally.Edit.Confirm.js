@@ -106,11 +106,76 @@ const RallyNewConfirmation = () => {
             newRally.contact = newContact;
             // printObject('updatedRally', newRally);
         }
-        if (process.env.ENV === 'DEV') {
-            if (newRally?.uid) {
-                // DEV - UPDATE RALLY
+
+        if (newRally?.id) {
+            // DEV - UPDATE RALLY
+            let DANO = true;
+            if (DANO) {
+                //* *************************************************
+                //      TEST START
+                //* *************************************************
+                //      locationInfo
+                const locationInfo = {
+                    id: newRally?.location?.id,
+                    street: newRally?.location?.street,
+                    city: newRally?.location?.city,
+                    stateProv: newRally?.location?.stateProv,
+                    postalCode: newRally?.location?.postalCode,
+                    latitude: newRally?.geolocation?.lat,
+                    longitude: newRally?.geolocation?.lng,
+                };
+                //      contact
+                const contactInfo = {
+                    id: '', //      NEED THIS VALUE
+                    firstName: '', //      NEED THIS VALUE
+                    lastName: '', //      NEED THIS VALUE
+                    email: newRally?.contact?.email,
+                    phone: newRally?.contact?.phone,
+                };
+                //      meal
+                const mealInfo = {
+                    id: '', //      NEED THIS VALUE
+                    startTime: newRally?.meal?.startTime,
+                    deadline: newRally?.meal?.deadline,
+                    cost: newRally?.meal?.cost,
+                    plannedCount: newRally?.meal?.plannedCount,
+                    actualCount: newRally?.meal?.actualCount,
+                    message: newRally?.meal?.message,
+                    mealEventId: newRally?.id,
+                };
+                const eventInfo = {
+                    id: newRally?.id,
+                    eventCompKey: newRally?.eventCompKey,
+                    eventDate: newRally?.eventDate,
+                    startTime: newRally?.startTime,
+                    endTime: newRally?.endTime,
+                    name: newRally?.name,
+                    plannedCount: newRally?.plannedCount,
+                    actualCount: newRally?.actualCount,
+                    mealPlannedCount: newRally?.mealPlannedCount,
+                    mealActualCount: newRally?.mealActualCount,
+                    graphic: newRally?.graphic,
+                    //      message: ???
+                    eventLocationEventsId: newRally?.location?.id,
+                    eventContactEventsId: '', //      NEED THIS VALUE
+                    eventMealId: '', //      NEED THIS VALUE
+                };
+                console.log('newRally.id:', newRally.id);
+                printObject('eventInfo:\n', eventInfo);
+                printObject('locationInfo:\n', locationInfo);
+                printObject('contactInfo:\n', contactInfo);
+                printObject('mealInfo:\n', mealInfo);
+                //* *************************************************
+                //      TEST END
+                //* *************************************************
+            } else {
                 dispatch(updateRally(newRally));
-                navigation.navigate('Serve', null);
+            }
+            navigation.navigate('Serve', null);
+        } else {
+            let DANO = true;
+            if (DANO) {
+                console.log('FALSE: newRally:\n', newRally);
             } else {
                 // for DEV mode you need something in id;
                 getUniqueId().then((new_id) => {
@@ -118,61 +183,63 @@ const RallyNewConfirmation = () => {
                     let newRallyToSave = { ...newRally, ...tmpId };
                     dispatch(addNewRally(newRallyToSave));
                 });
-                navigation.navigate('Serve', null);
-            }
-        } else {
-            if (newRally?.uid) {
-                // printObject('REC:128-->update(DDB):', newRally);
-                //   UPDATE EXISTING EVENT
-                let obj = {
-                    operation: 'updateEvent',
-                    payload: {
-                        Item: newRally,
-                    },
-                };
-                let body = JSON.stringify(obj);
-
-                let api2use = process.env.AWS_API_ENDPOINT + '/events';
-                axios
-                    .post(api2use, body, CONFIG)
-                    .then((response) => {
-                        // printObject('REC:142-->update(REDUX):', newRally);
-                        dispatch(updateRally(newRally));
-                    })
-                    .catch((err) => {
-                        console.log('REC-106: error:', err);
-                    });
-                Analytics.record({
-                    name: 'eventUpdated',
-                    attributes: { userId: user.uid, body: body },
-                    metrics: { eventUpdated: 1 },
-                });
-            } else {
-                // printObject('REC:154-->new(DDB):', newRally);
-                //todo: need DDB call
-                putRally(newRally, user, feo.appName, feo.eventRegion)
-                    .then((response) => {
-                        //need to pass response.Item because we get UID back.
-                        // printObject('REC:158-->update(REDUX):', response.Item);
-                        dispatch(addNewRally(response.Item));
-                    })
-                    .catch((error) => {
-                        console.log('REC:162--->putRally error\n', error);
-                    });
-                try {
-                    Analytics.record({
-                        name: 'eventAdded',
-                        attributes: { userId: user.uid, body: newRally },
-                        metrics: {
-                            eventAdded: 1,
-                        },
-                    });
-                } catch (error) {
-                    console.log('Analytics error:\n', error);
-                }
             }
             navigation.navigate('Serve', null);
         }
+
+        // } else {
+        //     if (newRally?.id) {
+        //         // printObject('REC:128-->update(DDB):', newRally);
+        //         //   UPDATE EXISTING EVENT
+        //         let obj = {
+        //             operation: 'updateEvent',
+        //             payload: {
+        //                 Item: newRally,
+        //             },
+        //         };
+        //         let body = JSON.stringify(obj);
+
+        //         let api2use = process.env.AWS_API_ENDPOINT + '/events';
+        //         axios
+        //             .post(api2use, body, CONFIG)
+        //             .then((response) => {
+        //                 // printObject('REC:142-->update(REDUX):', newRally);
+        //                 dispatch(updateRally(newRally));
+        //             })
+        //             .catch((err) => {
+        //                 console.log('REC-106: error:', err);
+        //             });
+        //         Analytics.record({
+        //             name: 'eventUpdated',
+        //             attributes: { userId: user.uid, body: body },
+        //             metrics: { eventUpdated: 1 },
+        //         });
+        // } else {
+        //     // printObject('REC:154-->new(DDB):', newRally);
+        //     //todo: need DDB call
+        //     putRally(newRally, user, feo.appName, feo.eventRegion)
+        //         .then((response) => {
+        //             //need to pass response.Item because we get UID back.
+        //             // printObject('REC:158-->update(REDUX):', response.Item);
+        //             dispatch(addNewRally(response.Item));
+        //         })
+        //         .catch((error) => {
+        //             console.log('REC:162--->putRally error\n', error);
+        //         });
+        //     try {
+        //         Analytics.record({
+        //             name: 'eventAdded',
+        //             attributes: { userId: user.uid, body: newRally },
+        //             metrics: {
+        //                 eventAdded: 1,
+        //             },
+        //         });
+        //     } catch (error) {
+        //         console.log('Analytics error:\n', error);
+        //     }
+        // }
+
+        // }
     }
     return (
         <>

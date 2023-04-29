@@ -6,7 +6,7 @@ const RallyInfoScreen = ({ route, navigation }) => {
     const feo = useSelector((state) => state.division);
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: feo.appName,
+            title: feo.appName || 'FEO',
         });
     }, [navigation, feo]);
     return <RallyInfo rallyId={rallyId} navigation />;

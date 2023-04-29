@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     userEmail: {
-        fontSize: 22,
+        fontSize: 16,
         fontWeight: '300',
         marginBottom: 30,
         marginLeft: 10,

@@ -10,14 +10,14 @@ import React, { useState, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import UserDisplay from '../components/team/UserDisplay';
-import { printObject } from '../utils/helpers';
 const UserPermissionsSet = ({ route }) => {
     const profile = route.params.profile;
     const navigation = useNavigation();
     const feo = useSelector((state) => state.division);
+    console.log('title:', feo.appName);
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: feo.appName,
+            title: feo.appName || 'Permissions',
         });
     }, [navigation, feo]);
     //printObject('UPS:14--profile:', profile);

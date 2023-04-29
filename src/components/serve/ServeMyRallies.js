@@ -37,7 +37,7 @@ const ServeMyRallies = () => {
     }
     sortRallies()
         .then((results) => {
-            //printObject('diplayData-sorted', displayData);
+            printObject('displayData-sorted', displayData);
         })
         .catch((err) => {
             console.log('error sorting', err);
@@ -71,7 +71,7 @@ const ServeMyRallies = () => {
                 operation: 'deleteEvent',
                 payload: {
                     Key: {
-                        uid: rally.uid,
+                        uid: rally.id,
                     },
                 },
             };
@@ -202,7 +202,7 @@ const ServeMyRallies = () => {
                             <Pressable
                                 onPress={() =>
                                     navigation.navigate('RallyInfo', {
-                                        rallyId: ral.uid,
+                                        rallyId: ral.id,
                                     })
                                 }
                                 key={index}

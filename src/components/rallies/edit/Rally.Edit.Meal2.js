@@ -214,26 +214,22 @@ export default function RallyMealForm({ rallyId }) {
 
             const newMealStartTime = `${hours}:${minutes}:00.000`;
 
-            // let mealOffered = offerMeal;
-            // let mTime = newMealTime.toString();
-            // let mDeadline = newMealDeadline.toString();
-            // let mCost = cost;
-            // let mMessage = mealMessage;
-
-            // build a meal object
-            let meal = {
-                meal: {
-                    id: tmp.meal.id,
-                    message: mealMessage,
-                    startTime: newMealStartTime,
-                    deadline: newMealDeadline,
-                    cost: cost,
-                    plannedCount: tmp?.meal?.plannedCount,
-                    actualCount: tmp?.meal?.actualCount,
-                },
+            let newRally = tmp;
+            let updatedMeal = {
+                ...newRally.meal,
+                message: mealMessage,
+                startTime: newMealStartTime,
+                deadline: newMealDeadline,
+                cost: cost,
+                plannedCount: tmp?.meal?.plannedCount,
+                actualCount: tmp?.meal?.actualCount,
             };
-            printObject('REM:235--> updateTmp(meal):', meal);
-            dispatch(updateTmp(meal));
+            let updatedRally = {
+                ...newRally,
+                meal: updatedMeal,
+            };
+            printObject('REM:235--> updatedRally):', updatedRally);
+            dispatch(updateTmp(updatedRally));
             navigation.navigate('RallyEditFlow', {
                 rallyId: rallyId,
                 stage: 6,

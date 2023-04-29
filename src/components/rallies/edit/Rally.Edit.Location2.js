@@ -29,6 +29,7 @@ import { string } from 'prop-types';
 export default function RallyLocationForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const feo = useSelector((state) => state.division);
     const [showEditWarningConfirm, setShowEditWarningConfirm] = useState(
         !!rally?.registrations > 0
     );
@@ -54,7 +55,13 @@ export default function RallyLocationForm({ rallyId }) {
         rally = rallyEntry[0];
     }
     useLayoutEffect(() => {
+        navigation.setOptions({
+            title: feo.appName || 'FEO',
+        });
+    }, [navigation, feo]);
+    useLayoutEffect(() => {
         if (rally?.id) {
+            printObject('rally:\n', rally);
             //save existing values to tmpEntry
             //change the postalCode to string
             const newLocationValues = {
@@ -95,12 +102,18 @@ export default function RallyLocationForm({ rallyId }) {
         setLocationPostalCode(value);
     };
     const handleNext = async () => {
-        const values = {
+        const loc = {
             name: locationName,
             street: locationStreet,
             city: locationCity,
             stateProv: locationStateProv,
             postalCode: locationPostalCode,
+        };
+        if (rally.id) {
+            loc.id = rally.id;
+        }
+        const values = {
+            location: loc,
         };
         // gather data
         // console.log('in handleNext');
@@ -115,7 +128,7 @@ export default function RallyLocationForm({ rallyId }) {
         });
     };
     // const dispatch = useDispatch();
-
+    console.log('REL:124-->rallyId:', rallyId);
     return (
         <>
             <Modal visible={showEditWarningConfirm} animationStyle='slide'>
@@ -175,7 +188,7 @@ export default function RallyLocationForm({ rallyId }) {
                                 <View style={styles.infoWrapper}>
                                     <View style={styles.formHeader}>
                                         <Text style={styles.titleText}>
-                                            Location InformationWWW
+                                            Location Information
                                         </Text>
                                     </View>
                                     <View style={styles.inputContainer}>

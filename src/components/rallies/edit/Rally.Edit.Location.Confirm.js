@@ -40,19 +40,20 @@ export default function RallyLocationConfirm(props) {
     let rally;
 
     useEffect(() => {
+        printObject('RELC:43-->tmp:\n', tmp);
         rally = tmp;
 
         // need to make sure that geoLocation is defined
         if (!rally?.geolocation?.lat || !rally?.geolocation?.lng) {
             //build address string
             let address =
-                tmp.street.replace(/ /g, '+') +
+                tmp?.location?.street.replace(/ /g, '+') +
                 ',+' +
-                tmp.city.replace(/ /g, '+') +
+                tmp?.location?.city.replace(/ /g, '+') +
                 ',+' +
-                tmp.stateProv +
+                tmp?.location?.stateProv +
                 '+' +
-                tmp.postalCode;
+                tmp?.location?.postalCode;
             getGeoCode(address)
                 .then((geoInfo) => {
                     console.log('REL:58');
@@ -88,15 +89,18 @@ export default function RallyLocationConfirm(props) {
 
         let latStrValue = latValue.toString();
         let lngStrValue = lngValue.toString();
-
-        let values = {
-            geolocation: {
-                lat: latStrValue,
-                lng: lngStrValue,
-            },
+        let newRally = tmp;
+        const updatedLocation = {
+            ...newRally.location,
+            latitude: '32.5489939',
+            longitude: '-84.928685',
+        };
+        newRally = {
+            ...newRally,
+            location: updatedLocation,
         };
 
-        dispatch(updateTmp(values));
+        dispatch(updateTmp(newRally));
 
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
