@@ -27,9 +27,8 @@ const RallyMealInfo = ({ rally }) => {
                                 </Text>
                                 <Text style={styles.costText}>
                                     $
-                                    {(
-                                        Math.round(rally?.meal?.cost * 100) /
-                                        100
+                                    {Math.round(
+                                        rally?.meal?.cost / 100
                                     ).toFixed(2)}
                                 </Text>
                             </View>
@@ -54,9 +53,7 @@ const RallyMealInfo = ({ rally }) => {
                         </View>
                     ) : (
                         <View style={styles.noMealWrapper}>
-                            <Text style={styles.noMealText}>
-                                No Meal Offered
-                            </Text>
+                            <Text>No Meal Offered</Text>
                         </View>
                     )}
                 </Surface>

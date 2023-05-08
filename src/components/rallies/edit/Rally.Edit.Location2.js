@@ -19,11 +19,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
 import CustomButton from '../../../components/ui/CustomButton';
 // import { putRally } from '../../providers/rallies';
-import { createTmp, updateTmp } from '../../../features/rallies/ralliesSlice';
+import {
+    createTmp,
+    updateTmp,
+    clearRallyCopy,
+    createRallyCopy,
+} from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
 import { printObject } from '../../../utils/helpers';
 import { string } from 'prop-types';
-
+import SimpleDropDown from '../../ui/DropDown/SimpleDropDown';
+import { STATELABELVALUES } from '../../../constants/pate';
 // create validation schema for yup to pass to formik
 
 export default function RallyLocationForm({ rallyId }) {
@@ -40,17 +46,19 @@ export default function RallyLocationForm({ rallyId }) {
     const [locationStreetError, setLocationStreetError] = useState('');
     const [locationCity, setLocationCity] = useState('');
     const [locationCityError, setLocationCityError] = useState('');
-    const [locationStateProv, setLocationStateProv] = useState('');
+    const [locationStateProv, setLocationStateProv] = useState('AL');
     const [locationStateProvError, setLocationStateProvError] = useState('');
     const [locationPostalCode, setLocationPostalCode] = useState('');
     const [locationPostalCodeError, setLocationPostalCodeError] = useState('');
+    const [enableNext, setEnableNext] = useState(false);
     let rallyEntry;
     if (rallyId !== 0) {
         rallyEntry = useSelector((state) =>
             state.division.gatherings.filter((r) => r.id === rallyId)
         );
     }
-    let rally;
+
+    let rally = {};
     if (rallyEntry) {
         rally = rallyEntry[0];
     }
@@ -60,30 +68,46 @@ export default function RallyLocationForm({ rallyId }) {
         });
     }, [navigation, feo]);
     useLayoutEffect(() => {
+        validateNextValues();
+    }, [
+        locationName,
+        locationStreet,
+        locationCity,
+        locationStateProv,
+        locationPostalCode,
+    ]);
+    useLayoutEffect(() => {
         if (rally?.id) {
-            printObject('rally:\n', rally);
+            // console.log('YES');
+            // printObject('REL2:65:\n', rally);
             //save existing values to tmpEntry
             //change the postalCode to string
-            const newLocationValues = {
-                ...rally.location,
-                postalCode: rally.location.postalCode.toString(),
-            };
-            const tmpRally = { ...rally, location: newLocationValues };
+            // const newLocationValues = {
+            //     ...rally.location,
+            //     postalCode: rally.location.postalCode.toString(),
+            // };
+            // const tmpRally = { ...rally, location: newLocationValues };
             // console.log('postalCode STRING: ', tmpRally.location.postalCode);
             // console.log(typeof tmpRally?.location?.postalCode);
             // console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
             // printObject('tmpRally:\n', tmpRally);
             // console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
-            setLocationName(tmpRally.name);
-            setLocationStreet(tmpRally?.location?.street);
-            setLocationCity(tmpRally?.location?.city);
-            setLocationStateProv(tmpRally?.location?.stateProv);
-            setLocationPostalCode(tmpRally?.location?.postalCode);
-            dispatch(createTmp(tmpRally));
+            setLocationName(rally.name);
+            setLocationStreet(rally?.location?.street || '');
+            setLocationCity(rally?.location?.city || '');
+            setLocationStateProv(rally?.location?.stateProv || 'AL');
+            setLocationPostalCode(
+                rally?.location?.postalCode.toString() || null
+            );
+            dispatch(createTmp(rally));
+            dispatch(createRallyCopy(rally));
+        } else {
+            dispatch(clearRallyCopy());
         }
         if (parseInt(rally?.plannedCount) > 0) {
             setShowEditWarningConfirm((prevState) => true);
         }
+        setEnableNext(false);
     }, []);
 
     const handleNameChange = (value) => {
@@ -101,6 +125,57 @@ export default function RallyLocationForm({ rallyId }) {
     const handlePostalCodeChange = (value) => {
         setLocationPostalCode(value);
     };
+    const validateName = (value) => {
+        // 5-20 chars, apostrophe with alpha permitted
+        const testRegex = /^[a-zA-Z.\- ]{5,20}$/;
+        if (!testRegex.test(value)) {
+            return '5-20 characters';
+        } else {
+            return '';
+        }
+    };
+    const validateStreet = (value) => {
+        // 0 OR 2-20 chars, apostrophe with alpha permitted
+        const testRegex = /^([0-9a-zA-Z.\- ]{2,20})?$/;
+        if (!testRegex.test(value)) {
+            return '0 or 2-20 characters';
+        } else {
+            return '';
+        }
+    };
+    const validateCity = (value) => {
+        // 2-15 chars, apostrophe with alpha permitted
+        const testRegex = /^[a-zA-Z.\- ]{2,15}$/;
+        if (!testRegex.test(value)) {
+            return '2-15 characters';
+        } else {
+            return '';
+        }
+    };
+    const validateNextValues = () => {
+        if (
+            locationName.length < 5 ||
+            locationNameError.length > 0 ||
+            locationCity.length < 3 ||
+            locationCityError > 0
+        ) {
+            setEnableNext(false);
+            return false;
+        } else {
+            setEnableNext(true);
+            return true;
+        }
+    };
+    const validatePostalCode = (value) => {
+        console.log('TEST POSTAL CODE');
+        // string with 00000-99999
+        const testRegex = /^[0-9]{5}$/;
+        if (!testRegex.test(value)) {
+            return '5 digits required';
+        } else {
+            return '';
+        }
+    };
     const handleNext = async () => {
         const loc = {
             name: locationName,
@@ -109,26 +184,58 @@ export default function RallyLocationForm({ rallyId }) {
             stateProv: locationStateProv,
             postalCode: locationPostalCode,
         };
-        if (rally.id) {
-            loc.id = rally.id;
-        }
-        const values = {
-            location: loc,
+        //* *********************************************************
+        //      START RE-DO
+        //* *********************************************************
+
+        const locationUpdates = {
+            ...rally?.location,
+            street: locationStreet || '',
+            city: locationCity || '',
+            stateProv: locationStateProv,
+            postalCode: parseInt(locationPostalCode) || null,
         };
-        // gather data
-        // console.log('in handleNext');
-        if (rally?.id) {
-            dispatch(updateTmp(values));
+        const newRally = {
+            ...rally,
+            name: locationName,
+            location: locationUpdates,
+        };
+
+        let DANO = true;
+        if (DANO) {
+            // printObject('REL:135-->rally:', rally);
+            // printObject('REL:136-->newRally:', newRally);
+            dispatch(updateTmp(newRally));
         } else {
-            dispatch(createTmp(values));
+            dispatch(createTmp(newRally));
         }
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,
             stage: 2,
         });
+        //* *********************************************************
+        //      END RE-DO
+        //* *********************************************************
+        // if (rally.id) {
+        //     loc.id = rally.id;
+        // }
+        // const values = {
+        //     location: loc,
+        // };
+        // gather data
+        // console.log('in handleNext');
+        // if (rally?.id) {
+        //     dispatch(updateTmp(values));
+        // } else {
+        //     dispatch(createTmp(values));
+        // }
+        // navigation.navigate('RallyEditFlow', {
+        //     rallyId: rallyId,
+        //     stage: 2,
+        // });
     };
     // const dispatch = useDispatch();
-    console.log('REL:124-->rallyId:', rallyId);
+    // console.log('REL:124-->rallyId:', rallyId);
     return (
         <>
             <Modal visible={showEditWarningConfirm} animationStyle='slide'>
@@ -202,9 +309,27 @@ export default function RallyLocationForm({ rallyId }) {
                                                     required
                                                     size='small'
                                                     style={styles.input}
-                                                    onChangeText={
-                                                        handleNameChange
-                                                    }
+                                                    onChange={(e) => {
+                                                        const inputText =
+                                                            e.nativeEvent.text;
+                                                        setLocationName(
+                                                            inputText
+                                                        );
+                                                        setLocationNameError(
+                                                            validateName(
+                                                                inputText
+                                                            )
+                                                        );
+                                                        // validateNextValues();
+                                                    }}
+                                                    onBlur={() => {
+                                                        setLocationNameError(
+                                                            validateName(
+                                                                locationName
+                                                            )
+                                                        );
+                                                        validateNextValues();
+                                                    }}
                                                     value={locationName}
                                                     error={
                                                         locationNameError !== ''
@@ -213,6 +338,19 @@ export default function RallyLocationForm({ rallyId }) {
                                                         locationNameError
                                                     }
                                                 />
+                                                {locationNameError && (
+                                                    <View
+                                                        style={{
+                                                            color: 'red',
+                                                            fontSize: 12,
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                    >
+                                                        <Text>
+                                                            {locationNameError}
+                                                        </Text>
+                                                    </View>
+                                                )}
                                             </View>
                                         </View>
                                     </View>
@@ -227,9 +365,27 @@ export default function RallyLocationForm({ rallyId }) {
                                                     required
                                                     size='small'
                                                     style={styles.input}
-                                                    onChangeText={
-                                                        handleStreetChange
-                                                    }
+                                                    onChange={(e) => {
+                                                        const inputText =
+                                                            e.nativeEvent.text;
+                                                        setLocationStreet(
+                                                            inputText
+                                                        );
+                                                        setLocationStreetError(
+                                                            validateStreet(
+                                                                inputText
+                                                            )
+                                                        );
+                                                        //validateNextValues();
+                                                    }}
+                                                    onBlur={() => {
+                                                        setLocationStreetError(
+                                                            validateStreet(
+                                                                locationStreet
+                                                            )
+                                                        );
+                                                        validateNextValues();
+                                                    }}
                                                     value={locationStreet}
                                                     error={
                                                         locationStreetError !==
@@ -239,6 +395,21 @@ export default function RallyLocationForm({ rallyId }) {
                                                         locationStreetError
                                                     }
                                                 />
+                                                {locationStreetError && (
+                                                    <View
+                                                        style={{
+                                                            color: 'red',
+                                                            fontSize: 12,
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                    >
+                                                        <Text>
+                                                            {
+                                                                locationStreetError
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                )}
                                             </View>
                                         </View>
                                     </View>
@@ -253,9 +424,26 @@ export default function RallyLocationForm({ rallyId }) {
                                                     required
                                                     size='small'
                                                     style={styles.input}
-                                                    onChangeText={
-                                                        handleCityChange
-                                                    }
+                                                    onChange={(e) => {
+                                                        const inputText =
+                                                            e.nativeEvent.text;
+                                                        setLocationCity(
+                                                            inputText
+                                                        );
+                                                        setLocationCityError(
+                                                            validateCity(
+                                                                inputText
+                                                            )
+                                                        );
+                                                    }}
+                                                    onBlur={() => {
+                                                        setLocationCityError(
+                                                            validateCity(
+                                                                locationCity
+                                                            )
+                                                        );
+                                                        //validateNextValues();
+                                                    }}
                                                     value={locationCity}
                                                     error={
                                                         locationCityError !== ''
@@ -264,33 +452,41 @@ export default function RallyLocationForm({ rallyId }) {
                                                         locationCityError
                                                     }
                                                 />
+                                                {locationCityError && (
+                                                    <View
+                                                        style={{
+                                                            color: 'red',
+                                                            fontSize: 12,
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                    >
+                                                        <Text>
+                                                            {locationCityError}
+                                                        </Text>
+                                                    </View>
+                                                )}
                                             </View>
                                         </View>
                                     </View>
                                     <View style={styles.inputContainer}>
                                         <View>
-                                            <View style={styles.container}>
-                                                <TextInput
-                                                    label='State'
-                                                    placeholder='State'
-                                                    autoCapitalize='words'
-                                                    autoCorrect={false}
-                                                    required
-                                                    size='small'
-                                                    style={styles.input}
-                                                    onChangeText={
-                                                        handleStateProvChange
-                                                    }
-                                                    value={locationStateProv}
-                                                    error={
-                                                        locationStateProvError !==
-                                                        ''
-                                                    }
-                                                    helperText={
-                                                        locationStateProvError
-                                                    }
-                                                />
+                                            <View>
+                                                <View>
+                                                    <SimpleDropDown
+                                                        list={STATELABELVALUES}
+                                                        activeValue={
+                                                            locationStateProv
+                                                        }
+                                                        setValue={
+                                                            setLocationStateProv
+                                                        }
+                                                    />
+                                                </View>
                                             </View>
+                                        </View>
+                                    </View>
+                                    <View style={styles.inputContainer}>
+                                        <View>
                                             <View style={styles.container}>
                                                 <TextInput
                                                     label='Postal Code'
@@ -299,9 +495,26 @@ export default function RallyLocationForm({ rallyId }) {
                                                     required
                                                     size='small'
                                                     style={styles.input}
-                                                    onChangeText={
-                                                        handlePostalCodeChange
-                                                    }
+                                                    onChange={(e) => {
+                                                        const inputText =
+                                                            e.nativeEvent.text;
+                                                        setLocationPostalCode(
+                                                            inputText
+                                                        );
+                                                        setLocationPostalCodeError(
+                                                            validatePostalCode(
+                                                                inputText
+                                                            )
+                                                        );
+                                                    }}
+                                                    onBlur={() => {
+                                                        setLocationPostalCodeError(
+                                                            validatePostalCode(
+                                                                locationPostalCode
+                                                            )
+                                                        );
+                                                        //validateNextValues();
+                                                    }}
                                                     value={locationPostalCode}
                                                     error={
                                                         locationPostalCodeError !==
@@ -322,14 +535,19 @@ export default function RallyLocationForm({ rallyId }) {
                                 <View style={styles.buttonContainer}>
                                     <CustomNavButton
                                         title='Next'
+                                        enabled={enableNext}
                                         graphic={{
                                             name: 'forward',
                                             color: 'white',
                                             size: 10,
                                         }}
                                         cbStyles={{
-                                            backgroundColor: 'green',
-                                            color: 'white',
+                                            backgroundColor: enableNext
+                                                ? 'green'
+                                                : 'lightgrey',
+                                            color: enableNext
+                                                ? 'white'
+                                                : 'black',
                                             width: '50%',
                                         }}
                                         onPress={handleNext}

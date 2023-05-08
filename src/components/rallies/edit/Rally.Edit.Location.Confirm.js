@@ -40,20 +40,20 @@ export default function RallyLocationConfirm(props) {
     let rally;
 
     useEffect(() => {
-        printObject('RELC:43-->tmp:\n', tmp);
+        // printObject('RELC:43-->tmp:\n', tmp);
         rally = tmp;
 
         // need to make sure that geoLocation is defined
-        if (!rally?.geolocation?.lat || !rally?.geolocation?.lng) {
+        if (!rally?.location?.latitude || !rally?.location?.longitude) {
             //build address string
             let address =
-                tmp?.location?.street.replace(/ /g, '+') +
+                rally?.location?.street.replace(/ /g, '+') +
                 ',+' +
-                tmp?.location?.city.replace(/ /g, '+') +
+                rally?.location?.city.replace(/ /g, '+') +
                 ',+' +
-                tmp?.location?.stateProv +
+                rally?.location?.stateProv +
                 '+' +
-                tmp?.location?.postalCode;
+                rally?.location?.postalCode;
             getGeoCode(address)
                 .then((geoInfo) => {
                     console.log('REL:58');
@@ -72,11 +72,11 @@ export default function RallyLocationConfirm(props) {
                 });
             console.log('REL:72');
         } else {
-            setGeoLat(parseFloat(rally.geolocation.lat));
-            setGeoLng(parseFloat(rally.geolocation.lng));
+            setGeoLat(parseFloat(rally.location.latitude));
+            setGeoLng(parseFloat(rally.location.longitude));
             setPin({
-                latitude: parseFloat(rally.geolocation.lat),
-                longitude: parseFloat(rally.geolocation.lng),
+                latitude: parseFloat(rally.location.latitude),
+                longitude: parseFloat(rally.location.longitude),
             });
             setLocationDefined(true);
         }
@@ -89,6 +89,32 @@ export default function RallyLocationConfirm(props) {
 
         let latStrValue = latValue.toString();
         let lngStrValue = lngValue.toString();
+        //* *********************************************************
+        //      START RE-DO
+        //* *********************************************************
+        const locationUpdates = {
+            ...tmp.location,
+            latitude: latStrValue,
+            longitude: lngStrValue,
+        };
+        const rallyUpdate = {
+            ...tmp,
+            location: locationUpdates,
+        };
+
+        let DANO = true;
+        if (DANO) {
+            // printObject('REL:135-->tmp:', tmp);
+            // printObject('REL:136-->rallyUpdate:', rallyUpdate);
+            dispatch(updateTmp(rallyUpdate));
+            navigation.navigate('RallyEditFlow', {
+                rallyId: rallyId,
+                stage: 2,
+            });
+        }
+        //* *********************************************************
+        //      END RE-DO
+        //* *********************************************************
         let newRally = tmp;
         const updatedLocation = {
             ...newRally.location,

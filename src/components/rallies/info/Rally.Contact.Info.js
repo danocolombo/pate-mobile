@@ -6,7 +6,7 @@ import { getPhoneType, transformPatePhone } from '../../../utils/helpers';
 const RallyContactInfo = ({ rally }) => {
     let phoneValueToDisplay;
     let pType = getPhoneType(rally?.contact?.phone);
-    if (rally.contact.phone) {
+    if (rally && rally?.contact?.phone) {
         switch (pType) {
             case 'PATE':
                 phoneValueToDisplay = transformPatePhone(rally.contact.phone);
@@ -36,16 +36,26 @@ const RallyContactInfo = ({ rally }) => {
                             Contact Information
                         </Headline>
                     </View>
-                    <View style={styles.textWrapper}>
-                        <Text style={styles.text}>
-                            {rally?.contact?.firstName}{' '}
-                            {rally?.contact?.lastName}
-                        </Text>
+                    {rally?.contact ? (
+                        <View style={styles.textWrapper}>
+                            <Text style={styles.text}>
+                                {rally?.contact?.firstName}{' '}
+                                {rally?.contact?.lastName}
+                            </Text>
 
-                        <Text style={styles.text}>{phoneValueToDisplay}</Text>
+                            <Text style={styles.text}>
+                                {phoneValueToDisplay}
+                            </Text>
 
-                        <Text style={styles.text}>{rally?.contact?.email}</Text>
-                    </View>
+                            <Text style={styles.text}>
+                                {rally?.contact?.email}
+                            </Text>
+                        </View>
+                    ) : (
+                        <View style={styles.textWrapper}>
+                            <Text>No Contact Defined</Text>
+                        </View>
+                    )}
                 </Surface>
             </View>
         </>

@@ -9,6 +9,7 @@ const initialState = {
     userRallies: [],
     displayRallies: [],
     tmpRally: {},
+    rallyCopy: {},
     isLoading: false,
 };
 export const getAvailableEvents = createAsyncThunk(
@@ -51,7 +52,18 @@ export const ralliesSlice = createSlice({
                 let newTmp2 = Object.assign(state.tmpRally, action.payload);
                 state.tmpRally = newTmp2;
             }
-
+            printObject('RS:54-->allRallies:', state.allRallies);
+            return state;
+        },
+        createRallyCopy: (state, action) => {
+            state.rallyCopy = {};
+            state.rallyCopy = action.payload;
+            //printObject('state.tmpRally AFTER create', state.tmpRally);
+            return state;
+        },
+        clearRallyCopy: (state) => {
+            state.rallyCopy = {};
+            state.tmpRally = {};
             return state;
         },
         loadDisplayRallies: (state, action) => {
@@ -161,21 +173,23 @@ export const ralliesSlice = createSlice({
         },
         updateRally: (state, action) => {
             const newValue = action.payload;
-            // console.log('newValue:', newValue);
+            console.log('RS:164-->newValue:', newValue);
+            printObject('allRallies:', state.allRallies);
+            printObject('RS:165-->state.allRallies:', state.allRallies);
             const newRallyList = state.allRallies.map((ral) => {
                 // console.log('typeof ral:', typeof ral);
                 // console.log('typeof action.payload', typeof action.payload);
-                return ral.uid === newValue.uid ? newValue : ral;
+                return ral.id === newValue.id ? newValue : ral;
             });
             // console.log('=========FEATURE START==============');
-            // console.log('f.r.RS:82-->newRallyList', newRallyList);
+            console.log('f.r.RS:82-->newRallyList', newRallyList);
             // console.log('=========FEATURE END==============');
             function asc_sort(a, b) {
                 return a.eventDate - b.eventDate;
             }
             let newBigger = newRallyList.sort(asc_sort);
             state.allRallies = newBigger;
-            // printObject('new allRallies', state.allRallies);
+            printObject('new allRallies', state.allRallies);
             return state;
         },
         addNewRally: (state, action) => {
@@ -243,6 +257,8 @@ export const ralliesSlice = createSlice({
 export const {
     loadRallies,
     getRally,
+    createRallyCopy,
+    clearRallyCopy,
     addNewRally,
     updateRally,
     updateRegNumbers,

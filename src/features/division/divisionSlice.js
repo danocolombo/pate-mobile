@@ -3,6 +3,12 @@ import { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../graphql/queries';
 import { printObject, getToday } from '../../utils/helpers';
 import { getPateDate } from '../../utils/date';
+import {
+    updateGathering,
+    newGathering,
+    deleteGathering,
+    // createGathering,
+} from '../../providers/gatherings.provider';
 //   this is url for all meetings
 
 const initialState = {
@@ -155,11 +161,11 @@ export const divisionSlice = createSlice({
         },
         updateRally: (state, action) => {
             const newValue = action.payload;
-            // console.log('newValue:', newValue);
-            const newRallyList = state.allRallies.map((ral) => {
+
+            const newRallyList = state.gatherings.map((ral) => {
                 // console.log('typeof ral:', typeof ral);
                 // console.log('typeof action.payload', typeof action.payload);
-                return ral.uid === newValue.uid ? newValue : ral;
+                return ral.id === newValue.id ? newValue : ral;
             });
             // console.log('=========FEATURE START==============');
             // console.log('f.r.RS:82-->newRallyList', newRallyList);
@@ -168,7 +174,7 @@ export const divisionSlice = createSlice({
                 return a.eventDate - b.eventDate;
             }
             let newBigger = newRallyList.sort(asc_sort);
-            state.allRallies = newBigger;
+            state.gatherings = newBigger;
             // printObject('new allRallies', state.allRallies);
             return state;
         },
@@ -213,25 +219,72 @@ export const divisionSlice = createSlice({
             return state;
         },
     },
-    extraReducers: {
-        // [getAvailableEvents.pending]: (state) => {
-        //     state.isLoading = true;
-        // },
-        // [getAvailableEvents.fulfilled]: (state, action) => {
-        //     // console.log(action);
-        //     state.isLoading = false;
-        //     // printObject('RS:223--> action', action);
-        //     state.displayRallies = state.allRallies.filter(
-        //         (r) =>
-        //             r.eventDate >= action.payload &&
-        //             r.eventRegion === 'test' &&
-        //             r.approved === true
-        //     );
-        // },
-        // [getAvailableEvents.rejected]: (state, action) => {
-        //     console.log(action);
-        //     state.isLoading = false;
-        // },
+    extraReducers: (builder) => {
+        builder.addCase(updateGathering.pending, (state) => {
+            state.isLoading = true;
+        }),
+            builder.addCase(updateGathering.fulfilled, (state, action) => {
+                const newValue = action.payload;
+                // printObject('DS:233-->action:\n', action);
+                const newGatheringList = state.gatherings.map((ral) => {
+                    return ral.id === newValue.id ? newValue : ral;
+                });
+
+                function asc_sort(a, b) {
+                    return a.eventDate - b.eventDate;
+                }
+                let newBigger = newGatheringList.sort(asc_sort);
+                state.gatherings = newBigger;
+
+                state.isLoading = false;
+                return state;
+            }),
+            builder.addCase(updateGathering.rejected, (state, action) => {
+                console.log(action);
+                state.isLoading = false;
+            }),
+            builder.addCase(newGathering.pending, (state) => {
+                state.isLoading = true;
+            }),
+            builder.addCase(newGathering.fulfilled, (state, action) => {
+                const newValue = action.payload;
+                const gatheringList = state.gatherings;
+                gatheringList.push(newValue);
+
+                function asc_sort(a, b) {
+                    return a.eventDate - b.eventDate;
+                }
+                let newBigger = gatheringList.sort(asc_sort);
+                state.gatherings = newBigger;
+
+                state.isLoading = false;
+                return state;
+            }),
+            builder.addCase(newGathering.rejected, (state, action) => {
+                console.log(action);
+                let DANO = true;
+                if (DANO) {
+                    console.log('DS:247-->createGathering.rejected');
+                    state.isLoading = false;
+                    return state;
+                }
+                state.isLoading = false;
+            });
+        builder.addCase(deleteGathering.pending, (state) => {
+            state.isLoading = true;
+        }),
+            builder.addCase(deleteGathering.fulfilled, (state, action) => {
+                const deleteValue = action.payload;
+                printObject('DS:278-->remove from REDUX:\n', deleteValue);
+
+                state.isLoading = false;
+                return state;
+            }),
+            builder.addCase(deleteGathering.rejected, (state, action) => {
+                printObject('DS:284-->deleteGathering.rejected', action);
+                state.isLoading = false;
+                return state;
+            });
     },
 });
 

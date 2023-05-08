@@ -150,6 +150,30 @@ export default function RallyLogisticsForm({ rallyId }) {
                 startTime: newEventStartTime,
                 endTime: newEventEndTime,
             };
+            //* *********************************************************
+            //      START RE-DO
+            //* *********************************************************
+
+            const rallyUpdate = {
+                ...tmp,
+                eventDate: newEventDate,
+                startTime: newEventStartTime,
+                endTime: newEventEndTime,
+            };
+
+            let DANO1 = true;
+            if (DANO1) {
+                // printObject('RELM:166-->tmp:', tmp);
+                // printObject('RELM:167-->rallyUpdate:', rallyUpdate);
+                dispatch(updateTmp(rallyUpdate));
+                navigation.navigate('RallyEditFlow', {
+                    rallyId: rallyId,
+                    stage: 4,
+                });
+            }
+            //* *********************************************************
+            //      END RE-DO
+            //* *********************************************************
             dispatch(updateTmp(values));
             navigation.navigate('RallyEditFlow', {
                 rallyId: rallyId,

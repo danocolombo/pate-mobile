@@ -168,6 +168,9 @@ export function checkPatePhoneValue(patePhone) {
 }
 export function getPhoneType(patePhone) {
     // this returns true if patePhone is in format of "(123) 233-3232"
+    if (!patePhone) {
+        return null;
+    }
     let result = patePhone.match(PHONE_REGX);
     if (result) {
         if (patePhone.length === 10) {
@@ -203,7 +206,7 @@ export function createPatePhone(inputPhone) {
     // } else {
     //     return null;
     // }
-    if (inputPhone.length < 1) {
+    if (!inputPhone || inputPhone?.length < 1) {
         return null;
     }
     let p1 = inputPhone.substring(1, 4);
@@ -254,3 +257,41 @@ export async function desc_sort_raw(a, b) {
 export async function asc_sort_raw(a, b) {
     return a.eventDate - b.eventDate;
 }
+export function createAWSUniqueID() {
+    // this returns a unique value for use as AWS ID
+    // example:  eca1dda7-f6d3-4b0c-8c5d-716da1cafaa8
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return (
+        s4() +
+        s4() +
+        '-' +
+        s4() +
+        '-' +
+        s4() +
+        '-' +
+        s4() +
+        '-' +
+        s4() +
+        s4() +
+        s4()
+    );
+}
+export const timeStringToAWSTime = async (timeString) => {
+    // this converts 11:30 into 11:30:00.000-05:00
+    let time = timeString.split(':');
+    let date = new Date();
+    date.setHours(time[0]);
+    date.setMinutes(time[1]);
+    let offset = -date.getTimezoneOffset() / 60;
+    offset =
+        (offset < 0 ? '-' : '+') + ('0' + Math.abs(offset)).slice(-2) + ':00';
+    let hours = ('0' + date.getHours()).slice(-2);
+    let minutes = ('0' + date.getMinutes()).slice(-2);
+    let seconds = ('0' + date.getSeconds()).slice(-2);
+    let strTime = hours + ':' + minutes + ':' + seconds + '.000' + offset;
+    return strTime;
+};

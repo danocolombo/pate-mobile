@@ -11,7 +11,6 @@ const CustomButton = (props) => {
         enabled = true,
     } = props;
     //const { iconName, iconColor, iconSize } = props.icon;
-
     const spaces = '    ';
     let theGraphics;
     graphic?.name

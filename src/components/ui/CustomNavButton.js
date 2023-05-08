@@ -3,7 +3,14 @@ import { printObject } from '../../utils/helpers';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 const CustomButton = (props) => {
-    const { onPress, graphic, title, cbStyles, txtColor } = props;
+    const {
+        onPress,
+        graphic,
+        title,
+        cbStyles,
+        txtColor,
+        enabled = true,
+    } = props;
     //const { iconName, iconColor, iconSize } = props.icon;
 
     const spaces = '    ';
@@ -18,6 +25,7 @@ const CustomButton = (props) => {
         <TouchableOpacity
             onPress={onPress}
             style={[styles.appButtonContainer, cbStyles]}
+            disabled={!enabled}
         >
             <View style={styles.content}>
                 <View style={styles.text}>

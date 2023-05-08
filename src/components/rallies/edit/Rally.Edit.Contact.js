@@ -108,20 +108,48 @@ export default function RallyContactForm({ rallyId }) {
             phoneToPass = '';
         }
         let newRally = tmp;
-        let updatedContact = {
-            ...newRally.contact,
-            firstName: values.firstName,
-            lastName: values.lastName,
-            phone: phoneToPass,
-            email: values.email,
-        };
+        let rallyUpdate = {};
+        if (
+            values.firstName.length > 0 ||
+            values.lastName.length > 0 ||
+            phoneToPass.length > 0 ||
+            values.email.length > 0
+        ) {
+            // contact info provide
+
+            rallyUpdate = {
+                ...newRally.contact,
+                firstName: values.firstName,
+                lastName: values.lastName,
+                phone: phoneToPass,
+                email: values.email,
+            };
+        }
+        //* *********************************************************
+        //      START RE-DO
+        //* *********************************************************
+
+        let DANO1 = true;
+        if (DANO1) {
+            // printObject('RELM:166-->tmp:', tmp);
+            // printObject('RELM:167-->rallyUpdate:', rallyUpdate);
+            // return;
+            dispatch(updateTmp(rallyUpdate));
+            navigation.navigate('RallyEditFlow', {
+                rallyId: rallyId,
+                stage: 5,
+            });
+        }
+        //* *********************************************************
+        //      END RE-DO
+        //* *********************************************************
         let updatedRally = {
             ...newRally,
             contact: updatedContact,
         };
         // console.log('handleNext contactPhone(after):', contactPhone);
 
-        printObject('REC:123-->updateTmp', updatedRally);
+        // printObject('REC:123-->updateTmp', updatedRally);
         dispatch(updateTmp(updatedRally));
         navigation.navigate('RallyEditFlow', {
             rallyId: rallyId,

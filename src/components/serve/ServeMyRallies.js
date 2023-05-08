@@ -9,6 +9,7 @@ import EventListCard from '../ui/EventListCard';
 import RallyLocationInfo from '../rallies/info/Rally.Location.Info';
 import RallyLogisticsInfo from '../rallies/info/Rally.Logistics.Info';
 import { deleteRally } from '../../features/rallies/ralliesSlice';
+import { deleteGathering } from '../../providers/gatherings.provider';
 import CustomButton from '../ui/CustomButton';
 import { Pressable } from 'react-native';
 import { printObject, asc_sort, desc_sort } from '../../utils/helpers';
@@ -18,34 +19,40 @@ const ServeMyRallies = () => {
     const navigation = useNavigation();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [rally, setRally] = useState();
+    const [displayData, setDisplayData] = useState([]);
     const dispatch = useDispatch();
     const feo = useSelector((state) => state.division);
     let me = useSelector((state) => state.users.currentUser);
-    printObject('SMR:24-->me:\n', me);
+    // printObject('SMR:24-->me:\n', me);
     let rallies = useSelector((state) => state.division.gatherings);
-    printObject('SMR:26 rallies:', rallies);
-    const myRalliesRAW = rallies.filter((r) => r.coordinator.id === me.id);
-    // now sort the rallies
-    function asc_sort(a, b) {
-        return b.eventDate - a.eventDate;
-    }
-    let myRallies = myRalliesRAW.sort(asc_sort);
-    let displayData;
-    async function sortRallies() {
-        displayData = myRallies.sort(asc_sort);
-        // return displayData;
-    }
-    sortRallies()
-        .then((results) => {
-            printObject('displayData-sorted', displayData);
-        })
-        .catch((err) => {
-            console.log('error sorting', err);
-        });
+    // // printObject('SMR:26 rallies:', rallies);
+    // const myRalliesRAW = rallies.filter((r) => r.coordinator.id === me.id);
+    // // now sort the rallies
+    // function asc_sort(a, b) {
+    //     return b.eventDate - a.eventDate;
+    // }
+    // let myRallies = myRalliesRAW.sort(asc_sort);
 
+    // async function sortRallies() {
+    //     setDisplayData(myRallies.sort(asc_sort));
+    //     // return displayData;
+    // }
+    // sortRallies()
+    //     .then((results) => {
+    //         printObject('displayData-sorted', displayData);
+    //     })
+    //     .catch((err) => {
+    //         console.log('error sorting', err);
+    //     });
+    useLayoutEffect(() => {
+        // console.log('8888888888888888888888888888888888888888888888');
+        // printObject('SMR:46-->rallies:\n', rallies);
+        // console.log('8888888888888888888888888888888888888888888888');
+        setDisplayData(rallies.filter((r) => r.coordinator.id === me.id));
+    }, [rallies]);
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: feo.appName,
+            title: feo.appName || 'FEO',
             headerRight: () => (
                 <Button
                     onPress={() =>
@@ -59,11 +66,12 @@ const ServeMyRallies = () => {
                 />
             ),
         });
-    }, [navigation, feo]);
+    }, [navigation, feo, rallies]);
     const handleDeleteConfirm = (rally) => {
         if (process.env.ENV === 'DEV') {
             console.log('DEV DELETE REQUEST');
-            dispatch(deleteRally(rally));
+            //dispatch(deleteRally(rally));
+            dispatch(deleteGathering(rally));
         } else {
             //first delete from db, then remove from redux
 

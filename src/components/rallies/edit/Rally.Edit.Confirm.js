@@ -9,13 +9,18 @@ import RallyMealInfo from '../info/Rally.Meal.Info';
 import CustomButton from '../../ui/CustomButton';
 import { putRally } from '../../../providers/rallies';
 import {
-    addNewRally,
+    //addNewRally,
     updateRally,
-} from '../../../features/rallies/ralliesSlice';
+} from '../../../features/division/divisionSlice';
+import {
+    updateGathering,
+    newGathering,
+} from '../../../providers/gatherings.provider';
 import { getPhoneType, CONFIG, createPatePhone } from '../../../utils/helpers';
 
-import { printObject, getUniqueId } from '../../../utils/helpers';
+import { printObject, createAWSUniqueID } from '../../../utils/helpers';
 import { Analytics } from 'aws-amplify';
+import { or } from 'react-native-reanimated';
 
 const RallyNewConfirmation = () => {
     const navigation = useNavigation();
@@ -24,9 +29,10 @@ const RallyNewConfirmation = () => {
     const feo = useSelector((state) => state.division);
     const user = useSelector((state) => state.users.currentUser);
     const tmp = useSelector((state) => state.rallies.tmpRally);
+    const originalGathering = useSelector((state) => state.rallies.rallyCopy);
     const systemRegion = useSelector((state) => state.system.region);
     // let rally = useSelector((state) => state.rallies.tmpRally);
-    printObject('CONFIRMING rally ++++++++++++++++++++++++', tmp);
+
     let rallyBasic = {};
     // printObject('REC:29 rally', rally);
     // need to determine if this is new or edit
@@ -46,7 +52,10 @@ const RallyNewConfirmation = () => {
 
     // rallyBasic.region = process.env.REGION;
     rallyBasic.region = feo.region;
-    rallyBasic.eventRegion = feo.appName;
+    rallyBasic.eventRegion =
+        user.affiliations.active.organizationCode +
+        ':' +
+        user.affiliations.active.divisionCode;
 
     let strippedPhone;
     // printObject('REC:52 tmp:', tmp);
@@ -55,30 +64,11 @@ const RallyNewConfirmation = () => {
         strippedPhone = createPatePhone(tmp?.contact?.phone);
     }
     // create new eventCompKey in case date changed
-    const yr = tmp.eventDate.substr(0, 4);
-    const mo = tmp.eventDate.substr(4, 2);
-    const da = tmp.eventDate.substr(6);
-    let keyToUse;
-    tmp?.uid ? (keyToUse = tmp.uid) : (keyToUse = 'TBD');
-    let eventCompKey =
-        yr +
-        '#' +
-        mo +
-        '#' +
-        da +
-        '#' +
-        tmp.stateProv +
-        '#' +
-        keyToUse +
-        '#' +
-        rallyBasic.coordinator.id;
-    rallyBasic.eventCompKey = eventCompKey;
 
-    let newRally = { ...tmp, ...rallyBasic };
+    let newRally = { ...tmp };
     // printObject('CONFIRMING tmpRally:', rally);
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
-        // printObject('S.R.E.REC:82-->newRally', newRally);
         if (newRally?.contact?.phone) {
             // need value either blank or pateDate
             let valueToUse;
@@ -106,11 +96,59 @@ const RallyNewConfirmation = () => {
             newRally.contact = newContact;
             // printObject('updatedRally', newRally);
         }
+        const coordinator = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+        };
+        const division = {
+            id: user.affiliations.active.divisionId,
+            code: user.affiliations.active.region,
+            organization: {
+                id: user.affiliations.active.organizationId,
+                code: user.affiliations.active.organizationCode,
+                description: user.affiliations.active.organizationDescription,
+            },
+        };
+        newRally = {
+            ...newRally,
+            coordinator: { ...coordinator },
+            division: { ...division },
+        };
 
         if (newRally?.id) {
+            let eckRally = createEventCompKey(newRally);
+            printObject('REC:125-->eckRally:\n', eckRally);
+            newRally = eckRally;
+            let TODAY = true;
+            if (TODAY) {
+                printObject('REC:123-->starting tmp:\n', tmp);
+                let updatedGathering = tmp;
+                //if we have a new meal we need to get a new AWS id
+                if (tmp?.meal?.id === '0') {
+                    let newMealId = createAWSUniqueID();
+                    const mealUpdate = {
+                        ...tmp.meal,
+                        id: newMealId,
+                        mealEventId: tmp.id,
+                    };
+                    updatedGathering = {
+                        ...updatedGathering,
+                        meal: mealUpdate,
+                    };
+                }
+                printObject('REC:132-->resulting in:\n', updatedGathering);
+                return;
+            }
+            dispatch(updateGathering(tmp));
+            dispatch(updateRally(tmp));
+            navigation.navigate('Serve', null);
+
             // DEV - UPDATE RALLY
-            let DANO = true;
-            if (DANO) {
+            let OLDDANO = false;
+            if (OLDDANO) {
                 //* *************************************************
                 //      TEST START
                 //* *************************************************
@@ -160,6 +198,7 @@ const RallyNewConfirmation = () => {
                     eventContactEventsId: '', //      NEED THIS VALUE
                     eventMealId: '', //      NEED THIS VALUE
                 };
+
                 console.log('newRally.id:', newRally.id);
                 printObject('eventInfo:\n', eventInfo);
                 printObject('locationInfo:\n', locationInfo);
@@ -168,14 +207,36 @@ const RallyNewConfirmation = () => {
                 //* *************************************************
                 //      TEST END
                 //* *************************************************
-            } else {
-                dispatch(updateRally(newRally));
             }
-            navigation.navigate('Serve', null);
         } else {
+            let eckRally = createEventCompKey(newRally);
+            newRally = eckRally;
+            let newLocationId = createAWSUniqueID();
+            newRally = {
+                ...newRally,
+                status: 'draft',
+                message: '',
+                graphic: '',
+                plannedCount: 0,
+                actualCount: 0,
+                mealPlannedCount: 0,
+                mealActualCount: 0,
+                eventLocationEventsId: newLocationId,
+                location: {
+                    ...newRally.location,
+                    id: newLocationId,
+                },
+                userEventsId: user.id,
+                divisionEventsId: newRally.division.id,
+            };
+
             let DANO = true;
             if (DANO) {
-                console.log('FALSE: newRally:\n', newRally);
+                const gatheringInfo = {
+                    originalEvent: originalGathering,
+                    newEvent: newRally,
+                };
+                dispatch(newGathering(gatheringInfo));
             } else {
                 // for DEV mode you need something in id;
                 getUniqueId().then((new_id) => {
@@ -281,3 +342,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 });
+const createEventCompKey = (rally) => {
+    let rallyToUse = rally;
+    const yr = rallyToUse.eventDate.substr(0, 4);
+    const mo = rallyToUse.eventDate.substr(5, 2);
+    const da = rallyToUse.eventDate.substr(8);
+    if (!rallyToUse?.id) {
+        const newId = createAWSUniqueID();
+        rallyToUse.id = newId;
+    }
+    let eventCompKey =
+        yr +
+        '#' +
+        mo +
+        '#' +
+        da +
+        '#' +
+        rally.location.stateProv +
+        '#' +
+        rallyToUse.id +
+        '#' +
+        rallyToUse.coordinator.id;
+    rallyToUse.eventCompKey = eventCompKey;
+    return rallyToUse;
+};

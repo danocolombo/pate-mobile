@@ -158,10 +158,10 @@ const SignInScreen = () => {
             const getProfileResponse = await API.graphql(
                 graphqlOperation(queries.getProfileBySub, variables)
             );
-            printObject(
-                'SIS:165-->getProfileResponse.data.listUsers.items[0]:\n',
-                getProfileResponse.data.listUsers.items[0]
-            );
+            // printObject(
+            //     'SIS:165-->getProfileResponse.data.listUsers.items[0]:\n',
+            //     getProfileResponse.data.listUsers.items[0]
+            // );
             if (getProfileResponse?.data?.listUsers?.items[0]) {
                 return getProfileResponse.data.listUsers.items[0];
             } else {
@@ -331,8 +331,8 @@ const SignInScreen = () => {
                 console.error(error);
             });
 
-        console.log('SIS:259-->now DEFINING ROLE & STATUS');
-        printObject('graphQLProfile:\n', graphQLProfile);
+        // console.log('SIS:259-->now DEFINING ROLE & STATUS');
+        // printObject('graphQLProfile:\n', graphQLProfile);
         //  ***********************************************
         //      DEFINE THE ROLE & STATUS
         //  ***********************************************

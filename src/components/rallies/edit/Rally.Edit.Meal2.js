@@ -35,7 +35,7 @@ export default function RallyMealForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
-
+    const originalGathering = useSelector((state) => state.rallies.rallyCopy);
     const [defaultDateTime, setDefaultDateTime] = useState();
     const [defaultDateTimeString, setDefaultDateTimeString] = useState();
     const [mealStartTime, setMealStartTime] = useState();
@@ -43,20 +43,16 @@ export default function RallyMealForm({ rallyId }) {
     const [deadlineDate, setDeadlineDate] = useState();
     const [deadlineDateString, setDeadlineDateString] = useState();
     const [modalMealTimeVisible, setModalMealTimeVisible] = useState();
-    const [modalDealineVisible, setModalDeadlineVisible] = useState();
-
+    const [modalDeadlineVisible, setModalDeadlineVisible] = useState();
+    const [offerMeal, setOfferMeal] = useState(!!tmp?.meal?.id);
     const [showMealCountConfirm, setShowMealCountConfirm] = useState(
         parseInt(tmp?.meal?.mealCount) > 0 ? true : false
     );
-    let mealSetting = true;
-    // check if meal has any settings...
-    if (!tmp.meal) {
-        // if (tmp?.meal) {
-        mealSetting = false;
-        console.log('REM:56-->mealSetting = false');
-    }
-    const [offerMeal, setOfferMeal] = useState(mealSetting);
-    const [cost, setCost] = useState(tmp?.meal?.cost ? tmp.meal.cost : 0);
+    // cost will be in cents (pennies) so  need to divide by 100, unless the value is 0
+    const [cost, setCost] = useState(
+        tmp?.meal?.cost ? (tmp.meal.cost !== 0 ? tmp.meal.cost / 100 : 0) : 0
+    );
+
     const [mealMessage, setMealMessage] = useState(
         tmp?.meal?.message ? tmp.meal.message : ''
     );
@@ -90,8 +86,9 @@ export default function RallyMealForm({ rallyId }) {
         }
         return str;
     };
-    useState(() => {
-        if (!mealSetting) {
+    printObject('REL:89-->orignalGathering:\n', originalGathering);
+    useEffect(() => {
+        if (!tmp?.meal?.id) {
             // default of today at noon
             // let tmpDate = new Date(yr, mo - 1, da, 12, 0, 0, 0);
             let tmpDate = new Date();
@@ -120,7 +117,7 @@ export default function RallyMealForm({ rallyId }) {
                     tmp?.meal?.startTime.split(/[:.]/).map(Number);
                 const date = new Date();
                 date.setHours(hours, minutes, seconds, milliseconds);
-                printObject('REM2:122->startTIme:', date);
+                // printObject('REM2:122->startTIme:', date);
                 setMealStartTime(date);
             }
             //      DEADLINE DATE
@@ -203,43 +200,100 @@ export default function RallyMealForm({ rallyId }) {
     const onDeadlineDateCancel = (data) => setModalDeadlineVisible(false);
     const handleNext = () => {
         try {
-            console.log('REM:2205-->TRY------------------!!!');
+            console.log('offerMeal type:', typeof offerMeal);
+            console.log('offerMeal value: ', offerMeal);
             printObject('tmp:\n', tmp);
-            const newMealDeadline = deadlineDate.toISOString().substring(0, 10);
-            let hours = mealStartTime.getHours().toString().padStart(2, '0');
-            let minutes = mealStartTime
-                .getMinutes()
-                .toString()
-                .padStart(2, '0');
+            // let updatedMeal = {};
+            // if (offerMeal) {
+            //     const newMealDeadline = deadlineDate
+            //         .toISOString()
+            //         .substring(0, 10);
+            //     let hours = mealStartTime
+            //         .getHours()
+            //         .toString()
+            //         .padStart(2, '0');
+            //     let minutes = mealStartTime
+            //         .getMinutes()
+            //         .toString()
+            //         .padStart(2, '0');
 
-            const newMealStartTime = `${hours}:${minutes}:00.000`;
+            //     const newMealStartTime = `${hours}:${minutes}:00.000`;
 
-            let newRally = tmp;
-            let updatedMeal = {
-                ...newRally.meal,
-                message: mealMessage,
-                startTime: newMealStartTime,
-                deadline: newMealDeadline,
-                cost: cost,
-                plannedCount: tmp?.meal?.plannedCount,
-                actualCount: tmp?.meal?.actualCount,
+            //     let newRally = tmp;
+            //     updatedMeal = {
+            //         ...newRally.meal,
+            //         message: mealMessage,
+            //         startTime: newMealStartTime,
+            //         deadline: newMealDeadline,
+            //         cost: cost,
+            //         plannedCount: tmp?.meal?.plannedCount,
+            //         actualCount: tmp?.meal?.actualCount,
+            //         offerMeal: offerMeal,
+            //     };
+            // }
+            // updateRally = {
+            //     ...newRally,
+            //     meal: updatedMeal,
+            // };
+            //* *********************************************************
+            //      START RE-DO
+            //* *********************************************************
+            let mealUpdate = {};
+            if (offerMeal) {
+                const newMealDeadline = deadlineDate
+                    .toISOString()
+                    .substring(0, 10);
+                let hours = mealStartTime
+                    .getHours()
+                    .toString()
+                    .padStart(2, '0');
+                let minutes = mealStartTime
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, '0');
+
+                const newMealStartTime = `${hours}:${minutes}:00.000`;
+                mealUpdate = {
+                    ...tmp.meal,
+                    id: tmp?.meal?.id || '0',
+                    message: mealMessage,
+                    deadline: newMealDeadline,
+                    startTime: newMealStartTime,
+                    cost: cost * 100,
+                    // offerMeal: offerMeal,
+                };
+            }
+            const rallyUpdate = {
+                ...tmp,
+                meal: mealUpdate,
             };
-            let updatedRally = {
-                ...newRally,
-                meal: updatedMeal,
-            };
-            printObject('REM:235--> updatedRally):', updatedRally);
-            dispatch(updateTmp(updatedRally));
-            navigation.navigate('RallyEditFlow', {
-                rallyId: rallyId,
-                stage: 6,
-            });
+
+            let DANO1 = true;
+            if (DANO1) {
+                // printObject('RELM:166-->tmp:', tmp);
+                printObject('RELM:167-->rallyUpdate:', rallyUpdate);
+                // return;
+                dispatch(updateTmp(rallyUpdate));
+                navigation.navigate('RallyEditFlow', {
+                    rallyId: rallyId,
+                    stage: 6,
+                });
+            }
+            //* *********************************************************
+            //      END RE-DO
+            //* *********************************************************
+            // printObject('REM:235--> updatedRally):', updatedRally);
+            // dispatch(updateTmp(updatedRally));
+            // navigation.navigate('RallyEditFlow', {
+            //     rallyId: rallyId,
+            //     stage: 6,
+            // });
         } catch (error) {
             printObject('REM:241--> error on Next:\n', error);
         }
     };
     // const dispatch = useDispatch();
-    printObject('REM:251-->tmp:\n', tmp);
+    // printObject('REM:251-->tmp:\n', tmp);
     return (
         <>
             <Modal visible={showMealCountConfirm} animationStyle='slide'>
@@ -258,7 +312,7 @@ export default function RallyMealForm({ rallyId }) {
                     <View style={styles.modalMessageWrapper}>
                         <Text style={styles.modalMessageText}>
                             If you elect to eliminate the meal, it would be
-                            considrate to contact the registrars that did RSVP
+                            considerate to contact the registrars that did RSVP
                             and inform them of your changes.
                         </Text>
                     </View>
@@ -446,7 +500,7 @@ export default function RallyMealForm({ rallyId }) {
                             onCancel={onMealTimeCancel}
                         />
                         <DateTimePickerModal
-                            isVisible={modalDealineVisible}
+                            isVisible={modalDeadlineVisible}
                             date={deadlineDate}
                             mode='date'
                             value={deadlineDate}

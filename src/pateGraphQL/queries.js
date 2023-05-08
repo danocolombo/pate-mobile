@@ -1597,6 +1597,7 @@ export const getAllDivisionEvents2 = /* GraphQL */ `
                     mealPlannedCount
                     mealActualCount
                     graphic
+                    eventLocationEventsId
                     location {
                         id
                         street
@@ -1608,6 +1609,7 @@ export const getAllDivisionEvents2 = /* GraphQL */ `
                     }
                     meal {
                         id
+                        mealEventId
                         deadline
                         startTime
                         cost
@@ -1615,6 +1617,7 @@ export const getAllDivisionEvents2 = /* GraphQL */ `
                         plannedCount
                         actualCount
                     }
+                    eventContactEventsId
                     contact {
                         id
                         firstName
@@ -1626,6 +1629,7 @@ export const getAllDivisionEvents2 = /* GraphQL */ `
                         email
                         phone
                     }
+                    userEventsId
                     coordinator {
                         id
                         sub
@@ -1719,6 +1723,7 @@ export const getAllDivisionEvents = /* GraphQL */ `
                     mealActualCount
                     meal {
                         id
+                        mealEventId
                         message
                         deadline
                         cost
@@ -1726,6 +1731,7 @@ export const getAllDivisionEvents = /* GraphQL */ `
                         plannedCount
                         actualCount
                     }
+                    eventLocationEventsId
                     location {
                         id
                         street
@@ -1735,6 +1741,7 @@ export const getAllDivisionEvents = /* GraphQL */ `
                         latitude
                         longitude
                     }
+                    eventContactEventsId
                     contact {
                         id
                         firstName
@@ -1742,6 +1749,7 @@ export const getAllDivisionEvents = /* GraphQL */ `
                         phone
                         email
                     }
+                    userEventsId
                     coordinator {
                         id
                         firstName
@@ -1749,6 +1757,7 @@ export const getAllDivisionEvents = /* GraphQL */ `
                         email
                         phone
                     }
+                    divisionEventsId
                     division {
                         id
                         code

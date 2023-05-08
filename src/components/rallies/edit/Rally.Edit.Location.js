@@ -77,6 +77,7 @@ export default function RallyLocationForm({ rallyId }) {
             // console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
             setDisplayRally(tmpRally);
             dispatch(createTmp(tmpRally));
+        } else {
         }
         if (parseInt(rally?.plannedCount) > 0) {
             setShowEditWarningConfirm((prevState) => true);
