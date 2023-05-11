@@ -16,19 +16,24 @@ const RallyLocationInfo = ({ rally, title }) => {
                         {rally?.name ? (
                             <Text style={styles.text}>{rally?.name}</Text>
                         ) : null}
-                        {rally?.street ? (
+                        {rally?.location?.street ? (
                             <Text style={styles.text}>
                                 {rally?.location?.street}
                             </Text>
                         ) : null}
-                        {rally?.location?.city ? (
+                        <Text style={styles.text}>
+                            {rally?.location?.city && (
+                                <Text style={styles.text}>
+                                    {`${rally?.location?.city}, `}
+                                </Text>
+                            )}
                             <Text style={styles.text}>
-                                {rally?.location?.city}
+                                {rally?.location?.stateProv}
                             </Text>
-                        ) : null}
+                        </Text>
+
                         {rally?.stateProv || rally?.location?.postalCode ? (
                             <Text style={styles.text}>
-                                {rally?.location?.stateProv},{' '}
                                 {rally?.location?.postalCode}
                             </Text>
                         ) : null}

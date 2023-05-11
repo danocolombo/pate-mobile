@@ -122,92 +122,90 @@ const RallyNewConfirmation = () => {
             let eckRally = createEventCompKey(newRally);
             printObject('REC:125-->eckRally:\n', eckRally);
             newRally = eckRally;
-            let TODAY = true;
-            if (TODAY) {
-                printObject('REC:123-->starting tmp:\n', tmp);
-                let updatedGathering = tmp;
-                //if we have a new meal we need to get a new AWS id
-                if (tmp?.meal?.id === '0') {
-                    let newMealId = createAWSUniqueID();
-                    const mealUpdate = {
-                        ...tmp.meal,
-                        id: newMealId,
-                        mealEventId: tmp.id,
-                    };
-                    updatedGathering = {
-                        ...updatedGathering,
-                        meal: mealUpdate,
-                    };
-                }
-                printObject('REC:132-->resulting in:\n', updatedGathering);
-                return;
+
+            printObject('REC:123-->starting tmp:\n', tmp);
+            let updatedGathering = tmp;
+            //if we have a new meal we need to get a new AWS id
+            if (tmp?.meal?.id === '0') {
+                let newMealId = createAWSUniqueID();
+                const mealUpdate = {
+                    ...tmp.meal,
+                    id: newMealId,
+                    mealEventId: tmp.id,
+                };
+                updatedGathering = {
+                    ...updatedGathering,
+                    meal: mealUpdate,
+                };
             }
+            printObject('REC:132-->resulting in:\n', updatedGathering);
+
             dispatch(updateGathering(tmp));
             dispatch(updateRally(tmp));
             navigation.navigate('Serve', null);
 
-            // DEV - UPDATE RALLY
-            let OLDDANO = false;
-            if (OLDDANO) {
-                //* *************************************************
-                //      TEST START
-                //* *************************************************
-                //      locationInfo
-                const locationInfo = {
-                    id: newRally?.location?.id,
-                    street: newRally?.location?.street,
-                    city: newRally?.location?.city,
-                    stateProv: newRally?.location?.stateProv,
-                    postalCode: newRally?.location?.postalCode,
-                    latitude: newRally?.geolocation?.lat,
-                    longitude: newRally?.geolocation?.lng,
-                };
-                //      contact
-                const contactInfo = {
-                    id: '', //      NEED THIS VALUE
-                    firstName: '', //      NEED THIS VALUE
-                    lastName: '', //      NEED THIS VALUE
-                    email: newRally?.contact?.email,
-                    phone: newRally?.contact?.phone,
-                };
-                //      meal
-                const mealInfo = {
-                    id: '', //      NEED THIS VALUE
-                    startTime: newRally?.meal?.startTime,
-                    deadline: newRally?.meal?.deadline,
-                    cost: newRally?.meal?.cost,
-                    plannedCount: newRally?.meal?.plannedCount,
-                    actualCount: newRally?.meal?.actualCount,
-                    message: newRally?.meal?.message,
-                    mealEventId: newRally?.id,
-                };
-                const eventInfo = {
-                    id: newRally?.id,
-                    eventCompKey: newRally?.eventCompKey,
-                    eventDate: newRally?.eventDate,
-                    startTime: newRally?.startTime,
-                    endTime: newRally?.endTime,
-                    name: newRally?.name,
-                    plannedCount: newRally?.plannedCount,
-                    actualCount: newRally?.actualCount,
-                    mealPlannedCount: newRally?.mealPlannedCount,
-                    mealActualCount: newRally?.mealActualCount,
-                    graphic: newRally?.graphic,
-                    //      message: ???
-                    eventLocationEventsId: newRally?.location?.id,
-                    eventContactEventsId: '', //      NEED THIS VALUE
-                    eventMealId: '', //      NEED THIS VALUE
-                };
+            // // DEV - UPDATE RALLY
+            // let OLDDANO = false;
+            // if (OLDDANO) {
+            //     //* *************************************************
+            //     //      TEST START
+            //     //* *************************************************
+            //     //      locationInfo
+            //     const locationInfo = {
+            //         id: newRally?.location?.id,
+            //         street: newRally?.location?.street,
+            //         city: newRally?.location?.city,
+            //         stateProv: newRally?.location?.stateProv,
+            //         postalCode: newRally?.location?.postalCode,
+            //         latitude: newRally?.geolocation?.lat,
+            //         longitude: newRally?.geolocation?.lng,
+            //     };
+            //     //      contact
+            //     const contactInfo = {
+            //         id: '', //      NEED THIS VALUE
+            //         firstName: '', //      NEED THIS VALUE
+            //         lastName: '', //      NEED THIS VALUE
+            //         email: newRally?.contact?.email,
+            //         phone: newRally?.contact?.phone,
+            //     };
+            //     //      meal
+            //     const mealInfo = {
+            //         id: '', //      NEED THIS VALUE
+            //         startTime: newRally?.meal?.startTime,
+            //         deadline: newRally?.meal?.deadline,
+            //         cost: newRally?.meal?.cost,
+            //         plannedCount: newRally?.meal?.plannedCount,
+            //         actualCount: newRally?.meal?.actualCount,
+            //         message: newRally?.meal?.message,
+            //         mealEventId: newRally?.id,
+            //     };
+            //     const eventInfo = {
+            //         id: newRally?.id,
+            //         eventCompKey: newRally?.eventCompKey,
+            //         eventDate: newRally?.eventDate,
+            //         startTime: newRally?.startTime,
+            //         endTime: newRally?.endTime,
+            //         name: newRally?.name,
+            //         plannedCount: newRally?.plannedCount,
+            //         actualCount: newRally?.actualCount,
+            //         mealPlannedCount: newRally?.mealPlannedCount,
+            //         mealActualCount: newRally?.mealActualCount,
+            //         graphic: newRally?.graphic,
+            //         //      message: ???
+            //         eventLocationEventsId: newRally?.location?.id,
+            //         eventContactEventsId: '', //      NEED THIS VALUE
+            //         eventMealId: '', //      NEED THIS VALUE
+            //     };
 
-                console.log('newRally.id:', newRally.id);
-                printObject('eventInfo:\n', eventInfo);
-                printObject('locationInfo:\n', locationInfo);
-                printObject('contactInfo:\n', contactInfo);
-                printObject('mealInfo:\n', mealInfo);
-                //* *************************************************
-                //      TEST END
-                //* *************************************************
-            }
+            //     console.log('newRally.id:', newRally.id);
+            //     printObject('eventInfo:\n', eventInfo);
+            //     printObject('locationInfo:\n', locationInfo);
+            //     printObject('contactInfo:\n', contactInfo);
+            //     printObject('mealInfo:\n', mealInfo);
+            //     //* *************************************************
+            //     //      TEST END
+            //     //* *************************************************
+            // }
         } else {
             let eckRally = createEventCompKey(newRally);
             newRally = eckRally;

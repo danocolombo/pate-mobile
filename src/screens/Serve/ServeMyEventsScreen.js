@@ -18,6 +18,7 @@ import { printObject } from '../../utils/helpers';
 const ServeMyEventsScreen = () => {
     const navigation = useNavigation();
     const feo = useSelector((state) => state.division);
+    const currentUser = useSelector((state) => state.user);
     useLayoutEffect(() => {
         navigation.setOptions({
             title: <feo className='appName'></feo>,
@@ -40,6 +41,7 @@ const ServeMyEventsScreen = () => {
             try {
                 async function getMyEvents() {
                     //todo HARDCODE-HARDCODE
+                    printObject('SMES:43-->user.id:', currentUser?.id);
                     const variables = {
                         id: '0ebefcdf-9fd2-4702-a1e7-76bcf90d9b68',
                     };

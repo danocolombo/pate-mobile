@@ -250,19 +250,149 @@ export const newGathering = createAsyncThunk(
         }
     }
 );
-export const deleteGatheriing = createAsyncThunk(
+export const deleteGathering = createAsyncThunk(
     'division/deleteGathering',
     async (gathering, thunkAPI) => {
+        // printObject('GP:256-->gathering:\n', gathering);
         try {
+            if (
+                parseInt(gathering.plannedCount) > 0 ||
+                parseInt(gathering.plannedMealCount) > 0
+            ) {
+                throw new Error(
+                    'Delete not supported for events with registrations'
+                );
+            }
+            // no registrations move forward with deleting gql
+            //      meal deletion
+            if (gathering?.meal?.id) {
+                try {
+                    printObject('GP:271-->delete meal:\n', gathering.meal);
+                    const deleteInput = {
+                        id: gathering.meal.id,
+                    };
+                    const DeleteMealResults = await API.graphql({
+                        query: coreMutations.deleteMeal,
+                        variables: { input: deleteInput },
+                    });
+                    if (!DeleteMealResults.data.deleteMeal.id) {
+                        throw new Error('Delete Meal Failed');
+                    }
+                } catch (error) {
+                    throw new Error('Delete Meal Failed (CATCH)');
+                }
+            }
+
+            //      eventContact deletion
+            if (gathering?.contact?.id) {
+                try {
+                    printObject(
+                        'GP:275-->delete contact:\n',
+                        gathering.contact
+                    );
+                    const deleteInput = {
+                        id: gathering.contact.id,
+                    };
+                    const DeleteContactResults = await API.graphql({
+                        query: coreMutations.deleteEventContact,
+                        variables: { input: deleteInput },
+                    });
+                    printObject(
+                        'GP:297-->DeleteContactResults:\n',
+                        DeleteContactResults
+                    );
+                    if (!DeleteContactResults.data.deleteEventContact.id) {
+                        throw new Error('Delete Event Contact Failed');
+                    }
+                } catch (error) {
+                    throw new Error('Delete Event Contact Failed (CATCH)');
+                }
+            }
+
+            //      eventLocation delete
+
+            if (gathering.location.id) {
+                try {
+                    printObject(
+                        'GP:299-->delete location:\n',
+                        gathering.location.id
+                    );
+                    const deleteInput = {
+                        id: gathering.location.id,
+                    };
+                    const DeleteLocationResults = await API.graphql({
+                        query: coreMutations.deleteEventLocation,
+                        variables: { input: deleteInput },
+                    });
+                    printObject(
+                        'DeleteLocationResults:\n',
+                        DeleteLocationResults
+                    );
+                    if (!DeleteLocationResults?.data?.deleteEventLocation?.id) {
+                        console.log('throw1');
+
+                        throw new Error(
+                            `ID(${gathering.location.id}) not found`
+                        );
+                    }
+                } catch (error) {
+                    printObject('throw2-error:', error);
+
+                    throw new Error(
+                        error?.errors[0]?.message ||
+                            'DeleteLocation Catch Error'
+                    );
+                }
+            }
+
+            //      event delete
+
+            try {
+                printObject('GP:317-->delete gathering:\n', gathering.id);
+                const deleteInput = {
+                    id: gathering.id,
+                };
+                const DeleteGatheringResults = await API.graphql({
+                    query: coreMutations.deleteEvent,
+                    variables: { input: deleteInput },
+                });
+                if (!DeleteGatheringResults.data.deleteEvent.id) {
+                    throw new Error('Delete Event Failed');
+                }
+            } catch (error) {
+                throw new Error('Delete Event Failed (CATCH)');
+            }
+            return gathering;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+);
+
+export const deleteGatheringOne = createAsyncThunk(
+    'division/deleteGathering',
+    async (gathering, thunkAPI) => {
+        console.log('GP:256--> DELETE REQUEST received.');
+        try {
+            // we don't support deleting event that has registrations at this time.
+            if (
+                parseInt(gathering.plannedCount) > 0 ||
+                parseInt(gathering.plannedMealCount) > 0
+            ) {
+                return thunkAPI.rejectWithValue({
+                    status: 400,
+                    message:
+                        'Delete not supported for events with registrations',
+                });
+            }
+
             const payload = {
                 gathering: gathering,
             };
             return payload;
         } catch (error) {
             console.log('ERROR:', error);
-            return thunkAPI.rejectWithValue(
-                'GP:261-->>> something went wrong in remote createAsyncThunk deleteGathering'
-            );
+            return thunkAPI.rejectWithValue(error.message);
         }
     }
 );

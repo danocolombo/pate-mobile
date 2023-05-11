@@ -25,7 +25,7 @@ export default function RallyLogisticsForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
-    // printObject('REL:28-->LOGISTICS-->tmpRally', tmp);
+    printObject('REL:28-->LOGISTICS-->tmpRally', tmp);
     const [defaultDateString, setDefaultDateString] = useState();
     const [eventDate, setEventDate] = useState();
     const [eventDateString, setEventDateString] = useState();

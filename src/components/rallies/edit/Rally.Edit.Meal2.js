@@ -86,7 +86,8 @@ export default function RallyMealForm({ rallyId }) {
         }
         return str;
     };
-    printObject('REL:89-->orignalGathering:\n', originalGathering);
+    printObject('REM2:89-->orignalGathering:\n', originalGathering);
+    printObject('REM2:90-->tmp:', tmp);
     useEffect(() => {
         if (!tmp?.meal?.id) {
             // default of today at noon

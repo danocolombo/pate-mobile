@@ -97,7 +97,7 @@ export default function RallyLocationForm({ rallyId }) {
             setLocationCity(rally?.location?.city || '');
             setLocationStateProv(rally?.location?.stateProv || 'AL');
             setLocationPostalCode(
-                rally?.location?.postalCode.toString() || null
+                rally?.location?.postalCode?.toString() || null
             );
             dispatch(createTmp(rally));
             dispatch(createRallyCopy(rally));
@@ -136,18 +136,18 @@ export default function RallyLocationForm({ rallyId }) {
     };
     const validateStreet = (value) => {
         // 0 OR 2-20 chars, apostrophe with alpha permitted
-        const testRegex = /^([0-9a-zA-Z.\- ]{2,20})?$/;
+        const testRegex = /^([0-9a-zA-Z.\- ]{2,35})?$/;
         if (!testRegex.test(value)) {
-            return '0 or 2-20 characters';
+            return '0 or 2-35 characters';
         } else {
             return '';
         }
     };
     const validateCity = (value) => {
         // 2-15 chars, apostrophe with alpha permitted
-        const testRegex = /^[a-zA-Z.\- ]{2,15}$/;
+        const testRegex = /^[a-zA-Z.\- ]{2,20}$/;
         if (!testRegex.test(value)) {
-            return '2-15 characters';
+            return '2-20 characters';
         } else {
             return '';
         }

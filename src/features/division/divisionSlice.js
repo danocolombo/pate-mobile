@@ -269,22 +269,47 @@ export const divisionSlice = createSlice({
                     return state;
                 }
                 state.isLoading = false;
-            });
-        builder.addCase(deleteGathering.pending, (state) => {
-            state.isLoading = true;
-        }),
+            }),
+            builder.addCase(deleteGathering.pending, (state) => {
+                //console.log("delete...pending");
+                state.isLoading = true;
+            }),
             builder.addCase(deleteGathering.fulfilled, (state, action) => {
-                const deleteValue = action.payload;
-                printObject('DS:278-->remove from REDUX:\n', deleteValue);
+                const smaller = state.gatherings.filter(
+                    (ral) => ral.uid !== action.payload.id
+                );
+                state.gatherings = smaller;
 
                 state.isLoading = false;
                 return state;
+                // console.log('fulfilled.action', action);
+                // if (action.payload) {
+                //     console.log('DELETED:', action.payload.id);
+                //     // handle successful delete in your UI
+                // }
             }),
             builder.addCase(deleteGathering.rejected, (state, action) => {
-                printObject('DS:284-->deleteGathering.rejected', action);
+                console.log('deleteItem.rejected');
+                printObject('extraReducer deleteItem error:', action);
                 state.isLoading = false;
-                return state;
+                state.error = action.payload;
             });
+        // builder.addCase(deleteGathering.pending, (state) => {
+        //     state.isLoading = true;
+        // }),
+        // builder.addCase(deleteGathering.fulfilled, (state, action) => {
+        //     const deleteValue = action.payload;
+        //     printObject('DS:278-->remove from REDUX:\n', deleteValue);
+
+        //     state.isLoading = false;
+        //     return state;
+        // }),
+        // builder.addCase(deleteGathering.rejected, (state, action) => {
+        //     printObject('DS:284-->deleteGathering.rejected', action);
+        //     state.error = true;
+        //     state.errorMessage = action.payload;
+        //     state.isLoading = false;
+        // });
     },
 });
 

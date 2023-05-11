@@ -44,15 +44,20 @@ export const ralliesSlice = createSlice({
         updateTmp: (state, action) => {
             // printObject('RS:22-->action:', action);
             if (action?.payload?.geolocation) {
+                printObject('RS:47--action:\n', action);
+                printObject('RS:48-->state.tmpRally:\n', state.tmpRally);
                 // need to update latitude and longitude
                 let newTmp1 = { ...state.tmpRally, ...action.payload };
                 // printObject('RS:26-->newTmp1', newTmp1);
                 state.tmpRally = newTmp1;
             } else {
+                printObject('RS:54--action:\n', action);
+                printObject('RS:55-->state.tmpRally:\n', state.tmpRally);
                 let newTmp2 = Object.assign(state.tmpRally, action.payload);
                 state.tmpRally = newTmp2;
             }
-            printObject('RS:54-->allRallies:', state.allRallies);
+            printObject('RS:59-->allRallies:', state.allRallies);
+            printObject('RS:60-->state.tmpRally:', state.tmpRally);
             return state;
         },
         createRallyCopy: (state, action) => {

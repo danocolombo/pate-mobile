@@ -18,6 +18,8 @@ import { Colors } from '../../constants/colors';
 const ServeMyRallies = () => {
     const navigation = useNavigation();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [showDeleteError, setShowDeleteError] = useState(false);
+    const [deleteErrorMessage, setDeleteErrorMessage] = useState(false);
     const [rally, setRally] = useState();
     const [displayData, setDisplayData] = useState([]);
     const dispatch = useDispatch();
@@ -45,9 +47,9 @@ const ServeMyRallies = () => {
     //         console.log('error sorting', err);
     //     });
     useLayoutEffect(() => {
-        // console.log('8888888888888888888888888888888888888888888888');
-        // printObject('SMR:46-->rallies:\n', rallies);
-        // console.log('8888888888888888888888888888888888888888888888');
+        console.log('8888888888888888888888888888888888888888888888');
+        printObject('SMR:51-->rallies:\n', rallies);
+        console.log('8888888888888888888888888888888888888888888888');
         setDisplayData(rallies.filter((r) => r.coordinator.id === me.id));
     }, [rallies]);
     useLayoutEffect(() => {
@@ -68,6 +70,52 @@ const ServeMyRallies = () => {
         });
     }, [navigation, feo, rallies]);
     const handleDeleteConfirm = (rally) => {
+        dispatch(deleteGathering(rally))
+            .then((result) => {
+                if (result.payload) {
+                    console.log('Delete successful!!!');
+                    // handle successful delete in your UI
+                } else {
+                    console.log('Delete failed!');
+                    //console.log(result);
+                    if (result?.error?.message) {
+                        printObject('ERROR:', result.error.message);
+                        setDeleteErrorMessage(result.error.message);
+                    } else {
+                        setDeleteErrorMessage('Unknown Delete Error (RETURN)');
+                    }
+                    setShowDeleteConfirm(false);
+                    setShowDeleteError(true);
+                    // handle delete failure in your UI
+                }
+                //console.log(result);
+            })
+            .catch((error) => {
+                console.log('Caught Error:', error.message);
+                setDeleteErrorMessage('Unknown Delete Error (CATCH)');
+                setShowDeleteConfirm(false);
+                setShowDeleteError(true);
+                // handle the error in your UI
+            });
+    };
+    async function handleDeleteConfirm1(rally) {
+        console.log('DEV DELETE REQUEST');
+
+        try {
+            const action = await dispatch(deleteGathering(rally));
+            console.log('THEN RECEIVED');
+            if (deleteGathering.fulfilled.match(action)) {
+                console.log('Successfully deleted.');
+            }
+        } catch (error) {
+            console.log('CATCH RECEIVED');
+            if (deleteGathering.rejected.match(error)) {
+                console.log('Delete Failed:', error.payload.message);
+            }
+        }
+    }
+
+    const handleDeleteConfirmWAS = (rally) => {
         if (process.env.ENV === 'DEV') {
             console.log('DEV DELETE REQUEST');
             //dispatch(deleteRally(rally));
@@ -154,6 +202,36 @@ const ServeMyRallies = () => {
                                     onPress={() => {
                                         handleDeleteConfirm(rally);
                                     }}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Surface>
+            </Modal>
+            <Modal visible={showDeleteError} animationStyle='slide'>
+                <Surface style={styles.modalSurface}>
+                    <View>
+                        <Text style={styles.modalTitle}>
+                            DELETE UNSUCCESSFUL
+                        </Text>
+                        <View>
+                            <Text style={styles.modalText}>
+                                {deleteErrorMessage}
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={styles.modalButtonContainer}>
+                        <View style={styles.modalButtonWrapper}>
+                            <View style={styles.modalConfirmButton}>
+                                <CustomButton
+                                    title='OK'
+                                    graphic={null}
+                                    cbStyles={{
+                                        backgroundColor: 'green',
+                                        color: 'white',
+                                    }}
+                                    txtColor='white'
+                                    onPress={() => setShowDeleteError(false)}
                                 />
                             </View>
                         </View>
@@ -291,9 +369,25 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         elevation: 5,
     },
+    modalMessageSurface: {
+        width: '100%',
+        padding: 5,
+    },
     modalTitle: {
+        paddingTop: 20,
+        textAlign: 'center',
         fontSize: 24,
         fontWeight: 'bold',
+    },
+    modalText: {
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        fontSize: 18,
+        fontWeight: 'normal',
+    },
+    modalErrorText: {
+        fontSize: 14,
+        fontWeight: 'normal',
     },
     modalButtonContainer: {
         marginVertical: 20,

@@ -119,22 +119,22 @@ export default function RallyContactForm({ rallyId }) {
 
             rallyUpdate = {
                 ...newRally.contact,
-                firstName: values.firstName,
-                lastName: values.lastName,
-                phone: phoneToPass,
-                email: values.email,
+                firstName: values.firstName || '',
+                lastName: values?.lastName || '',
+                phone: phoneToPass || '',
+                email: values?.email || '',
             };
         }
-        //* *********************************************************
-        //      START RE-DO
-        //* *********************************************************
-
+        const contactInfo = {
+            contact: rallyUpdate,
+        };
+        printObject('REC:131--> contactInfo:', contactInfo);
         let DANO1 = true;
         if (DANO1) {
             // printObject('RELM:166-->tmp:', tmp);
             // printObject('RELM:167-->rallyUpdate:', rallyUpdate);
             // return;
-            dispatch(updateTmp(rallyUpdate));
+            dispatch(updateTmp(contactInfo));
             navigation.navigate('RallyEditFlow', {
                 rallyId: rallyId,
                 stage: 5,

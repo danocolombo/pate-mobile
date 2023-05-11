@@ -32,6 +32,10 @@ export default function RallyLogisticsForm({ rallyId }) {
     const [eventStartTime, setEventStartTime] = useState(new Date());
     const [eventEndTime, setEventEndTime] = useState(new Date());
     const [defaultDateString, setDefaultDateString] = useState(new Date());
+    printObject('REL:34-->tmp:\n', tmp);
+    printObject('REL:35-->eventDate:', eventDate);
+    printObject('<REL:36></REL:36>-->startTime:', eventStartTime);
+    printObject('REL:37-->endTime:', eventEndTime);
     // odl school...
     // const [eventDateString, setEventDateString] = useState();
     // const [startTime, setStartTime] = useState();
@@ -320,7 +324,9 @@ export default function RallyLogisticsForm({ rallyId }) {
                                     value={eventDate}
                                     onConfirm={onEventDateConfirm}
                                     onCancel={onEventCancel}
-                                    timeZoneOffsetInMinutes={new Date().getTimezoneOffset()}
+                                    timeZoneOffsetInMinutes={
+                                        -1 * new Date().getTimezoneOffset()
+                                    }
                                 />
                                 <DateTimePickerModal
                                     isVisible={modalStartTimeVisible}
@@ -329,7 +335,9 @@ export default function RallyLogisticsForm({ rallyId }) {
                                     // value={eventStartTime}
                                     onConfirm={onStartTimeConfirm}
                                     onCancel={onStartTimeCancel}
-                                    //timeZoneOffsetInMinutes={eventStartTime.getTimezoneOffset()}
+                                    timeZoneOffsetInMinutes={
+                                        -1 * new Date().getTimezoneOffset()
+                                    }
                                 />
                                 <DateTimePickerModal
                                     isVisible={modalEndTimeVisible}
@@ -337,6 +345,9 @@ export default function RallyLogisticsForm({ rallyId }) {
                                     date={eventEndTime}
                                     onConfirm={onEndTimeConfirm}
                                     onCancel={onEndTimeCancel}
+                                    timeZoneOffsetInMinutes={
+                                        -1 * new Date().getTimezoneOffset()
+                                    }
                                 />
                             </View>
                         </ScrollView>
