@@ -11,6 +11,7 @@ export const updateGathering = createAsyncThunk(
     'division/updateGathering',
     async (updateEvent, thunkAPI) => {
         try {
+            printObject('GP:14-->updateEvent:\n', updateEvent);
             let theEvent = updateEvent;
             // remove the containers for the user
             /*
@@ -58,6 +59,7 @@ export const updateGathering = createAsyncThunk(
                     };
                 });
             // precondition meal input
+
             let mealUpdate = {
                 ...mealObj,
                 cost: parseInt(mealObj.cost),
@@ -148,8 +150,26 @@ export const newGathering = createAsyncThunk(
             printObject('GP:148-->coordinatorObj:\n', coordinatorObj);
             printObject('<GP:149-->divisionObj:\n', divisionObj);
             printObject('GP:150-->strippedEventObj:\n', strippedEventObj);
-            if (mealObj?.id) {
-                console.log('CREATE MEAL');
+
+            if (Object.keys(mealObj).length === 0) {
+                try {
+                    console.log('CREATE MEAL');
+                    const MealResults = await API.graphql({
+                        query: mutations.createMeal,
+                        variables: { input: mealObj },
+                    });
+                    if (!MealResults.data.createMeal.id) {
+                        errorMessage = {
+                            message: 'else error creating meal',
+                            error: error,
+                        };
+                    }
+                } catch (error) {
+                    errorMessage = {
+                        message: 'catch error creating location',
+                        error: error,
+                    };
+                }
             }
             let errorMessage = {};
             if (!locationObj?.street) {

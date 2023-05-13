@@ -69,6 +69,8 @@ const RallyNewConfirmation = () => {
     // printObject('CONFIRMING tmpRally:', rally);
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
+        printObject('HANDLE_CONFIRMATION-->newRally:\n', newRally);
+        // return;
         if (newRally?.contact?.phone) {
             // need value either blank or pateDate
             let valueToUse;
@@ -88,10 +90,10 @@ const RallyNewConfirmation = () => {
                     valueToUse = '';
                     break;
             }
+
             let newContact = {
-                name: newRally?.contact?.name,
+                ...newRally.contact,
                 phone: valueToUse,
-                email: newRally?.contact?.email,
             };
             newRally.contact = newContact;
             // printObject('updatedRally', newRally);
@@ -124,6 +126,7 @@ const RallyNewConfirmation = () => {
             newRally = eckRally;
 
             printObject('REC:123-->starting tmp:\n', tmp);
+
             let updatedGathering = tmp;
             //if we have a new meal we need to get a new AWS id
             if (tmp?.meal?.id === '0') {
@@ -228,6 +231,36 @@ const RallyNewConfirmation = () => {
                 divisionEventsId: newRally.division.id,
             };
 
+            if (Object.keys(newRally.meal).length === 0) {
+                newRally.meal = null;
+            } else {
+                const theId = createAWSUniqueID();
+                newRally = {
+                    ...newRally,
+                    meal: {
+                        ...newRally.meal,
+                        id: theId,
+                        mealEventsId: newRally.id,
+                    },
+                };
+            }
+            if (Object.keys(newRally.contact).length === 0) {
+                newRally.contact = null;
+            } else {
+                if (!newRally?.contact.id) {
+                    let newId = createAWSUniqueID();
+                    newRally = {
+                        ...newRally,
+                        eventContactEventsId: newId,
+                        contact: {
+                            ...newRally.contact,
+                            id: newId,
+                        },
+                    };
+                }
+            }
+            printObject('GATHERING_INFO-->newRally:\n', newRally);
+            // return;
             let DANO = true;
             if (DANO) {
                 const gatheringInfo = {

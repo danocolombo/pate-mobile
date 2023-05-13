@@ -272,7 +272,7 @@ export default function RallyMealForm({ rallyId }) {
             let DANO1 = true;
             if (DANO1) {
                 // printObject('RELM:166-->tmp:', tmp);
-                printObject('RELM:167-->rallyUpdate:', rallyUpdate);
+                // printObject('RELM:167-->rallyUpdate:', rallyUpdate);
                 // return;
                 dispatch(updateTmp(rallyUpdate));
                 navigation.navigate('RallyEditFlow', {
