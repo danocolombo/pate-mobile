@@ -229,6 +229,29 @@ export function createMtgCompKey(client, meetingDate) {
         meetingDate.substring(8, 10);
     return mtgCompKey;
 }
+export function createEventCompKey(
+    eventId,
+    eventDate,
+    stateProv,
+    coordinatorId
+) {
+    const yr = eventDate.substr(0, 4);
+    const mo = eventDate.substr(5, 2);
+    const da = eventDate.substr(8);
+    let eventCompKey =
+        yr +
+        '#' +
+        mo +
+        '#' +
+        da +
+        '#' +
+        stateProv +
+        '#' +
+        eventId +
+        '#' +
+        coordinatorId;
+    return eventCompKey;
+}
 export function capitalize(textString) {
     if (!textString) {
         return null;
@@ -294,4 +317,21 @@ export const timeStringToAWSTime = async (timeString) => {
     let seconds = ('0' + date.getSeconds()).slice(-2);
     let strTime = hours + ':' + minutes + ':' + seconds + '.000' + offset;
     return strTime;
+};
+
+export const objectsHaveTheSameValues = async (obj1, obj2) => {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) {
+        return false;
+    }
+
+    for (let key of keys1) {
+        if (obj1[key] !== obj2[key]) {
+            return false;
+        }
+    }
+
+    return true;
 };

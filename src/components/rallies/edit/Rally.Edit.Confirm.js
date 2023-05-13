@@ -16,9 +16,18 @@ import {
     updateGathering,
     newGathering,
 } from '../../../providers/gatherings.provider';
-import { getPhoneType, CONFIG, createPatePhone } from '../../../utils/helpers';
+import {
+    getPhoneType,
+    CONFIG,
+    createPatePhone,
+    objectsHaveTheSameValues,
+} from '../../../utils/helpers';
 
-import { printObject, createAWSUniqueID } from '../../../utils/helpers';
+import {
+    printObject,
+    createAWSUniqueID,
+    createEventCompKey,
+} from '../../../utils/helpers';
 import { Analytics } from 'aws-amplify';
 import { or } from 'react-native-reanimated';
 
@@ -121,13 +130,17 @@ const RallyNewConfirmation = () => {
         };
 
         if (newRally?.id) {
-            let eckRally = createEventCompKey(newRally);
-            printObject('REC:125-->eckRally:\n', eckRally);
-            newRally = eckRally;
+            //** ******************************************* */
+            //* EXISTING EVENT
+            //** ******************************************* */
+            let derivedCompKey = createEventCompKey(
+                newRally.id,
+                newRally.eventDate,
+                newRally.location.stateProv,
+                user.id
+            );
+            const tmp = { ...newRally, eventCompKey: derivedCompKey };
 
-            printObject('REC:123-->starting tmp:\n', tmp);
-
-            let updatedGathering = tmp;
             //if we have a new meal we need to get a new AWS id
             if (tmp?.meal?.id === '0') {
                 let newMealId = createAWSUniqueID();
@@ -136,85 +149,32 @@ const RallyNewConfirmation = () => {
                     id: newMealId,
                     mealEventId: tmp.id,
                 };
-                updatedGathering = {
-                    ...updatedGathering,
+                tmp = {
+                    ...tmp,
                     meal: mealUpdate,
                 };
             }
-            printObject('REC:132-->resulting in:\n', updatedGathering);
+            printObject('REC:132-->resulting in:\n', tmp);
 
             dispatch(updateGathering(tmp));
             dispatch(updateRally(tmp));
             navigation.navigate('Serve', null);
-
-            // // DEV - UPDATE RALLY
-            // let OLDDANO = false;
-            // if (OLDDANO) {
-            //     //* *************************************************
-            //     //      TEST START
-            //     //* *************************************************
-            //     //      locationInfo
-            //     const locationInfo = {
-            //         id: newRally?.location?.id,
-            //         street: newRally?.location?.street,
-            //         city: newRally?.location?.city,
-            //         stateProv: newRally?.location?.stateProv,
-            //         postalCode: newRally?.location?.postalCode,
-            //         latitude: newRally?.geolocation?.lat,
-            //         longitude: newRally?.geolocation?.lng,
-            //     };
-            //     //      contact
-            //     const contactInfo = {
-            //         id: '', //      NEED THIS VALUE
-            //         firstName: '', //      NEED THIS VALUE
-            //         lastName: '', //      NEED THIS VALUE
-            //         email: newRally?.contact?.email,
-            //         phone: newRally?.contact?.phone,
-            //     };
-            //     //      meal
-            //     const mealInfo = {
-            //         id: '', //      NEED THIS VALUE
-            //         startTime: newRally?.meal?.startTime,
-            //         deadline: newRally?.meal?.deadline,
-            //         cost: newRally?.meal?.cost,
-            //         plannedCount: newRally?.meal?.plannedCount,
-            //         actualCount: newRally?.meal?.actualCount,
-            //         message: newRally?.meal?.message,
-            //         mealEventId: newRally?.id,
-            //     };
-            //     const eventInfo = {
-            //         id: newRally?.id,
-            //         eventCompKey: newRally?.eventCompKey,
-            //         eventDate: newRally?.eventDate,
-            //         startTime: newRally?.startTime,
-            //         endTime: newRally?.endTime,
-            //         name: newRally?.name,
-            //         plannedCount: newRally?.plannedCount,
-            //         actualCount: newRally?.actualCount,
-            //         mealPlannedCount: newRally?.mealPlannedCount,
-            //         mealActualCount: newRally?.mealActualCount,
-            //         graphic: newRally?.graphic,
-            //         //      message: ???
-            //         eventLocationEventsId: newRally?.location?.id,
-            //         eventContactEventsId: '', //      NEED THIS VALUE
-            //         eventMealId: '', //      NEED THIS VALUE
-            //     };
-
-            //     console.log('newRally.id:', newRally.id);
-            //     printObject('eventInfo:\n', eventInfo);
-            //     printObject('locationInfo:\n', locationInfo);
-            //     printObject('contactInfo:\n', contactInfo);
-            //     printObject('mealInfo:\n', mealInfo);
-            //     //* *************************************************
-            //     //      TEST END
-            //     //* *************************************************
-            // }
         } else {
-            let eckRally = createEventCompKey(newRally);
-            newRally = eckRally;
-            let newLocationId = createAWSUniqueID();
+            //** ******************************************* */
+            //* NEW EVENT
+            //** ******************************************* */
+            let derivedId = createAWSUniqueID();
+            let derivedLocationId = createAWSUniqueID();
+            let derivedCompKey = createEventCompKey(
+                derivedId,
+                newRally.eventDate,
+                newRally.location.stateProv,
+                user.id
+            );
             newRally = {
                 ...newRally,
+                id: derivedId,
+                eventCompKey: derivedCompKey,
                 status: 'draft',
                 message: '',
                 graphic: '',
@@ -222,10 +182,10 @@ const RallyNewConfirmation = () => {
                 actualCount: 0,
                 mealPlannedCount: 0,
                 mealActualCount: 0,
-                eventLocationEventsId: newLocationId,
+                eventLocationEventsId: derivedLocationId,
                 location: {
                     ...newRally.location,
-                    id: newLocationId,
+                    id: derivedLocationId,
                 },
                 userEventsId: user.id,
                 divisionEventsId: newRally.division.id,
@@ -278,60 +238,6 @@ const RallyNewConfirmation = () => {
             }
             navigation.navigate('Serve', null);
         }
-
-        // } else {
-        //     if (newRally?.id) {
-        //         // printObject('REC:128-->update(DDB):', newRally);
-        //         //   UPDATE EXISTING EVENT
-        //         let obj = {
-        //             operation: 'updateEvent',
-        //             payload: {
-        //                 Item: newRally,
-        //             },
-        //         };
-        //         let body = JSON.stringify(obj);
-
-        //         let api2use = process.env.AWS_API_ENDPOINT + '/events';
-        //         axios
-        //             .post(api2use, body, CONFIG)
-        //             .then((response) => {
-        //                 // printObject('REC:142-->update(REDUX):', newRally);
-        //                 dispatch(updateRally(newRally));
-        //             })
-        //             .catch((err) => {
-        //                 console.log('REC-106: error:', err);
-        //             });
-        //         Analytics.record({
-        //             name: 'eventUpdated',
-        //             attributes: { userId: user.uid, body: body },
-        //             metrics: { eventUpdated: 1 },
-        //         });
-        // } else {
-        //     // printObject('REC:154-->new(DDB):', newRally);
-        //     //todo: need DDB call
-        //     putRally(newRally, user, feo.appName, feo.eventRegion)
-        //         .then((response) => {
-        //             //need to pass response.Item because we get UID back.
-        //             // printObject('REC:158-->update(REDUX):', response.Item);
-        //             dispatch(addNewRally(response.Item));
-        //         })
-        //         .catch((error) => {
-        //             console.log('REC:162--->putRally error\n', error);
-        //         });
-        //     try {
-        //         Analytics.record({
-        //             name: 'eventAdded',
-        //             attributes: { userId: user.uid, body: newRally },
-        //             metrics: {
-        //                 eventAdded: 1,
-        //             },
-        //         });
-        //     } catch (error) {
-        //         console.log('Analytics error:\n', error);
-        //     }
-        // }
-
-        // }
     }
     return (
         <>
@@ -373,7 +279,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 });
-const createEventCompKey = (rally) => {
+const WAScreateEventCompKey = (rally) => {
     let rallyToUse = rally;
     const yr = rallyToUse.eventDate.substr(0, 4);
     const mo = rallyToUse.eventDate.substr(5, 2);

@@ -148,10 +148,11 @@ export const newGathering = createAsyncThunk(
             printObject('GP:146-->mealObj:\n', mealObj);
             printObject('GP:147-->locationObj:\n', locationObj);
             printObject('GP:148-->coordinatorObj:\n', coordinatorObj);
-            printObject('<GP:149-->divisionObj:\n', divisionObj);
+            printObject('GP:149-->divisionObj:\n', divisionObj);
             printObject('GP:150-->strippedEventObj:\n', strippedEventObj);
 
-            if (Object.keys(mealObj).length === 0) {
+            if (mealObj) {
+                //if (Object.keys(mealObj).length !== 0)
                 try {
                     console.log('CREATE MEAL');
                     const MealResults = await API.graphql({

@@ -27,30 +27,18 @@ const ServeMyRallies = () => {
     let me = useSelector((state) => state.users.currentUser);
     // printObject('SMR:24-->me:\n', me);
     let rallies = useSelector((state) => state.division.gatherings);
-    // // printObject('SMR:26 rallies:', rallies);
-    // const myRalliesRAW = rallies.filter((r) => r.coordinator.id === me.id);
-    // // now sort the rallies
-    // function asc_sort(a, b) {
-    //     return b.eventDate - a.eventDate;
-    // }
-    // let myRallies = myRalliesRAW.sort(asc_sort);
 
-    // async function sortRallies() {
-    //     setDisplayData(myRallies.sort(asc_sort));
-    //     // return displayData;
-    // }
-    // sortRallies()
-    //     .then((results) => {
-    //         printObject('displayData-sorted', displayData);
-    //     })
-    //     .catch((err) => {
-    //         console.log('error sorting', err);
-    //     });
     useLayoutEffect(() => {
-        console.log('8888888888888888888888888888888888888888888888');
-        printObject('SMR:51-->rallies:\n', rallies);
-        console.log('8888888888888888888888888888888888888888888888');
-        setDisplayData(rallies.filter((r) => r.coordinator.id === me.id));
+        const sortAndLoadEvents = async () => {
+            const myRallies = rallies.filter((r) => r.coordinator.id === me.id);
+            if (myRallies.length > 1) {
+                const sortedRallies = [...myRallies].sort((a, b) => {
+                    return new Date(b.eventDate) - new Date(a.eventDate);
+                });
+                setDisplayData(sortedRallies);
+            }
+        };
+        sortAndLoadEvents();
     }, [rallies]);
     useLayoutEffect(() => {
         navigation.setOptions({
