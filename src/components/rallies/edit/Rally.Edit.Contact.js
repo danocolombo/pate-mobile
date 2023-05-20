@@ -69,7 +69,7 @@ export default function RallyContactForm({ rallyId }) {
     const handleNext = (values) => {
         //setShowPhoneError(false);
         // build a contact object
-        printObject('values', values);
+        // printObject('values', values);
         let phoneToPass;
         if (contactPhone) {
             //ensure that the phone is in expected format (xxx) xxx-xxxx
@@ -116,7 +116,7 @@ export default function RallyContactForm({ rallyId }) {
             values.email.length > 0
         ) {
             // contact info provide
-            printObject('CONTACT_INFO--values:\n', values);
+            // printObject('CONTACT_INFO--values:\n', values);
             rallyUpdate = {
                 ...tmp.contact,
                 firstName: values.firstName,
@@ -128,7 +128,7 @@ export default function RallyContactForm({ rallyId }) {
         const contactInfo = {
             contact: rallyUpdate,
         };
-        printObject('REC:131--> contactInfo:', contactInfo);
+        // printObject('REC:131--> contactInfo:', contactInfo);
         let DANO1 = true;
         if (DANO1) {
             // printObject('RELM:166-->tmp:', tmp);

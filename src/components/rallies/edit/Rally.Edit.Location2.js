@@ -56,6 +56,7 @@ export default function RallyLocationForm({ rallyId }) {
         rallyEntry = useSelector((state) =>
             state.division.gatherings.filter((r) => r.id === rallyId)
         );
+        // printObject('REL59-->gatheringEntry:\n', rallyEntry);
     }
 
     let rally = {};

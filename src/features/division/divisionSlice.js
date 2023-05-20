@@ -275,11 +275,18 @@ export const divisionSlice = createSlice({
                 state.isLoading = true;
             }),
             builder.addCase(deleteGathering.fulfilled, (state, action) => {
+                console.log(
+                    'DS:279-->state.gatherings.length: ' +
+                        state.gatherings.length
+                );
                 const smaller = state.gatherings.filter(
-                    (ral) => ral.uid !== action.payload.id
+                    (ral) => ral.id !== action.payload.id
                 );
                 state.gatherings = smaller;
-
+                console.log(
+                    'DS:287-->state.gatherings.length: ' +
+                        state.gatherings.length
+                );
                 state.isLoading = false;
                 return state;
                 // console.log('fulfilled.action', action);

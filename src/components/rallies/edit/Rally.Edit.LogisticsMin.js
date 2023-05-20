@@ -32,10 +32,10 @@ export default function RallyLogisticsForm({ rallyId }) {
     const [eventStartTime, setEventStartTime] = useState(new Date());
     const [eventEndTime, setEventEndTime] = useState(new Date());
     const [defaultDateString, setDefaultDateString] = useState(new Date());
-    printObject('REL:34-->tmp:\n', tmp);
-    printObject('REL:35-->eventDate:', eventDate);
-    printObject('<REL:36></REL:36>-->startTime:', eventStartTime);
-    printObject('REL:37-->endTime:', eventEndTime);
+    // printObject('REL:34-->tmp:\n', tmp);
+    // printObject('REL:35-->eventDate:', eventDate);
+    // printObject('<REL:36></REL:36>-->startTime:', eventStartTime);
+    // printObject('REL:37-->endTime:', eventEndTime);
     // odl school...
     // const [eventDateString, setEventDateString] = useState();
     // const [startTime, setStartTime] = useState();

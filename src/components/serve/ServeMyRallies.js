@@ -58,11 +58,16 @@ const ServeMyRallies = () => {
         });
     }, [navigation, feo, rallies]);
     const handleDeleteConfirm = (rally) => {
+        console.log('BEFORE: rallies.length' + rallies.length);
         dispatch(deleteGathering(rally))
             .then((result) => {
+                printObject('SMR:63-->deleteGathering result:\n', result);
                 if (result.payload) {
                     console.log('Delete successful!!!');
                     // handle successful delete in your UI
+                    console.log('AFTER: rallies.length' + rallies.length);
+                    setShowDeleteConfirm(false);
+                    //todo - remove from gathering & close modal
                 } else {
                     console.log('Delete failed!');
                     //console.log(result);
@@ -86,22 +91,6 @@ const ServeMyRallies = () => {
                 // handle the error in your UI
             });
     };
-    async function handleDeleteConfirm1(rally) {
-        console.log('DEV DELETE REQUEST');
-
-        try {
-            const action = await dispatch(deleteGathering(rally));
-            console.log('THEN RECEIVED');
-            if (deleteGathering.fulfilled.match(action)) {
-                console.log('Successfully deleted.');
-            }
-        } catch (error) {
-            console.log('CATCH RECEIVED');
-            if (deleteGathering.rejected.match(error)) {
-                console.log('Delete Failed:', error.payload.message);
-            }
-        }
-    }
 
     const handleDeleteConfirmWAS = (rally) => {
         if (process.env.ENV === 'DEV') {

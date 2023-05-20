@@ -151,7 +151,7 @@ const SignInScreen = () => {
         //      FUNCTION: GET PROFILE BY SUB
         //  ***********************************************
         const getUserBySub = async (sub) => {
-            console.log('sub: ', sub);
+            // console.log('sub: ', sub);
             const variables = {
                 id: sub,
             };

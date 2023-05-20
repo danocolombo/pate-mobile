@@ -56,7 +56,7 @@ export default function RallyLocationConfirm(props) {
                 rally?.location?.postalCode;
             getGeoCode(address)
                 .then((geoInfo) => {
-                    console.log('REL:58');
+                    // console.log('REL:58');
                     try {
                         setGeoLat(geoInfo.latitude);
                         setGeoLng(geoInfo.longitude);
@@ -65,12 +65,12 @@ export default function RallyLocationConfirm(props) {
                     } catch (error) {
                         console.log('Error decoding geoInfo\n', error);
                     }
-                    console.log('REL:67');
+                    // console.log('REL:67');
                 })
                 .catch((err) => {
                     Alert.alert('ERROR', 'could not get geoInfo');
                 });
-            console.log('REL:72');
+            // console.log('REL:72');
         } else {
             setGeoLat(parseFloat(rally.location.latitude));
             setGeoLng(parseFloat(rally.location.longitude));

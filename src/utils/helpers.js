@@ -335,3 +335,31 @@ export const objectsHaveTheSameValues = async (obj1, obj2) => {
 
     return true;
 };
+export const compareObjects = (obj1, obj2) => {
+    // Check if both inputs are objects
+    if (
+        typeof obj1 !== 'object' ||
+        typeof obj2 !== 'object' ||
+        obj1 === null ||
+        obj2 === null
+    ) {
+        return obj1 === obj2; // Compare primitive values directly
+    }
+
+    // Get the keys of both objects
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    // Check if the number of keys is the same
+    if (keys1.length !== keys2.length) {
+        return false;
+    }
+
+    // Check if the keys are the same (order doesn't matter)
+    if (!keys1.every((key) => keys2.includes(key))) {
+        return false;
+    }
+
+    // Recursively compare the values of each key
+    return keys1.every((key) => compareObjects(obj1[key], obj2[key]));
+};

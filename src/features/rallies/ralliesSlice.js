@@ -51,13 +51,13 @@ export const ralliesSlice = createSlice({
                 // printObject('RS:26-->newTmp1', newTmp1);
                 state.tmpRally = newTmp1;
             } else {
-                printObject('RS:54--action:\n', action);
-                printObject('RS:55-->state.tmpRally:\n', state.tmpRally);
+                // printObject('RS:54--action:\n', action);
+                // printObject('RS:55-->state.tmpRally:\n', state.tmpRally);
                 let newTmp2 = Object.assign(state.tmpRally, action.payload);
                 state.tmpRally = newTmp2;
             }
-            printObject('RS:59-->allRallies:', state.allRallies);
-            printObject('RS:60-->state.tmpRally:', state.tmpRally);
+            // printObject('RS:59-->allRallies:', state.allRallies);
+            // printObject('RS:60-->state.tmpRally:', state.tmpRally);
             return state;
         },
         createRallyCopy: (state, action) => {

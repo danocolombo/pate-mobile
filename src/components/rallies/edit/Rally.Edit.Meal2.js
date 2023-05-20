@@ -86,8 +86,8 @@ export default function RallyMealForm({ rallyId }) {
         }
         return str;
     };
-    printObject('REM2:89-->orignalGathering:\n', originalGathering);
-    printObject('REM2:90-->tmp:', tmp);
+    // printObject('REM2:89-->orignalGathering:\n', originalGathering);
+    // printObject('REM2:90-->tmp:', tmp);
     useEffect(() => {
         if (!tmp?.meal?.id) {
             // default of today at noon
@@ -201,9 +201,9 @@ export default function RallyMealForm({ rallyId }) {
     const onDeadlineDateCancel = (data) => setModalDeadlineVisible(false);
     const handleNext = () => {
         try {
-            console.log('offerMeal type:', typeof offerMeal);
-            console.log('offerMeal value: ', offerMeal);
-            printObject('tmp:\n', tmp);
+            // console.log('offerMeal type:', typeof offerMeal);
+            // console.log('offerMeal value: ', offerMeal);
+            // printObject('tmp:\n', tmp);
             // let updatedMeal = {};
             // if (offerMeal) {
             //     const newMealDeadline = deadlineDate
@@ -256,7 +256,7 @@ export default function RallyMealForm({ rallyId }) {
                 const newMealStartTime = `${hours}:${minutes}:00.000`;
                 mealUpdate = {
                     ...tmp.meal,
-                    id: tmp?.meal?.id || '0',
+                    id: tmp?.meal?.id || null,
                     message: mealMessage,
                     deadline: newMealDeadline,
                     startTime: newMealStartTime,
@@ -266,6 +266,7 @@ export default function RallyMealForm({ rallyId }) {
             }
             const rallyUpdate = {
                 ...tmp,
+                eventMealId: tmp?.eventMealId || null,
                 meal: mealUpdate,
             };
 

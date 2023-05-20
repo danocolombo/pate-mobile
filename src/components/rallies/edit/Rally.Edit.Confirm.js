@@ -78,7 +78,9 @@ const RallyNewConfirmation = () => {
     // printObject('CONFIRMING tmpRally:', rally);
     // printObject('newRally', newRally);
     function handleConfirmation(newRally) {
-        printObject('HANDLE_CONFIRMATION-->newRally:\n', newRally);
+        // printObject('REC:81-->original\n', originalGathering);
+        // printObject('REC:82-->submittedEvent:\n', newRally);
+        // printObject('HANDLE_CONFIRMATION-->newRally:\n', newRally);
         // return;
         if (newRally?.contact?.phone) {
             // need value either blank or pateDate
@@ -139,25 +141,45 @@ const RallyNewConfirmation = () => {
                 newRally.location.stateProv,
                 user.id
             );
-            const tmp = { ...newRally, eventCompKey: derivedCompKey };
+            newRally = { ...newRally, eventCompKey: derivedCompKey };
 
             //if we have a new meal we need to get a new AWS id
-            if (tmp?.meal?.id === '0') {
+            if (newRally?.meal?.id === '0') {
                 let newMealId = createAWSUniqueID();
                 const mealUpdate = {
-                    ...tmp.meal,
+                    ...newRally.meal,
                     id: newMealId,
-                    mealEventId: tmp.id,
+                    mealEventId: newRally.id,
                 };
-                tmp = {
-                    ...tmp,
+                newRally = {
+                    ...newRally,
                     meal: mealUpdate,
                 };
             }
-            printObject('REC:132-->resulting in:\n', tmp);
-
-            dispatch(updateGathering(tmp));
-            dispatch(updateRally(tmp));
+            //check if we need contactId...
+            if (newRally?.contact && Object.keys(newRally.contact).length > 0) {
+                // check for id
+                if (!newRally.contact?.id) {
+                    const cId = createAWSUniqueID();
+                    newRally = {
+                        ...newRally,
+                        eventContactEventsId: cId,
+                        contact: {
+                            ...newRally.contact,
+                            id: cId,
+                        },
+                    };
+                }
+            }
+            // printObject('REC:132-->resulting in:\n', newRally);
+            const oldEvent = tmp;
+            const newEvent = newRally;
+            const gatheringInfo = {
+                oldEvent: { ...originalGathering },
+                newEvent: { ...newEvent },
+            };
+            dispatch(updateGathering(gatheringInfo));
+            //dispatch(updateRally(request));
             navigation.navigate('Serve', null);
         } else {
             //** ******************************************* */
@@ -200,7 +222,7 @@ const RallyNewConfirmation = () => {
                     meal: {
                         ...newRally.meal,
                         id: theId,
-                        mealEventsId: newRally.id,
+                        mealEventId: newRally.id,
                     },
                 };
             }
@@ -221,21 +243,9 @@ const RallyNewConfirmation = () => {
             }
             printObject('GATHERING_INFO-->newRally:\n', newRally);
             // return;
-            let DANO = true;
-            if (DANO) {
-                const gatheringInfo = {
-                    originalEvent: originalGathering,
-                    newEvent: newRally,
-                };
-                dispatch(newGathering(gatheringInfo));
-            } else {
-                // for DEV mode you need something in id;
-                getUniqueId().then((new_id) => {
-                    let tmpId = { uid: new_id };
-                    let newRallyToSave = { ...newRally, ...tmpId };
-                    dispatch(addNewRally(newRallyToSave));
-                });
-            }
+
+            dispatch(newGathering(newRally));
+
             navigation.navigate('Serve', null);
         }
     }

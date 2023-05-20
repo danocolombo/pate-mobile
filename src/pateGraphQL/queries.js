@@ -1721,6 +1721,7 @@ export const getAllDivisionEvents = /* GraphQL */ `
                     actualCount
                     mealPlannedCount
                     mealActualCount
+                    eventMealId
                     meal {
                         id
                         mealEventId
