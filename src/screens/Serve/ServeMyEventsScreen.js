@@ -11,7 +11,6 @@ import { useSelector } from 'react-redux';
 import * as queries from '../../pateGraphQL/queries';
 import { API, graphqlOperation } from 'aws-amplify';
 import ServeMyRallies from '../../components/serve/ServeMyRallies';
-import ServeMyEvents from '../../components/serve/ServeMyEvents';
 import { useCallback } from 'react';
 import { printObject } from '../../utils/helpers';
 
@@ -36,56 +35,7 @@ const ServeMyEventsScreen = () => {
             ),
         });
     }, [navigation, feo]);
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         try {
-    //             async function getMyEvents() {
-    //                 //todo HARDCODE-HARDCODE
-    //                 printObject('SMES:43-->user.id:', currentUser?.id);
-    //                 const variables = {
-    //                     id: '0ebefcdf-9fd2-4702-a1e7-76bcf90d9b68',
-    //                 };
-    //                 API.graphql(
-    //                     graphqlOperation(
-    //                         queries.getCoordinatorEvents,
-    //                         variables
-    //                     )
-    //                 )
-    //                     .then((coordinatorEventsResponse) => {
-    //                         printObject(
-    //                             'SMES:48-->CE:\n',
-    //                             coordinatorEventsResponse
-    //                         );
-    //                         // if (
-    //                         //     divisionEvents?.data?.getDivision?.events.items
-    //                         //         .length > 0
-    //                         // ) {
-    //                         //     dispatch(
-    //                         //         loadDivisionInfo(
-    //                         //             divisionEvents?.data?.getDivision
-    //                         //                 ?.events.items
-    //                         //         )
-    //                         //     );
-    //                         // } else {
-    //                         //     console.log('NOPE');
-    //                         // }
-    //                     })
-    //                     .catch((error) => {
-    //                         printObject(
-    //                             'error getting division events from graphql',
-    //                             error
-    //                         );
-    //                     });
-    //             }
-    //             //getMyEvents();
-    //         } catch (error) {
-    //             printObject(
-    //                 'SMES:70-->ERROR GETTING GRAPHQL DATA---->:\n',
-    //                 error
-    //             );
-    //         }
-    //     }, [])
-    // );
+
     return (
         <ImageBackground
             source={require('../../components/images/background.png')}

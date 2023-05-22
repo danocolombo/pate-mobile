@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, ScrollView, Modal } from 'react-native';
 import React, { useState, useLayoutEffect } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Subheading, Surface } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import EventListCard from '../ui/EventListCard';
@@ -28,18 +28,40 @@ const ServeMyRallies = () => {
     // printObject('SMR:24-->me:\n', me);
     let rallies = useSelector((state) => state.division.gatherings);
 
-    useLayoutEffect(() => {
-        const sortAndLoadEvents = async () => {
-            const myRallies = rallies.filter((r) => r.coordinator.id === me.id);
-            if (myRallies.length > 1) {
-                const sortedRallies = [...myRallies].sort((a, b) => {
-                    return new Date(b.eventDate) - new Date(a.eventDate);
-                });
-                setDisplayData(sortedRallies);
-            }
-        };
-        sortAndLoadEvents();
-    }, [rallies]);
+    // useLayoutEffect(() => {
+    //     const sortAndLoadEvents = async () => {
+    //         const myRallies = rallies.filter((r) => r.coordinator.id === me.id);
+    //         if (myRallies.length > 1) {
+    //             const sortedRallies = [...myRallies].sort((a, b) => {
+    //                 return new Date(b.eventDate) - new Date(a.eventDate);
+    //             });
+    //             setDisplayData(sortedRallies);
+    //         }
+    //     };
+    //     sortAndLoadEvents();
+    // }, [rallies, feo]);
+    useFocusEffect(
+        React.useCallback(() => {
+            console.log('Your Events Screen focused');
+            printObject('SMR:46-->rallies:\n', rallies);
+            const sortAndLoadEvents = async () => {
+                const myRallies = rallies.filter(
+                    (r) => r.coordinator.id === me.id
+                );
+                if (myRallies.length > 1) {
+                    const sortedRallies = [...rallies].sort((a, b) => {
+                        return new Date(b.eventDate) - new Date(a.eventDate);
+                    });
+                    setDisplayData(sortedRallies);
+                }
+            };
+            sortAndLoadEvents();
+
+            return () => {
+                console.log('Screen unfocused');
+            };
+        }, [])
+    );
     useLayoutEffect(() => {
         navigation.setOptions({
             title: feo.appName || 'FEO',
@@ -56,7 +78,7 @@ const ServeMyRallies = () => {
                 />
             ),
         });
-    }, [navigation, feo, rallies]);
+    }, [navigation, feo]);
     const handleDeleteConfirm = (rally) => {
         console.log('BEFORE: rallies.length' + rallies.length);
         dispatch(deleteGathering(rally))

@@ -245,7 +245,7 @@ const RallyNewConfirmation = () => {
             // return;
 
             dispatch(newGathering(newRally));
-
+            console.log('DONEDONEDONEDONE');
             navigation.navigate('Serve', null);
         }
     }

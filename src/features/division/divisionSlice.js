@@ -224,20 +224,34 @@ export const divisionSlice = createSlice({
             state.isLoading = true;
         }),
             builder.addCase(updateGathering.fulfilled, (state, action) => {
-                const newValue = action.payload;
-                // printObject('DS:233-->action:\n', action);
-                const newGatheringList = state.gatherings.map((ral) => {
-                    return ral.id === newValue.id ? newValue : ral;
-                });
+                try {
+                    const newValue = action.payload;
+                    // printObject('DS:228-->newValue:\n', newValue);
+                    // printObject('DS:229-->state.gatherings:\n', state.gatherings);
+                    const newGatheringList = state.gatherings.map((ral) => {
+                        // console.log('ral.id:', ral.id);
+                        // console.log('newValue.id:', newValue.id);
+                        return ral.id === newValue?.id ? newValue : ral;
+                    });
+                    // printObject(
+                    //     'DS:235-->newGatheringList:\n',
+                    //     newGatheringList
+                    // );
+                    function asc_sort(a, b) {
+                        return a.eventDate - b.eventDate;
+                    }
+                    let newBigger = newGatheringList.sort(asc_sort);
+                    // printObject('DS:240-->newBigger:\n', newBigger);
+                    state.gatherings = newBigger;
 
-                function asc_sort(a, b) {
-                    return a.eventDate - b.eventDate;
+                    state.isLoading = false;
+                    return state;
+                } catch (error) {
+                    console.log(
+                        'divisionSlice::updateGathering catch failure:\n',
+                        error
+                    );
                 }
-                let newBigger = newGatheringList.sort(asc_sort);
-                state.gatherings = newBigger;
-
-                state.isLoading = false;
-                return state;
             }),
             builder.addCase(updateGathering.rejected, (state, action) => {
                 console.log(action);

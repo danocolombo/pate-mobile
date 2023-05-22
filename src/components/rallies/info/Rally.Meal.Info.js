@@ -27,7 +27,7 @@ const RallyMealInfo = ({ rally }) => {
                                 </Text>
                                 <Text style={styles.costText}>
                                     $
-                                    {Math.round(
+                                    {parseFloat(
                                         rally?.meal?.cost / 100
                                     ).toFixed(2)}
                                 </Text>

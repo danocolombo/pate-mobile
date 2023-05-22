@@ -29,7 +29,7 @@ import {
 } from '../../../utils/date';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
-import { printObject } from '../../../utils/helpers';
+import { createAWSUniqueID, printObject } from '../../../utils/helpers';
 
 export default function RallyMealForm({ rallyId }) {
     const navigation = useNavigation();
@@ -264,9 +264,16 @@ export default function RallyMealForm({ rallyId }) {
                     // offerMeal: offerMeal,
                 };
             }
+            if (tmp?.eventMealId === null || tmp?.meal === null) {
+                let mId = createAWSUniqueID();
+                mealUpdate = {
+                    ...mealUpdate,
+                    id: mId,
+                };
+            }
             const rallyUpdate = {
                 ...tmp,
-                eventMealId: tmp?.eventMealId || null,
+                eventMealId: mealUpdate.id || null,
                 meal: mealUpdate,
             };
 
