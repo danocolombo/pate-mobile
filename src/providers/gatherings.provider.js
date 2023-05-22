@@ -10,6 +10,7 @@ import {
     createAWSUniqueID,
     compareObjects,
 } from '../utils/helpers';
+import e from 'express';
 
 export const updateGathering = createAsyncThunk(
     'division/updateGathering',
@@ -19,8 +20,7 @@ export const updateGathering = createAsyncThunk(
             const newEvent = updateEvent?.newEvent;
             printObject('GP:20-->oldEvent:\n', oldEvent);
             printObject('GP:21-->newEvent:\n', newEvent);
-            // return;
-            const {
+            let {
                 meal: mealObj,
                 location: locationObj,
                 contact: contactObj,
@@ -32,62 +32,44 @@ export const updateGathering = createAsyncThunk(
             //      updateEventLocation
             //******************************************* */
             printObject('STRIPPED_EVENTS_OBJ:\n', strippedEventObj);
-            if (!strippedEventObj.eventMealId) {
-                console.log('NO ORIGINAL MEAL');
-                if (mealObj && Object.keys(mealObj).length === 0) {
-                    console.log('keys:', Object.keys(mealObj).length);
-                    console.log('NO NEW MEAL');
+            try {
+                if (compareObjects(oldEvent.location, newEvent.location)) {
+                    //location has not changed
+                    console.log('location NOT changed');
                 } else {
-                    console.log('NEW MEAL FOUND');
+                    //location has changed
+                    console.log('location HAS changed');
+                    API.graphql({
+                        query: coreMutations.updateEventLocation,
+                        variables: { input: locationObj },
+                    })
+                        .then((response) => {
+                            if (response.data.updateEventLocation.id) {
+                                updateRedux = true;
+                            } else {
+                                updateRedux = false;
+                                errorMessage = {
+                                    message: 'catch error updating location',
+                                    error: error,
+                                };
+                            }
+                        })
+                        .catch((error) => {
+                            updateRedux = false;
+                            errorMessage = {
+                                message: 'catch error updating location',
+                                error: error,
+                            };
+                            printObject(
+                                'GP:62-->catch error updating location:\n',
+                                error
+                            );
+                        });
                 }
-            } else {
-                console.log('ORIGINAL MEAL FOUND');
-                if (mealObj && Object.keys(mealObj).length === 0) {
-                    console.log('DELETE MEAL');
-                } else {
-                    //check if they are the same
-                    //if different, update
-                    const oldMeal = { ...oldEvent.meal };
-                    const newMeal = { ...newEvent.meal };
-                    printObject('OLD', oldMeal);
-                    printObject('NEW', newMeal);
-                    let updateNeededRemote = compareObjects(oldMeal, newMeal);
-                    let updateNeededLocal = compareObjectsLocal(
-                        oldMeal,
-                        newMeal
-                    );
-                    console.log('updateNeededRemote:', updateNeededRemote);
-                    // console.log('updateNeededLocal:', updateNeededLocal);
-                    if (updateNeededRemote) {
-                        console.log('NO UPDATE NECESSARY');
-                    } else {
-                        console.log('UPDATE NEEDED');
-                    }
-                }
+            } catch (error) {
+                printObject('GP:65-->catch error updating location:\n', error);
             }
-            return;
-            API.graphql({
-                query: coreMutations.updateEventLocation,
-                variables: { input: locationObj },
-            })
-                .then((response) => {
-                    if (response.data.updateEventLocation.id) {
-                        updateRedux = true;
-                    } else {
-                        updateRedux = false;
-                        errorMessage = {
-                            message: 'catch error updating location',
-                            error: error,
-                        };
-                    }
-                })
-                .catch((error) => {
-                    updateRedux = false;
-                    errorMessage = {
-                        message: 'catch error updating location',
-                        error: error,
-                    };
-                });
+
             //******************************************* */
             //      updateEventContact
             //******************************************* */
@@ -96,151 +78,249 @@ export const updateGathering = createAsyncThunk(
                 Object.keys(updateEvent?.contact).length > 0
             ) {
                 try {
-                    //      check if the contact already exists
-                    const variables = {
-                        id: contactObj.id,
-                    };
-                    const contactSearchResponse = await API.graphql(
-                        graphqlOperation(queries.getEventContact, variables)
-                    ).then((response) => {
-                        if (response?.data?.getEventContact?.id) {
-                            //      update existing contact
-                            try {
-                                API.graphql({
-                                    query: coreMutations.updateEventContact,
-                                    variables: { input: contactObj },
-                                })
-                                    .then((response) => {
-                                        if (
-                                            response.data.updateEventContact.id
-                                        ) {
-                                            updateRedux = true;
-                                        } else {
+                    if (compareObjects(oldEvent.contact, newEvent.contact)) {
+                        //location has not changed
+                        console.log('contact NOT changed');
+                    } else {
+                        //      check if the contact already exists
+                        const variables = {
+                            id: contactObj.id,
+                        };
+                        const contactSearchResponse = await API.graphql(
+                            graphqlOperation(queries.getEventContact, variables)
+                        ).then((response) => {
+                            if (response?.data?.getEventContact?.id) {
+                                //      update existing contact
+                                try {
+                                    API.graphql({
+                                        query: coreMutations.updateEventContact,
+                                        variables: { input: contactObj },
+                                    })
+                                        .then((response) => {
+                                            if (
+                                                response.data.updateEventContact
+                                                    .id
+                                            ) {
+                                                updateRedux = true;
+                                            } else {
+                                                updateRedux = false;
+                                                errorMessage = {
+                                                    message:
+                                                        'GP:86-->catch error updating contact',
+                                                    error: error,
+                                                };
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            printObject(
+                                                'GP:93-->contact CATCH:\n',
+                                                error
+                                            );
                                             updateRedux = false;
                                             errorMessage = {
                                                 message:
-                                                    'GP:86-->catch error updating contact',
+                                                    'GP:99-->catch error updating contact',
                                                 error: error,
                                             };
-                                        }
+                                        });
+                                } catch (error) {
+                                    printObject(
+                                        'GP:104-->catch error:\n',
+                                        error
+                                    );
+                                }
+                            } else {
+                                // add new contact
+                                try {
+                                    API.graphql({
+                                        query: coreMutations.createEventContact,
+                                        variables: { input: contactObj },
                                     })
-                                    .catch((error) => {
-                                        printObject(
-                                            'GP:93-->contact CATCH:\n',
-                                            error
-                                        );
-                                        updateRedux = false;
-                                        errorMessage = {
-                                            message:
-                                                'GP:99-->catch error updating contact',
-                                            error: error,
-                                        };
-                                    });
-                            } catch (error) {
-                                printObject('GP:104-->catch error:\n', error);
-                            }
-                        } else {
-                            // add new contact
-                            try {
-                                API.graphql({
-                                    query: coreMutations.createEventContact,
-                                    variables: { input: contactObj },
-                                })
-                                    .then((response) => {
-                                        if (
-                                            response.data.createEventContact.id
-                                        ) {
-                                            updateRedux = true;
-                                        } else {
+                                        .then((response) => {
+                                            if (
+                                                response.data.createEventContact
+                                                    .id
+                                            ) {
+                                                updateRedux = true;
+                                            } else {
+                                                updateRedux = false;
+                                                errorMessage = {
+                                                    message:
+                                                        'GP:126-->catch error creating contact',
+                                                    error: error,
+                                                };
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            printObject(
+                                                'GP:133-->contact creating CATCH:\n',
+                                                error
+                                            );
                                             updateRedux = false;
                                             errorMessage = {
                                                 message:
-                                                    'GP:126-->catch error creating contact',
+                                                    'GP:139-->catch error creating contact',
                                                 error: error,
                                             };
-                                        }
-                                    })
-                                    .catch((error) => {
-                                        printObject(
-                                            'GP:133-->contact creating CATCH:\n',
-                                            error
-                                        );
-                                        updateRedux = false;
-                                        errorMessage = {
-                                            message:
-                                                'GP:139-->catch error creating contact',
-                                            error: error,
-                                        };
-                                    });
-                            } catch (error) {
-                                printObject('GP:144-->catch error:\n', error);
+                                        });
+                                } catch (error) {
+                                    printObject(
+                                        'GP:144-->catch error:\n',
+                                        error
+                                    );
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 } catch (error) {
-                    printObject('GP:149-->CATCH  ERROR:\n', error);
+                    printObject('GP:176-->Contact CATCH  ERROR:\n', error);
                 }
             }
             //******************************************* */
             //      updateMeal
             //************************  ******************* */
-            // does meal exist?
-            if (mealObj && Object.keys(mealObj?.contact).length > 0) {
-                //      still have a meal, update
-                API.graphql({
-                    query: coreMutations.updateMeal,
-                    variables: { input: mealObj },
-                })
-                    .then((response) => {
-                        if (response.data.updateMeal.id) {
-                            updateRedux = true;
-                        } else {
-                            updateRedux = false;
-                            errorMessage = {
-                                message: 'catch error updating meal',
-                                error: error,
-                            };
-                        }
+            if (oldEvent.eventMealId === null) {
+                console.log('NO ORIGINAL MEAL');
+                if (mealObj && Object.keys(mealObj).length === 0) {
+                    console.log('keys:', Object.keys(mealObj).length);
+                    console.log('NO NEW MEAL');
+                } else {
+                    //      =============================
+                    //      new meal
+                    //      =============================
+                    API.graphql({
+                        query: coreMutations.createMeal,
+                        variables: { input: mealObj },
                     })
-                    .catch((error) => {
-                        updateRedux = false;
-                        errorMessage = {
-                            message: 'catch error updating meal',
-                            error: error,
-                        };
-                    });
-            } else {
-                // no meal create one...
-                API.graphql({
-                    query: coreMutations.createMeal,
-                    variables: { input: mealObj },
-                })
-                    .then((response) => {
-                        if (response.data.createMeal.id) {
-                            updateRedux = true;
-                        } else {
+                        .then((response) => {
+                            if (response.data.createMeal.id) {
+                                updateRedux = true;
+                            } else {
+                                updateRedux = false;
+                                errorMessage = {
+                                    message: 'catch error creating meal',
+                                    error: error,
+                                };
+                            }
+                        })
+                        .catch((error) => {
                             updateRedux = false;
                             errorMessage = {
                                 message: 'catch error creating meal',
                                 error: error,
                             };
-                        }
+                        });
+                }
+            } else {
+                console.log('ORIGINAL MEAL FOUND');
+                if (mealObj && Object.keys(mealObj).length === 0) {
+                    //      =============================
+                    //      delete meal
+                    //      =============================
+                    strippedEventObj = {
+                        ...strippedEventObj,
+                        mealPlannedCount: 0,
+                        mealActualCount: 0,
+                        eventMealId: null,
+                        meal: null,
+                    };
+                    const variables = {
+                        id: mealObj.id,
+                    };
+                    API.graphql({
+                        query: coreMutations.deleteMeal,
+                        variables: { input: variables },
                     })
-                    .catch((error) => {
-                        updateRedux = false;
-                        errorMessage = {
-                            message: 'catch error creating meal',
-                            error: error,
-                        };
-                    });
-            }
+                        .then((response) => {
+                            if (response.data.updateMeal.id) {
+                                updateRedux = true;
+                            } else {
+                                updateRedux = false;
+                                errorMessage = {
+                                    message: 'catch error updating meal',
+                                    error: error,
+                                };
+                            }
+                        })
+                        .catch((error) => {
+                            updateRedux = false;
+                            errorMessage = {
+                                message: 'catch error updating meal',
+                                error: error,
+                            };
+                        });
+                } else {
+                    //check if they are the same
+                    //if different, update
+                    const oldMeal = { ...oldEvent.meal };
+                    const newMeal = { ...newEvent.meal };
+                    printObject('OLD', oldMeal);
+                    printObject('NEW', newMeal);
+                    let mealsTheSame = compareObjects(oldMeal, newMeal);
 
+                    console.log('mealsTheSame:', mealsTheSame);
+                    // console.log('updateNeededLocal:', updateNeededLocal);
+                    if (mealsTheSame) {
+                        console.log('NO UPDATE NECESSARY');
+                    } else {
+                        try {
+                            console.log('UPDATE THE MEAL');
+                            //      =============================
+                            //      update meal
+                            //      =============================
+                            API.graphql({
+                                query: coreMutations.updateMeal,
+                                variables: { input: mealObj },
+                            })
+                                .then((response) => {
+                                    if (response.data.updateMeal.id) {
+                                        console.log('SUCCESS');
+                                        updateRedux = true;
+                                    } else {
+                                        updateRedux = false;
+                                        errorMessage = {
+                                            message:
+                                                'catch error updating meal',
+                                            error: error,
+                                        };
+                                        printObject(
+                                            'UPDATE FAIL:\n',
+                                            errorMessage
+                                        );
+                                    }
+                                })
+                                .catch((error) => {
+                                    updateRedux = false;
+                                    errorMessage = {
+                                        message: 'catch error updating meal',
+                                        error: error,
+                                    };
+                                    printObject(
+                                        'CATCH DURING UPDATE:\n',
+                                        errorMessage
+                                    );
+                                });
+                        } catch (error) {
+                            printObject('GP:276-->updateMeal catch:\n', error);
+                        }
+                    }
+                }
+            }
             //******************************************* */
             //      updateEvent
             //******************************************* */
-
             printObject('GP:14-->updateEvent:\n', updateEvent);
-            let theEvent = updateEvent;
+            let theEvent = {
+                ...strippedEventObj,
+                location: { ...locationObj },
+                contact: { ...contactObj },
+                coordinator: { ...coordinatorObj },
+                division: { ...divisionObj },
+                meal:
+                    strippedEventObj.eventMealId === null
+                        ? null
+                        : { ...mealObj },
+            };
 
             printObject('GP:32-->mealObj:\n', mealObj);
             printObject('GP:33-->locationObj:\n', locationObj);
@@ -271,86 +351,7 @@ export const updateGathering = createAsyncThunk(
                         error: error,
                     };
                 });
-            // precondition meal input
-
-            let mealUpdate = {
-                ...mealObj,
-                cost: parseInt(mealObj.cost),
-                plannedCount: parseInt(mealObj.plannedCount),
-                actualCount: parseInt(mealObj.actualCount),
-            };
-
-            if (isNaN(mealUpdate.cost)) {
-                mealUpdate.cost = 0;
-            }
-
-            if (isNaN(mealUpdate.plannedCount)) {
-                mealUpdate.plannedCount = 0;
-            }
-
-            if (isNaN(mealUpdate.actualCount)) {
-                mealUpdate.actualCount = 0;
-            }
-            // Convert startTime to AWSTime object
-            const startTime = moment(
-                mealUpdate.startTime,
-                'HH:mm:ss.SSS'
-            ).format('HH:mm:ss');
-
-            // Create AWSDate object with current date
-            const date = moment().format('YYYY-MM-DD');
-            const awsDate = new Date(`${date}T00:00:00.000Z`);
-
-            // Update meal object with formatted properties
-            mealUpdate.startTime = {
-                hour: Number(startTime.split(':')[0]),
-                minute: Number(startTime.split(':')[1]),
-                second: Number(startTime.split(':')[2]),
-            };
-            // mealUpdate.startTime = awsDate;
-            // const mealResponse = mealObj.id
-            //     ? await API.graphql(
-            //           graphqlOperation(mutations.updateMeal, mealObj)
-            //       )
-            //     : await API.graphql(
-            //           graphqlOperation(mutations.createMeal, mealObj)
-            //       );
-
-            // const locationPromise = API.graphql(
-            //     graphqlOperation(mutations.updateLocation, locationObj)
-            // );
-            // const contactPromise = API.graphql(
-            //     graphqlOperation(mutations.updateContact, contactObj)
-            // );
-            // const coordinatorPromise = API.graphql(
-            //     graphqlOperation(mutations.updateCoordinator, coordinatorObj)
-            // );
-
-            // //* ********************************************
-            // //      update event location
-            // //* ********************************************
-            // API.graphql({
-            //     query: coreMutations.updateEventLocation,
-            //     variables: { input: locationObj },
-            // })
-            //     .then((response) => {
-            //         if (response.data.updateEventLocation.id) {
-            //             updateRedux = true;
-            //         } else {
-            //             updateRedux = false;
-            //             errorMessage = {
-            //                 message: 'catch error updating location',
-            //                 error: error,
-            //             };
-            //         }
-            //     })
-            //     .catch((error) => {
-            //         updateRedux = false;
-            //         errorMessage = {
-            //             message: 'catch error updating location',
-            //             error: error,
-            //         };
-            //     });
+            printObject('GOING TO REDUX WITH...\n', theEvent);
             const payload = {
                 ...theEvent,
             };
