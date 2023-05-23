@@ -79,7 +79,7 @@ export const updateGathering = createAsyncThunk(
                 } else {
                     //location has changed
                     console.log('location HAS changed');
-                    API.graphql({
+                    await API.graphql({
                         query: coreMutations.updateEventLocation,
                         variables: { input: locationObj },
                     })
@@ -234,7 +234,7 @@ export const updateGathering = createAsyncThunk(
                         plannedCount: 0,
                         actualCount: 0,
                     };
-                    API.graphql({
+                    await API.graphql({
                         query: coreMutations.createMeal,
                         variables: { input: mealObj },
                     })
@@ -310,7 +310,7 @@ export const updateGathering = createAsyncThunk(
                             //      =============================
                             //      update meal
                             //      =============================
-                            API.graphql({
+                            await API.graphql({
                                 query: coreMutations.updateMeal,
                                 variables: { input: mealObj },
                             })
@@ -371,7 +371,7 @@ export const updateGathering = createAsyncThunk(
             printObject('GP:36-->strippedEventObj:\n', strippedEventObj);
             let updateRedux = false;
             let errorMessage = {};
-            API.graphql({
+            await API.graphql({
                 query: coreMutations.updateEvent,
                 variables: { input: strippedEventObj },
             })

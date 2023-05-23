@@ -56,6 +56,8 @@ export default function RallyMealForm({ rallyId }) {
     const [mealMessage, setMealMessage] = useState(
         tmp?.meal?.message ? tmp.meal.message : ''
     );
+    const maximumDate = new Date(tmp.eventDate);
+    const timeZoneOffsetInMinutes = new Date().getTimezoneOffset();
     const makeTimeString = (data) => {
         const yr = parseInt(data.getFullYear());
         const mo = parseInt(data.getMonth());
@@ -440,7 +442,7 @@ export default function RallyMealForm({ rallyId }) {
 
                                 <View style={styles.datePickerWrapper}>
                                     <Text style={styles.datePickerLabel}>
-                                        Deadline to signup for meal
+                                        Deadline to sign-up for meal
                                     </Text>
                                     <Pressable
                                         onPress={() =>
@@ -504,6 +506,7 @@ export default function RallyMealForm({ rallyId }) {
                             isVisible={modalMealTimeVisible}
                             date={mealStartTime}
                             mode='time'
+                            timeZoneOffsetInMinutes={timeZoneOffsetInMinutes}
                             value={mealStartTime}
                             onConfirm={onMealTimeConfirm}
                             onCancel={onMealTimeCancel}
@@ -513,6 +516,8 @@ export default function RallyMealForm({ rallyId }) {
                             date={deadlineDate}
                             mode='date'
                             value={deadlineDate}
+                            timeZoneOffsetInMinutes={timeZoneOffsetInMinutes}
+                            maximumDate={maximumDate}
                             onConfirm={onDeadlineDateConfirm}
                             onCancel={onDeadlineDateCancel}
                         />
