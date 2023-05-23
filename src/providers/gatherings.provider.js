@@ -10,13 +10,54 @@ import {
     createAWSUniqueID,
     compareObjects,
 } from '../utils/helpers';
+const deleteGQLMeal = async (id) => {
+    let returnValue = {};
+    try {
+        console.log('deleteGQLMeal called id: ', id);
+        const variables = {
+            id: mealId,
+        };
+        await API.graphql({
+            query: coreMutations.deleteMeal,
+            variables: { input: variables },
+        })
+            .then((response) => {
+                if (response?.data?.deleteMeal?.id) {
+                    returnValue = {
+                        status: 200,
+                    };
+                } else {
+                    returnValue = {
+                        status: 401,
+                        errorMessage:
+                            'catch error in response of updating meal',
+                        error: error,
+                    };
+                }
+            })
+            .catch((error) => {
+                returnValue = {
+                    status: 401,
+                    errorMessage: 'catch error updating meal',
+                    error: error,
+                };
+            });
+    } catch (error) {
+        returnValue = {
+            status: 401,
+            errorMessage: 'deleteGQLMeal Catch Error',
+            error: error,
+        };
+    }
+    return returnValue;
+};
 
 export const updateGathering = createAsyncThunk(
     'division/updateGathering',
     async (updateEvent, thunkAPI) => {
         try {
             const oldEvent = updateEvent?.oldEvent;
-            const newEvent = updateEvent?.newEvent;
+            let newEvent = updateEvent?.newEvent;
             printObject('GP:20-->oldEvent:\n', oldEvent);
             printObject('GP:21-->newEvent:\n', newEvent);
             let {
@@ -187,6 +228,12 @@ export const updateGathering = createAsyncThunk(
                     //      =============================
                     //      new meal
                     //      =============================
+                    // new meal, add plannedCount & actualCount
+                    mealObj = {
+                        ...mealObj,
+                        plannedCount: 0,
+                        actualCount: 0,
+                    };
                     API.graphql({
                         query: coreMutations.createMeal,
                         variables: { input: mealObj },
@@ -212,48 +259,38 @@ export const updateGathering = createAsyncThunk(
                 }
             } else {
                 console.log('ORIGINAL MEAL FOUND');
-                printObject(
-                    '#############\neventMealId:',
-                    newEvent.eventMealId
-                );
-                printObject('#############\nmeal:\n', newEvent.meal);
+
                 if (newEvent.eventMealId === null) {
                     //      =============================
                     //      delete meal
                     //      =============================
-                    strippedEventObj = {
-                        ...strippedEventObj,
-                        mealPlannedCount: 0,
-                        mealActualCount: 0,
-                        eventMealId: null,
-                        meal: null,
-                    };
-                    const variables = {
-                        id: oldEvent.eventMealId,
-                    };
-                    API.graphql({
-                        query: coreMutations.deleteMeal,
-                        variables: { input: variables },
-                    })
-                        .then((response) => {
-                            printObject('@@@ return of delete @@@\n', response);
-                            if (response.data.updateMeal.id) {
-                                updateRedux = true;
-                            } else {
-                                updateRedux = false;
-                                errorMessage = {
-                                    message: 'catch error updating meal',
-                                    error: error,
-                                };
-                            }
-                        })
-                        .catch((error) => {
-                            updateRedux = false;
-                            errorMessage = {
-                                message: 'catch error updating meal',
-                                error: error,
-                            };
-                        });
+                    printObject('GP:255-->newEvent:\n', newEvent);
+
+                    const deleteResults = await deleteGQLMeal(
+                        oldEvent.eventMealId
+                    );
+                    printObject('deleteResults:\n', deleteResults);
+                    if (deleteResults.status === 200) {
+                        // meal Deleted
+                        newEvent = {
+                            ...newEvent,
+                            meal: null,
+                            mealPlannedCount: 0,
+                            mealActualCount: 0,
+                        };
+                        strippedEventObj = {
+                            ...strippedEventObj,
+                            mealPlannedCount: 0,
+                            mealActualCount: 0,
+                            eventMealId: null,
+                            meal: null,
+                        };
+                    } else {
+                        printObject(
+                            'GP:259-->deleteResults failed:\n',
+                            deleteResults
+                        );
+                    }
                 } else {
                     //check if they are the same
                     //if different, update
