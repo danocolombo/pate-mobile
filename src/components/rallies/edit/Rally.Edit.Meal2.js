@@ -21,12 +21,6 @@ import { Switch } from '@react-native-material/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from '../../../constants/colors';
 import moment from 'moment';
-import {
-    getPateDate,
-    getPateTime,
-    pateDateToSpinner,
-    pateTimeToSpinner,
-} from '../../../utils/date';
 import { updateTmp } from '../../../features/rallies/ralliesSlice';
 import CustomNavButton from '../../ui/CustomNavButton';
 import { createAWSUniqueID, printObject } from '../../../utils/helpers';
@@ -35,11 +29,8 @@ export default function RallyMealForm({ rallyId }) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const tmp = useSelector((state) => state.rallies.tmpRally);
-    const originalGathering = useSelector((state) => state.rallies.rallyCopy);
-    const [defaultDateTime, setDefaultDateTime] = useState();
     const [defaultDateTimeString, setDefaultDateTimeString] = useState();
     const [mealStartTime, setMealStartTime] = useState();
-    const [mealStartTimeString, setMealStartTimeString] = useState();
     const [deadlineDate, setDeadlineDate] = useState();
     const [deadlineDateString, setDeadlineDateString] = useState();
     const [modalMealTimeVisible, setModalMealTimeVisible] = useState();
@@ -66,11 +57,7 @@ export default function RallyMealForm({ rallyId }) {
         const mi = parseInt(data.getMinutes());
 
         let str;
-        // console.log('yr', yr);
-        // console.log('mo', mo);
-        // console.log('da', da);
-        // console.log('hr', hr);
-        // console.log('mi', mi);
+
         if (Platform === 'android') {
             str =
                 (hr > 12 ? hr - 12 : hr).toString() +
@@ -88,26 +75,23 @@ export default function RallyMealForm({ rallyId }) {
         }
         return str;
     };
-    // printObject('REM2:89-->orignalGathering:\n', originalGathering);
-    // printObject('REM2:90-->tmp:', tmp);
+
     useEffect(() => {
         if (!tmp?.meal?.id) {
             // default of today at noon
             // let tmpDate = new Date(yr, mo - 1, da, 12, 0, 0, 0);
             let tmpDate = new Date();
             tmpDate.setHours(12, 0, 0, 0);
-            setDefaultDateTime(tmpDate);
             setDeadlineDate(tmpDate);
             setMealStartTime(tmpDate);
             setDeadlineDateString(tmpDate.toDateString());
-            // let t = makeTimeString(tmpDate);
-            // setMealStartTimeString(t);
 
             //default the deadline to be the date of the event
             const [yr, mo, da] = tmp.eventDate.split(/-/).map(Number);
             const dLineDate = new Date(yr, mo - 1, da, 12, 0, 0, 0);
-            setDeadlineDate(dLineDate);
-            setDeadlineDateString(dLineDate.toDateString());
+            const eventDate = new Date(tmp.eventDate);
+            setDeadlineDate(eventDate);
+            setDeadlineDateString(eventDate.toDateString());
         } else {
             // get the tmp.meal.startTime value into Date object
             if (!tmp?.meal?.startTime) {
@@ -131,8 +115,14 @@ export default function RallyMealForm({ rallyId }) {
                 // this is meal, but no deadline, default to eventDate
                 [yr, mo, da] = [...tmp.eventDate.split(/-/)].map(Number);
             } else {
-                //use the tmp.meal.deadline
-                [yr, mo, da] = [...tmp.meal.deadline.split(/-/)].map(Number);
+                //use the tmp.meal.deadline unless the eventDate has been
+                //changed to earlier than previously set to.
+                const earliestDate =
+                    new Date(tmp.eventDate) < new Date(tmp.meal.deadline)
+                        ? tmp.eventDate
+                        : tmp.meal.deadline;
+
+                [yr, mo, da] = [...earliestDate.split(/-/)].map(Number);
             }
 
             // can use start times, since the values are not used
@@ -174,8 +164,6 @@ export default function RallyMealForm({ rallyId }) {
                 (hr > 11 ? 'PM' : 'AM');
         }
         setMealStartTime(tmpDate);
-        setMealStartTimeString(str);
-
         return;
     };
     const onDeadlineDateConfirm = (data) => {
@@ -203,43 +191,8 @@ export default function RallyMealForm({ rallyId }) {
     const onDeadlineDateCancel = (data) => setModalDeadlineVisible(false);
     const handleNext = () => {
         try {
-            // console.log('offerMeal type:', typeof offerMeal);
-            // console.log('offerMeal value: ', offerMeal);
-            // printObject('tmp:\n', tmp);
-            // let updatedMeal = {};
-            // if (offerMeal) {
-            //     const newMealDeadline = deadlineDate
-            //         .toISOString()
-            //         .substring(0, 10);
-            //     let hours = mealStartTime
-            //         .getHours()
-            //         .toString()
-            //         .padStart(2, '0');
-            //     let minutes = mealStartTime
-            //         .getMinutes()
-            //         .toString()
-            //         .padStart(2, '0');
-
-            //     const newMealStartTime = `${hours}:${minutes}:00.000`;
-
-            //     let newRally = tmp;
-            //     updatedMeal = {
-            //         ...newRally.meal,
-            //         message: mealMessage,
-            //         startTime: newMealStartTime,
-            //         deadline: newMealDeadline,
-            //         cost: cost,
-            //         plannedCount: tmp?.meal?.plannedCount,
-            //         actualCount: tmp?.meal?.actualCount,
-            //         offerMeal: offerMeal,
-            //     };
-            // }
-            // updateRally = {
-            //     ...newRally,
-            //     meal: updatedMeal,
-            // };
             //* *********************************************************
-            //      START RE-DO
+            //      HANDLE NEXT
             //* *********************************************************
             let mealUpdate = {};
             if (offerMeal) {
@@ -279,32 +232,19 @@ export default function RallyMealForm({ rallyId }) {
                 meal: mealUpdate,
             };
 
-            let DANO1 = true;
-            if (DANO1) {
-                // printObject('RELM:166-->tmp:', tmp);
-                // printObject('RELM:167-->rallyUpdate:', rallyUpdate);
-                // return;
-                dispatch(updateTmp(rallyUpdate));
-                navigation.navigate('RallyEditFlow', {
-                    rallyId: rallyId,
-                    stage: 6,
-                });
-            }
-            //* *********************************************************
-            //      END RE-DO
-            //* *********************************************************
-            // printObject('REM:235--> updatedRally):', updatedRally);
-            // dispatch(updateTmp(updatedRally));
-            // navigation.navigate('RallyEditFlow', {
-            //     rallyId: rallyId,
-            //     stage: 6,
-            // });
+            // printObject('RELM:166-->tmp:', tmp);
+            // printObject('RELM:167-->rallyUpdate:', rallyUpdate);
+            // return;
+            dispatch(updateTmp(rallyUpdate));
+            navigation.navigate('RallyEditFlow', {
+                rallyId: rallyId,
+                stage: 6,
+            });
         } catch (error) {
             printObject('REM:241--> error on Next:\n', error);
         }
     };
-    // const dispatch = useDispatch();
-    // printObject('REM:251-->tmp:\n', tmp);
+
     return (
         <>
             <Modal visible={showMealCountConfirm} animationStyle='slide'>
@@ -389,9 +329,11 @@ export default function RallyMealForm({ rallyId }) {
                                         </Text>
                                     </View>
                                     <Pressable
-                                        onPress={() =>
-                                            setModalMealTimeVisible(true)
-                                        }
+                                        onPress={() => {
+                                            if (offerMeal) {
+                                                setModalMealTimeVisible(true);
+                                            }
+                                        }}
                                     >
                                         <View
                                             style={
@@ -445,9 +387,11 @@ export default function RallyMealForm({ rallyId }) {
                                         Deadline to sign-up for meal
                                     </Text>
                                     <Pressable
-                                        onPress={() =>
-                                            setModalDeadlineVisible(true)
-                                        }
+                                        onPress={() => {
+                                            if (offerMeal) {
+                                                setModalDeadlineVisible(true);
+                                            }
+                                        }}
                                     >
                                         <View
                                             style={
@@ -477,6 +421,7 @@ export default function RallyMealForm({ rallyId }) {
                                     <TextInput
                                         style={styles.messageInput}
                                         numberOfLines={2}
+                                        editable={offerMeal}
                                         multiline
                                         maxLength={60}
                                         placeholder='Meal Message'
